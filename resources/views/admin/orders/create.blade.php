@@ -107,6 +107,14 @@ element.style {
     border-radius: 0.25rem;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
+hr{
+    border: 0;
+    clear:both;
+    display:block;
+    width: 96%;               
+    background-color:#93938861;
+    height: 1px;
+}
 </style>
 <div class="container-fluid mt-2">
     <div class="row">
@@ -160,6 +168,9 @@ element.style {
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="OTHERCHARGES-tab" data-toggle="pill" href="#OTHERCHARGES" role="tab" aria-controls="OTHERCHARGES" aria-selected="false">Other Charges</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="MARGINS-tab" data-toggle="pill" href="#MARGINS" role="tab" aria-controls="MARGINS" aria-selected="false">Margins</a>
                 </li>
             </ul>
             <div class="tab-content" id="pills-tabContent">
@@ -308,51 +319,405 @@ element.style {
                 </form>
             </div>
             <div class="tab-pane fade" id="OTHERCHARGES" role="tabpanel" aria-labelledby="OTHERCHARGES-tab">
-               <form class="form-inline offset-md-2">
-                   <div class="col-md-12 mt-2">
-                    <div class="form-group row">
-                        <label for="s-xl" class="col-sm-3 col-form-label font-weight-600">S-XL</label>
-                        <div class="col-sm-9">
-                            <input type="number" min="0" name="sp_s_xl" value="" class="form-control" id="sp_s_xl" placeholder="">
-                        </div>
+              <form class="form-inline ">
+               <div class="col-md-12 mt-2">
+                <div class="form-group row">
+                    <label for="fold_bag_tag_pieces" class="col-sm-3 col-form-label font-weight-600">FOLD/BAG/TAG</label>
+                    <input type="number" min="0" name="fold_bag_tag_pieces" value="" class="form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
+                    <label for="fold_bag_tag_prices" class="col-md-3 col-form-label font-weight-600"></label>
+                    <input type="number" min="0" name="fold_bag_tag_prices" value="" class="form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
+                </div>
+            </div>
+            <div class="col-md-12 mt-2">
+                <div class="form-group row">
+                    <label for="hang_tag_pieces" class="col-sm-3 col-form-label font-weight-600">Hang Tag</label>
+                    <input type="number" min="0" name="hang_tag_pieces" value="" class="form-control " id="hang_tag_pieces" placeholder="Pieces">
+                    <label for="hang_tag_prices" class="col-md-3 col-form-label font-weight-600"></label>
+                    <input type="number" min="0" name="hang_tag_prices" value="" class="form-control mr-2" id="hang_tag_prices" placeholder="Prices">
+                </div>
+            </div>
+            <div class="col-md-12 mt-2">
+                <div class="form-group row">
+                    <label for="art_fee" class="col-sm-3 col-form-label font-weight-600">Art Fee</label>
+                    <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+                        <select name="art_fee" id="art_fee" class="form-control">
+                            <option value="">Select</option>
+                            <option value="0">$0.00</option>
+                            <option value="20">$20.00</option>
+                            <option value="30">$30.00</option>
+                            <option value="40">$40.00</option>
+                            <option value="50">$50.00</option>
+                            <option value="55">$55.00</option>
+                            <option value="60">$60.00</option>
+                            <option value="100">$100.00</option>
+                            <option value="120">$120.00</option>
+                        </select>
+                    </div>
+                    <label for="art_discount" class="col-md-3 col-form-label font-weight-600">Art Discount</label>
+                    <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+                        <select name="art_discount" id="art_discount" class="form-control">
+                            <option value="">Select</option>
+                            <option value="0" >$0.00</option>
+                            <option value="20" >-$20.00</option>
+                            <option value="25" >-$25.00</option>
+                            <option value="30" >-$30.00</option>
+                            <option value="35" >-$35.00</option>
+                            <option value="40" >-$40.00</option>
+                            <option value="50" >-$50.00</option>
+                            <option value="60" >-$60.00</option>
+                        </select>
                     </div>
                 </div>
-                <div class="col-md-12 mt-2">
-                    <div class="form-group row">
-                        <label for="sp_xxl" class="col-sm-3 col-form-label font-weight-600">XXL</label>
-                        <div class="col-sm-9">
-                            <input type="number" min="0" name="sp_xxl" value="" class="form-control" id="sp_xxl" placeholder="">
-                        </div>
+            </div>
+            <div class="col-md-12 mt-2">
+                <div class="form-group row">
+                    <label for="art_time" class="col-sm-3 col-form-label font-weight-600">Art Time</label>
+                    <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+                        <select name="art_time" id="art_time" class="form-control">
+                            <option value="">Select</option>
+                            <option value="1">1 Hour</option>
+                            <option value="2">2 Hour</option>
+                            <option value="3">3 Hour</option>
+                            <option value="4">4 Hour</option>
+                        </select>
+                    </div>
+                    <label for="art_discount" class="col-md-3 col-form-label font-weight-600">Tax</label>
+                    <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+                        <select name="art_discount" id="art_discount" class="form-control">
+                            <option value="">Select</option>
+                            <option value="0" >0</option>
+                            <option value="8.375" >8.375%</option>
+                        </select>
                     </div>
                 </div>
-                <div class="col-md-12 mt-2">
-                    <div class="form-group row">
-                        <label for="sp_xxxl" class="col-sm-3 col-form-label font-weight-600">XXXL</label>
-                        <div class="col-sm-9">
-                            <input type="number" min="0" name="sp_xxxl" value="" class="form-control" id="sp_xxxl" placeholder="">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12 mt-2">
-                    <div class="form-group row">
-                        <label for="sp_xxxxl" class="col-sm-3 col-form-label font-weight-600">XXXXL</label>
-                        <div class="col-sm-9">
-                            <input type="number" min="0" name="sp_xxxxl" value="" class="form-control" id="sp_xxxxl" placeholder="">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12 mt-2">
-                    <div class="form-group row">
-                        <label for="sp_xxxxxl" class="col-sm-3 col-form-label font-weight-600">XXXXXL</label>
-                        <div class="col-sm-9">
-                            <input type="number" min="0" name="sp_xxxxxl" value="" class="form-control" id="sp_xxxxxl" placeholder="">
-                        </div>
-                    </div>
-                </div>
-
-            </form>
+            </div>
+        </form>
+    </div>
+    <div class="tab-pane fade" id="MARGINS" role="tabpanel" aria-labelledby="MARGINS-tab">
+      <form class="form-inline ">
+       <div class="col-md-12 mt-2">
+        <div class="form-group row">
+            <label for="transfers_pieces" class="col-sm-3 col-form-label font-weight-600">Transfers</label>
+            <input type="number" min="0" name="transfers_pieces" value="" class="form-control " id="transfers_pieces" placeholder="Pieces">
+            <label for="transfers_prices" class="col-md-3 col-form-label font-weight-600"></label>
+            <input type="number" min="0" name="transfers_prices" value="" class="form-control mr-2" id="transfers_prices" placeholder="Prices">
         </div>
     </div>
+    <div class="col-md-12 mt-2">
+        <div class="form-group row">
+            <label for="ink_color_change_pieces" class="col-sm-3 col-form-label font-weight-600">Ink Color Change</label>
+            <input type="number" min="0" name="ink_color_change_pieces" value="" class="form-control " id="ink_color_change_pieces" placeholder="Pieces">
+            <label for="art_discount_prices" class="col-md-3 col-form-label font-weight-600"></label>
+            <input type="number" min="0" name="art_discount_prices" value="" class="form-control mr-2" id="art_discount_prices" placeholder="Prices">
+        </div>
+    </div>
+    <div class="col-md-12 mt-2">
+        <div class="form-group row">
+            <label for="hang_tag1" class="col-sm-3 col-form-label font-weight-600">Shipping</label>
+            <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+                <select name="art_fee" id="art_fee" class="form-control">
+                    <option value="">Select</option>
+                    <option value="20">$20.00</option>
+                    <option value="30">$30.00</option>
+                    <option value="40">$40.00</option>
+                    <option value="50">$50.00</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <hr class="dotted">
+    <div class="container">
+      <div class="row justify-content-center">
+        <b>Margin</b>
+    </div>
+</div>
+<div class="col-md-12 mt-2">
+    <div class="form-group row">
+        <label for="min_profit_margin" class="col-sm-3 col-form-label font-weight-600"></label>
+        <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+            <select onchange="setMinMargin(this);" name="min_profit_margin" id="min_profit_margin" class="form-control">
+                <option value="">Select</option>
+                <option value="1" >1 %</option> 
+                <option value="2" >2 %</option> 
+                <option value="3" >3 %</option> 
+                <option value="4" >4 %</option> 
+                <option value="5" >5 %</option> 
+                <option value="6" >6 %</option> 
+                <option value="7" >7 %</option> 
+                <option value="8" >8 %</option> 
+                <option value="9" >9 %</option> 
+                <option value="10" >10 %</option> 
+                <option value="11" >11 %</option> 
+                <option value="12" >12 %</option> 
+                <option value="13" >13 %</option> 
+                <option value="14" >14 %</option> 
+                <option value="15" >15 %</option> 
+                <option value="16" >16 %</option> 
+                <option value="17" >17 %</option> 
+                <option value="18" >18 %</option> 
+                <option value="19" >19 %</option> 
+                <option value="20" >20 %</option> 
+                <option value="21" >21 %</option> 
+                <option value="22" >22 %</option> 
+                <option value="23" >23 %</option> 
+                <option value="24" >24 %</option> 
+                <option value="25" >25 %</option> 
+                <option value="26" >26 %</option> 
+                <option value="27" >27 %</option> 
+                <option value="28" >28 %</option> 
+                <option value="29" >29 %</option> 
+                <option value="30" >30 %</option> 
+                <option value="31" >31 %</option> 
+                <option value="32" >32 %</option> 
+                <option value="33" >33 %</option> 
+                <option value="34" >34 %</option> 
+                <option value="35" >35 %</option> 
+                <option value="36" >36 %</option> 
+                <option value="37" >37 %</option> 
+                <option value="38" >38 %</option> 
+                <option value="39" >39 %</option> 
+                <option value="40" >40 %</option> 
+                <option value="41" >41 %</option> 
+                <option value="42" >42 %</option> 
+                <option value="43" >43 %</option> 
+                <option value="44" >44 %</option> 
+                <option value="45" >45 %</option> 
+                <option value="46" >46 %</option> 
+                <option value="47" >47 %</option> 
+                <option value="48" >48 %</option> 
+                <option value="49" >49 %</option> 
+                <option value="50" >50 %</option> 
+                <option value="51" >51 %</option> 
+                <option value="52" >52 %</option> 
+                <option value="53" >53 %</option> 
+                <option value="54" >54 %</option> 
+                <option value="55" >55 %</option> 
+                <option value="56" >56 %</option> 
+                <option value="57" >57 %</option> 
+                <option value="58" >58 %</option> 
+                <option value="59" >59 %</option> 
+                <option value="60" >60 %</option> 
+                <option value="61" >61 %</option> 
+                <option value="62" >62 %</option> 
+                <option value="63" >63 %</option> 
+                <option value="64" >64 %</option> 
+                <option value="65" >65 %</option> 
+                <option value="66" >66 %</option> 
+                <option value="67" >67 %</option> 
+                <option value="68" >68 %</option> 
+                <option value="69" >69 %</option> 
+                <option value="70" >70 %</option> 
+                <option value="71" >71 %</option> 
+                <option value="72" >72 %</option> 
+                <option value="73" >73 %</option> 
+                <option value="74" >74 %</option> 
+                <option value="75" >75 %</option> 
+                <option value="76" >76 %</option> 
+                <option value="77" >77 %</option> 
+                <option value="78" >78 %</option> 
+                <option value="79" >79 %</option> 
+                <option value="80" >80 %</option> 
+                <option value="81" >81 %</option> 
+                <option value="82" >82 %</option> 
+                <option value="83" >83 %</option> 
+                <option value="84" >84 %</option> 
+                <option value="85" >85 %</option> 
+                <option value="86" >86 %</option> 
+                <option value="87" >87 %</option> 
+                <option value="88" >88 %</option> 
+                <option value="89" >89 %</option> 
+                <option value="90" >90 %</option> 
+                <option value="91" >91 %</option> 
+                <option value="92" >92 %</option> 
+                <option value="93" >93 %</option> 
+                <option value="94" >94 %</option> 
+                <option value="95" >95 %</option> 
+                <option value="96" >96 %</option> 
+                <option value="97" >97 %</option> 
+                <option value="98" >98 %</option> 
+                <option value="99" >99 %</option> 
+                <option value="100" >100 %</option> 
+
+            </select>
+        </div>
+        <label for="max_profit_margin" class="col-md-3 col-form-label font-weight-600"></label>
+        <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+            <select name="max_profit_margin" onchange="setMaxMargin(this);" id="max_profit_margin" class="form-control">
+                <option value="">Select</option>
+                <option value="1" >1 %</option> 
+                <option value="2" >2 %</option> 
+                <option value="3" >3 %</option> 
+                <option value="4" >4 %</option> 
+                <option value="5" >5 %</option> 
+                <option value="6" >6 %</option> 
+                <option value="7" >7 %</option> 
+                <option value="8" >8 %</option> 
+                <option value="9" >9 %</option> 
+                <option value="10" >10 %</option> 
+                <option value="11" >11 %</option> 
+                <option value="12" >12 %</option> 
+                <option value="13" >13 %</option> 
+                <option value="14" >14 %</option> 
+                <option value="15" >15 %</option> 
+                <option value="16" >16 %</option> 
+                <option value="17" >17 %</option> 
+                <option value="18" >18 %</option> 
+                <option value="19" >19 %</option> 
+                <option value="20" >20 %</option> 
+                <option value="21" >21 %</option> 
+                <option value="22" >22 %</option> 
+                <option value="23" >23 %</option> 
+                <option value="24" >24 %</option> 
+                <option value="25" >25 %</option> 
+                <option value="26" >26 %</option> 
+                <option value="27" >27 %</option> 
+                <option value="28" >28 %</option> 
+                <option value="29" >29 %</option> 
+                <option value="30" >30 %</option> 
+                <option value="31" >31 %</option> 
+                <option value="32" >32 %</option> 
+                <option value="33" >33 %</option> 
+                <option value="34" >34 %</option> 
+                <option value="35" >35 %</option> 
+                <option value="36" >36 %</option> 
+                <option value="37" >37 %</option> 
+                <option value="38" >38 %</option> 
+                <option value="39" >39 %</option> 
+                <option value="40" >40 %</option> 
+                <option value="41" >41 %</option> 
+                <option value="42" >42 %</option> 
+                <option value="43" >43 %</option> 
+                <option value="44" >44 %</option> 
+                <option value="45" >45 %</option> 
+                <option value="46" >46 %</option> 
+                <option value="47" >47 %</option> 
+                <option value="48" >48 %</option> 
+                <option value="49" >49 %</option> 
+                <option value="50" >50 %</option> 
+                <option value="51" >51 %</option> 
+                <option value="52" >52 %</option> 
+                <option value="53" >53 %</option> 
+                <option value="54" >54 %</option> 
+                <option value="55" >55 %</option> 
+                <option value="56" >56 %</option> 
+                <option value="57" >57 %</option> 
+                <option value="58" >58 %</option> 
+                <option value="59" >59 %</option> 
+                <option value="60" >60 %</option> 
+                <option value="61" >61 %</option> 
+                <option value="62" >62 %</option> 
+                <option value="63" >63 %</option> 
+                <option value="64" >64 %</option> 
+                <option value="65" >65 %</option> 
+                <option value="66" >66 %</option> 
+                <option value="67" >67 %</option> 
+                <option value="68" >68 %</option> 
+                <option value="69" >69 %</option> 
+                <option value="70" >70 %</option> 
+                <option value="71" >71 %</option> 
+                <option value="72" >72 %</option> 
+                <option value="73" >73 %</option> 
+                <option value="74" >74 %</option> 
+                <option value="75" >75 %</option> 
+                <option value="76" >76 %</option> 
+                <option value="77" >77 %</option> 
+                <option value="78" >78 %</option> 
+                <option value="79" >79 %</option> 
+                <option value="80" >80 %</option> 
+                <option value="81" >81 %</option> 
+                <option value="82" >82 %</option> 
+                <option value="83" >83 %</option> 
+                <option value="84" >84 %</option> 
+                <option value="85" >85 %</option> 
+                <option value="86" >86 %</option> 
+                <option value="87" >87 %</option> 
+                <option value="88" >88 %</option> 
+                <option value="89" >89 %</option> 
+                <option value="90" >90 %</option> 
+                <option value="91" >91 %</option> 
+                <option value="92" >92 %</option> 
+                <option value="93" >93 %</option> 
+                <option value="94" >94 %</option> 
+                <option value="95" >95 %</option> 
+                <option value="96" >96 %</option> 
+                <option value="97" >97 %</option> 
+                <option value="98" >98 %</option> 
+                <option value="99" >99 %</option> 
+                <option value="100" >100 %</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 mt-2">
+    <div class="form-group row">
+        <label for="sxl_min_mar" class="col-sm-3 col-form-label font-weight-600">S-XL</label>
+        <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+            <input type="number" class="form-control" placeholder="Min" name="sxl_min_mar" disabled="" id="sxl_min_mar">
+        </div>
+        <label for="max_profit_margin" class="col-md-3 col-form-label font-weight-600"></label>
+        <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+            <input type="number" class="form-control" placeholder="Max"  name="sxl_max_mar" disabled="" id="sxl_max_mar">
+
+        </div>
+    </div>
+</div> 
+<div class="col-md-12 mt-2">
+    <div class="form-group row">
+        <label for="xxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXL</label>
+        <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+            <input type="number" class="form-control" name="xxl_min_mar" placeholder="Min" disabled="" id="xxl_min_mar">
+        </div>
+        <label for="xxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
+        <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+            <input type="number" class="form-control" placeholder="Max"  name="xxl_max_mar" disabled="" id="xxl_max_mar">
+
+        </div>
+    </div>
+</div> 
+<div class="col-md-12 mt-2">
+    <div class="form-group row">
+        <label for="xxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXL</label>
+        <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+            <input type="number" class="form-control" name="xxxl_min_mar" placeholder="Min" disabled="" id="xxxl_min_mar">
+        </div>
+        <label for="xxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
+        <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+            <input type="number" class="form-control"  placeholder="Max" name="xxxl_max_mar" disabled="" id="xxxl_max_mar">
+
+        </div>
+    </div>
+</div> 
+<div class="col-md-12 mt-2">
+    <div class="form-group row">
+        <label for="xxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXXL</label>
+        <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+            <input type="number" class="form-control" name="xxxxl_min_mar" placeholder="Min" disabled="" id="xxxxl_min_mar">
+        </div>
+        <label for="xxxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
+        <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+            <input type="number" class="form-control" placeholder="Max" name="xxxxl_max_mar" disabled="" id="xxxxl_max_mar">
+
+        </div>
+    </div>
+</div>
+<div class="col-md-12 mt-2">
+    <div class="form-group row">
+        <label for="xxxxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXXXL</label>
+        <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+            <input type="number" class="form-control" name="xxxxxl_min_mar" placeholder="Min" disabled="" id="xxxxxl_min_mar">
+        </div>
+        <label for="xxxxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
+        <div class="col-md-3" style="max-width: 15.6%;padding: 0;"> 
+            <input type="number" class="form-control"  placeholder="Max" name="xxxxxl_max_mar" disabled="" id="xxxxxl_max_mar">
+
+        </div>
+    </div>
+</div>
+</form>
+</div>
+
+</div>
 </div>
 </div>
 </div>
@@ -873,67 +1238,67 @@ function getDecorationPrice(obj){
 
   }else{
     {
-            if (obj.name == "color_location1") {
+        if (obj.name == "color_location1") {
 
-                $("#location1_charge").val(null)
+            $("#location1_charge").val(null)
 
-            }
-            else if (obj.name == "color_location2") {
-
-                $("#location2_charge").val(null)
-
-            }else if (obj.name == "color_location3") {
-
-                $("#location3_charge").val(null)
-
-            }else if (obj.name == "color_location4") {
-
-                $("#location4_charge").val(null)
-
-            }else if (obj.name == "color_location5") {
-
-                $("#location5_charge").val(null)
-
-            }
-            setTimeout(function(){
-                var totalLocationCharges =  setLocationCharges();
-                
-                var pl_s_xl = $('#pl_s_xl').val();
-                var sp_s_xl = Number(pl_s_xl) + Number(totalLocationCharges);
-                sp_s_xl = (Math.round(sp_s_xl * 100) / 100).toFixed(2);
-                $("#sp_s_xl").val(sp_s_xl);
-
-
-                var pl_xxl = $('#pl_xxl').val();
-                var sp_xxl = Number(pl_xxl) + Number(totalLocationCharges);
-                sp_xxl = (Math.round(sp_xxl * 100) / 100).toFixed(2);
-                $("#sp_xxl").val(sp_xxl);
-
-                var pl_xxxl = $('#pl_xxxl').val();
-                var sp_xxxl = Number(pl_xxxl) + Number(totalLocationCharges);
-                sp_xxxl = (Math.round(sp_xxxl * 100) / 100).toFixed(2);
-                $("#sp_xxxl").val(sp_xxxl);
-
-                var pl_xxxxl = $('#pl_xxxxl').val();
-                var sp_xxxxl = Number(pl_xxxxl) + Number(totalLocationCharges);
-                sp_xxxxl = (Math.round(sp_xxxxl * 100) / 100).toFixed(2);
-                $("#sp_xxxxl").val(sp_xxxxl);
-
-                var pl_xxxxxl = $('#pl_xxxxxl').val();
-                var sp_xxxxxl = Number(pl_xxxxxl) + Number(totalLocationCharges);
-                sp_xxxxxl = (Math.round(sp_xxxxxl * 100) / 100).toFixed(2);
-                $("#sp_xxxxxl").val(sp_xxxxxl);
-
-            },300);
         }
+        else if (obj.name == "color_location2") {
 
-  }
+            $("#location2_charge").val(null)
+
+        }else if (obj.name == "color_location3") {
+
+            $("#location3_charge").val(null)
+
+        }else if (obj.name == "color_location4") {
+
+            $("#location4_charge").val(null)
+
+        }else if (obj.name == "color_location5") {
+
+            $("#location5_charge").val(null)
+
+        }
+        setTimeout(function(){
+            var totalLocationCharges =  setLocationCharges();
+
+            var pl_s_xl = $('#pl_s_xl').val();
+            var sp_s_xl = Number(pl_s_xl) + Number(totalLocationCharges);
+            sp_s_xl = (Math.round(sp_s_xl * 100) / 100).toFixed(2);
+            $("#sp_s_xl").val(sp_s_xl);
+
+
+            var pl_xxl = $('#pl_xxl').val();
+            var sp_xxl = Number(pl_xxl) + Number(totalLocationCharges);
+            sp_xxl = (Math.round(sp_xxl * 100) / 100).toFixed(2);
+            $("#sp_xxl").val(sp_xxl);
+
+            var pl_xxxl = $('#pl_xxxl').val();
+            var sp_xxxl = Number(pl_xxxl) + Number(totalLocationCharges);
+            sp_xxxl = (Math.round(sp_xxxl * 100) / 100).toFixed(2);
+            $("#sp_xxxl").val(sp_xxxl);
+
+            var pl_xxxxl = $('#pl_xxxxl').val();
+            var sp_xxxxl = Number(pl_xxxxl) + Number(totalLocationCharges);
+            sp_xxxxl = (Math.round(sp_xxxxl * 100) / 100).toFixed(2);
+            $("#sp_xxxxl").val(sp_xxxxl);
+
+            var pl_xxxxxl = $('#pl_xxxxxl').val();
+            var sp_xxxxxl = Number(pl_xxxxxl) + Number(totalLocationCharges);
+            sp_xxxxxl = (Math.round(sp_xxxxxl * 100) / 100).toFixed(2);
+            $("#sp_xxxxxl").val(sp_xxxxxl);
+
+        },300);
+    }
+
+}
 
 }
 function setDecorationPrice(obj){
 // return false;
-    var totalLocationCharges =  setLocationCharges();
-    if (totalLocationCharges > 0) {
+var totalLocationCharges =  setLocationCharges();
+if (totalLocationCharges > 0) {
 
     var price = $(obj).val();
     if (obj.name == "pl_s_xl"){
@@ -942,7 +1307,7 @@ function setDecorationPrice(obj){
 
         $("#sp_s_xl").val(sp_s_xl);
     }
-     if (obj.name == "pl_xxl"){
+    if (obj.name == "pl_xxl"){
         var sp_xxl = Number(price) + Number(totalLocationCharges);
         sp_xxl = (Math.round(sp_xxl * 100) / 100).toFixed(2);
 
@@ -956,7 +1321,7 @@ function setDecorationPrice(obj){
         $("#sp_xxxl").val(sp_xxxl);
     }
 
-      if (obj.name == "pl_xxxxl"){
+    if (obj.name == "pl_xxxxl"){
         var sp_xxxxl = Number(price) + Number(totalLocationCharges);
         sp_xxxxl = (Math.round(sp_xxxxl * 100) / 100).toFixed(2);
 
@@ -969,7 +1334,7 @@ function setDecorationPrice(obj){
         $("#sp_xxxxxl").val(sp_xxxxxl);
     }
 
-    }
+}
 }
 // location_charges
 function setLocationCharges(){
@@ -979,6 +1344,79 @@ function setLocationCharges(){
     totalLocationCharges = totalLocationCharges + + $(location_charges[i]).val()
 }
 return totalLocationCharges;
+}
+// var diff = 100 - selected precentage  
+//  var diff2= diff / 100 ;
+// var value =  sp_s_xl / diff2; 
+function setMinMargin(obj) {
+    var minMargin = $(obj).val();
+    var diff = (100 - Number(minMargin)); 
+    diff = (diff / 100);
+
+    $("#sxl_min_mar").val(0);
+    $("#xxl_min_mar").val(0);
+    $("#xxxl_min_mar").val(0);
+    $("#xxxxl_min_mar").val(0);
+    $("#xxxxxl_min_mar").val(0);
+
+    if ($("#pl_s_xl").val() > 0 ) {
+
+        var sxl_min_mar =  ($("#sp_s_xl").val() / diff);
+        $("#sxl_min_mar").val((Math.round(sxl_min_mar * 100) / 100).toFixed(2) );
+    }
+    if ($("#pl_xxl").val() > 0 ) {
+
+        var xxl_min_mar =  ($("#sp_xxl").val() / diff);
+        $("#xxl_min_mar").val((Math.round(xxl_min_mar * 100) / 100).toFixed(2) );
+    }
+    if ($("#pl_xxxl").val() > 0 ) {
+        var xxxl_min_mar =  ($("#sp_xxxl").val() / diff);
+        $("#xxxl_min_mar").val((Math.round(xxxl_min_mar * 100) / 100).toFixed(2) );
+    }
+    if ($("#pl_xxxxl").val() > 0 ) {
+        var xxxxl_min_mar =  ($("#sp_xxxxl").val() / diff);
+        $("#xxxxl_min_mar").val((Math.round(xxxxl_min_mar * 100) / 100).toFixed(2) );
+    }
+    if ($("#pl_xxxxxl").val() > 0 ) {
+        var xxxxxl_min_mar =  ($("#sp_xxxxxl").val() / diff);
+        $("#xxxxxl_min_mar").val((Math.round(xxxxxl_min_mar * 100) / 100).toFixed(2) );
+    }
+
+}
+function setMaxMargin(obj) {
+    var minMargin = $(obj).val();
+    var diff = (100 - Number(minMargin)); 
+    diff = (diff / 100);
+
+    $("#sxl_max_mar").val(0);
+    $("#xxl_max_mar").val(0);
+    $("#xxxl_max_mar").val(0);
+    $("#xxxxl_max_mar").val(0);
+    $("#xxxxxl_max_mar").val(0);
+
+    if ($("#pl_s_xl").val() > 0 ) {
+
+        var sxl_max_mar =  ($("#sp_s_xl").val() / diff);
+        $("#sxl_max_mar").val((Math.round(sxl_max_mar * 100) / 100).toFixed(2) );
+    }
+    if ($("#pl_xxl").val() > 0 ) {
+
+        var xxl_max_mar =  ($("#sp_xxl").val() / diff);
+        $("#xxl_max_mar").val((Math.round(xxl_max_mar * 100) / 100).toFixed(2) );
+    }
+    if ($("#pl_xxxl").val() > 0 ) {
+        var xxxl_max_mar =  ($("#sp_xxxl").val() / diff);
+        $("#xxxl_max_mar").val((Math.round(xxxl_max_mar * 100) / 100).toFixed(2) );
+    }
+    if ($("#pl_xxxxl").val() > 0 ) {
+        var xxxxl_max_mar =  ($("#sp_xxxxl").val() / diff);
+        $("#xxxxl_max_mar").val((Math.round(xxxxl_max_mar * 100) / 100).toFixed(2) );
+    }
+    if ($("#pl_xxxxxl").val() > 0 ) {
+        var xxxxxl_max_mar =  ($("#sp_xxxxxl").val() / diff);
+        $("#xxxxxl_max_mar").val((Math.round(xxxxxl_max_mar * 100) / 100).toFixed(2) );
+    }
+
 }
 </script>
 
