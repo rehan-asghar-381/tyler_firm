@@ -1,0 +1,167 @@
+/*==================================
+Theme Color All Codes Variable
+==================================*/
+
+:root {
+    --theme-general-color: #7b7c7e;
+    /* theme general color used*/
+}
+
+:root {
+    --theme-primary-color: #d6b07a;
+    /* theme primary color used*/
+}
+
+:root {
+    --theme-secondary-color: #353650;
+    /* theme secondary color used*/
+}
+
+:root {
+    --theme-white-color: #ffffff;
+    /* theme white font color used*/
+}
+
+:root {
+    --theme-light-color: #fcf9f8;
+    /* theme light gray color used*/
+}
+
+:root {
+    --text-light-color: #b2b4b7;
+    /* text light color used*/
+}
+
+:root {
+    --theme-text-gray: #d8d8d8;
+    /* theme text gray color used*/
+}
+
+:root {
+    --theme-dark-color: #1c1c21;
+    /* theme dark color ok uded*/
+}
+
+:root {
+    --theme-gray-color: #efefef;
+    /* theme gray color ok uded*/
+}
+
+:root {
+    --theme-footer-color: #232329;
+    /* theme dark color used*/
+}
+
+:root {
+	--theme-extra-color: #2e3042;
+	/* theme extra color used*/
+}
+
+:root {
+    --theme-primary-opacity-color: rgba(214, 176, 122, .5);
+    /* theme secondary opacity color used*/
+}
+
+:root {
+    --theme-secondary-opacity-color: rgba(53, 54, 80, .8);
+    /* theme secondary opacity color used*/
+}
+
+:root {
+    --theme-extra1-opacity-color: rgba(12, 18, 78, .5);
+    /* theme extra1 opacity color used*/
+}
+
+:root {
+    --theme-dark-opacity-color: rgba(25, 28, 28, 0.9);
+    /* theme dark opacity color used*/
+}
+
+:root {
+    --theme-white-opacity-color: rgba(255, 255, 255, 0.5);
+    /* theme white opacity color used*/
+}
+
+
+/*==================================
+Font Variable
+==================================*/
+
+:root {
+    --theme-general-font: 'Quicksand', sans-serif;
+    /* Font use for normal text and general text ok*/
+}
+
+:root {
+    --theme-hiperlink-font: 'Quicksand', sans-serif;
+    /* Font use for normal text and general text */
+}
+
+:root {
+    --theme-highlight-font: 'Advent Pro', sans-serif;
+    /* Font used in title or special area ok*/
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3,
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+    font-family: var(--theme-highlight-font);
+    color: var(--theme-secondary-color);
+    font-weight: 600;
+}
+
+h1,
+.h1 {
+    font-size: 48px;
+}
+
+h2,
+.h2 {
+    font-size: 40px;
+}
+
+h3,
+.h3 {
+    font-size: 36px;
+}
+
+h4,
+.h4 {
+    font-size: 30px;
+}
+
+h5,
+.h5 {
+    font-size: 24px;
+}
+
+h6,
+.h6 {
+    font-size: 21px;
+}
+.navbar-expand-lg .navbar-nav .nav-link {
+    font-weight: 500;
+	font-size: 15px
+}
+
+.font-mini {
+    font-size: 13px;
+}
+
+.wc-tabs li a {
+	color: var(--theme-secondary-color)
+}
+
+.widget_categories ul li, 
+.widget_categories ul li a {
+	color: var(--theme-secondary-color)
+}
