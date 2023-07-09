@@ -13,11 +13,11 @@ use App\Models\Client;
 use App\Models\OrderTill;
 use App\Models\SupplyInventoryItem;
 
-class Order extends Model
+class OrderProduct extends Model
 {
     use HasFactory;
 
-    protected $table            = 'orders';
+    protected $table            = 'order_products';
     protected $primary_key      = 'id';
     /**
      * The attributes that are mass assignable.
@@ -25,16 +25,12 @@ class Order extends Model
      * @var array
      */
     protected $fillable = [
-        'time_id',
-        'client_id',
-        'job_name',
-        'order_number',
-        'created_by_id',
-        'created_by_name',
-        'updated_by_id',
-        'updated_by_name',
-        'created_at',
-        'updated_id'
+        "order_id",
+        "product_id",
+        "product_name",
+        "created_at",
+        "updated_at",
+
 
     ];
 
@@ -48,17 +44,9 @@ class Order extends Model
         return $this->hasMany(OrderImgs::class, "order_id", "id");
     }
 
-    public function OrderProducts(){
+    public function AdditionalFields(){
         
-        return $this->hasMany(OrderProduct::class, "order_id", "id");
-    }
-     public function OrderProductVariant(){
-        
-        return $this->hasMany(OrderProductVariant::class, "order_id", "id");
-    }
-     public function OrderPrintLocationColor(){
-        
-        return $this->hasMany(OrderPrintLocationColor::class, "order_id", "id");
+        return $this->hasMany(OrderAdditional::class, "order_id", "id");
     }
 
     public function Orderstatus(){

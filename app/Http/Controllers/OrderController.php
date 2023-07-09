@@ -1,7 +1,7 @@
 <?php
-  
+
 namespace App\Http\Controllers;
-  
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,8 +19,14 @@ use App\Models\OrderTill;
 use App\Models\PaymentType;
 use App\Models\Product;
 use App\Models\Brand;
+use App\Models\OrderProductVariant;
 use App\Models\PriceRange;
+use App\Models\OrderContractPrintPrice;
+use App\Models\OrderProduct;
+use App\Models\ProductVariant;
+use App\Models\ProductVariantAttribute;
 use App\Models\DecorationPrice;
+use App\Models\OrderPrintLocationColor;
 use App\Models\SupplyInventoryItem;
 use App\Models\ClientMeasurement;
 use Yajra\DataTables\DataTables;
@@ -31,11 +37,11 @@ class OrderController extends Controller
     use NotificationTrait;
     function __construct()
     {
-         $this->middleware('permission:orders-list|orders-edit', ['only' => ['index']]);
-         $this->middleware('permission:orders-edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:orders-view', ['only' => ['show']]);
-         $this->middleware('permission:orders-change-status', ['only' => ['status_update']]);
-    }
+     $this->middleware('permission:orders-list|orders-edit', ['only' => ['index']]);
+     $this->middleware('permission:orders-edit', ['only' => ['edit','update']]);
+     $this->middleware('permission:orders-view', ['only' => ['show']]);
+     $this->middleware('permission:orders-change-status', ['only' => ['status_update']]);
+ }
 
     /**
      * Write code on Method
@@ -57,10 +63,10 @@ class OrderController extends Controller
     } 
 
     public function ajaxtData(Request $request){
-        
+
         $rData              = Order::where('id', '<>',0)->orderBy('collection_date_timestamp', 'desc');
         // if(!auth()->user()->hasRole('Super Admin') && !auth()->user()->hasRole('Admin')){
-            
+
         //     if(auth()->user()->hasRole('Tailor')){
 
         //         $rData                     =$rData->where('created_by_id', auth()->user()->id);
@@ -73,7 +79,7 @@ class OrderController extends Controller
         }
 
         if($request->date_from != ""){
-            
+
             $rData              = $rData->where('collection_date_timestamp', '>=', strtotime($request->date_from));
         }
 
@@ -88,108 +94,108 @@ class OrderController extends Controller
         }
         
         return DataTables::of($rData->get())
-            ->addIndexColumn()
-            ->editColumn('order_tag', function ($data) {
-                if (isset($data->order_tag) && $data->order_tag != "")
-                    return $data->order_tag;
-                else
-                    return '-';
-            })
-            ->editColumn('first_name', function ($data) {
-                if (isset($data->client->first_name) && $data->client->first_name != "")
-                    return $data->client->first_name;
-                else
-                    return '-';
-            })
-            ->editColumn('last_name', function ($data) {
-                if (isset($data->client->last_name) && $data->client->last_name != "")
-                    return $data->client->last_name;
-                else
-                    return '-';
-            })
-            ->editColumn('email', function ($data) {
-                if (isset($data->client->email) && $data->client->email != "")
-                    return $data->client->email;
-                else
-                    return '-';
-            })
-            ->editColumn('phone_number', function ($data) {
-                if (isset($data->client->phone_number) && $data->client->phone_number != "")
-                    return $data->client->phone_number;
-                else
-                    return '-';
-            })
-            ->editColumn('country', function ($data) {
-                if ($data->country != "")
-                    return $data->country;
-                else
-                    return '-';
-            })
-            ->editColumn('title', function ($data) {
-                if ($data->title != "")
-                    return $data->title;
-                else
-                    return '-';
-            })
-            ->editColumn('status', function ($data) {
-                
-                if (isset($data->Orderstatus->name) && $data->Orderstatus->name != "")
-                    return $data->Orderstatus->name;
-                else
-                    return '-';
-            })
-            ->editColumn('order_date', function ($data) {
-                if ($data->order_date != "")
-                    return $data->order_date;
-                else
-                    return '-';
-            })
-            ->editColumn('collection_date', function ($data) {
-                if ($data->collection_date != "")
-                    return $data->collection_date;
-                else
-                    return '-';
-            })
-            ->editColumn('description', function ($data) {
-                if ($data->description != "")
-                    return $data->description;
-                else
-                    return '-';
-            })
-            ->editColumn('tailor_comments', function ($data) {
-                if ($data->tailor_comments != "")
-                    return $data->tailor_comments;
-                else
-                    return '-';
-            })
-            ->addColumn('actions', function ($data){
+        ->addIndexColumn()
+        ->editColumn('order_tag', function ($data) {
+            if (isset($data->order_tag) && $data->order_tag != "")
+                return $data->order_tag;
+            else
+                return '-';
+        })
+        ->editColumn('first_name', function ($data) {
+            if (isset($data->client->first_name) && $data->client->first_name != "")
+                return $data->client->first_name;
+            else
+                return '-';
+        })
+        ->editColumn('last_name', function ($data) {
+            if (isset($data->client->last_name) && $data->client->last_name != "")
+                return $data->client->last_name;
+            else
+                return '-';
+        })
+        ->editColumn('email', function ($data) {
+            if (isset($data->client->email) && $data->client->email != "")
+                return $data->client->email;
+            else
+                return '-';
+        })
+        ->editColumn('phone_number', function ($data) {
+            if (isset($data->client->phone_number) && $data->client->phone_number != "")
+                return $data->client->phone_number;
+            else
+                return '-';
+        })
+        ->editColumn('country', function ($data) {
+            if ($data->country != "")
+                return $data->country;
+            else
+                return '-';
+        })
+        ->editColumn('title', function ($data) {
+            if ($data->title != "")
+                return $data->title;
+            else
+                return '-';
+        })
+        ->editColumn('status', function ($data) {
 
-                $action_list    = '<div class="dropdown">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="ti-more-alt"></i>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
-                if(auth()->user()->can('orders-view')){
-                    $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.detail', $data->id).'"><i class="far fa-eye"></i> View Details</a>';
-                }
-                if(auth()->user()->can('assign-jobs')){
-                    $action_list    .= '<a class="dropdown-item get-job-popup" href="#" data-order-id="'.$data->id.'"><i class="far fa-plus-square"></i> Assign Task</a>';
-                }
-                if(auth()->user()->can('orders-edit')){
-                    $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.edit', $data->id).'"><i class="far fa-edit"></i> Edit</a>';
-                }
-                if(auth()->user()->can('orders-change-status')){
-                    $action_list    .= '<a class="dropdown-item btn-change-status" href="#" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-life-ring"></i> Change Status</a>';
-                }
-                if(auth()->user()->can('orders-delete')){
-                    $action_list    .= '<a class="dropdown-item _deld" href="'.route('admin.order.delete', $data->id).'"><i class="far fa-trash-alt"></i> Delete</a>';
-                }
-                
-                $action_list        .= '</div></div>';
-                return  $action_list;
-            })
-            ->rawColumns(['actions'])
-            ->make(TRUE);
+            if (isset($data->Orderstatus->name) && $data->Orderstatus->name != "")
+                return $data->Orderstatus->name;
+            else
+                return '-';
+        })
+        ->editColumn('order_date', function ($data) {
+            if ($data->order_date != "")
+                return $data->order_date;
+            else
+                return '-';
+        })
+        ->editColumn('collection_date', function ($data) {
+            if ($data->collection_date != "")
+                return $data->collection_date;
+            else
+                return '-';
+        })
+        ->editColumn('description', function ($data) {
+            if ($data->description != "")
+                return $data->description;
+            else
+                return '-';
+        })
+        ->editColumn('tailor_comments', function ($data) {
+            if ($data->tailor_comments != "")
+                return $data->tailor_comments;
+            else
+                return '-';
+        })
+        ->addColumn('actions', function ($data){
+
+            $action_list    = '<div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="ti-more-alt"></i>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
+            if(auth()->user()->can('orders-view')){
+                $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.detail', $data->id).'"><i class="far fa-eye"></i> View Details</a>';
+            }
+            if(auth()->user()->can('assign-jobs')){
+                $action_list    .= '<a class="dropdown-item get-job-popup" href="#" data-order-id="'.$data->id.'"><i class="far fa-plus-square"></i> Assign Task</a>';
+            }
+            if(auth()->user()->can('orders-edit')){
+                $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.edit', $data->id).'"><i class="far fa-edit"></i> Edit</a>';
+            }
+            if(auth()->user()->can('orders-change-status')){
+                $action_list    .= '<a class="dropdown-item btn-change-status" href="#" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-life-ring"></i> Change Status</a>';
+            }
+            if(auth()->user()->can('orders-delete')){
+                $action_list    .= '<a class="dropdown-item _deld" href="'.route('admin.order.delete', $data->id).'"><i class="far fa-trash-alt"></i> Delete</a>';
+            }
+
+            $action_list        .= '</div></div>';
+            return  $action_list;
+        })
+        ->rawColumns(['actions'])
+        ->make(TRUE);
     }
 
     /**
@@ -210,127 +216,159 @@ class OrderController extends Controller
         
         // $inventory_items    = SupplyInventoryItem::get();
         $errors         = [];
- $pageTitle          = "Order";
-$payments_types     = [];
-$shop_sizes         = [];
-$order_types        = [];
-$order_type_id  = 1; 
+        $pageTitle          = "Order";
+        $payments_types     = [];
+        $shop_sizes         = [];
+        $order_types        = [];
+        $order_type_id  = 1; 
 // $clients            = [];
-$inventory_items    = [];
+        $inventory_items    = [];
         return view('admin.orders.create',compact('pageTitle', 'order_types', 'shop_sizes','products', 'clients', 'inventory_items', 'payments_types','order_type_id','brands'));
 
     } 
 
     public function store(Request $request)
     {  
+        // dump($request->attribute_id);
         // dd($request->all());
-        app('App\Http\Controllers\ClientController')->save_measurements($request, $request->client_id); 
+        // app('App\Http\Controllers\ClientController')->save_measurements($request, $request->client_id); 
         $user_id                        = Auth::user()->id;
         $user_name                      = Auth::user()->name;
-        $item_slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->get('item'))));        
+        // $item_slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->get('item'))));        
         $rData                          = $request->all();
-        $tags                           = $rData['order_tags'];
+        // $tags                           = $rData['order_tags'];
         $order_supplies_arr             = [];
         $order_images                   = [];
         $order_additional_fields_arr    = [];
         $orderids                       = [];
-        foreach($tags as $tag_key=>$tag){
 
-            $order                      = new Order();
+        $order                      = new Order();
 
-            $order->time_id             = date('U');
-            $order->order_tag           = $tag;
-            $order->client_id           = $rData['client_id'];
-            $order->title               = $rData['title'];
-            $order->order_type          = $rData['order_type'];
-            $order->measurement_type    = $rData['measurement_type'];
-            $order->field1_hb           = $rData['field1_hb'];
-            $order->field2_b            = $rData['field2_b'];
-            $order->field3_w            = $rData['field3_w'];
-            $order->field4_hh           = $rData['field4_hh'];
-            $order->field5_h            = $rData['field5_h'];
-            $order->field6_sh           = $rData['field6_sh'];
-            $order->field7_half_sh      = $rData['field7_half_sh'];
-            $order->field8_sh_w         = $rData['field8_sh_w'];
-            $order->field9_sh_kn        = $rData['field9_sh_kn'];
-            $order->field10_sh_g        = $rData['field10_sh_g'];
-            $order->field11_w_kn        = $rData['field11_w_kn'];
-            $order->field12_w_g         = $rData['field12_w_g'];
-            $order->field13_arm         = $rData['field13_arm'];
-            $order->field14_half_arm    = $rData['field14_half_arm'];
-            $order->field15_arm_depth   = $rData['field15_arm_depth'];
-            $order->field16_bicep       = $rData['field16_bicep'];
-            $order->field17_wrist       = $rData['field17_wrist'];
-            $order->field18_sh_w        = $rData['field18_sh_w'];
-            $order->field19_tw          = $rData['field19_tw'];
-            $order->field20_sh_hh       = $rData['field20_sh_hh'];
-            $order->description         = $rData['description'];
-            $order->order_date          = $rData['order_date'];
-            $order->order_date_timestamp            = strtotime($rData['order_date']);
-            $order->collection_date                 = $rData['collection_date'];
-            $order->collection_date_timestamp       = strtotime($rData['collection_date']);
-            $order->tailor_comments                 = $rData['tailor_comments'];
-            $order->status                          = 10;
-            $order->created_by_id                   = $user_id;
-            $order->created_by_name                 = $user_name;
-            $order->save();
-            $orderID                                = $order->id;
-            if(isset($request->file('filePhoto')[$tag_key]) && count($request->file('filePhoto')[$tag_key])){
-                
-                if(count($request->file('filePhoto')[$tag_key]) > 0 ){
+        $order->time_id             = date('U');
+        $order->client_id           = $rData['client_id'];
+        $order->job_name               = $rData['job_name'];
+        $order->order_number          = $rData['order_number'];
+        $order->created_by_id                   = $user_id;
+        $order->created_by_name                 = $user_name;
+        $order->save();
+        $orderID                                = $order->id;
 
-                    $this->save_order_imgs($request->file('filePhoto')[$tag_key], $orderID);
-                }
-            }
-            
-            $fields                                 = $rData['fields'][$tag_key];
-            $labels                                 = $rData['labels'][$tag_key];
-            if (count($fields) > 0) {
 
-                $this->save_additional_fields($fields, $labels, $orderID);
-            }
-           
-            $supplies                   = $rData['suply_info'][$tag_key];
-            $supply_quantities          = $rData['quantity'][$tag_key];
-        
-            if (count($supplies) > 0) {
+        $product_ids                                 = $rData['product_ids'];
+        $products_name                                 = $rData['products_name'];
+        if (count($product_ids) > 0) {
 
-                $this->save_order_supplies($supplies, $supply_quantities, $orderID);
-            }
-            $order_till                     = new OrderTill();
-            $order_till->order_id           = $orderID;
-            $order_till->client_id          = $order->client_id;
-            $order_till->selling_price      = $rData['selling_price'][$tag_key][0];
-            $order_till->deposit            = $rData['deposit'][$tag_key][0];
-            $order_till->balance            = $rData['balance'][$tag_key][0];
-            $order_till->payment_type       = $rData['payment_type'][$tag_key][0];
-            $order_till->created_by_id      = $user_id;
-            $order_till->created_by_name    = $user_name;
-            $order->OrderTill()->save($order_till);
-            
-            $body                           = $user_name." created a <strong>New Order</strong> ( <strong>#".$order->id."</strong> )";
-            $data['idFK']                   = $orderID;
-            $data['type']                   = 'orders';
-            $data['added_by_id']            = $user_id;
-            $data['added_by_name']          = $user_name;
-            $data['body']                   = $body;
-            $data['time_id']                = date('U');
-            $this->add_notification($data);
+            $this->save_order_products($product_ids,$products_name, $orderID);
         }
-        return redirect()->route("admin.order.create")->withSuccess('Order data has been saved successfully!');
-    } 
 
+        $attribute_id                                 = $rData['attribute_id'];
+        if (count($attribute_id) > 0) {
+
+            $this->save_product_attribute($attribute_id, $orderID);
+        }
+        $plsize                                     = $rData['plsize'];
+        if (count($plsize) > 0) {
+
+            $this->save_order_print_location_colors($rData, $orderID);
+        }
+        $location_charge                            = $rData['location_charge'];
+        if (count($location_charge) > 0) {
+
+            $this->save_order_contract_print_prices($rData, $orderID);
+        }
+
+            // $fields                                 = $rData['fields'][$tag_key];
+            // $labels                                 = $rData['labels'][$tag_key];
+            // if (count($fields) > 0) {
+
+            //     $this->save_additional_fields($fields, $labels, $orderID);
+            // }
+
+
+        
+        return redirect()->route("admin.order.create")->withSuccess('Order data has been saved successfully!');
+    }
+    public function save_order_contract_print_prices($rData, $order_id){
+        $order                  = Order::find($order_id);
+        $order_contract_print_price_arr = [];
+        foreach ($rData['location_charge'] as $key => $label) {
+
+            $order_contract_print_price               = new OrderContractPrintPrice();
+
+            $order_contract_print_price->order_id               = $order_id;
+            $order_contract_print_price->location_charge        = $label;
+            $order_contract_print_price->location_charge_price  = $rData['location_charge_price'][$key];
+            $order_contract_print_price->size                   = $rData['location'][$key];
+            $order_contract_print_price->size_total_price       = $rData['location_color'][$key];
+            $order_contract_print_price_arr[]                   = $order_contract_print_price;
+            $order->OrderProducts()->saveMany($order_contract_print_price_arr);
+        }
+    } 
+    public function save_order_print_location_colors($rData, $order_id){
+        $order                  = Order::find($order_id);
+        $order_print_price_location_arr = [];
+        foreach ($rData['plsize'] as $key => $label) {
+
+            $order_print_price_location               = new OrderPrintLocationColor();
+
+            $order_print_price_location->order_id     = $order_id;
+            $order_print_price_location->projected_units        = $rData['projected_units'];
+            $order_print_price_location->quantity_break        = $rData['quantity_break'];
+            $order_print_price_location->size        = $label;
+            $order_print_price_location->size_price        = $rData['size_price'][$key];
+            $order_print_price_location->location        = $rData['location'][$key];
+            $order_print_price_location->location_color        = $rData['location_color'][$key];
+            $order_print_price_location_arr[]  = $order_print_price_location;
+            $order->OrderProducts()->saveMany($order_print_price_location_arr);
+
+        }
+
+    }
+    public function save_product_attribute($attribute_id, $order_id){
+        $order                  = Order::find($order_id);
+        $order_product_variant_arr = [];
+        foreach ($attribute_id as $product_id => $attr_ids) {
+            foreach ($attr_ids as $at_id => $ids) {
+                $order_product_var               = new OrderProductVariant();
+                $order_product_var->order_id     = $order_id;
+                $order_product_var->product_id        = $product_id;
+                $product_variant = ProductVariant::find($at_id);
+                $order_product_var->variant_id = $at_id;
+                $order_product_var->variant_name = $product_variant->name;
+                $product_variant_attribute = ProductVariantAttribute::find($ids[0]);
+                $order_product_var->attribute_id = $ids[0];
+                $order_product_var->attribute_name = $product_variant_attribute->name;
+                $order_product_variant_arr[]  = $order_product_var;
+                $order->OrderProductVariant()->saveMany($order_product_variant_arr);
+            }
+        }
+    }
+
+    public function save_order_products($product_ids,$products_name, $order_id){
+
+        $order                  = Order::find($order_id);
+        $order_products_arr = [];
+        foreach ($product_ids as $key=>$product) {
+            $order_products               = new OrderProduct();
+            $order_products->order_id     = $order_id;
+            $order_products->product_id        = $product;
+            $order_products->product_name        = $products_name[$product];
+            $order_products_arr[]  = $order_products;
+        }
+
+        $order->OrderProducts()->saveMany($order_products_arr);
+    }
     public function edit($id)
     {
         $pageTitle                  = "Orders";
         $errors                     = [];
         $order                      = Order::with([
-                                        'OrderSupply', 
-                                        'OrderImgs', 
-                                        'AdditionalFields', 
-                                        'Orderstatus',
-                                        'OrderTill'
-                                    ])->find($id);
+            'OrderSupply', 
+            'OrderImgs', 
+            'AdditionalFields', 
+            'Orderstatus',
+            'OrderTill'
+        ])->find($id);
         $order_types                = OrderType::where('is_active', 'Y')->get();
         $shop_sizes                 = ShopSize::where('is_active', 'Y')->get();
         $clients                    = Client::get();
@@ -387,24 +425,24 @@ $inventory_items    = [];
 
             if(count($request->file('filePhoto')) > 0 ){
                 foreach($request->file('filePhoto') as $file){
-                
+
                     $original_name = $file->getClientOriginalName();
                     $file_name = time().rand(100,999).$original_name;
                     $destinationPath = public_path('/uploads/order/');
                     $file->move($destinationPath, $file_name);
                     $file_slug  = "/uploads/order/".$file_name;
-    
+
                     $order_id                       = $order->id;
                     $order_img                      = new OrderImgs();
-    
+
                     $order_img->order_id            = $order_id;
                     $order_img->image               = $file_slug;
-    
+
                     $order_images[]                 = $order_img;
                 }
-    
+
                 $order->OrderImgs()->saveMany($order_images);
-    
+
             }
         }
         
@@ -413,7 +451,7 @@ $inventory_items    = [];
         if (count($fields) > 0) {
 
             foreach ($fields as $key=>$field_value) {
-                
+
                 $order_id                       = $order->id;
                 $additional_field               = new OrderAdditional();
 
@@ -439,8 +477,8 @@ $inventory_items    = [];
                 $supply_iventorty_item                      = SupplyInventoryItem::firstOrNew(["item_slug"=>$item_slug]);
 
                 $supply_iventorty_item->item                = ($supply_iventorty_item->item != "") 
-                                                            ? $supply_iventorty_item->item
-                                                            : $supply;
+                ? $supply_iventorty_item->item
+                : $supply;
                 $supply_iventorty_item->item_slug           = $item_slug;
                 $supply_iventorty_item->created_by_id       = $user_id;
                 $supply_iventorty_item->created_by_name     = $user_name;
@@ -487,7 +525,7 @@ $inventory_items    = [];
 
     public function orderDetail(Request $request, $id)
     {
-        
+
         $order_detail               = Order::with([
             'OrderSupply', 
             'OrderImgs', 
@@ -508,7 +546,7 @@ $inventory_items    = [];
 
     public function status_update(Request $request)
     {
-        
+
         $user_id                = Auth::user()->id;
         $user_name              = Auth::user()->name;
 
@@ -568,7 +606,7 @@ $inventory_items    = [];
             $jobs_arr[$job_status_id]['start_date_time']            = $job->start_date_time;
             $jobs_arr[$job_status_id]['completion_date_time']       = $job->completion_date_time;
             $jobs_arr[$job_status_id]['notes']                      = $job->notes;
-                
+
 
         }
         
@@ -673,8 +711,8 @@ $inventory_items    = [];
             $supply_iventorty_item                      = SupplyInventoryItem::firstOrNew(["item_slug"=>$item_slug]);
 
             $supply_iventorty_item->item                = ($supply_iventorty_item->item != "") 
-                                                        ? $supply_iventorty_item->item
-                                                        : $supply;
+            ? $supply_iventorty_item->item
+            : $supply;
             $supply_iventorty_item->item_slug           = $item_slug;
             $supply_iventorty_item->created_by_id       = $user_id;
             $supply_iventorty_item->created_by_name     = $user_name;
@@ -696,8 +734,16 @@ $inventory_items    = [];
         $product_id         = $request->product_id;
         // $payments_types     = PaymentType::where('is_active', 'Y')->get();
         $payments_types     = [];
-        $product_detail     = Product::with('ProductImg', 'ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
+        $product_detail     = Product::with( 'ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
         return view('admin.orders.product', compact('product_detail', 'payments_types'));
+        
+    }
+    public function product_final_price_form(Request $request){
+
+        $product_id         = $request->product_id;
+        $payments_types     = [];
+        $product_detail     = Product::with( 'ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
+        return view('admin.orders.product-final-price', compact('product_detail', 'payments_types'));
         
     }
 
