@@ -875,59 +875,59 @@ hr{
                 });
             } 
         });
-        function required(seletor=""){
+        // function required(seletor=""){
 
-            let validated           = true;
+        //     let validated           = true;
 
-            var order_type          = $('#order_type').val();
-            if(order_type == ""){
+        //     var order_type          = $('#order_type').val();
+        //     if(order_type == ""){
 
-                alert('Please select Order Type fisrt.');
-                $('#order_type').addClass('has-error');
-                validated   = false;
+        //         alert('Please select Order Type fisrt.');
+        //         $('#order_type').addClass('has-error');
+        //         validated   = false;
 
-            }else{
-                $('#order_type').removeClass('has-error');
-                if(order_type == 2){
+        //     }else{
+        //         $('#order_type').removeClass('has-error');
+        //         if(order_type == 2){
 
-                    $(".require").each(function(key, value){
-                        $(this).removeClass('has-error');
-                    });
+        //             $(".require").each(function(key, value){
+        //                 $(this).removeClass('has-error');
+        //             });
 
-                    $(".required-online").each(function(key, value){
+        //             $(".required-online").each(function(key, value){
 
-                        var value       = $(this).val();
-                        if(value == "" || value == null){
+        //                 var value       = $(this).val();
+        //                 if(value == "" || value == null){
 
-                            $(this).addClass('has-error');
-                            validated   = false;
+        //                     $(this).addClass('has-error');
+        //                     validated   = false;
 
-                        }else{
+        //                 }else{
 
-                            $(this).removeClass('has-error');
+        //                     $(this).removeClass('has-error');
 
-                        }
-                    });
+        //                 }
+        //             });
 
-                }else{
-                    $(".require").each(function(key, value){
+        //         }else{
+        //             $(".require").each(function(key, value){
 
-                        var value       = $(this).val();
-                        if(value == "" || value == null){
+        //                 var value       = $(this).val();
+        //                 if(value == "" || value == null){
 
-                            $(this).addClass('has-error');
-                            validated   = false;
+        //                     $(this).addClass('has-error');
+        //                     validated   = false;
 
-                        }else{
+        //                 }else{
 
-                            $(this).removeClass('has-error');
+        //                     $(this).removeClass('has-error');
 
-                        }
-                    });
-                }
-            }
-            return validated;
-        }
+        //                 }
+        //             });
+        //         }
+        //     }
+        //     return validated;
+        // }
 
         // $('#submit-form').click(function(event) {
 

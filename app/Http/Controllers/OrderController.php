@@ -19,6 +19,7 @@ use App\Models\OrderTill;
 use App\Models\PaymentType;
 use App\Models\Product;
 use App\Models\Brand;
+use App\Models\OrderOtherCharges;
 use App\Models\OrderProductVariant;
 use App\Models\PriceRange;
 use App\Models\OrderContractPrintPrice;
@@ -262,9 +263,13 @@ class OrderController extends Controller
         }
 
         $attribute_id                                 = $rData['attribute_id'];
+        $pieces                                 = $rData['pieces'];
+        $prices                                 = $rData['price'];
+        $total                                 = $rData['total'];
+
         if (count($attribute_id) > 0) {
 
-            $this->save_product_attribute($attribute_id, $orderID);
+            $this->save_product_attribute($attribute_id,$pieces,$prices,$total, $orderID);
         }
         $plsize                                     = $rData['plsize'];
         if (count($plsize) > 0) {
@@ -276,7 +281,13 @@ class OrderController extends Controller
 
             $this->save_order_contract_print_prices($rData, $orderID);
         }
+        $fold_bag_tag_pieces                            = $rData['fold_bag_tag_pieces'];
+        if (isset($location_charge)) {
 
+            $this->save_order_other_charges($rData, $orderID);
+        }
+
+// order_other_charges
             // $fields                                 = $rData['fields'][$tag_key];
             // $labels                                 = $rData['labels'][$tag_key];
             // if (count($fields) > 0) {
@@ -288,6 +299,25 @@ class OrderController extends Controller
         
         return redirect()->route("admin.order.create")->withSuccess('Order data has been saved successfully!');
     }
+        public function save_order_other_charges($rData, $order_id){
+         
+
+            $order_other_charges                        = new OrderOtherCharges();
+            $order_other_charges->order_id              = $order_id;
+            $order_other_charges->fold_bag_tag_pieces   = $rData['fold_bag_tag_pieces'];
+            $order_other_charges->fold_bag_tag_prices   = $rData['fold_bag_tag_prices'];;
+            $order_other_charges->hang_tag_pieces       = $rData['hang_tag_pieces'];
+            $order_other_charges->hang_tag_prices       = $rData['hang_tag_prices'];
+            $order_other_charges->art_fee               = $rData['art_fee'];
+            $order_other_charges->art_discount          = $rData['art_discount'];
+            $order_other_charges->art_time              = $rData['art_time'];
+            $order_other_charges->tax                   = $rData['tax'];
+            $order_other_charges->save();
+
+
+           
+        
+    } 
     public function save_order_contract_print_prices($rData, $order_id){
         $order                  = Order::find($order_id);
         $order_contract_print_price_arr = [];
@@ -324,11 +354,20 @@ class OrderController extends Controller
         }
 
     }
-    public function save_product_attribute($attribute_id, $order_id){
+            // $this->save_product_attribute($attribute_id,$pieces,$prices,$total, $order_id);
+
+    public function save_product_attribute($attribute_id,$pieces,$prices,$total, $order_id){
         $order                  = Order::find($order_id);
+        // dump($attribute_id);
+        // dump($pieces);
+        // dump($prices);
+        // dump($total);
         $order_product_variant_arr = [];
         foreach ($attribute_id as $product_id => $attr_ids) {
             foreach ($attr_ids as $at_id => $ids) {
+                // dump($ids[0]);
+
+                // dd($pieces[$product_id][0]);
                 $order_product_var               = new OrderProductVariant();
                 $order_product_var->order_id     = $order_id;
                 $order_product_var->product_id        = $product_id;
@@ -338,6 +377,9 @@ class OrderController extends Controller
                 $product_variant_attribute = ProductVariantAttribute::find($ids[0]);
                 $order_product_var->attribute_id = $ids[0];
                 $order_product_var->attribute_name = $product_variant_attribute->name;
+                $order_product_var->pieces = $pieces[$product_id][0];
+                $order_product_var->price = $prices[$product_id][0];
+                $order_product_var->total = $total[$product_id][0];
                 $order_product_variant_arr[]  = $order_product_var;
                 $order->OrderProductVariant()->saveMany($order_product_variant_arr);
             }
@@ -345,9 +387,10 @@ class OrderController extends Controller
     }
 
     public function save_order_products($product_ids,$products_name, $order_id){
-
+// dump($products_name);
         $order                  = Order::find($order_id);
         $order_products_arr = [];
+        // dd($product_ids);
         foreach ($product_ids as $key=>$product) {
             $order_products               = new OrderProduct();
             $order_products->order_id     = $order_id;
