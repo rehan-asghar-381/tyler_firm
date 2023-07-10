@@ -195,9 +195,9 @@ hr{
                     </ul>
 
                     <div class="tab-content" id="pills-tabContent">
-                                     <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                       <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 
-                                <div class="row mb-3">
+                        <div class="row mb-3">
                                     {{--  
                                     <div class="col-md-6">
                                         <label>Brands</label>
@@ -245,15 +245,19 @@ hr{
                                     </div>
                                 </div>
                                 --}}
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="art_fee" class="col-sm-3 col-form-label font-weight-600">Projected Units</label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
                                             <input type="text" value="" readonly="" style="background-color: #ced4da" class="my-form-control" 
                                             name="projected_units" id="ProjectedUnits" placeholder="">
                                         </div>
-                                        <label for="quantity_break" class="col-md-3 col-form-label font-weight-600">Quantity Breaks</label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;">
+                                    </div>
+                                </div>
+                                <div class="col-md-7 mt-2">
+                                    <div class="form-group row">
+                                          <label for="quantity_break" class="col-md-3 col-form-label font-weight-600">Quantity Breaks</label>
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
                                             <select name="quantity_break" id="quantity_break" class="form-control">
                                                 <option value="">Select</option>
                                                 <option value="3-47" >3-47</option>
@@ -270,18 +274,24 @@ hr{
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <div class="form-group ">
+
+                           
+                                <div class="col-md-7 mt-2">
+                                    <div class="form-group row">
                                         <label for="pl_s_xl" class="col-sm-3 col-form-label font-weight-600">S-XL</label>
                                         <input type="hidden" name="plsize[]" value="S-XL" >
                                         <input type="number" value="" name="size_price[]" onchange="setDecorationPrice(this);"
                                         onkeyup="setDecorationPrice(this);"   class="my-form-control" id="pl_s_xl" placeholder="">
                                         <label for="color_location1"  class="col-sm-3 col-form-label font-weight-600"># of Colors Location 1</label>
                                         <input type="hidden" name="location[]" value="# of Colors Location 1" >
-                                        <input type="number" value="" onchange="getDecorationPrice(this);"
-                                        onkeyup="getDecorationPrice(this);" name="location_color[]" max="8" min="1" class="my-form-control" id="color_location1" placeholder="">
+                                        <input type="number" value="" onchange="getDecorationPrice(this);" onkeyup="getDecorationPrice(this);" name="location_color[]" max="8" min="1" class="my-form-control" id="color_location1" placeholder="">
+
+
                                     </div>
-                                    <div class="form-group ">
+                                </div>
+                                <div class="col-md-7 mt-2">
+
+                                    <div class="form-group row">
                                         <label for="pl_xxl" class="col-sm-3 col-form-label font-weight-600">XXL</label>
                                         <input type="hidden" name="plsize[]" value="XXL" >
                                         <input type="number" value="" name="size_price[]" class="my-form-control" id="pl_xxl" onchange="setDecorationPrice(this);"
@@ -291,7 +301,10 @@ hr{
                                         <input type="number" value="" onchange="getDecorationPrice(this);"
                                         onkeyup="getDecorationPrice(this);"  name="location_color[]" max="8" min="1" class="my-form-control" id="color_location2" placeholder="">
                                     </div>
-                                    <div class="form-group ">
+                                </div>
+                                <div class="col-md-7 mt-2">
+
+                                    <div class="form-group row">
                                         <label for="pl_xxxl" class="col-sm-3 col-form-label font-weight-600">XXXL</label>
                                         <input type="hidden" name="plsize[]" value="XXXL" >
                                         <input type="number" value="" 
@@ -303,7 +316,10 @@ hr{
                                         onkeyup="getDecorationPrice(this);" 
                                         name="location_color[]" max="8" min="1" class="my-form-control" id="color_location3" placeholder="">
                                     </div>
-                                    <div class="form-group ">
+                                </div>
+                                <div class="col-md-7 mt-2">
+
+                                    <div class="form-group row">
                                         <label for="pl_xxxxl" class="col-sm-3 col-form-label font-weight-600">XXXXL</label>
                                         <input type="hidden" name="plsize[]" value="XXXXL" >
                                         <input type="number" value="" 
@@ -315,7 +331,10 @@ hr{
                                         name="location_color[]" max="8" min="1" class="my-form-control" onchange="getDecorationPrice(this);"
                                         onkeyup="getDecorationPrice(this);" id="color_location4" placeholder="">
                                     </div>
-                                    <div class="form-group ">
+                                </div>
+                                <div class="col-md-7 mt-2">
+
+                                    <div class="form-group row">
                                         <label for="pl_xxxxxl" class="col-sm-3 col-form-label font-weight-600">XXXXXL</label>
                                         <input type="hidden" name="plsize[]" value="XXXXXL" >
                                         <input type="number" value="" 
@@ -332,7 +351,7 @@ hr{
                         </div>
                         <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
                             {{-- <form class="form-inline offset-md-2"> --}}
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="location1_charge" class="col-sm-3 col-form-label font-weight-600">Location 1 Charge</label>
                                         <input type="hidden" name="location_charge[]" value="Location 1 Charge">
@@ -342,7 +361,7 @@ hr{
                                         <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_s_xl" placeholder="">
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="location2_charge" class="col-sm-3 col-form-label font-weight-600">Location 2 Charge</label>
                                         <input type="hidden" name="location_charge[]" value="Location 2 Charge">
@@ -352,7 +371,7 @@ hr{
                                         <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxl" placeholder="">
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="location3_charge" class="col-sm-3 col-form-label font-weight-600">Location 3 Charge</label>
                                         <input type="hidden" name="location_charge[]" value="Location 3 Charge">
@@ -362,7 +381,7 @@ hr{
                                         <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxl" placeholder="">
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="location4_charge" class="col-sm-3 col-form-label font-weight-600">Location 4 Charge</label>
                                         <input type="hidden" name="location_charge[]" value="Location 4 Charge">
@@ -372,7 +391,7 @@ hr{
                                         <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxxl" placeholder="">
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="location5_charge" class="col-sm-3 col-form-label font-weight-600">Location 5 Charge</label>
                                         <input type="hidden" name="location_charge[]" value="Location 5 Charge">
@@ -386,7 +405,7 @@ hr{
                         </div>
                         <div class="tab-pane fade" id="OTHERCHARGES" role="tabpanel" aria-labelledby="OTHERCHARGES-tab">
                             {{-- <form class="form-inline "> --}}
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="fold_bag_tag_pieces" class="col-sm-3 col-form-label font-weight-600">FOLD/BAG/TAG</label>
                                         <input type="number" min="0" name="fold_bag_tag_pieces" value="" class="my-form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
@@ -394,7 +413,7 @@ hr{
                                         <input type="number" min="0" name="fold_bag_tag_prices" value="" class="my-form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="hang_tag_pieces" class="col-sm-3 col-form-label font-weight-600">Hang Tag</label>
                                         <input type="number" min="0" name="hang_tag_pieces" value="" class="my-form-control " id="hang_tag_pieces" placeholder="Pieces">
@@ -402,10 +421,10 @@ hr{
                                         <input type="number" min="0" name="hang_tag_prices" value="" class="my-form-control mr-2" id="hang_tag_prices" placeholder="Prices">
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="art_fee" class="col-sm-3 col-form-label font-weight-600">Art Fee</label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;">
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
                                             <select name="art_fee" id="art_fee" class="my-form-control">
                                                 <option value="">Select</option>
                                                 <option value="0">$0.00</option>
@@ -420,7 +439,7 @@ hr{
                                             </select>
                                         </div>
                                         <label for="art_discount" class="col-md-3 col-form-label font-weight-600">Art Discount</label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;">
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
                                             <select name="art_discount" id="art_discount" class="my-form-control">
                                                 <option value="">Select</option>
                                                 <option value="0" >$0.00</option>
@@ -435,10 +454,10 @@ hr{
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="art_time" class="col-sm-3 col-form-label font-weight-600">Art Time</label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;">
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
                                             <select name="art_time" id="art_time" class="my-form-control">
                                                 <option value="">Select</option>
                                                 <option value="1">1 Hour</option>
@@ -448,7 +467,7 @@ hr{
                                             </select>
                                         </div>
                                         <label for="tax" class="col-md-3 col-form-label font-weight-600">Tax</label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;">
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
                                             <select name="tax" id="tax" class="my-form-control">
                                                 <option value="">Select</option>
                                                 <option value="0" >0</option>
@@ -461,7 +480,7 @@ hr{
                         </div>
                         <div class="tab-pane fade" id="MARGINS" role="tabpanel" aria-labelledby="MARGINS-tab">
                             {{-- <form class="form-inline "> --}}
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="transfers_pieces" class="col-sm-3 col-form-label font-weight-600">Transfers</label>
                                         <input type="number" min="0" name="transfers_pieces" value="" class="my-form-control " id="transfers_pieces" placeholder="Pieces">
@@ -469,7 +488,7 @@ hr{
                                         <input type="number" min="0" name="transfers_prices" value="" class="my-form-control mr-2" id="transfers_prices" placeholder="Prices">
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="ink_color_change_pieces" class="col-sm-3 col-form-label font-weight-600">Ink Color Change</label>
                                         <input type="number" min="0" name="ink_color_change_pieces" value="" class="my-form-control " id="ink_color_change_pieces" placeholder="Pieces">
@@ -477,10 +496,10 @@ hr{
                                         <input type="number" min="0" name="art_discount_prices" value="" class="my-form-control mr-2" id="art_discount_prices" placeholder="Prices">
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="hang_tag1" class="col-sm-3 col-form-label font-weight-600">Shipping</label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;">
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
                                             <select name="art_fee" id="art_fee" class="my-form-control">
                                                 <option value="">Select</option>
                                                 <option value="20">$20.00</option>
@@ -497,10 +516,10 @@ hr{
                                         <b>Margin</b>
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="min_profit_margin" class="col-sm-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;">
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
                                             <select onchange="setMinMargin(this);" name="min_profit_margin" id="min_profit_margin" class="my-form-control">
                                                 <option value="">Select Min Margin</option>
                                                 <option value="1" >1 %</option>
@@ -606,7 +625,7 @@ hr{
                                             </select>
                                         </div>
                                         <label for="max_profit_margin" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;">
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
                                             <select name="max_profit_margin" onchange="setMaxMargin(this);" id="max_profit_margin" class="my-form-control">
                                                 <option value="">Select Max Margin</option>
                                                 <option value="1" >1 %</option>
@@ -713,68 +732,68 @@ hr{
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="sxl_min_mar" class="col-sm-3 col-form-label font-weight-600">S-XL</label>
                                         <input type="hidden" name="margin_size[]" value="S-XL">
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
                                             <input type="number" class="my-form-control" placeholder="Min" name="min_margin[]" readonly="" id="sxl_min_mar">
                                         </div>
                                         <label for="max_profit_margin" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
                                             <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="sxl_max_mar">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="xxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXL</label>
                                         <input type="hidden" name="margin_size[]" value="XXL">
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
                                             <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxl_min_mar">
                                         </div>
                                         <label for="xxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
                                             <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="xxl_max_mar">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="xxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXL</label>
                                         <input type="hidden" name="margin_size[]" value="XXXL">
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
                                             <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxl_min_mar">
                                         </div>
                                         <label for="xxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
                                             <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxl_max_mar">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="xxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXXL</label>
                                         <input type="hidden" name="margin_size[]" value="XXXXL">
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
                                             <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxl_min_mar">
                                         </div>
                                         <label for="xxxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
                                             <input type="number" class="my-form-control" placeholder="Max" name="max_margin[]" readonly="" id="xxxxl_max_mar">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-2">
+                                <div class="col-md-7 mt-2">
                                     <div class="form-group row">
                                         <label for="xxxxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXXXL</label>
                                         <input type="hidden" name="margin_size[]" value="XXXXXL">
 
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
                                             <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxxl_min_mar">
                                         </div>
                                         <label for="xxxxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
+                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
                                             <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxxxl_max_mar">
                                         </div>
                                     </div>
@@ -784,25 +803,25 @@ hr{
 {{-- 
                     </div>
                     <div class="row" style="margin-top: 20px;">
- --}}
-                    {{-- </div> --}}
-                    <div class="tab-pane fade" id="FinalPrice" role="tabpanel" aria-labelledby="FinalPrice-tab">
-                        <div>
-                            <div class="row Order-form btn-d-none">
-                                <div id="accordion2" class="accordion2" style="min-height: 200px;">
-                                </div>
+                       --}}
+                   {{-- </div> --}}
+                   <div class="tab-pane fade" id="FinalPrice" role="tabpanel" aria-labelledby="FinalPrice-tab">
+                    <div>
+                        <div class="row Order-form btn-d-none">
+                            <div id="accordion2" class="accordion2" style="min-height: 200px;">
                             </div>
                         </div>
-                        <div class="col-md-12 form-check mt-5">
-                            <button type="submit" class="btn btn-primary mb-3" id="submit-form">Save Order</button>
-                        </div>
                     </div>
+                    <div class="col-md-12 form-check mt-5">
+                        <button type="submit" class="btn btn-primary mb-3" id="submit-form">Save Order</button>
+                    </div>
+                </div>
 
-                    </div>
-                </form>
             </div>
-        </div>
+        </form>
     </div>
+</div>
+</div>
 </div>
 @endsection
 @section('footer-script')
