@@ -716,60 +716,66 @@ hr{
                                 <div class="col-md-12 mt-2">
                                     <div class="form-group row">
                                         <label for="sxl_min_mar" class="col-sm-3 col-form-label font-weight-600">S-XL</label>
+                                        <input type="hidden" name="margin_size[]" value="S-XL">
                                         <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" placeholder="Min" name="sxl_min_mar" readonly="" id="sxl_min_mar">
+                                            <input type="number" class="my-form-control" placeholder="Min" name="min_margin[]" readonly="" id="sxl_min_mar">
                                         </div>
                                         <label for="max_profit_margin" class="col-md-3 col-form-label font-weight-600"></label>
                                         <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" placeholder="Max"  name="sxl_max_mar" readonly="" id="sxl_max_mar">
+                                            <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="sxl_max_mar">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 mt-2">
                                     <div class="form-group row">
                                         <label for="xxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXL</label>
+                                        <input type="hidden" name="margin_size[]" value="XXL">
                                         <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" name="xxl_min_mar" placeholder="Min" readonly="" id="xxl_min_mar">
+                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxl_min_mar">
                                         </div>
                                         <label for="xxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
                                         <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" placeholder="Max"  name="xxl_max_mar" readonly="" id="xxl_max_mar">
+                                            <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="xxl_max_mar">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 mt-2">
                                     <div class="form-group row">
                                         <label for="xxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXL</label>
+                                        <input type="hidden" name="margin_size[]" value="XXXL">
                                         <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" name="xxxl_min_mar" placeholder="Min" readonly="" id="xxxl_min_mar">
+                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxl_min_mar">
                                         </div>
                                         <label for="xxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
                                         <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control"  placeholder="Max" name="xxxl_max_mar" readonly="" id="xxxl_max_mar">
+                                            <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxl_max_mar">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 mt-2">
                                     <div class="form-group row">
                                         <label for="xxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXXL</label>
+                                        <input type="hidden" name="margin_size[]" value="XXXXL">
                                         <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" name="xxxxl_min_mar" placeholder="Min" readonly="" id="xxxxl_min_mar">
+                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxl_min_mar">
                                         </div>
                                         <label for="xxxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
                                         <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" placeholder="Max" name="xxxxl_max_mar" readonly="" id="xxxxl_max_mar">
+                                            <input type="number" class="my-form-control" placeholder="Max" name="max_margin[]" readonly="" id="xxxxl_max_mar">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 mt-2">
                                     <div class="form-group row">
                                         <label for="xxxxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXXXL</label>
+                                        <input type="hidden" name="margin_size[]" value="XXXXXL">
+
                                         <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" name="xxxxxl_min_mar" placeholder="Min" readonly="" id="xxxxxl_min_mar">
+                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxxl_min_mar">
                                         </div>
                                         <label for="xxxxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
                                         <div class="col-md-3" style="max-width: 18.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control"  placeholder="Max" name="xxxxxl_max_mar" readonly="" id="xxxxxl_max_mar">
+                                            <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxxxl_max_mar">
                                         </div>
                                     </div>
                                 </div>
@@ -946,7 +952,7 @@ hr{
             // product_add
             // console.log($(this).data('add_product'));
             var  product_id = $(this).data('add_product');
-            var final_price_clone = $(".clone-product-"+product_id).clone();
+            var final_price_clone = $(".clone-product-"+product_id).clone().find("input").val("").end();
 
             // $(final_price_clone).attr("clone-product-"+product_id+'.'+init);
             var ttt = $(final_price_clone).removeClass("clone-product-"+product_id);
@@ -956,7 +962,8 @@ hr{
 
             var product_add             = $(this).parent().parent().clone();
             var append_parent           = $(this).parent().parent().parent().last();
-            var new_product_add         = product_add.clone();
+            console.log(append_parent);
+            var new_product_add         = product_add.clone().find("input").val("").end();
             var ttt = $(new_product_add).children().eq(1).children().eq(0).attr('data-add_product',product_id+'-'+init);
             var ttt = $(new_product_add).children().eq(1).children().eq(1).attr('data-remove_product',product_id+'-'+init);
             console.log(ttt);

@@ -11,6 +11,8 @@ use App\Models\OrderImgs;
 use App\Models\Status;
 use App\Models\Job;
 use App\Models\Client;
+use App\Models\OrderTransfer;
+use App\Models\OrderMargin;
 use App\Models\OrderSupply;
 use App\Models\OrderType;
 use App\Models\OrderAdditional;
@@ -27,6 +29,7 @@ use App\Models\OrderProduct;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantAttribute;
 use App\Models\DecorationPrice;
+use App\Models\OrderFinalPriceProductVariants;
 use App\Models\OrderPrintLocationColor;
 use App\Models\SupplyInventoryItem;
 use App\Models\ClientMeasurement;
@@ -38,11 +41,11 @@ class OrderController extends Controller
     use NotificationTrait;
     function __construct()
     {
-     $this->middleware('permission:orders-list|orders-edit', ['only' => ['index']]);
-     $this->middleware('permission:orders-edit', ['only' => ['edit','update']]);
-     $this->middleware('permission:orders-view', ['only' => ['show']]);
-     $this->middleware('permission:orders-change-status', ['only' => ['status_update']]);
- }
+       $this->middleware('permission:orders-list|orders-edit', ['only' => ['index']]);
+       $this->middleware('permission:orders-edit', ['only' => ['edit','update']]);
+       $this->middleware('permission:orders-view', ['only' => ['show']]);
+       $this->middleware('permission:orders-change-status', ['only' => ['status_update']]);
+   }
 
     /**
      * Write code on Method
@@ -286,36 +289,91 @@ class OrderController extends Controller
 
             $this->save_order_other_charges($rData, $orderID);
         }
+        $this->order_transfer($rData, $orderID);
+        $margin_size                            = $rData['margin_size'];
+        if (count($margin_size) > 0) {
 
-// order_other_charges
-            // $fields                                 = $rData['fields'][$tag_key];
-            // $labels                                 = $rData['labels'][$tag_key];
-            // if (count($fields) > 0) {
-
-            //     $this->save_additional_fields($fields, $labels, $orderID);
-            // }
-
-
+            $this->order_margins($rData, $orderID);
+        }
+        $fp_attribute_id                                 = $rData['fp_attribute_id'];
+        $fp_price                                        = $rData['fp_price'];
+        if (count($fp_attribute_id) > 0) {
+            $this->save_order_final_price_product_variants($fp_attribute_id,$fp_price, $orderID);
+        }
         
         return redirect()->route("admin.order.create")->withSuccess('Order data has been saved successfully!');
     }
-        public function save_order_other_charges($rData, $order_id){
-         
+    public function order_transfer($rData, $order_id){
 
-            $order_other_charges                        = new OrderOtherCharges();
-            $order_other_charges->order_id              = $order_id;
-            $order_other_charges->fold_bag_tag_pieces   = $rData['fold_bag_tag_pieces'];
-            $order_other_charges->fold_bag_tag_prices   = $rData['fold_bag_tag_prices'];;
-            $order_other_charges->hang_tag_pieces       = $rData['hang_tag_pieces'];
-            $order_other_charges->hang_tag_prices       = $rData['hang_tag_prices'];
-            $order_other_charges->art_fee               = $rData['art_fee'];
-            $order_other_charges->art_discount          = $rData['art_discount'];
-            $order_other_charges->art_time              = $rData['art_time'];
-            $order_other_charges->tax                   = $rData['tax'];
-            $order_other_charges->save();
+        $order                            = Order::find($order_id);
+        $order_transfer                   = new OrderTransfer();
+        $order_transfer->order_id         = $order_id;
+        $order_transfer->transfers_pieces = $rData['transfers_pieces'];
+        $order_transfer->transfers_pieces = $rData['transfers_pieces'];
+        $order_transfer->transfers_prices = $rData['transfers_prices'];
+        $order_transfer->ink_color_change_pieces = $rData['ink_color_change_pieces'];
+        $order_transfer->art_discount_prices = $rData['art_discount_prices'];
+        $order_transfer->save();
+
+    }
+
+    public function order_margins($rData, $order_id){
+        $order                  = Order::find($order_id);
+        $order_margin_arr = [];
+        foreach ($rData['margin_size'] as $key => $label) {
+
+            $order_margin                         = new OrderMargin();
+
+            $order_margin->order_id               = $order_id;
+            $order_margin->min_profit_margin      = $rData['min_profit_margin'];
+            $order_margin->max_profit_margin      = $rData['max_profit_margin'];
+            $order_margin->margin_size            = $rData['margin_size'][$key];
+            $order_margin->min_margin             = $rData['min_margin'][$key];
+            $order_margin->max_margin             = $rData['max_margin'][$key];
+            // dd($order_margin);
+            $order_margin_arr[]                   = $order_margin;
+            $order->OrderMargin()->saveMany($order_margin_arr);
+        }
 
 
-           
+    } 
+    public function save_order_final_price_product_variants($attribute_id,$prices,$order_id){
+        $order                  = Order::find($order_id);
+        $order_product_variant_arr = [];
+        foreach ($attribute_id as $product_id => $attr_ids) {
+            foreach ($attr_ids as $at_id => $ids) {
+                $order_product_var               = new OrderFinalPriceProductVariants();
+                $order_product_var->order_id     = $order_id;
+                $order_product_var->product_id        = $product_id;
+                $product_variant = ProductVariant::find($at_id);
+                $order_product_var->variant_id = $at_id;
+                $order_product_var->variant_name = $product_variant->name;
+                $product_variant_attribute = ProductVariantAttribute::find($ids[0]);
+                $order_product_var->attribute_id = $ids[0];
+                $order_product_var->attribute_name = $product_variant_attribute->name;
+                $order_product_var->price = $prices[$product_id][0];
+                $order_product_variant_arr[]  = $order_product_var;
+                $order->OrderFinalPriceProductVariants()->saveMany($order_product_variant_arr);
+            }
+        }
+    }
+    public function save_order_other_charges($rData, $order_id){
+
+
+        $order_other_charges                        = new OrderOtherCharges();
+        $order_other_charges->order_id              = $order_id;
+        $order_other_charges->fold_bag_tag_pieces   = $rData['fold_bag_tag_pieces'];
+        $order_other_charges->fold_bag_tag_prices   = $rData['fold_bag_tag_prices'];;
+        $order_other_charges->hang_tag_pieces       = $rData['hang_tag_pieces'];
+        $order_other_charges->hang_tag_prices       = $rData['hang_tag_prices'];
+        $order_other_charges->art_fee               = $rData['art_fee'];
+        $order_other_charges->art_discount          = $rData['art_discount'];
+        $order_other_charges->art_time              = $rData['art_time'];
+        $order_other_charges->tax                   = $rData['tax'];
+        $order_other_charges->save();
+
+
+
         
     } 
     public function save_order_contract_print_prices($rData, $order_id){
@@ -354,7 +412,6 @@ class OrderController extends Controller
         }
 
     }
-            // $this->save_product_attribute($attribute_id,$pieces,$prices,$total, $order_id);
 
     public function save_product_attribute($attribute_id,$pieces,$prices,$total, $order_id){
         $order                  = Order::find($order_id);

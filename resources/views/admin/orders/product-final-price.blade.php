@@ -33,9 +33,11 @@
                                   @endforeach
                                   @endif
                                 <div class="form-group col-md-4">
-                                    <label class="mr-3" for="price">Price: </label>
+                                    <label class="mr-3" for="price">Price</label>
                                     <input type="hidden" class="form-control mb-2 mr-sm-2 inc-lusive-price"  value="{{$product_detail->inclusive_price}}">
-                                    <input type="number" name="fp_price[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 " id="" placeholder="Enter Price"  value="{{$product_detail->inclusive_price}}" >
+                                    <input type="number" name="fp_price[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 " id="" placeholder="Enter Price" value="" 
+                                     {{-- value="{{$product_detail->inclusive_price}}"  --}}
+                                    >
                                 </div>
                             </div>
                         </div>

@@ -52,10 +52,20 @@ class Order extends Model
         
         return $this->hasMany(OrderProduct::class, "order_id", "id");
     }
+    public function OrderMargin(){
+        
+        return $this->hasMany(OrderMargin::class, "order_id", "id");
+    }
+    
      public function OrderProductVariant(){
         
         return $this->hasMany(OrderProductVariant::class, "order_id", "id");
     }
+    public function OrderFinalPriceProductVariants(){
+        
+        return $this->hasMany(OrderFinalPriceProductVariants::class, "order_id", "id");
+    }
+    
      public function OrderPrintLocationColor(){
         
         return $this->hasMany(OrderPrintLocationColor::class, "order_id", "id");
