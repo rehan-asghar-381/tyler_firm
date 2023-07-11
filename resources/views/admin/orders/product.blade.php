@@ -41,7 +41,7 @@
                                 <div class="form-group col-md-2">
                                     <label class="mr-3" for="price">Price</label>
                                     <input type="hidden" class="form-control mb-2 mr-sm-2 inc-lusive-price"  value="{{$product_detail->inclusive_price}}">
-                                    <input type="number" name="price[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 price" id="price" placeholder="Price" onchange="setTotal(this);"  onkeyup="setTotal(this);" value="" 
+                                    <input type="number" value=""  name="price[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 price" id="price" placeholder="Price" onchange="setTotal(this);"  onkeyup="setTotal(this);" 
                                     {{-- value="{{$product_detail->inclusive_price}}"  --}}
                                     >
                                 </div>

@@ -149,7 +149,7 @@ hr{
                         {{ Session::get('success') }}
                     </div>
                     @endif
-                    <form  method="POST"  action="{{ route('admin.order.store') }}" enctype="multipart/form-data">
+                    <form  method="POST"  action="{{ route('admin.order.store') }}" enctype="multipart/form-data" novalidate>
                         @csrf
 
                         <div class="row mb-4">
@@ -196,7 +196,7 @@ hr{
                         </ul>
 
                         <div class="tab-content" id="pills-tabContent">
-                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                           <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 
                             <div class="row mb-3">
                                     {{--  
@@ -224,7 +224,7 @@ hr{
                                             @endif
                                         </select>
                                     </div>
-                            </div>
+                                </div>
                                 <div class="row client-form btn-d-none">
                                     {{-- @include('admin.clients.add-client', ['errors'=>$errors]) --}}
                                 </div>
@@ -362,322 +362,322 @@ hr{
                                         </div>
                                     </div>
                                 </div>
-                    </div>
-                    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-                        {{-- <form class="form-inline offset-md-2"> --}}
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="location1_charge" class="col-sm-2 font-weight-600">Location 1 Charge</label>
-                                    <input type="hidden" name="location_charge[]" value="Location 1 Charge">
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location1_charge" placeholder="">
+                            </div>
+                            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                                {{-- <form class="form-inline offset-md-2"> --}}
+                                    <div class="col-md-10">
+                                        <div class="form-group row">
+                                            <label for="location1_charge" class="col-sm-2 font-weight-600">Location 1 Charge</label>
+                                            <input type="hidden" name="location_charge[]" value="Location 1 Charge">
+                                            <div class="col-sm-3">
+                                                <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location1_charge" placeholder="">
+                                            </div>
+                                            <label for="s-xl" class="col-sm-2 font-weight-600">S-XL</label>
+                                            <input type="hidden" name="size[]" value="S-XL">
+                                            <div class="col-sm-3">
+                                                <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_s_xl" placeholder="">
+                                                
+                                            </div>
+                                        </div>
                                     </div>
-                                    <label for="s-xl" class="col-sm-2 font-weight-600">S-XL</label>
-                                    <input type="hidden" name="size[]" value="S-XL">
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_s_xl" placeholder="">
+                                    <div class="col-md-10">
+                                        <div class="form-group row">
+                                            <label for="location2_charge" class="col-sm-2 font-weight-600">Location 2 Charge</label>
+                                            <input type="hidden" name="location_charge[]" value="Location 2 Charge">
+                                            <div class="col-sm-3">
+                                                <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location2_charge" placeholder="">
+                                            </div>
+                                            <label for="sp_xxl" class="col-sm-2 font-weight-600">XXL</label>
+                                            <input type="hidden" name="size[]" value="XXL">
+                                            <div class="col-sm-3">
+                                                <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxl" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <div class="form-group row">
+                                            <label for="location3_charge" class="col-sm-2 font-weight-600">Location 3 Charge</label>
+                                            <input type="hidden" name="location_charge[]" value="Location 3 Charge">
+                                            <div class="col-sm-3">
+                                                <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location3_charge" placeholder="">
+                                            </div>
+                                            <label for="sp_xxxl" class="col-sm-2 font-weight-600">XXXL</label>
+                                            <input type="hidden" name="size[]" value="XXXL">
+                                            <div class="col-sm-3">
+                                                <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxl" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <div class="form-group row">
+                                            <label for="location4_charge" class="col-sm-2 font-weight-600">Location 4 Charge</label>
+                                            <input type="hidden" name="location_charge[]" value="Location 4 Charge">
+                                            <div class="col-sm-3">
+                                                <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location4_charge" placeholder="">
+                                            </div>
+                                            <label for="sp_xxxxl" class="col-sm-2 font-weight-600">XXXXL</label>
+                                            <input type="hidden" name="size[]" value="XXXXL">
+                                            <div class="col-sm-3">
+                                                <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxxl" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <div class="form-group row">
+                                            <label for="location5_charge" class="col-sm-2 font-weight-600">Location 5 Charge</label>
+                                            <input type="hidden" name="location_charge[]" value="Location 5 Charge">
+                                            <div class="col-sm-3">
+                                                <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location5_charge" placeholder="">
+                                            </div>
+                                            <label for="sp_xxxxxl" class="col-sm-2 font-weight-600">XXXXXL</label>
+                                            <input type="hidden" name="size[]" value="XXXXXL">
+                                            <div class="col-sm-3">
+                                                <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxxxl" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                {{-- </form> --}}
+                            </div>
+                            <div class="tab-pane fade" id="OTHERCHARGES" role="tabpanel" aria-labelledby="OTHERCHARGES-tab">
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="fold_bag_tag_pieces" class="col-sm-2 font-weight-600">FOLD/BAG/TAG</label>
+                                        <div class="col-sm-3">
+                                            <input type="number" min="0" name="fold_bag_tag_pieces" value="" class="my-form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
+                                            
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="number" min="0" name="fold_bag_tag_prices" value="" class="my-form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="hang_tag_pieces" class="col-sm-2 font-weight-600">Hang Tag</label>
+                                        <div class="col-sm-3">
+                                            <input type="number" min="0" name="hang_tag_pieces" value="" class="my-form-control " id="hang_tag_pieces" placeholder="Pieces">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="number" min="0" name="hang_tag_prices" value="" class="my-form-control mr-2" id="hang_tag_prices" placeholder="Prices">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="art_fee" class="col-sm-2 font-weight-600">Art Fee</label>
+                                        <div class="col-sm-3">
+                                            <select name="art_fee" id="art_fee" class="my-form-control">
+                                                <option value="">Select</option>
+                                                <option value="0">$0.00</option>
+                                                <option value="20">$20.00</option>
+                                                <option value="30">$30.00</option>
+                                                <option value="40">$40.00</option>
+                                                <option value="50">$50.00</option>
+                                                <option value="55">$55.00</option>
+                                                <option value="60">$60.00</option>
+                                                <option value="100">$100.00</option>
+                                                <option value="120">$120.00</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="art_discount" class="col-md-2 font-weight-600">Art Discount</label>
+                                        <div class="col-sm-3">
+                                            <select name="art_discount" id="art_discount" class="my-form-control">
+                                                <option value="">Select</option>
+                                                <option value="0" >$0.00</option>
+                                                <option value="20" >-$20.00</option>
+                                                <option value="25" >-$25.00</option>
+                                                <option value="30" >-$30.00</option>
+                                                <option value="35" >-$35.00</option>
+                                                <option value="40" >-$40.00</option>
+                                                <option value="50" >-$50.00</option>
+                                                <option value="60" >-$60.00</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="art_time" class="col-sm-2 font-weight-600">Art Time</label>
+                                        <div class="col-sm-3">
+                                            <select name="art_time" id="art_time" class="my-form-control">
+                                                <option value="">Select</option>
+                                                <option value="1">1 Hour</option>
+                                                <option value="2">2 Hour</option>
+                                                <option value="3">3 Hour</option>
+                                                <option value="4">4 Hour</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="tax" class="col-md-2 font-weight-600">Tax</label>
+                                        <div class="col-sm-3">
+                                            <select name="tax" id="tax" class="my-form-control">
+                                                <option value="">Select</option>
+                                                <option value="0" >0</option>
+                                                <option value="8.375" >8.375%</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="MARGINS" role="tabpanel" aria-labelledby="MARGINS-tab">
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="transfers_pieces" class="col-sm-2 font-weight-600">Transfers</label>
+                                        <div class="col-sm-3">
+                                            <input type="number" min="0" name="transfers_pieces" value="" class="my-form-control " id="transfers_pieces" placeholder="Pieces">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="number" min="0" name="transfers_prices" value="" class="my-form-control mr-2" id="transfers_prices" placeholder="Prices">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="ink_color_change_pieces" class="col-sm-2 font-weight-600">Ink Color Change</label>
+                                        <div class="col-sm-3">
+                                            <input type="number" min="0" name="ink_color_change_pieces" value="" class="my-form-control " id="ink_color_change_pieces" placeholder="Pieces">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="number" min="0" name="art_discount_prices" value="" class="my-form-control mr-2" id="art_discount_prices" placeholder="Prices">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="hang_tag1" class="col-sm-2 font-weight-600">Shipping</label>
+                                        <div class="col-sm-3">
+                                            <select name="art_fee" id="art_fee" class="my-form-control">
+                                                <option value="">Select</option>
+                                                <option value="20">$20.00</option>
+                                                <option value="30">$30.00</option>
+                                                <option value="40">$40.00</option>
+                                                <option value="50">$50.00</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="dotted">
+                                <div class="col-md-10">
+                                    <div class="form-group row">
                                         
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="location2_charge" class="col-sm-2 font-weight-600">Location 2 Charge</label>
-                                    <input type="hidden" name="location_charge[]" value="Location 2 Charge">
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location2_charge" placeholder="">
-                                    </div>
-                                    <label for="sp_xxl" class="col-sm-2 font-weight-600">XXL</label>
-                                    <input type="hidden" name="size[]" value="XXL">
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxl" placeholder="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="location3_charge" class="col-sm-2 font-weight-600">Location 3 Charge</label>
-                                    <input type="hidden" name="location_charge[]" value="Location 3 Charge">
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location3_charge" placeholder="">
-                                    </div>
-                                    <label for="sp_xxxl" class="col-sm-2 font-weight-600">XXXL</label>
-                                    <input type="hidden" name="size[]" value="XXXL">
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxl" placeholder="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="location4_charge" class="col-sm-2 font-weight-600">Location 4 Charge</label>
-                                    <input type="hidden" name="location_charge[]" value="Location 4 Charge">
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location4_charge" placeholder="">
-                                    </div>
-                                    <label for="sp_xxxxl" class="col-sm-2 font-weight-600">XXXXL</label>
-                                    <input type="hidden" name="size[]" value="XXXXL">
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxxl" placeholder="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="location5_charge" class="col-sm-2 font-weight-600">Location 5 Charge</label>
-                                    <input type="hidden" name="location_charge[]" value="Location 5 Charge">
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location5_charge" placeholder="">
-                                    </div>
-                                    <label for="sp_xxxxxl" class="col-sm-2 font-weight-600">XXXXXL</label>
-                                    <input type="hidden" name="size[]" value="XXXXXL">
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxxxl" placeholder="">
-                                    </div>
-                                </div>
-                            </div>
-                        {{-- </form> --}}
-                    </div>
-                    <div class="tab-pane fade" id="OTHERCHARGES" role="tabpanel" aria-labelledby="OTHERCHARGES-tab">
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="fold_bag_tag_pieces" class="col-sm-2 font-weight-600">FOLD/BAG/TAG</label>
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="fold_bag_tag_pieces" value="" class="my-form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
-                                        
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="fold_bag_tag_prices" value="" class="my-form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="hang_tag_pieces" class="col-sm-2 font-weight-600">Hang Tag</label>
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="hang_tag_pieces" value="" class="my-form-control " id="hang_tag_pieces" placeholder="Pieces">
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <input type="number" min="0" name="hang_tag_prices" value="" class="my-form-control mr-2" id="hang_tag_prices" placeholder="Prices">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="art_fee" class="col-sm-2 font-weight-600">Art Fee</label>
-                                    <div class="col-sm-3">
-                                        <select name="art_fee" id="art_fee" class="my-form-control">
-                                            <option value="">Select</option>
-                                            <option value="0">$0.00</option>
-                                            <option value="20">$20.00</option>
-                                            <option value="30">$30.00</option>
-                                            <option value="40">$40.00</option>
-                                            <option value="50">$50.00</option>
-                                            <option value="55">$55.00</option>
-                                            <option value="60">$60.00</option>
-                                            <option value="100">$100.00</option>
-                                            <option value="120">$120.00</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="art_discount" class="col-md-2 font-weight-600">Art Discount</label>
-                                    <div class="col-sm-3">
-                                        <select name="art_discount" id="art_discount" class="my-form-control">
-                                            <option value="">Select</option>
-                                            <option value="0" >$0.00</option>
-                                            <option value="20" >-$20.00</option>
-                                            <option value="25" >-$25.00</option>
-                                            <option value="30" >-$30.00</option>
-                                            <option value="35" >-$35.00</option>
-                                            <option value="40" >-$40.00</option>
-                                            <option value="50" >-$50.00</option>
-                                            <option value="60" >-$60.00</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="art_time" class="col-sm-2 font-weight-600">Art Time</label>
-                                    <div class="col-sm-3">
-                                        <select name="art_time" id="art_time" class="my-form-control">
-                                            <option value="">Select</option>
-                                            <option value="1">1 Hour</option>
-                                            <option value="2">2 Hour</option>
-                                            <option value="3">3 Hour</option>
-                                            <option value="4">4 Hour</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="tax" class="col-md-2 font-weight-600">Tax</label>
-                                    <div class="col-sm-3">
-                                        <select name="tax" id="tax" class="my-form-control">
-                                            <option value="">Select</option>
-                                            <option value="0" >0</option>
-                                            <option value="8.375" >8.375%</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                    </div>
-                    <div class="tab-pane fade" id="MARGINS" role="tabpanel" aria-labelledby="MARGINS-tab">
-                        <div class="col-md-10">
-                            <div class="form-group row">
-                                <label for="transfers_pieces" class="col-sm-2 font-weight-600">Transfers</label>
-                                <div class="col-sm-3">
-                                    <input type="number" min="0" name="transfers_pieces" value="" class="my-form-control " id="transfers_pieces" placeholder="Pieces">
-                                </div>
-                                <div class="col-sm-3">
-                                    <input type="number" min="0" name="transfers_prices" value="" class="my-form-control mr-2" id="transfers_prices" placeholder="Prices">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-10">
-                            <div class="form-group row">
-                                <label for="ink_color_change_pieces" class="col-sm-2 font-weight-600">Ink Color Change</label>
-                                <div class="col-sm-3">
-                                    <input type="number" min="0" name="ink_color_change_pieces" value="" class="my-form-control " id="ink_color_change_pieces" placeholder="Pieces">
-                                </div>
-                                <div class="col-sm-3">
-                                    <input type="number" min="0" name="art_discount_prices" value="" class="my-form-control mr-2" id="art_discount_prices" placeholder="Prices">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-10">
-                            <div class="form-group row">
-                                <label for="hang_tag1" class="col-sm-2 font-weight-600">Shipping</label>
-                                <div class="col-sm-3">
-                                    <select name="art_fee" id="art_fee" class="my-form-control">
-                                        <option value="">Select</option>
-                                        <option value="20">$20.00</option>
-                                        <option value="30">$30.00</option>
-                                        <option value="40">$40.00</option>
-                                        <option value="50">$50.00</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-3">
-                                    
-                                </div>
-                            </div>
-                        </div>
-                            <hr class="dotted">
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    
-                                    <div class="col-sm-3 offset-2">
-                                        <label for="min_profit_margin" class="font-weight-600">Min Margin</label>
-                                        <select onchange="setMinMargin(this);" name="min_profit_margin" id="min_profit_margin" class="my-form-control">
-                                            <option value="">Select Min Margin</option>
-                                            @for ($i = 1; $i <=100; $i++)
+                                        <div class="col-sm-3 offset-2">
+                                            <label for="min_profit_margin" class="font-weight-600">Min Margin</label>
+                                            <select onchange="setMinMargin(this);" name="min_profit_margin" id="min_profit_margin" class="my-form-control">
+                                                <option value="">Select Min Margin</option>
+                                                @for ($i = 1; $i <=100; $i++)
                                                 <option value="{{$i}}" >{{$i}} %</option>
-                                            @endfor
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <label for="max_profit_margin" class="font-weight-600">Max Margin</label>
-                                        <select name="max_profit_margin" onchange="setMaxMargin(this);" id="max_profit_margin" class="my-form-control">
-                                            <option value="">Select Max Margin</option>
-                                            @for ($i = 1; $i <=100; $i++)
+                                                @endfor
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label for="max_profit_margin" class="font-weight-600">Max Margin</label>
+                                            <select name="max_profit_margin" onchange="setMaxMargin();" id="max_profit_margin" class="my-form-control">
+                                                <option value="">Select Max Margin</option>
+                                                @for ($i = 1; $i <=100; $i++)
                                                 <option value="{{$i}}" >{{$i}} %</option>
-                                            @endfor
-                                        </select>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="sxl_min_mar" class="col-sm-2 font-weight-600">S-XL</label>
+                                        <input type="hidden" name="margin_size[]" value="S-XL">
+                                        <div class="col-sm-3">
+                                            <input type="number" class="my-form-control" placeholder="Min" name="min_margin[]" readonly="" id="sxl_min_mar">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="sxl_max_mar">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="xxl_min_mar" class="col-sm-2 font-weight-600">XXL</label>
+                                        <input type="hidden" name="margin_size[]" value="XXL">
+                                        <div class="col-sm-3">
+                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxl_min_mar">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="xxl_max_mar">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="xxxl_min_mar" class="col-sm-2 font-weight-600">XXXL</label>
+                                        <input type="hidden" name="margin_size[]" value="XXXL">
+                                        <div class="col-sm-3">
+                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxl_min_mar">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxl_max_mar">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="xxxl_min_mar" class="col-sm-2 font-weight-600">XXXXL</label>
+                                        <input type="hidden" name="margin_size[]" value="XXXXL">
+                                        <div class="col-sm-3">
+                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxl_min_mar">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="number" class="my-form-control" placeholder="Max" name="max_margin[]" readonly="" id="xxxxl_max_mar">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="xxxxxl_min_mar" class="col-sm-2 font-weight-600">XXXXXL</label>
+                                        <input type="hidden" name="margin_size[]" value="XXXXXL">
+                                        <div class="col-sm-3">
+                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxxl_min_mar">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxxxl_max_mar">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="sxl_min_mar" class="col-sm-2 font-weight-600">S-XL</label>
-                                    <input type="hidden" name="margin_size[]" value="S-XL">
-                                    <div class="col-sm-3">
-                                        <input type="number" class="my-form-control" placeholder="Min" name="min_margin[]" readonly="" id="sxl_min_mar">
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="sxl_max_mar">
+                            <div class="tab-pane fade" id="FinalPrice" role="tabpanel" aria-labelledby="FinalPrice-tab">
+                                <div>
+                                    <div class="row Order-form btn-d-none">
+                                        <div id="accordion2" class="accordion2" style="min-height: 200px;">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="xxl_min_mar" class="col-sm-2 font-weight-600">XXL</label>
-                                    <input type="hidden" name="margin_size[]" value="XXL">
-                                    <div class="col-sm-3">
-                                        <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxl_min_mar">
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="xxl_max_mar">
-                                    </div>
+                                <div class="col-md-12 form-check mt-5">
+                                    <button type="submit" class="btn btn-primary mb-3" id="submit-form">Save Order</button>
                                 </div>
                             </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="xxxl_min_mar" class="col-sm-2 font-weight-600">XXXL</label>
-                                    <input type="hidden" name="margin_size[]" value="XXXL">
-                                    <div class="col-sm-3">
-                                        <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxl_min_mar">
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxl_max_mar">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="xxxl_min_mar" class="col-sm-2 font-weight-600">XXXXL</label>
-                                    <input type="hidden" name="margin_size[]" value="XXXXL">
-                                    <div class="col-sm-3">
-                                        <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxl_min_mar">
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <input type="number" class="my-form-control" placeholder="Max" name="max_margin[]" readonly="" id="xxxxl_max_mar">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <div class="form-group row">
-                                    <label for="xxxxxl_min_mar" class="col-sm-2 font-weight-600">XXXXXL</label>
-                                    <input type="hidden" name="margin_size[]" value="XXXXXL">
-                                    <div class="col-sm-3">
-                                        <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxxl_min_mar">
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxxxl_max_mar">
-                                    </div>
-                                </div>
-                            </div>
-                    </div>
-                 <div class="tab-pane fade" id="FinalPrice" role="tabpanel" aria-labelledby="FinalPrice-tab">
-                    <div>
-                        <div class="row Order-form btn-d-none">
-                            <div id="accordion2" class="accordion2" style="min-height: 200px;">
-                            </div>
+
                         </div>
-                    </div>
-                    <div class="col-md-12 form-check mt-5">
-                        <button type="submit" class="btn btn-primary mb-3" id="submit-form">Save Order</button>
-                    </div>
+                    </form>
                 </div>
-
             </div>
-        </form>
+        </div>
     </div>
-</div>
-</div>
-</div>
-@endsection
-@section('footer-script')
-<script>
-    $(document).ready(function(){
+    @endsection
+    @section('footer-script')
+    <script>
+        $(document).ready(function(){
 
-        $('#product_ids').on('select2:unselect', function (e) {
-            var p_id        = ".product-detail-"+e.params.data.id;
-            $(p_id).remove();
-        });
+            $('#product_ids').on('select2:unselect', function (e) {
+                var p_id        = ".product-detail-"+e.params.data.id;
+                $(p_id).remove();
+            });
         // $('select').select2();
         $(".select-supply").select2({
             tags: true
@@ -1282,33 +1282,33 @@ function setDecorationPrice(obj){
     if (totalLocationCharges > 0) {
 
         var price = $(obj).val();
-        if (obj.name == "pl_s_xl"){
+        if (obj.id == "pl_s_xl"){
             var sp_s_xl = Number(price) + Number(totalLocationCharges);
             sp_s_xl = (Math.round(sp_s_xl * 100) / 100).toFixed(2);
 
             $("#sp_s_xl").val(sp_s_xl);
         }
-        if (obj.name == "pl_xxl"){
+        if (obj.id == "pl_xxl"){
             var sp_xxl = Number(price) + Number(totalLocationCharges);
             sp_xxl = (Math.round(sp_xxl * 100) / 100).toFixed(2);
 
             $("#sp_xxl").val(sp_xxl);
         }
 
-        if (obj.name == "pl_xxxl"){
+        if (obj.id == "pl_xxxl"){
             var sp_xxxl = Number(price) + Number(totalLocationCharges);
             sp_xxxl = (Math.round(sp_xxxl * 100) / 100).toFixed(2);
 
             $("#sp_xxxl").val(sp_xxxl);
         }
 
-        if (obj.name == "pl_xxxxl"){
+        if (obj.id == "pl_xxxxl"){
             var sp_xxxxl = Number(price) + Number(totalLocationCharges);
             sp_xxxxl = (Math.round(sp_xxxxl * 100) / 100).toFixed(2);
 
             $("#sp_xxxxl").val(sp_xxxxl);
         }
-        if (obj.name == "pl_xxxxxl"){
+        if (obj.id == "pl_xxxxxl"){
             var sp_xxxxxl = Number(price) + Number(totalLocationCharges);
             sp_xxxxxl = (Math.round(sp_xxxxxl * 100) / 100).toFixed(2);
 
@@ -1316,6 +1316,8 @@ function setDecorationPrice(obj){
         }
 
     }
+    setMinMargin();
+    setMaxMargin();
 }
     // location_charges
     function setLocationCharges(){
@@ -1329,59 +1331,63 @@ function setDecorationPrice(obj){
     // var diff = 100 - selected precentage  
     //  var diff2= diff / 100 ;
     // var value =  sp_s_xl / diff2; 
-    function setMinMargin(obj) {
-        var minMargin = $(obj).val();
-        var diff = (100 - Number(minMargin)); 
-        diff = (diff / 100);
+    function setMinMargin() {
+        var minMargin = $("#min_profit_margin").val();
+        
+        if (minMargin != '') {
+            var diff = (100 - Number(minMargin)); 
+            diff = (diff / 100);
 
-        $("#sxl_min_mar").val(0);
-        $("#xxl_min_mar").val(0);
-        $("#xxxl_min_mar").val(0);
-        $("#xxxxl_min_mar").val(0);
-        $("#xxxxxl_min_mar").val(0);
+            $("#sxl_min_mar").val(0);
+            $("#xxl_min_mar").val(0);
+            $("#xxxl_min_mar").val(0);
+            $("#xxxxl_min_mar").val(0);
+            $("#xxxxxl_min_mar").val(0);
 
-        if ($("#pl_s_xl").val() > 0 ) {
+            if ($("#pl_s_xl").val() > 0 ) {
 
-            var sxl_min_mar =  ($("#sp_s_xl").val() / diff);
-            $("#sxl_min_mar").val((Math.round(sxl_min_mar * 100) / 100).toFixed(2) );
-        }
-        if ($("#pl_xxl").val() > 0 ) {
+                var sxl_min_mar =  ($("#sp_s_xl").val() / diff);
+                $("#sxl_min_mar").val((Math.round(sxl_min_mar * 100) / 100).toFixed(2) );
+            }
+            if ($("#pl_xxl").val() > 0 ) {
 
-            var xxl_min_mar =  ($("#sp_xxl").val() / diff);
-            $("#xxl_min_mar").val((Math.round(xxl_min_mar * 100) / 100).toFixed(2) );
-        }
-        if ($("#pl_xxxl").val() > 0 ) {
-            var xxxl_min_mar =  ($("#sp_xxxl").val() / diff);
-            $("#xxxl_min_mar").val((Math.round(xxxl_min_mar * 100) / 100).toFixed(2) );
-        }
-        if ($("#pl_xxxxl").val() > 0 ) {
-            var xxxxl_min_mar =  ($("#sp_xxxxl").val() / diff);
-            $("#xxxxl_min_mar").val((Math.round(xxxxl_min_mar * 100) / 100).toFixed(2) );
-        }
-        if ($("#pl_xxxxxl").val() > 0 ) {
-            var xxxxxl_min_mar =  ($("#sp_xxxxxl").val() / diff);
-            $("#xxxxxl_min_mar").val((Math.round(xxxxxl_min_mar * 100) / 100).toFixed(2) );
+                var xxl_min_mar =  ($("#sp_xxl").val() / diff);
+                $("#xxl_min_mar").val((Math.round(xxl_min_mar * 100) / 100).toFixed(2) );
+            }
+            if ($("#pl_xxxl").val() > 0 ) {
+                var xxxl_min_mar =  ($("#sp_xxxl").val() / diff);
+                $("#xxxl_min_mar").val((Math.round(xxxl_min_mar * 100) / 100).toFixed(2) );
+            }
+            if ($("#pl_xxxxl").val() > 0 ) {
+                var xxxxl_min_mar =  ($("#sp_xxxxl").val() / diff);
+                $("#xxxxl_min_mar").val((Math.round(xxxxl_min_mar * 100) / 100).toFixed(2) );
+            }
+            if ($("#pl_xxxxxl").val() > 0 ) {
+                var xxxxxl_min_mar =  ($("#sp_xxxxxl").val() / diff);
+                $("#xxxxxl_min_mar").val((Math.round(xxxxxl_min_mar * 100) / 100).toFixed(2) );
+            }
         }
 
     }
-    function setMaxMargin(obj) {
-        var minMargin = $(obj).val();
-        var diff = (100 - Number(minMargin)); 
-        diff = (diff / 100);
-
-        $("#sxl_max_mar").val(0);
-        $("#xxl_max_mar").val(0);
-        $("#xxxl_max_mar").val(0);
-        $("#xxxxl_max_mar").val(0);
-        $("#xxxxxl_max_mar").val(0);
-
-        if ($("#pl_s_xl").val() > 0 ) {
-
+    function setMaxMargin() {
+        var maxMargin = $("#max_profit_margin").val();
+        if (maxMargin != '') {
+           var diff = (100 - Number(maxMargin)); 
+           diff = (diff / 100);
+           
+           $("#sxl_max_mar").val(0);
+           $("#xxl_max_mar").val(0);
+           $("#xxxl_max_mar").val(0);
+           $("#xxxxl_max_mar").val(0);
+           $("#xxxxxl_max_mar").val(0);
+           
+           if ($("#pl_s_xl").val() > 0 ) {
+            
             var sxl_max_mar =  ($("#sp_s_xl").val() / diff);
             $("#sxl_max_mar").val((Math.round(sxl_max_mar * 100) / 100).toFixed(2) );
         }
         if ($("#pl_xxl").val() > 0 ) {
-
+            
             var xxl_max_mar =  ($("#sp_xxl").val() / diff);
             $("#xxl_max_mar").val((Math.round(xxl_max_mar * 100) / 100).toFixed(2) );
         }
@@ -1396,7 +1402,7 @@ function setDecorationPrice(obj){
         if ($("#pl_xxxxxl").val() > 0 ) {
             var xxxxxl_max_mar =  ($("#sp_xxxxxl").val() / diff);
             $("#xxxxxl_max_mar").val((Math.round(xxxxxl_max_mar * 100) / 100).toFixed(2) );
-        }
+        }}
 
     }
 </script>
