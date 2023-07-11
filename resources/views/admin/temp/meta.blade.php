@@ -18,7 +18,8 @@ crossorigin="anonymous">
 	<link href="{{asset('b/plugins/themify-icons/themify-icons.min.css')}}" rel="stylesheet">
 	<link href="{{asset('b/plugins/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
 	<link href="{{asset('b/dist/css/style.css')}}" rel="stylesheet">
-	<link href="{{ asset('b/plugins/rh-select2/select2.min.css') }}" rel="stylesheet" />
+	<link href="{{ asset('b/plugins/select2/dist/css/select2.min.css') }}" rel="stylesheet" />
+	<link href="{{ asset('b/plugins/select2-bootstrap4/dist/select2-bootstrap4.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('b/plugins/flatpicker/flatpickr.min.css') }}" rel="stylesheet">
 	<link href="{{asset('b/plugins/summernote/summernote.css')}}" rel="stylesheet">
         <link href="{{asset('b/plugins/summernote/summernote-bs4.css')}}" rel="stylesheet">

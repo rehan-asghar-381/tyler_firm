@@ -23,7 +23,7 @@
                                     <div class="form-group col-md-3">
                                         <label>{{$ProductVariant->name}}</label>
                                         <select type="text" name="attribute_id[{{$product_detail->id}}][{{$ProductVariant->id}}][]"
-                                          class="form-control " >
+                                          class="form-control select-one" >
                                           <option value="">Select</option>
                                           @if (count($ProductVariant->Atrributes)>0)
                                           @foreach ($ProductVariant->Atrributes as $Atrribute)
@@ -65,5 +65,5 @@
     </div>
 </div>
 <div class="row">
-    </div>
+</div>
 </div>

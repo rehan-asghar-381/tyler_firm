@@ -41,6 +41,7 @@
 		$('.select-one').SumoSelect({
 			search: true
 		});
+		$('.basic-multiple').select2();
 </script>
 </body>
 </html>
