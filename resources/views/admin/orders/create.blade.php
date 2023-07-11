@@ -376,7 +376,7 @@ hr{
                                             <input type="hidden" name="size[]" value="S-XL">
                                             <div class="col-sm-3">
                                                 <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_s_xl" placeholder="">
-                                                
+
                                             </div>
                                         </div>
                                     </div>
@@ -444,7 +444,7 @@ hr{
                                         <label for="fold_bag_tag_pieces" class="col-sm-2 font-weight-600">FOLD/BAG/TAG</label>
                                         <div class="col-sm-3">
                                             <input type="number" min="0" name="fold_bag_tag_pieces" value="" class="my-form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
-                                            
+
                                         </div>
                                         <div class="col-sm-3">
                                             <input type="number" min="0" name="fold_bag_tag_prices" value="" class="my-form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
@@ -562,14 +562,14 @@ hr{
                                             </select>
                                         </div>
                                         <div class="col-sm-3">
-                                            
+
                                         </div>
                                     </div>
                                 </div>
                                 <hr class="dotted">
                                 <div class="col-md-10">
                                     <div class="form-group row">
-                                        
+
                                         <div class="col-sm-3 offset-2">
                                             <label for="min_profit_margin" class="font-weight-600">Min Margin</label>
                                             <select onchange="setMinMargin(this);" name="min_profit_margin" id="min_profit_margin" class="my-form-control">
@@ -1138,6 +1138,7 @@ function setTotal(obj) {
         $(obj).parent().next().next().find('input[type=number]').val(price*pieces);
 
     }
+    // setDecorationPrice
 }
 function setProjectedUnits(){
     var pieces = $(".pieces");
@@ -1333,7 +1334,7 @@ function setDecorationPrice(obj){
     // var value =  sp_s_xl / diff2; 
     function setMinMargin() {
         var minMargin = $("#min_profit_margin").val();
-        
+
         if (minMargin != '') {
             var diff = (100 - Number(minMargin)); 
             diff = (diff / 100);
@@ -1374,20 +1375,20 @@ function setDecorationPrice(obj){
         if (maxMargin != '') {
            var diff = (100 - Number(maxMargin)); 
            diff = (diff / 100);
-           
+
            $("#sxl_max_mar").val(0);
            $("#xxl_max_mar").val(0);
            $("#xxxl_max_mar").val(0);
            $("#xxxxl_max_mar").val(0);
            $("#xxxxxl_max_mar").val(0);
-           
+
            if ($("#pl_s_xl").val() > 0 ) {
-            
+
             var sxl_max_mar =  ($("#sp_s_xl").val() / diff);
             $("#sxl_max_mar").val((Math.round(sxl_max_mar * 100) / 100).toFixed(2) );
         }
         if ($("#pl_xxl").val() > 0 ) {
-            
+
             var xxl_max_mar =  ($("#sp_xxl").val() / diff);
             $("#xxl_max_mar").val((Math.round(xxl_max_mar * 100) / 100).toFixed(2) );
         }

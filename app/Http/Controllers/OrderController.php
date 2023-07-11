@@ -55,13 +55,13 @@ class OrderController extends Controller
     public function index()
     {
         $pageTitle                              = "Orders";
-        $statuses_arr                           = [];
-        // $statuses                               = Status::where('is_active', 'Y')->orderBy('priority', 'asc')->get(['id', 'name']);
+        // $statuses_arr                           = [];
+        $statuses                               = Status::where('is_active', 'Y')->get(['id', 'name']);
         
-        // foreach($statuses as $key=>$status){
+        foreach($statuses as $key=>$status){
 
-        //     $statuses_arr['"'.$key.'"']          = $status;
-        // }
+            $statuses_arr['"'.$key.'"']          = $status;
+        }
         $clients        = Client::get();
         return view('admin.orders.index', compact('pageTitle', 'statuses_arr', 'clients'));
     } 
@@ -636,14 +636,14 @@ class OrderController extends Controller
         $order->status          = $status;
         $order->save();
 
-        $body                           = $user_name." set Status to <strong>".$order->Orderstatus->name."</strong> for Order ( <strong>#".$order->id."</strong> )";
-        $data['idFK']                   = $order->id;
-        $data['type']                   = 'orders';
-        $data['added_by_id']            = $user_id;
-        $data['added_by_name']          = $user_name;
-        $data['body']                   = $body;
-        $data['time_id']                = date('U');
-        $this->add_notification($data);
+        // $body                           = $user_name." set Status to <strong>".$order->Orderstatus->name."</strong> for Order ( <strong>#".$order->id."</strong> )";
+        // $data['idFK']                   = $order->id;
+        // $data['type']                   = 'orders';
+        // $data['added_by_id']            = $user_id;
+        // $data['added_by_name']          = $user_name;
+        // $data['body']                   = $body;
+        // $data['time_id']                = date('U');
+        // $this->add_notification($data);
 
         return json_encode(array("status"=>true, "message"=>"Status has been updated successfully!"));
 

@@ -282,7 +282,8 @@
 						var v = this.$content.find("input[type='radio']:checked").val();
 						save_status(v, id);
 						alert('Status has been updated successfully!');
-						window.location.reload();
+						// window.location.reload();
+						table.ajax.reload();
 					}
 				},
 				no:{
@@ -296,7 +297,7 @@
 	function save_status(status_id, order_id){
 
 		$.ajax({
-			{{-- url: "{{ route('admin.order.status_update') }}", --}}
+			 url: "{{ route('admin.order.status_update') }}", 
 			type: "GET",
 			data: {
 				status_id: status_id,

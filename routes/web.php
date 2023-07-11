@@ -96,6 +96,8 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/orders/product_final_price_form', [OrderController::class, 'product_final_price_form'])->name('order.product_final_price_form');
 
     Route::get('/orders/view/{order_id}', [OrderController::class, 'orderView'])->name('order.view');
+    
+     Route::get('/orders/status_update', [OrderController::class, 'status_update'])->name('order.status_update');
 
 
     Route::get('/get_decoration_price', [OrderController::class, 'get_decoration_price'])->name('get_decoration_price');
