@@ -1151,6 +1151,7 @@ function setProjectedUnits(){
 function getDecorationPrice(obj){
     var ProjectedUnits = $('#ProjectedUnits').val();
     var number_of_colors = $(obj).val();
+    console.log(obj.name);
     console.log(number_of_colors);
     if (ProjectedUnits > 0 && number_of_colors > 0) {
       $.ajax({
@@ -1161,24 +1162,24 @@ function getDecorationPrice(obj){
             number_of_colors:number_of_colors,
         },
         success: function(value) {
-            if (obj.name == "color_location1") {
+            if (obj.id == "color_location1") {
 
                 $("#location1_charge").val(value)
 
             }
-            else if (obj.name == "color_location2") {
+            else if (obj.id == "color_location2") {
 
                 $("#location2_charge").val(value)
 
-            }else if (obj.name == "color_location3") {
+            }else if (obj.id == "color_location3") {
 
                 $("#location3_charge").val(value)
 
-            }else if (obj.name == "color_location4") {
+            }else if (obj.id == "color_location4") {
 
                 $("#location4_charge").val(value)
 
-            }else if (obj.name == "color_location5") {
+            }else if (obj.id == "color_location5") {
 
                 $("#location5_charge").val(value)
 
