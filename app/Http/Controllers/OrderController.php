@@ -45,6 +45,7 @@ class OrderController extends Controller
        $this->middleware('permission:orders-edit', ['only' => ['edit','update']]);
        $this->middleware('permission:orders-view', ['only' => ['show']]);
        $this->middleware('permission:orders-change-status', ['only' => ['status_update']]);
+       $this->middleware('permission:orders-generate-invoice', ['only' => ['status_update']]);
    }
 
     /**
@@ -169,6 +170,9 @@ class OrderController extends Controller
             }
             if(auth()->user()->can('orders-change-status')){
                 $action_list    .= '<a class="dropdown-item btn-change-status" href="#" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-life-ring"></i> Change Status</a>';
+            }
+            if(auth()->user()->can('orders-generate-invoice')){
+                $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice') .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
             }
             // if(auth()->user()->can('orders-delete')){
             //     $action_list    .= '<a class="dropdown-item _deld" href="'.route('admin.order.delete', $data->id).'"><i class="far fa-trash-alt"></i> Delete</a>';
@@ -851,5 +855,10 @@ class OrderController extends Controller
         $price  = DecorationPrice::where(["number_of_colors"=>$number_of_colors, "range"=>$range])->first();
         // dd($price );
         return $price->value;
+    }
+    public function generateInvoice(Request $request)
+    {
+         $pageTitle                              = "Invoice";
+        return view('admin.orders.generate-invoice',compact('pageTitle'));
     }
 }

@@ -98,6 +98,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/orders/view/{order_id}', [OrderController::class, 'orderView'])->name('order.view');
     
      Route::get('/orders/status_update', [OrderController::class, 'status_update'])->name('order.status_update');
+     Route::get('/orders/generate_invoice', [OrderController::class, 'generateInvoice'])->name('order.generateInvoice');
 
 
     Route::get('/get_decoration_price', [OrderController::class, 'get_decoration_price'])->name('get_decoration_price');
