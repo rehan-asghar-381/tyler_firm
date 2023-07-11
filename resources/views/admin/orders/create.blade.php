@@ -151,53 +151,54 @@ hr{
                     @endif
                     <form  method="POST"  action="{{ route('admin.order.store') }}" enctype="multipart/form-data">
                         @csrf
+
                         <div class="row mb-4">
                             <div class="col-md-4">
                                 <label>Client</label>
-                                <select type="text" name="client_id" id="client_id" class="form-control require required-online" value="" >
-                                    <option value="">Select</option>
-                                {{-- 
-                                <option value="new">Add New Client</option>
-                                --}}
-                                @foreach ($clients as $client)
-                                <option value="{{ $client->id }}">{{ $client->first_name." ".$client->last_name." (".$client->email.")" }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label>Job Name</label>
-                            <input type="text" class="form-control" name="job_name" value="" placeholder="Job Name">
-                        </div>
-                        <div class="col-md-4">
-                            <label>Order Number</label>
-                            <input type="text" class="form-control" name="order_number" value="" placeholder="Order Number">
-                        </div>
-                    </div>
-                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Garments</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-profile-tab" onclick="setProjectedUnits();" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Print Location & Colors</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Contract & Shirt + Print Price</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="OTHERCHARGES-tab" data-toggle="pill" href="#OTHERCHARGES" role="tab" aria-controls="OTHERCHARGES" aria-selected="false">Other Charges</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="MARGINS-tab" data-toggle="pill" href="#MARGINS" role="tab" aria-controls="MARGINS" aria-selected="false">Margins</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="FinalPrice-tab" data-toggle="pill" href="#FinalPrice" role="tab" aria-controls="FinalPrice" aria-selected="false">Final Price</a>
-                        </li>
-                    </ul>
 
-                    <div class="tab-content" id="pills-tabContent">
-                       <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                                <select name="client_id" id="client_id" class="form-control search_test  basic-single"  >
+                                    <option value=""> Select</option>
+                                    {{-- <option value="new">Add New Client</option>--}}
+                                    @foreach ($clients as $client)
+                                    <option value="{{ $client->id }}">{{ $client->first_name." ".$client->last_name." (".$client->email.")" }}</option>
+                                    @endforeach
+                                </select>
+                                
+                            </div>
+                            <div class="col-md-4">
+                                <label>Job Name</label>
+                                <input type="text" class="form-control" name="job_name" value="" placeholder="Job Name">
+                            </div>
+                            <div class="col-md-4">
+                                <label>Order Number</label>
+                                <input type="text" class="form-control" name="order_number" value="" placeholder="Order Number">
+                            </div>
+                        </div>
+                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Garments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-profile-tab" onclick="setProjectedUnits();" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Print Location & Colors</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Contract & Shirt + Print Price</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="OTHERCHARGES-tab" data-toggle="pill" href="#OTHERCHARGES" role="tab" aria-controls="OTHERCHARGES" aria-selected="false">Other Charges</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="MARGINS-tab" data-toggle="pill" href="#MARGINS" role="tab" aria-controls="MARGINS" aria-selected="false">Margins</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="FinalPrice-tab" data-toggle="pill" href="#FinalPrice" role="tab" aria-controls="FinalPrice" aria-selected="false">Final Price</a>
+                            </li>
+                        </ul>
 
-                        <div class="row mb-3">
+                        <div class="tab-content" id="pills-tabContent">
+                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+
+                            <div class="row mb-3">
                                     {{--  
                                     <div class="col-md-6">
                                         <label>Brands</label>
@@ -210,9 +211,9 @@ hr{
                                         </select>
                                     </div>
                                     --}}
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label>Products</label>
-                                        <select name="product_ids[]" multiple id="product_ids" class="form-control require">
+                                        <select name="product_ids[]" id="product_ids" class="form-control basic-multiple" multiple="multiple">
                                             {{-- 
                                             <option value="" selected="">All Product</option>
                                             --}}
@@ -256,556 +257,556 @@ hr{
                                 </div>
                                 <div class="col-md-7 mt-2">
                                     <div class="form-group row">
-                                          <label for="quantity_break" class="col-md-3 col-form-label font-weight-600">Quantity Breaks</label>
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
-                                            <select name="quantity_break" id="quantity_break" class="form-control">
-                                                <option value="">Select</option>
-                                                <option value="3-47" >3-47</option>
-                                                <option value="48-71" >48-71</option>
-                                                <option value="72-143" >72-143</option>
-                                                <option value="144-287" >144-287</option>
-                                                <option value="288-431" >288-431</option>
-                                                <option value="432-575" >432-575</option>
-                                                <option value="576-999" >576-999</option>
-                                                <option value="1000-2499" >1000-2499</option>
-                                                <option value="1000-2499" >1000-2499</option>
-                                                <option value="2500-4999" >2500-4999</option>
-                                            </select>
-                                        </div>
+                                      <label for="quantity_break" class="col-md-3 col-form-label font-weight-600">Quantity Breaks</label>
+                                      <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
+                                        <select name="quantity_break" id="quantity_break" class="form-control">
+                                            <option value="">Select</option>
+                                            <option value="3-47" >3-47</option>
+                                            <option value="48-71" >48-71</option>
+                                            <option value="72-143" >72-143</option>
+                                            <option value="144-287" >144-287</option>
+                                            <option value="288-431" >288-431</option>
+                                            <option value="432-575" >432-575</option>
+                                            <option value="576-999" >576-999</option>
+                                            <option value="1000-2499" >1000-2499</option>
+                                            <option value="1000-2499" >1000-2499</option>
+                                            <option value="2500-4999" >2500-4999</option>
+                                        </select>
                                     </div>
                                 </div>
-
-                           
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="pl_s_xl" class="col-sm-3 col-form-label font-weight-600">S-XL</label>
-                                        <input type="hidden" name="plsize[]" value="S-XL" >
-                                        <input type="number" value="" name="size_price[]" onchange="setDecorationPrice(this);"
-                                        onkeyup="setDecorationPrice(this);"   class="my-form-control" id="pl_s_xl" placeholder="">
-                                        <label for="color_location1"  class="col-sm-3 col-form-label font-weight-600"># of Colors Location 1</label>
-                                        <input type="hidden" name="location[]" value="# of Colors Location 1" >
-                                        <input type="number" value="" onchange="getDecorationPrice(this);" onkeyup="getDecorationPrice(this);" name="location_color[]" max="8" min="1" class="my-form-control" id="color_location1" placeholder="">
+                            </div>
 
 
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="pl_s_xl" class="col-sm-3 col-form-label font-weight-600">S-XL</label>
+                                    <input type="hidden" name="plsize[]" value="S-XL" >
+                                    <input type="number" value="" name="size_price[]" onchange="setDecorationPrice(this);"
+                                    onkeyup="setDecorationPrice(this);"   class="my-form-control" id="pl_s_xl" placeholder="">
+                                    <label for="color_location1"  class="col-sm-3 col-form-label font-weight-600"># of Colors Location 1</label>
+                                    <input type="hidden" name="location[]" value="# of Colors Location 1" >
+                                    <input type="number" value="" onchange="getDecorationPrice(this);" onkeyup="getDecorationPrice(this);" name="location_color[]" max="8" min="1" class="my-form-control" id="color_location1" placeholder="">
 
-                                    <div class="form-group row">
-                                        <label for="pl_xxl" class="col-sm-3 col-form-label font-weight-600">XXL</label>
-                                        <input type="hidden" name="plsize[]" value="XXL" >
-                                        <input type="number" value="" name="size_price[]" class="my-form-control" id="pl_xxl" onchange="setDecorationPrice(this);"
-                                        onkeyup="setDecorationPrice(this);" placeholder="">
-                                        <label for="color_location2" class="col-sm-3 col-form-label font-weight-600"># of Colors Location 2</label>
-                                        <input type="hidden" name="location[]" value="# of Colors Location 3" >
-                                        <input type="number" value="" onchange="getDecorationPrice(this);"
-                                        onkeyup="getDecorationPrice(this);"  name="location_color[]" max="8" min="1" class="my-form-control" id="color_location2" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
 
-                                    <div class="form-group row">
-                                        <label for="pl_xxxl" class="col-sm-3 col-form-label font-weight-600">XXXL</label>
-                                        <input type="hidden" name="plsize[]" value="XXXL" >
-                                        <input type="number" value="" 
-                                        name="size_price[]" class="my-form-control" id="pl_xxxl" onchange="setDecorationPrice(this);"
-                                        onkeyup="setDecorationPrice(this);" placeholder="">
-                                        <label for="color_location3" class="col-sm-3 col-form-label font-weight-600"># of Colors Location 3</label>
-                                        <input type="hidden" name="location[]" value="# of Colors Location 3" >
-                                        <input type="number" value=""onchange="getDecorationPrice(this);"
-                                        onkeyup="getDecorationPrice(this);" 
-                                        name="location_color[]" max="8" min="1" class="my-form-control" id="color_location3" placeholder="">
-                                    </div>
                                 </div>
-                                <div class="col-md-7 mt-2">
+                            </div>
+                            <div class="col-md-7 mt-2">
 
-                                    <div class="form-group row">
-                                        <label for="pl_xxxxl" class="col-sm-3 col-form-label font-weight-600">XXXXL</label>
-                                        <input type="hidden" name="plsize[]" value="XXXXL" >
-                                        <input type="number" value="" 
-                                        name="size_price[]" class="my-form-control" id="pl_xxxxl" onchange="setDecorationPrice(this);"
-                                        onkeyup="setDecorationPrice(this);" placeholder="">
-                                        <label for="color_location4" class="col-sm-3 col-form-label font-weight-600"># of Colors Location 4</label>
-                                        <input type="hidden" name="location[]" value="# of Colors Location 4" >
-                                        <input type="number" value=""  
-                                        name="location_color[]" max="8" min="1" class="my-form-control" onchange="getDecorationPrice(this);"
-                                        onkeyup="getDecorationPrice(this);" id="color_location4" placeholder="">
-                                    </div>
+                                <div class="form-group row">
+                                    <label for="pl_xxl" class="col-sm-3 col-form-label font-weight-600">XXL</label>
+                                    <input type="hidden" name="plsize[]" value="XXL" >
+                                    <input type="number" value="" name="size_price[]" class="my-form-control" id="pl_xxl" onchange="setDecorationPrice(this);"
+                                    onkeyup="setDecorationPrice(this);" placeholder="">
+                                    <label for="color_location2" class="col-sm-3 col-form-label font-weight-600"># of Colors Location 2</label>
+                                    <input type="hidden" name="location[]" value="# of Colors Location 3" >
+                                    <input type="number" value="" onchange="getDecorationPrice(this);"
+                                    onkeyup="getDecorationPrice(this);"  name="location_color[]" max="8" min="1" class="my-form-control" id="color_location2" placeholder="">
                                 </div>
-                                <div class="col-md-7 mt-2">
+                            </div>
+                            <div class="col-md-7 mt-2">
 
-                                    <div class="form-group row">
-                                        <label for="pl_xxxxxl" class="col-sm-3 col-form-label font-weight-600">XXXXXL</label>
-                                        <input type="hidden" name="plsize[]" value="XXXXXL" >
-                                        <input type="number" value="" 
-                                        name="size_price[]"  class="my-form-control" id="pl_xxxxxl" onchange="setDecorationPrice(this);"
-                                        onkeyup="setDecorationPrice(this);" placeholder="">
-                                        <label for="color_location5" class="col-sm-3 col-form-label font-weight-600"># of Colors Location 5</label>
-                                        <input type="hidden" name="location[]" value="# of Colors Location 5" >
-                                        <input type="number" value="" onchange="getDecorationPrice(this);"
-                                        onkeyup="getDecorationPrice(this);" 
-                                        name="location_color[]" max="8" min="1" class="my-form-control" id="color_location5" placeholder="">
-                                    </div>
+                                <div class="form-group row">
+                                    <label for="pl_xxxl" class="col-sm-3 col-form-label font-weight-600">XXXL</label>
+                                    <input type="hidden" name="plsize[]" value="XXXL" >
+                                    <input type="number" value="" 
+                                    name="size_price[]" class="my-form-control" id="pl_xxxl" onchange="setDecorationPrice(this);"
+                                    onkeyup="setDecorationPrice(this);" placeholder="">
+                                    <label for="color_location3" class="col-sm-3 col-form-label font-weight-600"># of Colors Location 3</label>
+                                    <input type="hidden" name="location[]" value="# of Colors Location 3" >
+                                    <input type="number" value=""onchange="getDecorationPrice(this);"
+                                    onkeyup="getDecorationPrice(this);" 
+                                    name="location_color[]" max="8" min="1" class="my-form-control" id="color_location3" placeholder="">
                                 </div>
-                            {{-- </form> --}}
-                        </div>
-                        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-                            {{-- <form class="form-inline offset-md-2"> --}}
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="location1_charge" class="col-sm-3 col-form-label font-weight-600">Location 1 Charge</label>
-                                        <input type="hidden" name="location_charge[]" value="Location 1 Charge">
-                                        <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location1_charge" placeholder="">
-                                        <label for="s-xl" class="col-sm-3 col-form-label font-weight-600">S-XL</label>
-                                        <input type="hidden" name="size[]" value="S-XL">
-                                        <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_s_xl" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="location2_charge" class="col-sm-3 col-form-label font-weight-600">Location 2 Charge</label>
-                                        <input type="hidden" name="location_charge[]" value="Location 2 Charge">
-                                        <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location2_charge" placeholder="">
-                                        <label for="sp_xxl" class="col-sm-3 col-form-label font-weight-600">XXL</label>
-                                        <input type="hidden" name="size[]" value="XXL">
-                                        <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxl" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="location3_charge" class="col-sm-3 col-form-label font-weight-600">Location 3 Charge</label>
-                                        <input type="hidden" name="location_charge[]" value="Location 3 Charge">
-                                        <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location3_charge" placeholder="">
-                                        <label for="sp_xxxl" class="col-sm-3 col-form-label font-weight-600">XXXL</label>
-                                        <input type="hidden" name="size[]" value="XXXL">
-                                        <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxl" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="location4_charge" class="col-sm-3 col-form-label font-weight-600">Location 4 Charge</label>
-                                        <input type="hidden" name="location_charge[]" value="Location 4 Charge">
-                                        <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location4_charge" placeholder="">
-                                        <label for="sp_xxxxl" class="col-sm-3 col-form-label font-weight-600">XXXXL</label>
-                                        <input type="hidden" name="size[]" value="XXXXL">
-                                        <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxxl" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="location5_charge" class="col-sm-3 col-form-label font-weight-600">Location 5 Charge</label>
-                                        <input type="hidden" name="location_charge[]" value="Location 5 Charge">
-                                        <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location5_charge" placeholder="">
-                                        <label for="sp_xxxxxl" class="col-sm-3 col-form-label font-weight-600">XXXXXL</label>
-                                        <input type="hidden" name="size[]" value="XXXXXL">
-                                        <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxxxl" placeholder="">
-                                    </div>
-                                </div>
-                            {{-- </form> --}}
-                        </div>
-                        <div class="tab-pane fade" id="OTHERCHARGES" role="tabpanel" aria-labelledby="OTHERCHARGES-tab">
-                            {{-- <form class="form-inline "> --}}
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="fold_bag_tag_pieces" class="col-sm-3 col-form-label font-weight-600">FOLD/BAG/TAG</label>
-                                        <input type="number" min="0" name="fold_bag_tag_pieces" value="" class="my-form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
-                                        <label for="fold_bag_tag_prices" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <input type="number" min="0" name="fold_bag_tag_prices" value="" class="my-form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="hang_tag_pieces" class="col-sm-3 col-form-label font-weight-600">Hang Tag</label>
-                                        <input type="number" min="0" name="hang_tag_pieces" value="" class="my-form-control " id="hang_tag_pieces" placeholder="Pieces">
-                                        <label for="hang_tag_prices" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <input type="number" min="0" name="hang_tag_prices" value="" class="my-form-control mr-2" id="hang_tag_prices" placeholder="Prices">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="art_fee" class="col-sm-3 col-form-label font-weight-600">Art Fee</label>
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
-                                            <select name="art_fee" id="art_fee" class="my-form-control">
-                                                <option value="">Select</option>
-                                                <option value="0">$0.00</option>
-                                                <option value="20">$20.00</option>
-                                                <option value="30">$30.00</option>
-                                                <option value="40">$40.00</option>
-                                                <option value="50">$50.00</option>
-                                                <option value="55">$55.00</option>
-                                                <option value="60">$60.00</option>
-                                                <option value="100">$100.00</option>
-                                                <option value="120">$120.00</option>
-                                            </select>
-                                        </div>
-                                        <label for="art_discount" class="col-md-3 col-form-label font-weight-600">Art Discount</label>
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
-                                            <select name="art_discount" id="art_discount" class="my-form-control">
-                                                <option value="">Select</option>
-                                                <option value="0" >$0.00</option>
-                                                <option value="20" >-$20.00</option>
-                                                <option value="25" >-$25.00</option>
-                                                <option value="30" >-$30.00</option>
-                                                <option value="35" >-$35.00</option>
-                                                <option value="40" >-$40.00</option>
-                                                <option value="50" >-$50.00</option>
-                                                <option value="60" >-$60.00</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="art_time" class="col-sm-3 col-form-label font-weight-600">Art Time</label>
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
-                                            <select name="art_time" id="art_time" class="my-form-control">
-                                                <option value="">Select</option>
-                                                <option value="1">1 Hour</option>
-                                                <option value="2">2 Hour</option>
-                                                <option value="3">3 Hour</option>
-                                                <option value="4">4 Hour</option>
-                                            </select>
-                                        </div>
-                                        <label for="tax" class="col-md-3 col-form-label font-weight-600">Tax</label>
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
-                                            <select name="tax" id="tax" class="my-form-control">
-                                                <option value="">Select</option>
-                                                <option value="0" >0</option>
-                                                <option value="8.375" >8.375%</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            {{-- </form> --}}
-                        </div>
-                        <div class="tab-pane fade" id="MARGINS" role="tabpanel" aria-labelledby="MARGINS-tab">
-                            {{-- <form class="form-inline "> --}}
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="transfers_pieces" class="col-sm-3 col-form-label font-weight-600">Transfers</label>
-                                        <input type="number" min="0" name="transfers_pieces" value="" class="my-form-control " id="transfers_pieces" placeholder="Pieces">
-                                        <label for="transfers_prices" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <input type="number" min="0" name="transfers_prices" value="" class="my-form-control mr-2" id="transfers_prices" placeholder="Prices">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="ink_color_change_pieces" class="col-sm-3 col-form-label font-weight-600">Ink Color Change</label>
-                                        <input type="number" min="0" name="ink_color_change_pieces" value="" class="my-form-control " id="ink_color_change_pieces" placeholder="Pieces">
-                                        <label for="art_discount_prices" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <input type="number" min="0" name="art_discount_prices" value="" class="my-form-control mr-2" id="art_discount_prices" placeholder="Prices">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="hang_tag1" class="col-sm-3 col-form-label font-weight-600">Shipping</label>
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
-                                            <select name="art_fee" id="art_fee" class="my-form-control">
-                                                <option value="">Select</option>
-                                                <option value="20">$20.00</option>
-                                                <option value="30">$30.00</option>
-                                                <option value="40">$40.00</option>
-                                                <option value="50">$50.00</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr class="dotted">
-                                <div class="container">
-                                    <div class="row justify-content-center">
-                                        <b>Margin</b>
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="min_profit_margin" class="col-sm-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
-                                            <select onchange="setMinMargin(this);" name="min_profit_margin" id="min_profit_margin" class="my-form-control">
-                                                <option value="">Select Min Margin</option>
-                                                <option value="1" >1 %</option>
-                                                <option value="2" >2 %</option>
-                                                <option value="3" >3 %</option>
-                                                <option value="4" >4 %</option>
-                                                <option value="5" >5 %</option>
-                                                <option value="6" >6 %</option>
-                                                <option value="7" >7 %</option>
-                                                <option value="8" >8 %</option>
-                                                <option value="9" >9 %</option>
-                                                <option value="10" >10 %</option>
-                                                <option value="11" >11 %</option>
-                                                <option value="12" >12 %</option>
-                                                <option value="13" >13 %</option>
-                                                <option value="14" >14 %</option>
-                                                <option value="15" >15 %</option>
-                                                <option value="16" >16 %</option>
-                                                <option value="17" >17 %</option>
-                                                <option value="18" >18 %</option>
-                                                <option value="19" >19 %</option>
-                                                <option value="20" >20 %</option>
-                                                <option value="21" >21 %</option>
-                                                <option value="22" >22 %</option>
-                                                <option value="23" >23 %</option>
-                                                <option value="24" >24 %</option>
-                                                <option value="25" >25 %</option>
-                                                <option value="26" >26 %</option>
-                                                <option value="27" >27 %</option>
-                                                <option value="28" >28 %</option>
-                                                <option value="29" >29 %</option>
-                                                <option value="30" >30 %</option>
-                                                <option value="31" >31 %</option>
-                                                <option value="32" >32 %</option>
-                                                <option value="33" >33 %</option>
-                                                <option value="34" >34 %</option>
-                                                <option value="35" >35 %</option>
-                                                <option value="36" >36 %</option>
-                                                <option value="37" >37 %</option>
-                                                <option value="38" >38 %</option>
-                                                <option value="39" >39 %</option>
-                                                <option value="40" >40 %</option>
-                                                <option value="41" >41 %</option>
-                                                <option value="42" >42 %</option>
-                                                <option value="43" >43 %</option>
-                                                <option value="44" >44 %</option>
-                                                <option value="45" >45 %</option>
-                                                <option value="46" >46 %</option>
-                                                <option value="47" >47 %</option>
-                                                <option value="48" >48 %</option>
-                                                <option value="49" >49 %</option>
-                                                <option value="50" >50 %</option>
-                                                <option value="51" >51 %</option>
-                                                <option value="52" >52 %</option>
-                                                <option value="53" >53 %</option>
-                                                <option value="54" >54 %</option>
-                                                <option value="55" >55 %</option>
-                                                <option value="56" >56 %</option>
-                                                <option value="57" >57 %</option>
-                                                <option value="58" >58 %</option>
-                                                <option value="59" >59 %</option>
-                                                <option value="60" >60 %</option>
-                                                <option value="61" >61 %</option>
-                                                <option value="62" >62 %</option>
-                                                <option value="63" >63 %</option>
-                                                <option value="64" >64 %</option>
-                                                <option value="65" >65 %</option>
-                                                <option value="66" >66 %</option>
-                                                <option value="67" >67 %</option>
-                                                <option value="68" >68 %</option>
-                                                <option value="69" >69 %</option>
-                                                <option value="70" >70 %</option>
-                                                <option value="71" >71 %</option>
-                                                <option value="72" >72 %</option>
-                                                <option value="73" >73 %</option>
-                                                <option value="74" >74 %</option>
-                                                <option value="75" >75 %</option>
-                                                <option value="76" >76 %</option>
-                                                <option value="77" >77 %</option>
-                                                <option value="78" >78 %</option>
-                                                <option value="79" >79 %</option>
-                                                <option value="80" >80 %</option>
-                                                <option value="81" >81 %</option>
-                                                <option value="82" >82 %</option>
-                                                <option value="83" >83 %</option>
-                                                <option value="84" >84 %</option>
-                                                <option value="85" >85 %</option>
-                                                <option value="86" >86 %</option>
-                                                <option value="87" >87 %</option>
-                                                <option value="88" >88 %</option>
-                                                <option value="89" >89 %</option>
-                                                <option value="90" >90 %</option>
-                                                <option value="91" >91 %</option>
-                                                <option value="92" >92 %</option>
-                                                <option value="93" >93 %</option>
-                                                <option value="94" >94 %</option>
-                                                <option value="95" >95 %</option>
-                                                <option value="96" >96 %</option>
-                                                <option value="97" >97 %</option>
-                                                <option value="98" >98 %</option>
-                                                <option value="99" >99 %</option>
-                                                <option value="100" >100 %</option>
-                                            </select>
-                                        </div>
-                                        <label for="max_profit_margin" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
-                                            <select name="max_profit_margin" onchange="setMaxMargin(this);" id="max_profit_margin" class="my-form-control">
-                                                <option value="">Select Max Margin</option>
-                                                <option value="1" >1 %</option>
-                                                <option value="2" >2 %</option>
-                                                <option value="3" >3 %</option>
-                                                <option value="4" >4 %</option>
-                                                <option value="5" >5 %</option>
-                                                <option value="6" >6 %</option>
-                                                <option value="7" >7 %</option>
-                                                <option value="8" >8 %</option>
-                                                <option value="9" >9 %</option>
-                                                <option value="10" >10 %</option>
-                                                <option value="11" >11 %</option>
-                                                <option value="12" >12 %</option>
-                                                <option value="13" >13 %</option>
-                                                <option value="14" >14 %</option>
-                                                <option value="15" >15 %</option>
-                                                <option value="16" >16 %</option>
-                                                <option value="17" >17 %</option>
-                                                <option value="18" >18 %</option>
-                                                <option value="19" >19 %</option>
-                                                <option value="20" >20 %</option>
-                                                <option value="21" >21 %</option>
-                                                <option value="22" >22 %</option>
-                                                <option value="23" >23 %</option>
-                                                <option value="24" >24 %</option>
-                                                <option value="25" >25 %</option>
-                                                <option value="26" >26 %</option>
-                                                <option value="27" >27 %</option>
-                                                <option value="28" >28 %</option>
-                                                <option value="29" >29 %</option>
-                                                <option value="30" >30 %</option>
-                                                <option value="31" >31 %</option>
-                                                <option value="32" >32 %</option>
-                                                <option value="33" >33 %</option>
-                                                <option value="34" >34 %</option>
-                                                <option value="35" >35 %</option>
-                                                <option value="36" >36 %</option>
-                                                <option value="37" >37 %</option>
-                                                <option value="38" >38 %</option>
-                                                <option value="39" >39 %</option>
-                                                <option value="40" >40 %</option>
-                                                <option value="41" >41 %</option>
-                                                <option value="42" >42 %</option>
-                                                <option value="43" >43 %</option>
-                                                <option value="44" >44 %</option>
-                                                <option value="45" >45 %</option>
-                                                <option value="46" >46 %</option>
-                                                <option value="47" >47 %</option>
-                                                <option value="48" >48 %</option>
-                                                <option value="49" >49 %</option>
-                                                <option value="50" >50 %</option>
-                                                <option value="51" >51 %</option>
-                                                <option value="52" >52 %</option>
-                                                <option value="53" >53 %</option>
-                                                <option value="54" >54 %</option>
-                                                <option value="55" >55 %</option>
-                                                <option value="56" >56 %</option>
-                                                <option value="57" >57 %</option>
-                                                <option value="58" >58 %</option>
-                                                <option value="59" >59 %</option>
-                                                <option value="60" >60 %</option>
-                                                <option value="61" >61 %</option>
-                                                <option value="62" >62 %</option>
-                                                <option value="63" >63 %</option>
-                                                <option value="64" >64 %</option>
-                                                <option value="65" >65 %</option>
-                                                <option value="66" >66 %</option>
-                                                <option value="67" >67 %</option>
-                                                <option value="68" >68 %</option>
-                                                <option value="69" >69 %</option>
-                                                <option value="70" >70 %</option>
-                                                <option value="71" >71 %</option>
-                                                <option value="72" >72 %</option>
-                                                <option value="73" >73 %</option>
-                                                <option value="74" >74 %</option>
-                                                <option value="75" >75 %</option>
-                                                <option value="76" >76 %</option>
-                                                <option value="77" >77 %</option>
-                                                <option value="78" >78 %</option>
-                                                <option value="79" >79 %</option>
-                                                <option value="80" >80 %</option>
-                                                <option value="81" >81 %</option>
-                                                <option value="82" >82 %</option>
-                                                <option value="83" >83 %</option>
-                                                <option value="84" >84 %</option>
-                                                <option value="85" >85 %</option>
-                                                <option value="86" >86 %</option>
-                                                <option value="87" >87 %</option>
-                                                <option value="88" >88 %</option>
-                                                <option value="89" >89 %</option>
-                                                <option value="90" >90 %</option>
-                                                <option value="91" >91 %</option>
-                                                <option value="92" >92 %</option>
-                                                <option value="93" >93 %</option>
-                                                <option value="94" >94 %</option>
-                                                <option value="95" >95 %</option>
-                                                <option value="96" >96 %</option>
-                                                <option value="97" >97 %</option>
-                                                <option value="98" >98 %</option>
-                                                <option value="99" >99 %</option>
-                                                <option value="100" >100 %</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="sxl_min_mar" class="col-sm-3 col-form-label font-weight-600">S-XL</label>
-                                        <input type="hidden" name="margin_size[]" value="S-XL">
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" placeholder="Min" name="min_margin[]" readonly="" id="sxl_min_mar">
-                                        </div>
-                                        <label for="max_profit_margin" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="sxl_max_mar">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="xxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXL</label>
-                                        <input type="hidden" name="margin_size[]" value="XXL">
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxl_min_mar">
-                                        </div>
-                                        <label for="xxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="xxl_max_mar">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="xxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXL</label>
-                                        <input type="hidden" name="margin_size[]" value="XXXL">
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxl_min_mar">
-                                        </div>
-                                        <label for="xxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxl_max_mar">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="xxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXXL</label>
-                                        <input type="hidden" name="margin_size[]" value="XXXXL">
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxl_min_mar">
-                                        </div>
-                                        <label for="xxxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" placeholder="Max" name="max_margin[]" readonly="" id="xxxxl_max_mar">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-7 mt-2">
-                                    <div class="form-group row">
-                                        <label for="xxxxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXXXL</label>
-                                        <input type="hidden" name="margin_size[]" value="XXXXXL">
+                            </div>
+                            <div class="col-md-7 mt-2">
 
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxxl_min_mar">
-                                        </div>
-                                        <label for="xxxxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
-                                        <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
-                                            <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxxxl_max_mar">
-                                        </div>
+                                <div class="form-group row">
+                                    <label for="pl_xxxxl" class="col-sm-3 col-form-label font-weight-600">XXXXL</label>
+                                    <input type="hidden" name="plsize[]" value="XXXXL" >
+                                    <input type="number" value="" 
+                                    name="size_price[]" class="my-form-control" id="pl_xxxxl" onchange="setDecorationPrice(this);"
+                                    onkeyup="setDecorationPrice(this);" placeholder="">
+                                    <label for="color_location4" class="col-sm-3 col-form-label font-weight-600"># of Colors Location 4</label>
+                                    <input type="hidden" name="location[]" value="# of Colors Location 4" >
+                                    <input type="number" value=""  
+                                    name="location_color[]" max="8" min="1" class="my-form-control" onchange="getDecorationPrice(this);"
+                                    onkeyup="getDecorationPrice(this);" id="color_location4" placeholder="">
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+
+                                <div class="form-group row">
+                                    <label for="pl_xxxxxl" class="col-sm-3 col-form-label font-weight-600">XXXXXL</label>
+                                    <input type="hidden" name="plsize[]" value="XXXXXL" >
+                                    <input type="number" value="" 
+                                    name="size_price[]"  class="my-form-control" id="pl_xxxxxl" onchange="setDecorationPrice(this);"
+                                    onkeyup="setDecorationPrice(this);" placeholder="">
+                                    <label for="color_location5" class="col-sm-3 col-form-label font-weight-600"># of Colors Location 5</label>
+                                    <input type="hidden" name="location[]" value="# of Colors Location 5" >
+                                    <input type="number" value="" onchange="getDecorationPrice(this);"
+                                    onkeyup="getDecorationPrice(this);" 
+                                    name="location_color[]" max="8" min="1" class="my-form-control" id="color_location5" placeholder="">
+                                </div>
+                            </div>
+                        {{-- </form> --}}
+                    </div>
+                    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                        {{-- <form class="form-inline offset-md-2"> --}}
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="location1_charge" class="col-sm-3 col-form-label font-weight-600">Location 1 Charge</label>
+                                    <input type="hidden" name="location_charge[]" value="Location 1 Charge">
+                                    <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location1_charge" placeholder="">
+                                    <label for="s-xl" class="col-sm-3 col-form-label font-weight-600">S-XL</label>
+                                    <input type="hidden" name="size[]" value="S-XL">
+                                    <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_s_xl" placeholder="">
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="location2_charge" class="col-sm-3 col-form-label font-weight-600">Location 2 Charge</label>
+                                    <input type="hidden" name="location_charge[]" value="Location 2 Charge">
+                                    <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location2_charge" placeholder="">
+                                    <label for="sp_xxl" class="col-sm-3 col-form-label font-weight-600">XXL</label>
+                                    <input type="hidden" name="size[]" value="XXL">
+                                    <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxl" placeholder="">
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="location3_charge" class="col-sm-3 col-form-label font-weight-600">Location 3 Charge</label>
+                                    <input type="hidden" name="location_charge[]" value="Location 3 Charge">
+                                    <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location3_charge" placeholder="">
+                                    <label for="sp_xxxl" class="col-sm-3 col-form-label font-weight-600">XXXL</label>
+                                    <input type="hidden" name="size[]" value="XXXL">
+                                    <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxl" placeholder="">
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="location4_charge" class="col-sm-3 col-form-label font-weight-600">Location 4 Charge</label>
+                                    <input type="hidden" name="location_charge[]" value="Location 4 Charge">
+                                    <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location4_charge" placeholder="">
+                                    <label for="sp_xxxxl" class="col-sm-3 col-form-label font-weight-600">XXXXL</label>
+                                    <input type="hidden" name="size[]" value="XXXXL">
+                                    <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxxl" placeholder="">
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="location5_charge" class="col-sm-3 col-form-label font-weight-600">Location 5 Charge</label>
+                                    <input type="hidden" name="location_charge[]" value="Location 5 Charge">
+                                    <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location5_charge" placeholder="">
+                                    <label for="sp_xxxxxl" class="col-sm-3 col-form-label font-weight-600">XXXXXL</label>
+                                    <input type="hidden" name="size[]" value="XXXXXL">
+                                    <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxxxl" placeholder="">
+                                </div>
+                            </div>
+                        {{-- </form> --}}
+                    </div>
+                    <div class="tab-pane fade" id="OTHERCHARGES" role="tabpanel" aria-labelledby="OTHERCHARGES-tab">
+                        {{-- <form class="form-inline "> --}}
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="fold_bag_tag_pieces" class="col-sm-3 col-form-label font-weight-600">FOLD/BAG/TAG</label>
+                                    <input type="number" min="0" name="fold_bag_tag_pieces" value="" class="my-form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
+                                    <label for="fold_bag_tag_prices" class="col-md-3 col-form-label font-weight-600"></label>
+                                    <input type="number" min="0" name="fold_bag_tag_prices" value="" class="my-form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="hang_tag_pieces" class="col-sm-3 col-form-label font-weight-600">Hang Tag</label>
+                                    <input type="number" min="0" name="hang_tag_pieces" value="" class="my-form-control " id="hang_tag_pieces" placeholder="Pieces">
+                                    <label for="hang_tag_prices" class="col-md-3 col-form-label font-weight-600"></label>
+                                    <input type="number" min="0" name="hang_tag_prices" value="" class="my-form-control mr-2" id="hang_tag_prices" placeholder="Prices">
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="art_fee" class="col-sm-3 col-form-label font-weight-600">Art Fee</label>
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
+                                        <select name="art_fee" id="art_fee" class="my-form-control">
+                                            <option value="">Select</option>
+                                            <option value="0">$0.00</option>
+                                            <option value="20">$20.00</option>
+                                            <option value="30">$30.00</option>
+                                            <option value="40">$40.00</option>
+                                            <option value="50">$50.00</option>
+                                            <option value="55">$55.00</option>
+                                            <option value="60">$60.00</option>
+                                            <option value="100">$100.00</option>
+                                            <option value="120">$120.00</option>
+                                        </select>
+                                    </div>
+                                    <label for="art_discount" class="col-md-3 col-form-label font-weight-600">Art Discount</label>
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
+                                        <select name="art_discount" id="art_discount" class="my-form-control">
+                                            <option value="">Select</option>
+                                            <option value="0" >$0.00</option>
+                                            <option value="20" >-$20.00</option>
+                                            <option value="25" >-$25.00</option>
+                                            <option value="30" >-$30.00</option>
+                                            <option value="35" >-$35.00</option>
+                                            <option value="40" >-$40.00</option>
+                                            <option value="50" >-$50.00</option>
+                                            <option value="60" >-$60.00</option>
+                                        </select>
                                     </div>
                                 </div>
-                            {{-- </form> --}}
-                        </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="art_time" class="col-sm-3 col-form-label font-weight-600">Art Time</label>
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
+                                        <select name="art_time" id="art_time" class="my-form-control">
+                                            <option value="">Select</option>
+                                            <option value="1">1 Hour</option>
+                                            <option value="2">2 Hour</option>
+                                            <option value="3">3 Hour</option>
+                                            <option value="4">4 Hour</option>
+                                        </select>
+                                    </div>
+                                    <label for="tax" class="col-md-3 col-form-label font-weight-600">Tax</label>
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
+                                        <select name="tax" id="tax" class="my-form-control">
+                                            <option value="">Select</option>
+                                            <option value="0" >0</option>
+                                            <option value="8.375" >8.375%</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        {{-- </form> --}}
+                    </div>
+                    <div class="tab-pane fade" id="MARGINS" role="tabpanel" aria-labelledby="MARGINS-tab">
+                        {{-- <form class="form-inline "> --}}
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="transfers_pieces" class="col-sm-3 col-form-label font-weight-600">Transfers</label>
+                                    <input type="number" min="0" name="transfers_pieces" value="" class="my-form-control " id="transfers_pieces" placeholder="Pieces">
+                                    <label for="transfers_prices" class="col-md-3 col-form-label font-weight-600"></label>
+                                    <input type="number" min="0" name="transfers_prices" value="" class="my-form-control mr-2" id="transfers_prices" placeholder="Prices">
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="ink_color_change_pieces" class="col-sm-3 col-form-label font-weight-600">Ink Color Change</label>
+                                    <input type="number" min="0" name="ink_color_change_pieces" value="" class="my-form-control " id="ink_color_change_pieces" placeholder="Pieces">
+                                    <label for="art_discount_prices" class="col-md-3 col-form-label font-weight-600"></label>
+                                    <input type="number" min="0" name="art_discount_prices" value="" class="my-form-control mr-2" id="art_discount_prices" placeholder="Prices">
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="hang_tag1" class="col-sm-3 col-form-label font-weight-600">Shipping</label>
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
+                                        <select name="art_fee" id="art_fee" class="my-form-control">
+                                            <option value="">Select</option>
+                                            <option value="20">$20.00</option>
+                                            <option value="30">$30.00</option>
+                                            <option value="40">$40.00</option>
+                                            <option value="50">$50.00</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="dotted">
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <b>Margin</b>
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="min_profit_margin" class="col-sm-3 col-form-label font-weight-600"></label>
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
+                                        <select onchange="setMinMargin(this);" name="min_profit_margin" id="min_profit_margin" class="my-form-control">
+                                            <option value="">Select Min Margin</option>
+                                            <option value="1" >1 %</option>
+                                            <option value="2" >2 %</option>
+                                            <option value="3" >3 %</option>
+                                            <option value="4" >4 %</option>
+                                            <option value="5" >5 %</option>
+                                            <option value="6" >6 %</option>
+                                            <option value="7" >7 %</option>
+                                            <option value="8" >8 %</option>
+                                            <option value="9" >9 %</option>
+                                            <option value="10" >10 %</option>
+                                            <option value="11" >11 %</option>
+                                            <option value="12" >12 %</option>
+                                            <option value="13" >13 %</option>
+                                            <option value="14" >14 %</option>
+                                            <option value="15" >15 %</option>
+                                            <option value="16" >16 %</option>
+                                            <option value="17" >17 %</option>
+                                            <option value="18" >18 %</option>
+                                            <option value="19" >19 %</option>
+                                            <option value="20" >20 %</option>
+                                            <option value="21" >21 %</option>
+                                            <option value="22" >22 %</option>
+                                            <option value="23" >23 %</option>
+                                            <option value="24" >24 %</option>
+                                            <option value="25" >25 %</option>
+                                            <option value="26" >26 %</option>
+                                            <option value="27" >27 %</option>
+                                            <option value="28" >28 %</option>
+                                            <option value="29" >29 %</option>
+                                            <option value="30" >30 %</option>
+                                            <option value="31" >31 %</option>
+                                            <option value="32" >32 %</option>
+                                            <option value="33" >33 %</option>
+                                            <option value="34" >34 %</option>
+                                            <option value="35" >35 %</option>
+                                            <option value="36" >36 %</option>
+                                            <option value="37" >37 %</option>
+                                            <option value="38" >38 %</option>
+                                            <option value="39" >39 %</option>
+                                            <option value="40" >40 %</option>
+                                            <option value="41" >41 %</option>
+                                            <option value="42" >42 %</option>
+                                            <option value="43" >43 %</option>
+                                            <option value="44" >44 %</option>
+                                            <option value="45" >45 %</option>
+                                            <option value="46" >46 %</option>
+                                            <option value="47" >47 %</option>
+                                            <option value="48" >48 %</option>
+                                            <option value="49" >49 %</option>
+                                            <option value="50" >50 %</option>
+                                            <option value="51" >51 %</option>
+                                            <option value="52" >52 %</option>
+                                            <option value="53" >53 %</option>
+                                            <option value="54" >54 %</option>
+                                            <option value="55" >55 %</option>
+                                            <option value="56" >56 %</option>
+                                            <option value="57" >57 %</option>
+                                            <option value="58" >58 %</option>
+                                            <option value="59" >59 %</option>
+                                            <option value="60" >60 %</option>
+                                            <option value="61" >61 %</option>
+                                            <option value="62" >62 %</option>
+                                            <option value="63" >63 %</option>
+                                            <option value="64" >64 %</option>
+                                            <option value="65" >65 %</option>
+                                            <option value="66" >66 %</option>
+                                            <option value="67" >67 %</option>
+                                            <option value="68" >68 %</option>
+                                            <option value="69" >69 %</option>
+                                            <option value="70" >70 %</option>
+                                            <option value="71" >71 %</option>
+                                            <option value="72" >72 %</option>
+                                            <option value="73" >73 %</option>
+                                            <option value="74" >74 %</option>
+                                            <option value="75" >75 %</option>
+                                            <option value="76" >76 %</option>
+                                            <option value="77" >77 %</option>
+                                            <option value="78" >78 %</option>
+                                            <option value="79" >79 %</option>
+                                            <option value="80" >80 %</option>
+                                            <option value="81" >81 %</option>
+                                            <option value="82" >82 %</option>
+                                            <option value="83" >83 %</option>
+                                            <option value="84" >84 %</option>
+                                            <option value="85" >85 %</option>
+                                            <option value="86" >86 %</option>
+                                            <option value="87" >87 %</option>
+                                            <option value="88" >88 %</option>
+                                            <option value="89" >89 %</option>
+                                            <option value="90" >90 %</option>
+                                            <option value="91" >91 %</option>
+                                            <option value="92" >92 %</option>
+                                            <option value="93" >93 %</option>
+                                            <option value="94" >94 %</option>
+                                            <option value="95" >95 %</option>
+                                            <option value="96" >96 %</option>
+                                            <option value="97" >97 %</option>
+                                            <option value="98" >98 %</option>
+                                            <option value="99" >99 %</option>
+                                            <option value="100" >100 %</option>
+                                        </select>
+                                    </div>
+                                    <label for="max_profit_margin" class="col-md-3 col-form-label font-weight-600"></label>
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;">
+                                        <select name="max_profit_margin" onchange="setMaxMargin(this);" id="max_profit_margin" class="my-form-control">
+                                            <option value="">Select Max Margin</option>
+                                            <option value="1" >1 %</option>
+                                            <option value="2" >2 %</option>
+                                            <option value="3" >3 %</option>
+                                            <option value="4" >4 %</option>
+                                            <option value="5" >5 %</option>
+                                            <option value="6" >6 %</option>
+                                            <option value="7" >7 %</option>
+                                            <option value="8" >8 %</option>
+                                            <option value="9" >9 %</option>
+                                            <option value="10" >10 %</option>
+                                            <option value="11" >11 %</option>
+                                            <option value="12" >12 %</option>
+                                            <option value="13" >13 %</option>
+                                            <option value="14" >14 %</option>
+                                            <option value="15" >15 %</option>
+                                            <option value="16" >16 %</option>
+                                            <option value="17" >17 %</option>
+                                            <option value="18" >18 %</option>
+                                            <option value="19" >19 %</option>
+                                            <option value="20" >20 %</option>
+                                            <option value="21" >21 %</option>
+                                            <option value="22" >22 %</option>
+                                            <option value="23" >23 %</option>
+                                            <option value="24" >24 %</option>
+                                            <option value="25" >25 %</option>
+                                            <option value="26" >26 %</option>
+                                            <option value="27" >27 %</option>
+                                            <option value="28" >28 %</option>
+                                            <option value="29" >29 %</option>
+                                            <option value="30" >30 %</option>
+                                            <option value="31" >31 %</option>
+                                            <option value="32" >32 %</option>
+                                            <option value="33" >33 %</option>
+                                            <option value="34" >34 %</option>
+                                            <option value="35" >35 %</option>
+                                            <option value="36" >36 %</option>
+                                            <option value="37" >37 %</option>
+                                            <option value="38" >38 %</option>
+                                            <option value="39" >39 %</option>
+                                            <option value="40" >40 %</option>
+                                            <option value="41" >41 %</option>
+                                            <option value="42" >42 %</option>
+                                            <option value="43" >43 %</option>
+                                            <option value="44" >44 %</option>
+                                            <option value="45" >45 %</option>
+                                            <option value="46" >46 %</option>
+                                            <option value="47" >47 %</option>
+                                            <option value="48" >48 %</option>
+                                            <option value="49" >49 %</option>
+                                            <option value="50" >50 %</option>
+                                            <option value="51" >51 %</option>
+                                            <option value="52" >52 %</option>
+                                            <option value="53" >53 %</option>
+                                            <option value="54" >54 %</option>
+                                            <option value="55" >55 %</option>
+                                            <option value="56" >56 %</option>
+                                            <option value="57" >57 %</option>
+                                            <option value="58" >58 %</option>
+                                            <option value="59" >59 %</option>
+                                            <option value="60" >60 %</option>
+                                            <option value="61" >61 %</option>
+                                            <option value="62" >62 %</option>
+                                            <option value="63" >63 %</option>
+                                            <option value="64" >64 %</option>
+                                            <option value="65" >65 %</option>
+                                            <option value="66" >66 %</option>
+                                            <option value="67" >67 %</option>
+                                            <option value="68" >68 %</option>
+                                            <option value="69" >69 %</option>
+                                            <option value="70" >70 %</option>
+                                            <option value="71" >71 %</option>
+                                            <option value="72" >72 %</option>
+                                            <option value="73" >73 %</option>
+                                            <option value="74" >74 %</option>
+                                            <option value="75" >75 %</option>
+                                            <option value="76" >76 %</option>
+                                            <option value="77" >77 %</option>
+                                            <option value="78" >78 %</option>
+                                            <option value="79" >79 %</option>
+                                            <option value="80" >80 %</option>
+                                            <option value="81" >81 %</option>
+                                            <option value="82" >82 %</option>
+                                            <option value="83" >83 %</option>
+                                            <option value="84" >84 %</option>
+                                            <option value="85" >85 %</option>
+                                            <option value="86" >86 %</option>
+                                            <option value="87" >87 %</option>
+                                            <option value="88" >88 %</option>
+                                            <option value="89" >89 %</option>
+                                            <option value="90" >90 %</option>
+                                            <option value="91" >91 %</option>
+                                            <option value="92" >92 %</option>
+                                            <option value="93" >93 %</option>
+                                            <option value="94" >94 %</option>
+                                            <option value="95" >95 %</option>
+                                            <option value="96" >96 %</option>
+                                            <option value="97" >97 %</option>
+                                            <option value="98" >98 %</option>
+                                            <option value="99" >99 %</option>
+                                            <option value="100" >100 %</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="sxl_min_mar" class="col-sm-3 col-form-label font-weight-600">S-XL</label>
+                                    <input type="hidden" name="margin_size[]" value="S-XL">
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
+                                        <input type="number" class="my-form-control" placeholder="Min" name="min_margin[]" readonly="" id="sxl_min_mar">
+                                    </div>
+                                    <label for="max_profit_margin" class="col-md-3 col-form-label font-weight-600"></label>
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
+                                        <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="sxl_max_mar">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="xxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXL</label>
+                                    <input type="hidden" name="margin_size[]" value="XXL">
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
+                                        <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxl_min_mar">
+                                    </div>
+                                    <label for="xxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
+                                        <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="xxl_max_mar">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="xxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXL</label>
+                                    <input type="hidden" name="margin_size[]" value="XXXL">
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
+                                        <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxl_min_mar">
+                                    </div>
+                                    <label for="xxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
+                                        <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxl_max_mar">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="xxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXXL</label>
+                                    <input type="hidden" name="margin_size[]" value="XXXXL">
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
+                                        <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxl_min_mar">
+                                    </div>
+                                    <label for="xxxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
+                                        <input type="number" class="my-form-control" placeholder="Max" name="max_margin[]" readonly="" id="xxxxl_max_mar">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7 mt-2">
+                                <div class="form-group row">
+                                    <label for="xxxxxl_min_mar" class="col-sm-3 col-form-label font-weight-600">XXXXXL</label>
+                                    <input type="hidden" name="margin_size[]" value="XXXXXL">
+
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
+                                        <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxxl_min_mar">
+                                    </div>
+                                    <label for="xxxxxl_max_mar" class="col-md-3 col-form-label font-weight-600"></label>
+                                    <div class="col-md-3" style="max-width: 23.6%;padding: 0;"> 
+                                        <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxxxl_max_mar">
+                                    </div>
+                                </div>
+                            </div>
+                        {{-- </form> --}}
+                    </div>
 {{-- 
                     </div>
                     <div class="row" style="margin-top: 20px;">
-                       --}}
-                   {{-- </div> --}}
-                   <div class="tab-pane fade" id="FinalPrice" role="tabpanel" aria-labelledby="FinalPrice-tab">
+                     --}}
+                 {{-- </div> --}}
+                 <div class="tab-pane fade" id="FinalPrice" role="tabpanel" aria-labelledby="FinalPrice-tab">
                     <div>
                         <div class="row Order-form btn-d-none">
                             <div id="accordion2" class="accordion2" style="min-height: 200px;">

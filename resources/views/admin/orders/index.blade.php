@@ -97,18 +97,15 @@
 						<table class="table table-borderless">
 							<thead>
 								<tr>
+									
 									<th width="250px">Sr.</th>
 									<th width="250px">Order ID</th>
-									<th width="250px">Order Tag</th>
+									<th width="250px">Order Date</th>
+									<th width="250px">Order Status</th> 
 									<th width="250px">First name</th>
 									<th width="250px">Last name</th>
 									<th width="250px">Email Address</th>
 									<th width="250px">Phone Number</th>
-									{{-- <th width="250px">Country</th> --}}
-									<th width="250px">Order Date</th>
-									<th width="250px">Collection Date</th>
-									<th width="250px">Comments</th>
-									<th width="250px">Status</th> 
 									<th>Action</th>
 								</tr>
 							</thead>
@@ -186,16 +183,12 @@
 		columns: [
 		{data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center'},
 		{data: 'id', name: 'id', width:"250px"},
-		{data: 'order_tag', name: 'order_tag', width:"250px"},
+		{data: 'order_date', name: 'order_date', width:"250px"},
+		{data: 'status', name: 'status', width:"250px"},
 		{data: 'first_name', name: 'first_name', width:"250px"},
 		{data: 'last_name', name: 'last_name', width:"250px"},
 		{data: 'email', name: 'email', width:"250px"},
 		{data: 'phone_number', name: 'phone_number', width:"250px"},
-		// {data: 'country', name: 'country', width:"250px"},
-		{data: 'order_date', name: 'order_date', width:"250px"},
-		{data: 'collection_date', name: 'collection_date', width:"250px"},
-		{data: 'tailor_comments', name: 'tailor_comments', width:"250px"},
-		{data: 'status', name: 'status', width:"250px"},
 		{data: 'actions', name: 'actions'}
 		]
 	});
@@ -303,7 +296,7 @@
 	function save_status(status_id, order_id){
 
 		$.ajax({
-			url: "{{ route('admin.order.status_update') }}",
+			{{-- url: "{{ route('admin.order.status_update') }}", --}}
 			type: "GET",
 			data: {
 				status_id: status_id,
@@ -349,7 +342,7 @@
 		return false;
 		if(messages == ""){
 			$.ajax({
-				url: "{{ route('admin.job.assign_job') }}",
+				{{-- url: "{{ route('admin.job.assign_job') }}", --}}
 				type: "GET",
 				data: $('#job-form').serialize(),
 				success: function(data) {
@@ -373,7 +366,7 @@
 		$('.job-template').empty();
 		var order_id 				= $(this).attr('data-order-id');
 		$.ajax({
-			url: '{{ route("admin.order.job_template") }}',
+			{{-- url: '{{ route("admin.order.job_template") }}', --}}
 			type: "GET",
 			data: {
 				order_id: order_id

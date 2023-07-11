@@ -3,7 +3,7 @@
 @endphp
 <div class="container-fluid mt-3" >
     <div class="row">
-        <div class="col-md-8  product-detail product-detail-{{$product_detail->id}}" id="product-detail-{{$product_detail->id}}">
+        <div class="col-md-9  product-detail product-detail-{{$product_detail->id}}" id="product-detail-{{$product_detail->id}}">
             <div class="card card_product_order mb-4 mt-4">
                 <div class="card-header collapsed" data-toggle="collapse" href="#collapse-{{$product_detail->id}}" style="background-color: #eee;">
                     <a class="card-title">
@@ -16,7 +16,7 @@
 
                     <div id="cloneDev">
                         <div class="row ">
-                            <div class="col-md-8" >
+                            <div class="col-md-9" >
                                 <div class="form-row ">
                                     @if (count($product_detail->ProductVariant)>0)
                                     @foreach ($product_detail->ProductVariant as $ProductVariant)
@@ -36,12 +36,12 @@
                                   @endif
                                   <div class=" form-group col-md-2">
                                     <label class="mr-2" for="pieces">Pieces </label>
-                                    <input type="number" onkeyup="setTotal(this);" onchange="setTotal(this);" name="pieces[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 pieces" id="pieces" placeholder="e.g 2" min="1" value="1">
+                                    <input type="number" onkeyup="setTotal(this);" onchange="setTotal(this);" name="pieces[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 pieces" id="pieces" placeholder="Pieces" min="1" value="1">
                                 </div> 
                                 <div class="form-group col-md-2">
                                     <label class="mr-3" for="price">Price</label>
                                     <input type="hidden" class="form-control mb-2 mr-sm-2 inc-lusive-price"  value="{{$product_detail->inclusive_price}}">
-                                    <input type="number" name="price[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 price" id="price" placeholder="Enter Price" onchange="setTotal(this);"  onkeyup="setTotal(this);" value="" 
+                                    <input type="number" name="price[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 price" id="price" placeholder="Price" onchange="setTotal(this);"  onkeyup="setTotal(this);" value="" 
                                     {{-- value="{{$product_detail->inclusive_price}}"  --}}
                                     >
                                 </div>
@@ -51,7 +51,7 @@
                                 </div>   
                             </div>
                         </div>
-                        <div class="col-md-4 float-right">
+                        <div class="col-md-3 float-right">
                             <button type="submit" id='add_product' class="btn btn-success mb-3 " data-add_product="{{$product_detail->id}}" style="max-width: 114px;max-height: 47px;margin-top: 25px;
                             "> Add more</button>
                             <button type="submit" id='remove_product' class="btn btn-primary mb-3 " data-remove_product="{{$product_detail->id}}" style="max-width: 114px;max-height: 47px;margin-top: 25px;

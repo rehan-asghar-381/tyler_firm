@@ -31,24 +31,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h6 class="mb-0 font-weight-600">Shop Size</h6>
-                        </div>
-                        <div class="col-auto">
-                            <a href="#!" class="fs-13 font-weight-600">{{ $order_detail->title }}</a>
-                        </div>
-                    </div> 
-                    <hr>
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h6 class="mb-0 font-weight-600">Order Type</h6>
-                        </div>
-                        <div class="col-auto">
-                            <a href="#!" class="fs-13 font-weight-600">{{ $order_detail->OrderType->name ?? '-' }}</a>
-                        </div>
-                    </div> 
-                    <hr>
+                
                     <div class="row align-items-center">
                         <div class="col">
                             <h6 class="mb-0 font-weight-600">First name</h6>
@@ -84,18 +67,9 @@
                             <a href="#!" class="fs-13 font-weight-600">{{ $order_detail->client->phone_number ?? "-" }}</a>
                         </div>
                     </div>
-                    <hr>
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h6 class="mb-0 font-weight-600">Country</h6>
-                        </div>
-                        <div class="col-auto">
-                            <span class="fs-13 font-weight-600 text-muted">{{ $order_detail->country }}</span>
-                        </div>
-                    </div>
                 </div>
             </div>
-            @if(count($order_detail->AdditionalFields) > 0)
+            @if(isset($order_detail->AdditionalFields) &&  count($order_detail->AdditionalFields) > 0)
         <div class="card mb-4">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
@@ -418,7 +392,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if(count($order_detail->AdditionalFields) > 0)
+                        @if(isset($order_detail->AdditionalFields) && count($order_detail->AdditionalFields) > 0)
                         <h5>Additional Fields</h5>
 
                             @foreach ($order_detail->AdditionalFields as $additional_field)
@@ -455,7 +429,7 @@
                             </div>
                         </div>
                         <h5>Supplies</h5>
-                        @if(count($order_detail->OrderSupply) > 0)
+                       {{--  @if(isset($order_detail->OrderSupply) && count($order_detail->OrderSupply) > 0)
                             @foreach ($order_detail->OrderSupply as $OrderSupply)
                        
                             <div class="row">
@@ -472,9 +446,9 @@
                             </div>
                             @endforeach
                         
-                        @endif
+                        @endif --}}
                         <h5>Till</h5>
-                        <div class="row">
+                       {{--  <div class="row">
                             <div class="col-md-2">
                                 <label>Selling Price</label>
                                 <input type="number" name="selling_price" disabled=""  class="form-control require selling_price" value="{{ $order_detail->OrderTill->selling_price ?? "" }}">
@@ -496,7 +470,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                         <h5>Additional Info</h5>
                         <div class="row">
                             <div class="col-md-12">

@@ -1,9 +1,9 @@
 @php
     // dd($product_detail->ProductVariant);
 @endphp
-<div class="">
+<div class="container-fluid mt-3">
     <div class="row ">
-        <div class="col-md-8  product-detail product-detail-{{$product_detail->id}}" id="product-detail-{{$product_detail->id}}">
+        <div class="col-md-9  product-detail product-detail-{{$product_detail->id}}" id="product-detail-{{$product_detail->id}}">
             <div class="card card_product_order mb-4 mt-4">
                 <div class="card-header collapsed" data-toggle="collapse" href="#collapse-{{$product_detail->id}}" style="background-color: #eee;">
                     <a class="card-title">

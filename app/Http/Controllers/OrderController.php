@@ -68,7 +68,7 @@ class OrderController extends Controller
 
     public function ajaxtData(Request $request){
 
-        $rData              = Order::where('id', '<>',0)->orderBy('collection_date_timestamp', 'desc');
+        $rData              = Order::query();
         // if(!auth()->user()->hasRole('Super Admin') && !auth()->user()->hasRole('Admin')){
 
         //     if(auth()->user()->hasRole('Tailor')){
@@ -84,12 +84,12 @@ class OrderController extends Controller
 
         if($request->date_from != ""){
 
-            $rData              = $rData->where('collection_date_timestamp', '>=', strtotime($request->date_from));
+            $rData              = $rData->where('time_id', '>=', strtotime($request->date_from));
         }
 
         if($request->date_to != ""){
 
-            $rData              = $rData->where('collection_date_timestamp', '<=', strtotime($request->date_to));
+            $rData              = $rData->where('time_id', '<=', strtotime($request->date_to));
         }
 
         if($request->status_id != ""){
@@ -99,9 +99,9 @@ class OrderController extends Controller
         
         return DataTables::of($rData->get())
         ->addIndexColumn()
-        ->editColumn('order_tag', function ($data) {
-            if (isset($data->order_tag) && $data->order_tag != "")
-                return $data->order_tag;
+        ->editColumn('id', function ($data) {
+            if (isset($data->id) && $data->id != "")
+                return $data->id;
             else
                 return '-';
         })
@@ -149,26 +149,8 @@ class OrderController extends Controller
                 return '-';
         })
         ->editColumn('order_date', function ($data) {
-            if ($data->order_date != "")
-                return $data->order_date;
-            else
-                return '-';
-        })
-        ->editColumn('collection_date', function ($data) {
-            if ($data->collection_date != "")
-                return $data->collection_date;
-            else
-                return '-';
-        })
-        ->editColumn('description', function ($data) {
-            if ($data->description != "")
-                return $data->description;
-            else
-                return '-';
-        })
-        ->editColumn('tailor_comments', function ($data) {
-            if ($data->tailor_comments != "")
-                return $data->tailor_comments;
+            if ($data->time_id > 0 )
+                return date('Y-m-d',$data->time_id);
             else
                 return '-';
         })
@@ -180,10 +162,7 @@ class OrderController extends Controller
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
             if(auth()->user()->can('orders-view')){
-                $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.detail', $data->id).'"><i class="far fa-eye"></i> View Details</a>';
-            }
-            if(auth()->user()->can('assign-jobs')){
-                $action_list    .= '<a class="dropdown-item get-job-popup" href="#" data-order-id="'.$data->id.'"><i class="far fa-plus-square"></i> Assign Task</a>';
+                $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.view', $data->id).'"><i class="far fa-eye"></i> View Details</a>';
             }
             if(auth()->user()->can('orders-edit')){
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.edit', $data->id).'"><i class="far fa-edit"></i> Edit</a>';
@@ -191,9 +170,9 @@ class OrderController extends Controller
             if(auth()->user()->can('orders-change-status')){
                 $action_list    .= '<a class="dropdown-item btn-change-status" href="#" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-life-ring"></i> Change Status</a>';
             }
-            if(auth()->user()->can('orders-delete')){
-                $action_list    .= '<a class="dropdown-item _deld" href="'.route('admin.order.delete', $data->id).'"><i class="far fa-trash-alt"></i> Delete</a>';
-            }
+            // if(auth()->user()->can('orders-delete')){
+            //     $action_list    .= '<a class="dropdown-item _deld" href="'.route('admin.order.delete', $data->id).'"><i class="far fa-trash-alt"></i> Delete</a>';
+            // }
 
             $action_list        .= '</div></div>';
             return  $action_list;
@@ -623,23 +602,23 @@ class OrderController extends Controller
         return redirect()->route("admin.order.index")->withSuccess('Order data has been updated successfully!');
     }
 
-    public function orderDetail(Request $request, $id)
+    public function orderView(Request $request, $id)
     {
 
         $order_detail               = Order::with([
-            'OrderSupply', 
-            'OrderImgs', 
-            'AdditionalFields', 
+            // 'OrderSupply', 
+            // 'OrderImgs', 
+            // 'AdditionalFields', 
             'Orderstatus',
-            'OrderJobs',
-            'OrderType',
+            // 'OrderJobs',
+            // 'OrderType',
             'client',
-            'OrderSupply.SupplyInventoryItem',
-            'OrderTill'
+            // 'OrderSupply.SupplyInventoryItem',
+            // 'OrderTill'
         ])->find($id);
-        $inventory_items            = SupplyInventoryItem::get();
-        $payments_types             = PaymentType::where('is_active', 'Y')->get();
-        $pageTitle                  = "Order Detail [".$order_detail->order_tag."]";
+        $inventory_items            = [];
+        $payments_types             = [];
+        $pageTitle                  = "Order Detail ";
         return view('admin.orders.order-detail', compact('pageTitle', 'order_detail', 'inventory_items', 'payments_types'));
 
     }
