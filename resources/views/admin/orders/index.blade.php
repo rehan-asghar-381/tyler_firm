@@ -104,11 +104,11 @@
 								<tr>
 									
 									<th width="250px">Sr.</th>
-									<th width="250px">Order ID</th>
-									<th width="250px">First name</th>
-									<th width="250px">Last name</th>
+									<th width="250px">Order Number</th>
+									<th width="250px">Job Name</th>
+									<th width="250px">Company Name</th>
+									<th width="250px">Reseller Number</th>
 									<th width="250px">Email Address</th>
-									<th width="250px">Phone Number</th>
 									<th width="250px">Order Date</th>
 									<th width="250px">Order Status</th>
 									<th>Action</th>
@@ -187,11 +187,11 @@
 		},
 		columns: [
 		{data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center'},
-		{data: 'id', name: 'id', width:"250px"},
-		{data: 'first_name', name: 'first_name', width:"250px"},
-		{data: 'last_name', name: 'last_name', width:"250px"},
+		{data: 'order_number', name: 'order_number', width:"250px"},
+		{data: 'job_name', name: 'job_name', width:"250px"},
+		{data: 'company_name', name: 'company_name', width:"250px"},
+		{data: 'reseller_number', name: 'reseller_number', width:"250px"},
 		{data: 'email', name: 'email', width:"250px"},
-		{data: 'phone_number', name: 'phone_number', width:"250px"},
 		{data: 'order_date', name: 'order_date', width:"250px"},
 		{data: 'status', name: 'status', width:"250px"},
 		{data: 'actions', name: 'actions'}

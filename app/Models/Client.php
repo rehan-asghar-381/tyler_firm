@@ -17,6 +17,9 @@ class Client extends Model
         'last_name',
         'email',
         'phone_number',
+        'company_name',
+        'reseller_number',
+        'tax_examp',
     ];
 
     public function Orders(){
