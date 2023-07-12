@@ -156,7 +156,7 @@ hr{
                             <div class="col-md-4">
                                 <label>Client</label>
 
-                                <select name="client_id" id="client_id" class="form-control search_test  basic-single"  >
+                                <select name="client_id" id="client_id" class="form-control search_test select-one"  >
                                     <option value=""> Select</option>
                                     {{-- <option value="new">Add New Client</option>--}}
                                     @foreach ($clients as $client)
@@ -236,17 +236,6 @@ hr{
 
                             </div>
                             <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                                {{-- <form class="form-inline"> --}}
-                                {{-- 
-                                <div class="col-md-12">
-                                    <div class="form-group ">
-                                        <label for="projected_units" class="col-sm-3 col-form-label font-weight-600">Projected Units</label>
-                                        <input type="text" value="" readonly="" style="background-color: #ced4da" class="my-form-control" 
-                                            name="projected_units" id="ProjectedUnits" placeholder="">
-                                    </div>
-                                </div>
-                                --}}
-                                
                                 <div class="col-md-10">
                                     <div class="form-group row">
                                         <label for="art_fee" class="col-sm-2 font-weight-600">Projected Units</label>
@@ -257,7 +246,7 @@ hr{
                                     </div>
                                     <div class="form-group row">
                                         <label for="quantity_break" class="col-md-2 font-weight-600">Quantity Breaks</label>
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-3">
                                             <select name="quantity_break" id="quantity_break" class="form-control select-one">
                                                 <option value="">Select</option>
                                                 <option value="3-47" >3-47</option>
@@ -1311,5 +1300,22 @@ function setDecorationPrice(obj){
         }}
 
     }
+
+    $(document).on('click', '.add-supply-row', function(event) {
+            var supply_info_template         = $(this).closest('.order-box').find(".supply-info").first().clone();
+            var supply_info_parent           = $(this).closest('.order-box').find(".supply-p");
+            
+            supply_info_template.find("span.select2").remove();
+            var new_supply_info_template = supply_info_template.clone();
+            event.preventDefault();
+            new_supply_info_template.find("select").select2({
+                tags: true
+            });
+            supply_info_parent.append(new_supply_info_template);
+            new_supply_info_template.find('input').val(null);
+            init_supply++;
+        });
+
+        
 </script>
 @endsection

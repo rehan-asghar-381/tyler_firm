@@ -7722,7 +7722,7 @@ pre .arg {
 }
 
 .SumoSelect>.CaptionCont>label>i:before {
-    content: "\e64b"
+    /* content: "\e64b" */
 }
 
 .greet-user img {
