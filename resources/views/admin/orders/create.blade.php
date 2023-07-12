@@ -196,7 +196,7 @@ hr{
                         </ul>
 
                         <div class="tab-content" id="pills-tabContent">
-                           <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 
                             <div class="row mb-3">
                                     {{--  
@@ -816,7 +816,8 @@ hr{
             var time = {{time()}};
             // product_add
             // console.log($(this).data('add_product'));
-            var  product_id = $(this).data('add_product');
+            // console.log('test'+$(this).data('product_id'));
+            var  product_id = $(this).data('product_id');
             var final_price_clone = $(".clone-product-"+product_id).clone().find("input").val("").end();
 
             // $(final_price_clone).attr("clone-product-"+product_id+'.'+init);
@@ -827,11 +828,11 @@ hr{
 
             var product_add             = $(this).parent().parent().clone();
             var append_parent           = $(this).parent().parent().parent().last();
-            console.log(append_parent);
+            // console.log(append_parent);
             var new_product_add         = product_add.clone().find("input").val("").end();
             var ttt = $(new_product_add).children().eq(1).children().eq(0).attr('data-add_product',product_id+'-'+init);
             var ttt = $(new_product_add).children().eq(1).children().eq(1).attr('data-remove_product',product_id+'-'+init);
-            console.log(ttt);
+            // console.log(ttt);
             append_parent.append(new_product_add);
             init++;
         });
@@ -1111,10 +1112,10 @@ function getDecorationPrice(obj){
             }
             setTimeout(function(){
 
-               updateContractShirtPrintPrice();
-               setMinMargin();
-               setMaxMargin();
-           },300);
+             updateContractShirtPrintPrice();
+setMinMargin();
+    setMaxMargin();
+         },300);
         }
     });
 
@@ -1145,41 +1146,41 @@ function getDecorationPrice(obj){
         setTimeout(function(){
           updateContractShirtPrintPrice();
           setMinMargin();
-          setMaxMargin();
-      },300);
+    setMaxMargin();
+        },300);
     }
     
 }
 
 }
 function updateContractShirtPrintPrice() {
- var totalLocationCharges =  setLocationCharges();
- console.log('updateContractShirtPrintPrice');
- var pl_s_xl = $('#pl_s_xl').val();
- var sp_s_xl = Number(pl_s_xl) + Number(totalLocationCharges);
- sp_s_xl = (Math.round(sp_s_xl * 100) / 100).toFixed(2);
- $("#sp_s_xl").val(sp_s_xl);
+   var totalLocationCharges =  setLocationCharges();
+console.log('updateContractShirtPrintPrice');
+   var pl_s_xl = $('#pl_s_xl').val();
+   var sp_s_xl = Number(pl_s_xl) + Number(totalLocationCharges);
+   sp_s_xl = (Math.round(sp_s_xl * 100) / 100).toFixed(2);
+   $("#sp_s_xl").val(sp_s_xl);
 
 
- var pl_xxl = $('#pl_xxl').val();
- var sp_xxl = Number(pl_xxl) + Number(totalLocationCharges);
- sp_xxl = (Math.round(sp_xxl * 100) / 100).toFixed(2);
- $("#sp_xxl").val(sp_xxl);
+   var pl_xxl = $('#pl_xxl').val();
+   var sp_xxl = Number(pl_xxl) + Number(totalLocationCharges);
+   sp_xxl = (Math.round(sp_xxl * 100) / 100).toFixed(2);
+   $("#sp_xxl").val(sp_xxl);
 
- var pl_xxxl = $('#pl_xxxl').val();
- var sp_xxxl = Number(pl_xxxl) + Number(totalLocationCharges);
- sp_xxxl = (Math.round(sp_xxxl * 100) / 100).toFixed(2);
- $("#sp_xxxl").val(sp_xxxl);
+   var pl_xxxl = $('#pl_xxxl').val();
+   var sp_xxxl = Number(pl_xxxl) + Number(totalLocationCharges);
+   sp_xxxl = (Math.round(sp_xxxl * 100) / 100).toFixed(2);
+   $("#sp_xxxl").val(sp_xxxl);
 
- var pl_xxxxl = $('#pl_xxxxl').val();
- var sp_xxxxl = Number(pl_xxxxl) + Number(totalLocationCharges);
- sp_xxxxl = (Math.round(sp_xxxxl * 100) / 100).toFixed(2);
- $("#sp_xxxxl").val(sp_xxxxl);
+   var pl_xxxxl = $('#pl_xxxxl').val();
+   var sp_xxxxl = Number(pl_xxxxl) + Number(totalLocationCharges);
+   sp_xxxxl = (Math.round(sp_xxxxl * 100) / 100).toFixed(2);
+   $("#sp_xxxxl").val(sp_xxxxl);
 
- var pl_xxxxxl = $('#pl_xxxxxl').val();
- var sp_xxxxxl = Number(pl_xxxxxl) + Number(totalLocationCharges);
- sp_xxxxxl = (Math.round(sp_xxxxxl * 100) / 100).toFixed(2);
- $("#sp_xxxxxl").val(sp_xxxxxl);
+   var pl_xxxxxl = $('#pl_xxxxxl').val();
+   var sp_xxxxxl = Number(pl_xxxxxl) + Number(totalLocationCharges);
+   sp_xxxxxl = (Math.round(sp_xxxxxl * 100) / 100).toFixed(2);
+   $("#sp_xxxxxl").val(sp_xxxxxl);
 }
 function setDecorationPrice(obj){
     // return false;
@@ -1278,16 +1279,16 @@ function setDecorationPrice(obj){
     function setMaxMargin() {
         var maxMargin = $("#max_profit_margin").val();
         if (maxMargin != '') {
-           var diff = (100 - Number(maxMargin)); 
-           diff = (diff / 100);
+         var diff = (100 - Number(maxMargin)); 
+         diff = (diff / 100);
 
-           $("#sxl_max_mar").val(0);
-           $("#xxl_max_mar").val(0);
-           $("#xxxl_max_mar").val(0);
-           $("#xxxxl_max_mar").val(0);
-           $("#xxxxxl_max_mar").val(0);
+         $("#sxl_max_mar").val(0);
+         $("#xxl_max_mar").val(0);
+         $("#xxxl_max_mar").val(0);
+         $("#xxxxl_max_mar").val(0);
+         $("#xxxxxl_max_mar").val(0);
 
-           if ($("#pl_s_xl").val() > 0 ) {
+         if ($("#pl_s_xl").val() > 0 ) {
 
             var sxl_max_mar =  ($("#sp_s_xl").val() / diff);
             $("#sxl_max_mar").val((Math.round(sxl_max_mar * 100) / 100).toFixed(2) );
