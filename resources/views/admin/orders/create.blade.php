@@ -1083,9 +1083,10 @@ function getDecorationPrice(obj){
     var number_of_colors = $(obj).val();
     if (number_of_colors > 8 ) {
         $(obj).val(0);
+        return false;
     }
-    console.log(obj.id);
-    console.log(number_of_colors);
+    // console.log(obj.id);
+    // console.log(number_of_colors);
     if (ProjectedUnits > 0 && number_of_colors > 0) {
       $.ajax({
         url: "{{ route('admin.get_decoration_price') }}",
