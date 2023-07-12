@@ -1,0 +1,4 @@
+ALTER TABLE `tyler_firm_git`.`clients` 
+ADD COLUMN `company_name` varchar(50) NULL AFTER `phone_number`,
+ADD COLUMN `reseller_number` varchar(50) NULL AFTER `company_name`,
+ADD COLUMN `tax_examp` varchar(10) NULL AFTER `reseller_number`;

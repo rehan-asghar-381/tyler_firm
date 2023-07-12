@@ -34,10 +34,13 @@
 							<thead>
 								<tr>
                   <th width="50px">Sr.</th>
+                  <th width="400px">Company Name</th>
                   <th width="400px">First Name</th>
                   <th width="400px">Last Name</th>
                   <th width="400px">Email</th>
                   <th width="400px">Phone Number</th>
+                  <th width="400px">Reseller Number</th>
+                  <th width="400px">Tax Exampt</th>
                   <th width="400px">Action</th>
 								</tr>
 							</thead>
@@ -123,18 +126,23 @@
       ],
       ajax: {
           'url': '{!! route('admin.clients.ajax_data') !!}',
-          // 'data': function (d) {
-          //     // d.date_from = $("input[name='date_from']").val();
-          //     // return d;
-          // }
+          'data': function (d) {
+              d.date_from = $("input[name='date_from']").val();
+              d.date_to = $("input[name='date_to']").val();
+              d.brand_id = $("select[name='brand_id']").val();
+              return d;
+          }
       },
       columns: [
       {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center'},
+      {data: 'company_name', name: 'company_name', orderable: false},
       {data: 'first_name', name: 'first_name', orderable: false},
       {data: 'last_name', name: 'last_name', orderable: false},
       {data: 'email', name: 'email', orderable: false},
       {data: 'phone_number', name: 'phone_number', orderable: false},
-      {data: 'actions', name: 'email', className:'d-flex', orderable: false}
+      {data: 'reseller_number', name: 'reseller_number', orderable: false},
+      {data: 'tax_examp', name: 'tax_examp', orderable: false},
+      {data: 'actions', name: 'email', orderable: false}
       ],
      columnDefs: [ {
         'orderable': false, /* true or false */
@@ -188,8 +196,8 @@
   // Requery the server with the new one-time export settings
   dt.ajax.reload();
   };
-
   table.ajax.reload();
+  
 </script>
 @endsection
 

@@ -40,7 +40,15 @@ class ProductController extends Controller
 
         $rData = Product::with('Brand')->select('*');
         $rData = $rData->orderBy('id', 'DESC');
-      
+        if($request->brand_id != ""){
+            $rData              = $rData->where('brand_id', $request->brand_id);
+        }
+        if($request->date_from != ""){
+            $rData              = $rData->where('time_id', '>=', strtotime($request->date_from));
+        }
+        if($request->date_to != ""){
+            $rData              = $rData->where('time_id', '<=', strtotime($request->date_to));
+        }
         return DataTables::of($rData->get())
             ->addIndexColumn()
             ->editColumn('name', function ($data) {

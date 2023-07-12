@@ -39,9 +39,15 @@ class ClientController extends Controller
 
         $rData = Client::select('*');
         $rData = $rData->orderBy('id', 'DESC');
-
+        
         return DataTables::of($rData->get())
             ->addIndexColumn()
+            ->editColumn('company_name', function ($data) {
+                if ($data->company_name != "")
+                    return $data->company_name;
+                else
+                    return '-';
+            })
             ->editColumn('first_name', function ($data) {
                 if ($data->first_name != "")
                     return $data->first_name;
@@ -66,6 +72,18 @@ class ClientController extends Controller
                 else
                     return '-';
             })
+            ->editColumn('reseller_number', function ($data) {
+                if ($data->reseller_number != "")
+                    return $data->reseller_number;
+                else
+                    return '-';
+            })
+            ->editColumn('tax_examp', function ($data) {
+                if ($data->tax_examp != "")
+                    return $data->tax_examp;
+                else
+                    return '-';
+            })
             ->addColumn('actions', function ($data) {
 
                 $action_list    = '<div class="dropdown">
@@ -85,7 +103,6 @@ class ClientController extends Controller
             })
             ->rawColumns(['actions'])
             ->make(TRUE);
-
     }
     
     /**
@@ -120,6 +137,9 @@ class ClientController extends Controller
         $client->last_name          = $request->last_name;
         $client->email              = $request->email;
         $client->phone_number       = $request->phone_number;
+        $client->company_name       = $request->company_name;
+        $client->reseller_number    = $request->reseller_number;
+        $client->tax_examp          = $request->tax_examp;
         $client->save();
 
         return redirect()->route('admin.clients.index')
@@ -172,6 +192,9 @@ class ClientController extends Controller
         $client->last_name          = $request->last_name;
         $client->email              = $request->email;
         $client->phone_number       = $request->phone_number;
+        $client->company_name       = $request->company_name;
+        $client->reseller_number    = $request->reseller_number;
+        $client->tax_examp          = $request->tax_examp;
         $client->save();
     
         return redirect()->route('admin.clients.index')

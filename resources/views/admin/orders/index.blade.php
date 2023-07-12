@@ -9,10 +9,10 @@
 <div class="body-content">
 	<form action="" id="reportForm">
 		<div class="row mb-4">
-			<div class="col-md-4 mb-3">
+			<div class="col-md-2 mb-3" style="margin-right: 10px;">
 				<div class="form-group">
 					<label>Client: </label>&nbsp;&nbsp;&nbsp;
-					<select type="text" name="client_id" id="client_id" class="form-control require required-online" value="" >
+					<select type="text" name="client_id" id="client_id" class="form-control select-one" value="" >
 						<option value="">--select--</option>
 						@foreach ($clients as $client)
 						<option value="{{ $client->id }}">{{ $client->first_name." ".$client->last_name." (".$client->email.")" }}</option>
@@ -133,7 +133,7 @@
 @endsection
 @section('footer-script')
 <script type="text/javascript">
-	$('select').select2();
+	// $('select').select2();
 	function getDateTime() {
 		var now = new Date();
 		var year = now.getFullYear();

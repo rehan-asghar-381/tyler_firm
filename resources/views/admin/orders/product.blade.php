@@ -16,7 +16,7 @@
 
                     <div id="cloneDev">
                         <div class="row ">
-                            <div class="col-md-9" >
+                            <div class="col-md-11">
                                 <div class="form-row ">
                                     @if (count($product_detail->ProductVariant)>0)
                                     @foreach ($product_detail->ProductVariant as $ProductVariant)
@@ -51,13 +51,12 @@
                                 </div>   
                             </div>
                         </div>
-                        <div class="col-md-3 float-right">
-                            <button type="submit" id='add_product' class="btn btn-success mb-3 " data-add_product="{{$product_detail->id}}" style="max-width: 114px;max-height: 47px;margin-top: 25px;
-                            "> Add more</button>
-                            <button type="submit" id='remove_product' class="btn btn-primary mb-3 " data-remove_product="{{$product_detail->id}}" style="max-width: 114px;max-height: 47px;margin-top: 25px;
-                            margin-left: 5px;"> Remove</button>
+                        <div class="col-md-1 float-right" style="margin-top: 40px;">
+                            <i type="submit" id='add_product' class="fas fa-plus" style="color:green;cursor:pointer;" data-add_product="{{$product_detail->id}}" style="max-width: 114px;max-height: 47px;margin-top: 25px;
+                            "></i>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <i  id='remove_product' class="fas fa-minus" style="color:red;cursor:pointer;" data-remove_product="{{$product_detail->id}}" style="max-width: 114px;max-height: 47px;margin-top: 25px;
+                            margin-left: 5px;"></i>
                         </div>
-                        <hr>
                     </div>
                 </div>
             </div>

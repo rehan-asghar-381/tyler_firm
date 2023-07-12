@@ -173,8 +173,8 @@
           'url': '{!! route('admin.product.ajax_data') !!}',
           'data': function (d) {
               d.date_from = $("input[name='date_from']").val();
-              d.date_from = $("input[name='date_to']").val();
-              d.date_from = $("input[name='date_from']").val();
+              d.date_to = $("input[name='date_to']").val();
+              d.brand_id = $("select[name='brand_id']").val();
               return d;
           }
       },
@@ -383,6 +383,11 @@
       }
     }
     
+	});
+  $("#search-button").click(function (e) {
+		e.preventDefault();
+		table.ajax.reload();
+
 	});
 </script>
 @endsection

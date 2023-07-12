@@ -69,15 +69,8 @@ class OrderController extends Controller
 
     public function ajaxtData(Request $request){
 
-        $rData              = Order::query();
-        // if(!auth()->user()->hasRole('Super Admin') && !auth()->user()->hasRole('Admin')){
+        $rData              = Order::with(["client"]);
 
-        //     if(auth()->user()->hasRole('Tailor')){
-
-        //         $rData                     =$rData->where('created_by_id', auth()->user()->id);
-        //     }
-
-        // }
         if($request->client_id != ""){
 
             $rData              = $rData->where('client_id', $request->client_id);
