@@ -70,7 +70,6 @@ class OrderController extends Controller
     public function ajaxtData(Request $request){
 
         $rData              = Order::with(["client"]);
-
         if($request->client_id != ""){
 
             $rData              = $rData->where('client_id', $request->client_id);
@@ -96,6 +95,18 @@ class OrderController extends Controller
         ->editColumn('id', function ($data) {
             if (isset($data->id) && $data->id != "")
                 return $data->id;
+            else
+                return '-';
+        })
+        ->addColumn('company_name', function ($data) {
+            if (isset($data->client->company_name) && $data->client->company_name != "")
+                return $data->client->company_name;
+            else
+                return '-';
+        })
+        ->addColumn('reseller_number', function ($data) {
+            if (isset($data->client->reseller_number) && $data->client->reseller_number != "")
+                return $data->client->reseller_number;
             else
                 return '-';
         })
@@ -135,6 +146,18 @@ class OrderController extends Controller
             else
                 return '-';
         })
+        ->editColumn('job_name', function ($data) {
+            if ($data->job_name != "")
+                return $data->job_name;
+            else
+                return '-';
+        })
+        ->editColumn('order_number', function ($data) {
+            if ($data->order_number != "")
+                return $data->order_number;
+            else
+                return '-';
+        })
         ->editColumn('status', function ($data) {
 
             if (isset($data->Orderstatus->name) && $data->Orderstatus->name != "")
@@ -161,16 +184,12 @@ class OrderController extends Controller
             if(auth()->user()->can('orders-edit')){
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.edit', $data->id).'"><i class="far fa-edit"></i> Edit</a>';
             }
-            if(auth()->user()->can('orders-change-status')){
-                $action_list    .= '<a class="dropdown-item btn-change-status" href="#" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-life-ring"></i> Change Status</a>';
-            }
             if(auth()->user()->can('orders-generate-invoice')){
                 $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice') .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
             }
-            // if(auth()->user()->can('orders-delete')){
-            //     $action_list    .= '<a class="dropdown-item _deld" href="'.route('admin.order.delete', $data->id).'"><i class="far fa-trash-alt"></i> Delete</a>';
-            // }
-
+            if(auth()->user()->can('orders-change-status')){
+                $action_list    .= '<a class="dropdown-item btn-change-status" href="#" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-life-ring"></i> Change Status</a>';
+            }
             $action_list        .= '</div></div>';
             return  $action_list;
         })
@@ -185,66 +204,44 @@ class OrderController extends Controller
      */
     public function create()
     {
-        // $payments_types     = PaymentType::where('is_active', 'Y')->get();
-        // $pageTitle          = "Orders";
-        // $shop_sizes         = ShopSize::where('is_active', 'Y')->get();
-        // $order_types        = OrderType::where('is_active', 'Y')->get();
+        $pageTitle          = "Orders";
         $clients            = Client::get();
         $clients            = Client::get();
-        $products            = Product::get();
-        $brands            = Brand::get();
-        
-        // $inventory_items    = SupplyInventoryItem::get();
-        $errors         = [];
-        $pageTitle          = "Order";
-        $payments_types     = [];
-        $shop_sizes         = [];
-        $order_types        = [];
-        $order_type_id  = 1; 
-// $clients            = [];
-        $inventory_items    = [];
-        return view('admin.orders.create',compact('pageTitle', 'order_types', 'shop_sizes','products', 'clients', 'inventory_items', 'payments_types','order_type_id','brands'));
+        $products           = Product::get();
+        $brands             = Brand::get();
+        $errors             = [];
+        $order_type_id      = 1; 
+        return view('admin.orders.create',compact('pageTitle','products', 'clients', 'brands'));
 
     } 
 
     public function store(Request $request)
     {  
-        // dump($request->attribute_id);
-        // dd($request->all());
-        // app('App\Http\Controllers\ClientController')->save_measurements($request, $request->client_id); 
-        $user_id                        = Auth::user()->id;
-        $user_name                      = Auth::user()->name;
-        // $item_slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->get('item'))));        
-        $rData                          = $request->all();
-        // $tags                           = $rData['order_tags'];
-        $order_supplies_arr             = [];
-        $order_images                   = [];
-        $order_additional_fields_arr    = [];
-        $orderids                       = [];
-
+        $user_id                    = Auth::user()->id;
+        $user_name                  = Auth::user()->name;     
+        $rData                      = $request->all();
+  
         $order                      = new Order();
-
         $order->time_id             = date('U');
         $order->client_id           = $rData['client_id'];
-        $order->job_name               = $rData['job_name'];
-        $order->order_number          = $rData['order_number'];
-        $order->created_by_id                   = $user_id;
-        $order->created_by_name                 = $user_name;
+        $order->job_name            = $rData['job_name'];
+        $order->order_number        = $rData['order_number'];
+        $order->status              = 1;
+        $order->created_by_id       = $user_id;
+        $order->created_by_name     = $user_name;
         $order->save();
-        $orderID                                = $order->id;
-
-
-        $product_ids                                 = $rData['product_ids'];
-        $products_name                                 = $rData['products_name'];
+        $orderID                    = $order->id;
+        $product_ids                = $rData['product_ids'];
+        $products_name              = $rData['products_name'];
         if (count($product_ids) > 0) {
 
             $this->save_order_products($product_ids,$products_name, $orderID);
         }
 
-        $attribute_id                                 = $rData['attribute_id'];
+        $attribute_id                           = $rData['attribute_id'];
         $pieces                                 = $rData['pieces'];
         $prices                                 = $rData['price'];
-        $total                                 = $rData['total'];
+        $total                                  = $rData['total'];
 
         if (count($attribute_id) > 0) {
 
@@ -334,8 +331,6 @@ class OrderController extends Controller
         }
     }
     public function save_order_other_charges($rData, $order_id){
-
-
         $order_other_charges                        = new OrderOtherCharges();
         $order_other_charges->order_id              = $order_id;
         $order_other_charges->fold_bag_tag_pieces   = $rData['fold_bag_tag_pieces'];
@@ -347,10 +342,6 @@ class OrderController extends Controller
         $order_other_charges->art_time              = $rData['art_time'];
         $order_other_charges->tax                   = $rData['tax'];
         $order_other_charges->save();
-
-
-
-        
     } 
     public function save_order_contract_print_prices($rData, $order_id){
         $order                  = Order::find($order_id);
@@ -386,21 +377,14 @@ class OrderController extends Controller
             $order->OrderProducts()->saveMany($order_print_price_location_arr);
 
         }
-
     }
 
     public function save_product_attribute($attribute_id,$pieces,$prices,$total, $order_id){
         $order                  = Order::find($order_id);
-        // dump($attribute_id);
-        // dump($pieces);
-        // dump($prices);
-        // dump($total);
         $order_product_variant_arr = [];
         foreach ($attribute_id as $product_id => $attr_ids) {
             foreach ($attr_ids as $at_id => $ids) {
-                // dump($ids[0]);
-
-                // dd($pieces[$product_id][0]);
+                
                 $order_product_var               = new OrderProductVariant();
                 $order_product_var->order_id     = $order_id;
                 $order_product_var->product_id        = $product_id;
@@ -420,10 +404,10 @@ class OrderController extends Controller
     }
 
     public function save_order_products($product_ids,$products_name, $order_id){
-// dump($products_name);
+        
         $order                  = Order::find($order_id);
-        $order_products_arr = [];
-        // dd($product_ids);
+        $order_products_arr     = [];
+        
         foreach ($product_ids as $key=>$product) {
             $order_products               = new OrderProduct();
             $order_products->order_id     = $order_id;

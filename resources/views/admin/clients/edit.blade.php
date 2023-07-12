@@ -23,6 +23,10 @@
                 @csrf
                 <div class="row">
                     <div class="col-md-3 mb-3">
+                        <label class="form-label text-dark-gray" for="">Company Name</label>
+                        <input type="text" name="company_name" class="form-control font-12 form-control-lg" value="{{$client->company_name }}">
+                    </div>
+                    <div class="col-md-3 mb-3">
                         <label class="form-label text-dark-gray" for="">First Name</label>
                         <input type="text" name="first_name" class="form-control font-12 form-control-lg require" value="{{ $client->first_name }}">
                         
@@ -40,8 +44,22 @@
                         <label class="form-label text-dark-gray" for="">Phone_number</label>
                         <input type="text" name="phone_number" class="form-control font-12 form-control-lg require" value="{{ $client->phone_number }}">
                     </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label text-dark-gray" for="">Reseller Number</label>
+                        <input type="text" name="reseller_number" class="form-control font-12 form-control-lg" value="{{ $client->reseller_number }}">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label text-dark-gray" for="">Tax Exampt</label>
+                        <select name="tax_examp" id="tax_examp" class="form-control search_test  basic-single"  >
+                            <option value=""> Select</option>
+                            <option value="Yes" @if($client->tax_examp == "Yes") {{ "selected" }} @endif>Yes</option>
+                            <option value="No" @if($client->tax_examp == "No") {{ "selected" }} @endif>No</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3 mt-4">
+                        <button type="submit" class="btn btn-success" id="save-button">Submit</button>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-success" id="save-button">Submit</button>
             </form>
         </div>
     </div>
