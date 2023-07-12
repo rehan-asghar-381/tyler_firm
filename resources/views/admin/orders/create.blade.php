@@ -196,7 +196,7 @@ hr{
                         </ul>
 
                         <div class="tab-content" id="pills-tabContent">
-                           <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 
                             <div class="row mb-3">
                                     {{--  
@@ -276,7 +276,7 @@ hr{
                                         <label for="color_location1" class="col-sm-2 font-weight-600"># of Colors Location 1</label>
                                         <input type="hidden" name="location[]" value="# of Colors Location 1" >
                                         <div class="col-sm-3">
-                                            <input type="number" value="" onchange="getDecorationPrice(this);" onkeyup="getDecorationPrice(this);" name="location_color[]" max="8" min="1" class="my-form-control" id="color_location1" placeholder="">
+                                            <input type="number" value="" onchange="getDecorationPrice(this);" onkeyup="getDecorationPrice(this);" name="location_color[]" max="8" min="1" class="my-form-control location_color" id="color_location1" placeholder="">
                                         </div>
                                     </div>
                                 </div>
@@ -292,7 +292,7 @@ hr{
                                         <input type="hidden" name="location[]" value="# of Colors Location 3" >
                                         <div class="col-sm-3">
                                             <input type="number" value="" onchange="getDecorationPrice(this);"
-                                            onkeyup="getDecorationPrice(this);"  name="location_color[]" max="8" min="1" class="my-form-control" id="color_location2" placeholder="">
+                                            onkeyup="getDecorationPrice(this);"  name="location_color[]" max="8" min="1" class="my-form-control location_color" id="color_location2" placeholder="">
                                         </div>
                                         
                                     </div>
@@ -311,7 +311,7 @@ hr{
                                         <div class="col-sm-3">
                                             <input type="number" value=""onchange="getDecorationPrice(this);"
                                             onkeyup="getDecorationPrice(this);" 
-                                            name="location_color[]" max="8" min="1" class="my-form-control" id="color_location3" placeholder="">
+                                            name="location_color[]" max="8" min="1" class="my-form-control location_color" id="color_location3" placeholder="">
                                         </div>
                                     </div>
                                 </div>
@@ -328,7 +328,7 @@ hr{
                                         <input type="hidden" name="location[]" value="# of Colors Location 4" >
                                         <div class="col-sm-3">
                                             <input type="number" value=""  
-                                            name="location_color[]" max="8" min="1" class="my-form-control" onchange="getDecorationPrice(this);"
+                                            name="location_color[]" max="8" min="1" class="my-form-control location_color" onchange="getDecorationPrice(this);"
                                             onkeyup="getDecorationPrice(this);" id="color_location4" placeholder="">
                                         </div>
                                     </div>
@@ -347,7 +347,7 @@ hr{
                                         <div class="col-sm-3">
                                             <input type="number" value="" onchange="getDecorationPrice(this);"
                                             onkeyup="getDecorationPrice(this);" 
-                                            name="location_color[]" max="8" min="1" class="my-form-control" id="color_location5" placeholder=""> 
+                                            name="location_color[]" max="8" min="1" class="my-form-control location_color" id="color_location5" placeholder=""> 
                                         </div>
                                     </div>
                                 </div>
@@ -834,7 +834,7 @@ hr{
             var  remove_product = $(this).data('remove_product');
 
             console.log('product_id  length' + product_id);
-                console.log('remove_product :' + remove_product);
+            console.log('remove_product :' + remove_product);
             if(product_id != remove_product){
                 $(this).parent().parent().remove();
                 var id  = $(this).attr('data-remove_product');
@@ -1057,7 +1057,8 @@ function setTotal(obj) {
         $(obj).parent().next().next().find('input[type=number]').val(price*pieces);
 
     }
-    setDecorationPrice();
+     setProjectedUnits()
+    
 }
 function setProjectedUnits(){
     var pieces = $(".pieces");
@@ -1069,8 +1070,14 @@ function setProjectedUnits(){
     updateContractShirtPrintPrice();
     setMinMargin();
     setMaxMargin();
+    $('.location_color').each(function(i, obj) {
+     // console.log(obj);
+    getDecorationPrice(obj);
+ });
     
 }
+
+
 function getDecorationPrice(obj){
     var ProjectedUnits = $('#ProjectedUnits').val();
     var number_of_colors = $(obj).val();
@@ -1112,10 +1119,10 @@ function getDecorationPrice(obj){
             }
             setTimeout(function(){
 
-               updateContractShirtPrintPrice();
-               setMinMargin();
-               setMaxMargin();
-           },300);
+             updateContractShirtPrintPrice();
+             setMinMargin();
+             setMaxMargin();
+         },300);
         }
     });
 
@@ -1154,33 +1161,33 @@ function getDecorationPrice(obj){
 
 }
 function updateContractShirtPrintPrice() {
- var totalLocationCharges =  setLocationCharges();
- console.log('updateContractShirtPrintPrice');
- var pl_s_xl = $('#pl_s_xl').val();
- var sp_s_xl = Number(pl_s_xl) + Number(totalLocationCharges);
- sp_s_xl = (Math.round(sp_s_xl * 100) / 100).toFixed(2);
- $("#sp_s_xl").val(sp_s_xl);
+   var totalLocationCharges =  setLocationCharges();
+   console.log('updateContractShirtPrintPrice');
+   var pl_s_xl = $('#pl_s_xl').val();
+   var sp_s_xl = Number(pl_s_xl) + Number(totalLocationCharges);
+   sp_s_xl = (Math.round(sp_s_xl * 100) / 100).toFixed(2);
+   $("#sp_s_xl").val(sp_s_xl);
 
 
- var pl_xxl = $('#pl_xxl').val();
- var sp_xxl = Number(pl_xxl) + Number(totalLocationCharges);
- sp_xxl = (Math.round(sp_xxl * 100) / 100).toFixed(2);
- $("#sp_xxl").val(sp_xxl);
+   var pl_xxl = $('#pl_xxl').val();
+   var sp_xxl = Number(pl_xxl) + Number(totalLocationCharges);
+   sp_xxl = (Math.round(sp_xxl * 100) / 100).toFixed(2);
+   $("#sp_xxl").val(sp_xxl);
 
- var pl_xxxl = $('#pl_xxxl').val();
- var sp_xxxl = Number(pl_xxxl) + Number(totalLocationCharges);
- sp_xxxl = (Math.round(sp_xxxl * 100) / 100).toFixed(2);
- $("#sp_xxxl").val(sp_xxxl);
+   var pl_xxxl = $('#pl_xxxl').val();
+   var sp_xxxl = Number(pl_xxxl) + Number(totalLocationCharges);
+   sp_xxxl = (Math.round(sp_xxxl * 100) / 100).toFixed(2);
+   $("#sp_xxxl").val(sp_xxxl);
 
- var pl_xxxxl = $('#pl_xxxxl').val();
- var sp_xxxxl = Number(pl_xxxxl) + Number(totalLocationCharges);
- sp_xxxxl = (Math.round(sp_xxxxl * 100) / 100).toFixed(2);
- $("#sp_xxxxl").val(sp_xxxxl);
+   var pl_xxxxl = $('#pl_xxxxl').val();
+   var sp_xxxxl = Number(pl_xxxxl) + Number(totalLocationCharges);
+   sp_xxxxl = (Math.round(sp_xxxxl * 100) / 100).toFixed(2);
+   $("#sp_xxxxl").val(sp_xxxxl);
 
- var pl_xxxxxl = $('#pl_xxxxxl').val();
- var sp_xxxxxl = Number(pl_xxxxxl) + Number(totalLocationCharges);
- sp_xxxxxl = (Math.round(sp_xxxxxl * 100) / 100).toFixed(2);
- $("#sp_xxxxxl").val(sp_xxxxxl);
+   var pl_xxxxxl = $('#pl_xxxxxl').val();
+   var sp_xxxxxl = Number(pl_xxxxxl) + Number(totalLocationCharges);
+   sp_xxxxxl = (Math.round(sp_xxxxxl * 100) / 100).toFixed(2);
+   $("#sp_xxxxxl").val(sp_xxxxxl);
 }
 function setDecorationPrice(obj){
     // return false;
@@ -1279,16 +1286,16 @@ function setDecorationPrice(obj){
     function setMaxMargin() {
         var maxMargin = $("#max_profit_margin").val();
         if (maxMargin != '') {
-           var diff = (100 - Number(maxMargin)); 
-           diff = (diff / 100);
+         var diff = (100 - Number(maxMargin)); 
+         diff = (diff / 100);
 
-           $("#sxl_max_mar").val(0);
-           $("#xxl_max_mar").val(0);
-           $("#xxxl_max_mar").val(0);
-           $("#xxxxl_max_mar").val(0);
-           $("#xxxxxl_max_mar").val(0);
+         $("#sxl_max_mar").val(0);
+         $("#xxl_max_mar").val(0);
+         $("#xxxl_max_mar").val(0);
+         $("#xxxxl_max_mar").val(0);
+         $("#xxxxxl_max_mar").val(0);
 
-           if ($("#pl_s_xl").val() > 0 ) {
+         if ($("#pl_s_xl").val() > 0 ) {
 
             var sxl_max_mar =  ($("#sp_s_xl").val() / diff);
             $("#sxl_max_mar").val((Math.round(sxl_max_mar * 100) / 100).toFixed(2) );
@@ -1314,20 +1321,20 @@ function setDecorationPrice(obj){
     }
 
     $(document).on('click', '.add-supply-row', function(event) {
-            var supply_info_template         = $(this).closest('.order-box').find(".supply-info").first().clone();
-            var supply_info_parent           = $(this).closest('.order-box').find(".supply-p");
-            
-            supply_info_template.find("span.select2").remove();
-            var new_supply_info_template = supply_info_template.clone();
-            event.preventDefault();
-            new_supply_info_template.find("select").select2({
-                tags: true
-            });
-            supply_info_parent.append(new_supply_info_template);
-            new_supply_info_template.find('input').val(null);
-            init_supply++;
-        });
+        var supply_info_template         = $(this).closest('.order-box').find(".supply-info").first().clone();
+        var supply_info_parent           = $(this).closest('.order-box').find(".supply-p");
 
-        
+        supply_info_template.find("span.select2").remove();
+        var new_supply_info_template = supply_info_template.clone();
+        event.preventDefault();
+        new_supply_info_template.find("select").select2({
+            tags: true
+        });
+        supply_info_parent.append(new_supply_info_template);
+        new_supply_info_template.find('input').val(null);
+        init_supply++;
+    });
+
+
 </script>
 @endsection
