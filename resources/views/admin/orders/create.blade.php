@@ -370,12 +370,12 @@ hr{
                                             <label for="location1_charge" class="col-sm-2 font-weight-600">Location 1 Charge</label>
                                             <input type="hidden" name="location_charge[]" value="Location 1 Charge">
                                             <div class="col-sm-3">
-                                                <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location1_charge" placeholder="">
+                                                <input type="number" min="0" name="location_charge_price[]" readonly value="" class="my-form-control location_charges" id="location1_charge" placeholder="">
                                             </div>
                                             <label for="s-xl" class="col-sm-2 font-weight-600">S-XL</label>
                                             <input type="hidden" name="size[]" value="S-XL">
                                             <div class="col-sm-3">
-                                                <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_s_xl" placeholder="">
+                                                <input type="number" min="0" name="size_total_price[]" readonly value="" class="my-form-control" id="sp_s_xl" placeholder="">
 
                                             </div>
                                         </div>
@@ -385,12 +385,12 @@ hr{
                                             <label for="location2_charge" class="col-sm-2 font-weight-600">Location 2 Charge</label>
                                             <input type="hidden" name="location_charge[]" value="Location 2 Charge">
                                             <div class="col-sm-3">
-                                                <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location2_charge" placeholder="">
+                                                <input type="number" min="0" name="location_charge_price[]" readonly value="" class="my-form-control location_charges" id="location2_charge" placeholder="">
                                             </div>
                                             <label for="sp_xxl" class="col-sm-2 font-weight-600">XXL</label>
                                             <input type="hidden" name="size[]" value="XXL">
                                             <div class="col-sm-3">
-                                                <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxl" placeholder="">
+                                                <input type="number" min="0" name="size_total_price[]" readonly value="" class="my-form-control" id="sp_xxl" placeholder="">
                                             </div>
                                         </div>
                                     </div>
@@ -399,12 +399,12 @@ hr{
                                             <label for="location3_charge" class="col-sm-2 font-weight-600">Location 3 Charge</label>
                                             <input type="hidden" name="location_charge[]" value="Location 3 Charge">
                                             <div class="col-sm-3">
-                                                <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location3_charge" placeholder="">
+                                                <input type="number" min="0" name="location_charge_price[]" readonly value="" class="my-form-control location_charges" id="location3_charge" placeholder="">
                                             </div>
                                             <label for="sp_xxxl" class="col-sm-2 font-weight-600">XXXL</label>
                                             <input type="hidden" name="size[]" value="XXXL">
                                             <div class="col-sm-3">
-                                                <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxl" placeholder="">
+                                                <input type="number" min="0" name="size_total_price[]" readonly value="" class="my-form-control" id="sp_xxxl" placeholder="">
                                             </div>
                                         </div>
                                     </div>
@@ -413,12 +413,12 @@ hr{
                                             <label for="location4_charge" class="col-sm-2 font-weight-600">Location 4 Charge</label>
                                             <input type="hidden" name="location_charge[]" value="Location 4 Charge">
                                             <div class="col-sm-3">
-                                                <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location4_charge" placeholder="">
+                                                <input type="number" min="0" name="location_charge_price[]" readonly value="" class="my-form-control location_charges" id="location4_charge" placeholder="">
                                             </div>
                                             <label for="sp_xxxxl" class="col-sm-2 font-weight-600">XXXXL</label>
                                             <input type="hidden" name="size[]" value="XXXXL">
                                             <div class="col-sm-3">
-                                                <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxxl" placeholder="">
+                                                <input type="number" min="0" name="size_total_price[]" readonly value="" class="my-form-control" id="sp_xxxxl" placeholder="">
                                             </div>
                                         </div>
                                     </div>
@@ -427,12 +427,12 @@ hr{
                                             <label for="location5_charge" class="col-sm-2 font-weight-600">Location 5 Charge</label>
                                             <input type="hidden" name="location_charge[]" value="Location 5 Charge">
                                             <div class="col-sm-3">
-                                                <input type="number" min="0" name="location_charge_price[]" value="" class="my-form-control location_charges" id="location5_charge" placeholder="">
+                                                <input type="number" min="0" name="location_charge_price[]" readonly value="" class="my-form-control location_charges" id="location5_charge" placeholder="">
                                             </div>
                                             <label for="sp_xxxxxl" class="col-sm-2 font-weight-600">XXXXXL</label>
                                             <input type="hidden" name="size[]" value="XXXXXL">
                                             <div class="col-sm-3">
-                                                <input type="number" min="0" name="size_total_price[]" value="" class="my-form-control" id="sp_xxxxxl" placeholder="">
+                                                <input type="number" min="0" name="size_total_price[]" readonly value="" class="my-form-control" id="sp_xxxxxl" placeholder="">
                                             </div>
                                         </div>
                                     </div>
@@ -846,85 +846,6 @@ hr{
             }
         });
 
-        var init_field                 = 1;
-        $(document).on('click', '.add-field-row', function(event) {
-            var field_template         = $(this).closest('.order-box').find(".field-info").first().clone();
-            var field_parent           = $(this).closest('.order-box').find(".field-p");
-            var new_field_template = field_template.clone()
-            event.preventDefault();
-
-            field_parent.append(new_field_template);
-            init_field++;
-        });
-        $(document).on('click', '.remove-field-row', function(e) {
-
-            e.preventDefault();
-            if(init_field > 1){
-                $(this).closest('.field-info').remove();
-    init_field--; //Decrement field counter
-}
-
-});
-
-        function ImgUpload(selector) {
-            var imgWrap = "";
-            var imgArray = [];
-
-            $(selector+' .upload__inputfile').each(function () {
-                $(this).on('change', function (e) {
-                    imgWrap = $(this).closest('.upload__box').find('.upload__img-wrap');
-                    var maxLength = $(this).attr('data-max_length');
-
-                    var files = e.target.files;
-                    var filesArr = Array.prototype.slice.call(files);
-                    var iterator = 0;
-                    filesArr.forEach(function (f, index) {
-
-                        if (!f.type.match('image.*')) {
-                            return;
-                        }
-
-                        if (imgArray.length > maxLength) {
-                            return false
-                        } else {
-                            var len = 0;
-                            for (var i = 0; i < imgArray.length; i++) {
-                                if (imgArray[i] !== undefined) {
-                                    len++;
-                                }
-                            }
-                            if (len > maxLength) {
-                                return false;
-                            } else {
-                                imgArray.push(f);
-
-                                var reader = new FileReader();
-                                reader.onload = function (e) {
-                                    var html = "<div class='upload__img-box'><div style='background-image: url(" + e.target.result + ")' data-number='" + $(".upload__img-close").length + "' data-file='" + f.name + "' class='img-bg'><div class='upload__img-close'></div></div></div>";
-                                    imgWrap.append(html);
-                                    iterator++;
-                                }
-                                reader.readAsDataURL(f);
-                            }
-                        }
-                    });
-                });
-            });
-
-            $('body').on('click', ".upload__img-close", function (e) {
-                var file = $(this).parent().data("file");
-                for (var i = 0; i < imgArray.length; i++) {
-                    if (imgArray[i].name === file) {
-                        imgArray.splice(i, 1);
-                        break;
-                    }
-                }
-                $(this).parent().parent().remove();
-            });
-        }  
-
-        ImgUpload('.rh-0');
-
         $(document).on('change', 'input[name=measurement_type]', function(){
 
             if($(this).is(':checked')){
@@ -1152,7 +1073,10 @@ function setProjectedUnits(){
 function getDecorationPrice(obj){
     var ProjectedUnits = $('#ProjectedUnits').val();
     var number_of_colors = $(obj).val();
-    console.log(obj.name);
+    if (number_of_colors > 8 ) {
+        $(obj).val(0);
+    }
+    console.log(obj.id);
     console.log(number_of_colors);
     if (ProjectedUnits > 0 && number_of_colors > 0) {
       $.ajax({
@@ -1186,96 +1110,76 @@ function getDecorationPrice(obj){
 
             }
             setTimeout(function(){
-                var totalLocationCharges =  setLocationCharges();
-                
-                var pl_s_xl = $('#pl_s_xl').val();
-                var sp_s_xl = Number(pl_s_xl) + Number(totalLocationCharges);
-                sp_s_xl = (Math.round(sp_s_xl * 100) / 100).toFixed(2);
-                $("#sp_s_xl").val(sp_s_xl);
 
-
-                var pl_xxl = $('#pl_xxl').val();
-                var sp_xxl = Number(pl_xxl) + Number(totalLocationCharges);
-                sp_xxl = (Math.round(sp_xxl * 100) / 100).toFixed(2);
-                $("#sp_xxl").val(sp_xxl);
-
-                var pl_xxxl = $('#pl_xxxl').val();
-                var sp_xxxl = Number(pl_xxxl) + Number(totalLocationCharges);
-                sp_xxxl = (Math.round(sp_xxxl * 100) / 100).toFixed(2);
-                $("#sp_xxxl").val(sp_xxxl);
-
-                var pl_xxxxl = $('#pl_xxxxl').val();
-                var sp_xxxxl = Number(pl_xxxxl) + Number(totalLocationCharges);
-                sp_xxxxl = (Math.round(sp_xxxxl * 100) / 100).toFixed(2);
-                $("#sp_xxxxl").val(sp_xxxxl);
-
-                var pl_xxxxxl = $('#pl_xxxxxl').val();
-                var sp_xxxxxl = Number(pl_xxxxxl) + Number(totalLocationCharges);
-                sp_xxxxxl = (Math.round(sp_xxxxxl * 100) / 100).toFixed(2);
-                $("#sp_xxxxxl").val(sp_xxxxxl);
-
-            },300);
+               updateContractShirtPrintPrice();
+               setMinMargin();
+               setMaxMargin();
+           },300);
         }
     });
 
   }else{
     {
-        if (obj.name == "color_location1") {
+        if (obj.id == "color_location1") {
 
             $("#location1_charge").val(null)
 
         }
-        else if (obj.name == "color_location2") {
+        else if (obj.id == "color_location2") {
 
             $("#location2_charge").val(null)
 
-        }else if (obj.name == "color_location3") {
+        }else if (obj.id == "color_location3") {
 
             $("#location3_charge").val(null)
 
-        }else if (obj.name == "color_location4") {
+        }else if (obj.id == "color_location4") {
 
             $("#location4_charge").val(null)
 
-        }else if (obj.name == "color_location5") {
+        }else if (obj.id == "color_location5") {
 
             $("#location5_charge").val(null)
 
         }
         setTimeout(function(){
-            var totalLocationCharges =  setLocationCharges();
-
-            var pl_s_xl = $('#pl_s_xl').val();
-            var sp_s_xl = Number(pl_s_xl) + Number(totalLocationCharges);
-            sp_s_xl = (Math.round(sp_s_xl * 100) / 100).toFixed(2);
-            $("#sp_s_xl").val(sp_s_xl);
-
-
-            var pl_xxl = $('#pl_xxl').val();
-            var sp_xxl = Number(pl_xxl) + Number(totalLocationCharges);
-            sp_xxl = (Math.round(sp_xxl * 100) / 100).toFixed(2);
-            $("#sp_xxl").val(sp_xxl);
-
-            var pl_xxxl = $('#pl_xxxl').val();
-            var sp_xxxl = Number(pl_xxxl) + Number(totalLocationCharges);
-            sp_xxxl = (Math.round(sp_xxxl * 100) / 100).toFixed(2);
-            $("#sp_xxxl").val(sp_xxxl);
-
-            var pl_xxxxl = $('#pl_xxxxl').val();
-            var sp_xxxxl = Number(pl_xxxxl) + Number(totalLocationCharges);
-            sp_xxxxl = (Math.round(sp_xxxxl * 100) / 100).toFixed(2);
-            $("#sp_xxxxl").val(sp_xxxxl);
-
-            var pl_xxxxxl = $('#pl_xxxxxl').val();
-            var sp_xxxxxl = Number(pl_xxxxxl) + Number(totalLocationCharges);
-            sp_xxxxxl = (Math.round(sp_xxxxxl * 100) / 100).toFixed(2);
-            $("#sp_xxxxxl").val(sp_xxxxxl);
-
-        },300);
+          updateContractShirtPrintPrice();
+          setMinMargin();
+          setMaxMargin();
+      },300);
     }
     
 }
 
+}
+function updateContractShirtPrintPrice() {
+ var totalLocationCharges =  setLocationCharges();
+ console.log('updateContractShirtPrintPrice');
+ var pl_s_xl = $('#pl_s_xl').val();
+ var sp_s_xl = Number(pl_s_xl) + Number(totalLocationCharges);
+ sp_s_xl = (Math.round(sp_s_xl * 100) / 100).toFixed(2);
+ $("#sp_s_xl").val(sp_s_xl);
+
+
+ var pl_xxl = $('#pl_xxl').val();
+ var sp_xxl = Number(pl_xxl) + Number(totalLocationCharges);
+ sp_xxl = (Math.round(sp_xxl * 100) / 100).toFixed(2);
+ $("#sp_xxl").val(sp_xxl);
+
+ var pl_xxxl = $('#pl_xxxl').val();
+ var sp_xxxl = Number(pl_xxxl) + Number(totalLocationCharges);
+ sp_xxxl = (Math.round(sp_xxxl * 100) / 100).toFixed(2);
+ $("#sp_xxxl").val(sp_xxxl);
+
+ var pl_xxxxl = $('#pl_xxxxl').val();
+ var sp_xxxxl = Number(pl_xxxxl) + Number(totalLocationCharges);
+ sp_xxxxl = (Math.round(sp_xxxxl * 100) / 100).toFixed(2);
+ $("#sp_xxxxl").val(sp_xxxxl);
+
+ var pl_xxxxxl = $('#pl_xxxxxl').val();
+ var sp_xxxxxl = Number(pl_xxxxxl) + Number(totalLocationCharges);
+ sp_xxxxxl = (Math.round(sp_xxxxxl * 100) / 100).toFixed(2);
+ $("#sp_xxxxxl").val(sp_xxxxxl);
 }
 function setDecorationPrice(obj){
     // return false;
@@ -1319,6 +1223,7 @@ function setDecorationPrice(obj){
     }
     setMinMargin();
     setMaxMargin();
+    updateContractShirtPrintPrice();
 }
     // location_charges
     function setLocationCharges(){
