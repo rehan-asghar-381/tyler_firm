@@ -9,17 +9,17 @@
 <div class="body-content">
 	<form action="" id="reportForm">
 		<div class="row mb-4">
-			<div class="col-md-2 mb-3" style="margin-right: 10px;">
+			{{-- <div class="col-md-2 mb-3" style="margin-right: 10px;">
 				<div class="form-group">
+
 					<label>Client: </label>&nbsp;&nbsp;&nbsp;
 					<select type="text" name="client_id" id="client_id" class="form-control select-one" value="" >
-						<option value="">--select--</option>
 						@foreach ($clients as $client)
-						<option value="{{ $client->id }}">{{ $client->company_name}}</option>
+						<option value="{{ $client->id }}" selected="">{{ $client->company_name}}</option>
 						@endforeach
 					</select>
 				</div>
-			</div>
+			</div> --}}
 			<div class="col-md-3 mb-3">
 				<div class="form-group">
 					<label>Date From: </label>&nbsp;&nbsp;&nbsp;
@@ -50,7 +50,6 @@
 			<div class="col-md-2">
 				<label>Status</label>
 				<select type="text" name="status_id" id="order_type" class="form-control require required-online" value="" >
-					<option value="">--select--</option>
 					@foreach ($statuses_arr as $id=>$status)
 					@php
 					$status  	= json_decode($status, true);
@@ -59,7 +58,7 @@
 					@endforeach
 				</select>
 			</div>
-			<div class="col-md-12 mb-3">
+			<div class="col-md-2">
 				<button class="btn btn-success" style="margin-top: 31px;width:150px;float:right" id="search-button">Search</button>
 			</div>
 		</div>
@@ -72,11 +71,11 @@
 						<div>
 							<h6 class="fs-17 font-weight-600 mb-0">Orders List</h6>
 						</div>
-						@can('clients-create')
+						{{-- @can('clients-create')
 						<div class="text-right">
 							<a class="" href="{{ route('admin.order.create') }}"><i class="far fa fa-plus"></i> Add Order</a>
 						</div>
-						@endcan
+						@endcan --}}
 					</div>
 				</div>
 				<div class="card-body">

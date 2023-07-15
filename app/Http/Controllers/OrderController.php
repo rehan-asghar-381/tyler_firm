@@ -64,9 +64,23 @@ class OrderController extends Controller
             $statuses_arr['"'.$key.'"']          = $status;
         }
         $clients        = Client::get();
+
         return view('admin.orders.index', compact('pageTitle', 'statuses_arr', 'clients'));
     } 
 
+    public function previousOrder(Request $request,$id){
+        $pageTitle          = "Client  Previous Order";
+        $statuses           = Status::where('id', 5)->get(['id', 'name']);
+        
+        foreach($statuses as $key=>$status){
+
+            $statuses_arr['"'.$key.'"']          = $status;
+        }
+        $clients        = Client::get();
+
+        $clients               = Client::where('id',$id)->orderBy('id','DESC')->get();
+        return view('admin.orders.previous-order', compact('pageTitle', 'statuses_arr', 'clients'));
+    }
     public function ajaxtData(Request $request){
 
         $rData              = Order::with(["client"]);

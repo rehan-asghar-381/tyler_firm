@@ -27,4 +27,12 @@ class Client extends Model
         return $this->hasMany(Order::class, "client_id", "id");
     }
 
+    public function ClientDoc(){
+
+        return $this->hasMany(ClientDoc::class, 'client_id','id');
+    }
+     public function ClientSaleRep(){
+
+        return $this->hasMany(ClientSaleRep::class, 'client_id','id');
+    }
 }

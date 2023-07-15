@@ -35,12 +35,10 @@
 								<tr>
                   <th width="50px">Sr.</th>
                   <th width="400px">Company Name</th>
-                  <th width="400px">First Name</th>
-                  <th width="400px">Last Name</th>
-                  <th width="400px">Email</th>
-                  <th width="400px">Phone Number</th>
-                  <th width="400px">Reseller Number</th>
-                  <th width="400px">Tax Exampt</th>
+                  <th width="400px">Company Office Phone Number</th>
+                  <th width="400px">Company Website</th>
+                  <th width="400px">Charge Tax</th>
+                  <th width="400px">Resale Number</th>
                   <th width="400px">Action</th>
 								</tr>
 							</thead>
@@ -136,13 +134,11 @@
       columns: [
       {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center'},
       {data: 'company_name', name: 'company_name', orderable: false},
-      {data: 'first_name', name: 'first_name', orderable: false},
-      {data: 'last_name', name: 'last_name', orderable: false},
-      {data: 'email', name: 'email', orderable: false},
-      {data: 'phone_number', name: 'phone_number', orderable: false},
-      {data: 'reseller_number', name: 'reseller_number', orderable: false},
-      {data: 'tax_examp', name: 'tax_examp', orderable: false},
-      {data: 'actions', name: 'email', orderable: false}
+      {data: 'office_phone_number', name: 'office_phone_number', orderable: false},
+      {data: 'website', name: 'website', orderable: false},
+      {data: 'tax', name: 'tax', orderable: false},
+      {data: 'resale_number', name: 'resale_number', orderable: false},
+      {data: 'actions', name: 'actions', orderable: false}
       ],
      columnDefs: [ {
         'orderable': false, /* true or false */

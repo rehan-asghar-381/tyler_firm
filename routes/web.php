@@ -76,6 +76,10 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::post('/clients/store', [ClientController::class, 'store'])->name('clients.store');
     Route::get('/clients/edit/{client_id}', [ClientController::class, 'edit'])->name('clients.edit');
     Route::post('/clients/update/{client_id}', [ClientController::class, 'update'])->name('clients.update');
+    Route::get('/clients/delete-doc', [ClientController::class, 'delete_doc'])->name('clients.delete-doc');
+    Route::get('/clients/show/{product_id}', [ClientController::class, 'clientDetail'])->name('client.detail');
+
+    Route::get('/clients/previous-order/{client_id}', [OrderController::class, 'previousOrder'])->name('client.previousOrder');
 
 
     /* Start Order Routes */
