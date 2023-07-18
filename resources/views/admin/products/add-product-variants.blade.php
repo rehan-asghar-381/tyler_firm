@@ -1,3 +1,4 @@
+
 <style>
     .rh-pointer{
         cursor: pointer;
@@ -43,9 +44,11 @@
                                     @endforeach
                                 
                                 @endif
+                                @if($variant->name == "Color")
                                 <div class="col-md-4">
                                     <a href="#" class="btn btn-light btn-favourite btn-block popup-add-attribute" data-variant-id="{{$variant->id}}"><label class="fa fa-plus"></label></a>
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -53,11 +56,11 @@
                     @endforeach
                 @endif
                 <br>
-                <div class="row">
+               {{--  <div class="row">
                     <div class="col-md-4 offset-4 text-center">
                         <button class="btn btn-outline-violet w-100p mb-2 mr-1 popup-add-variant">New Attribute</button> 
                     </div>
-                </div>
+                </div> --}}
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">

@@ -8,6 +8,7 @@
 	<title>Admin Panel</title>
 	<link rel="shortcut icon" href="assets/dist/img/favicon.png">
 	<link href="{{asset('b/plugins/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+	<meta name="csrf-token" content="{{ csrf_token() }}" />
 	<link href="{{asset('b/plugins/metisMenu/metisMenu.min.css')}}" rel="stylesheet">
 	{{-- <link type="text/css" href="{{asset('b/plugins/fontawesome/css/all.min.css')}}" rel="stylesheet"> --}}
 	{{-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"> --}}

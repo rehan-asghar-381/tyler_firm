@@ -35,6 +35,10 @@ class Product extends Model
 
         return $this->hasMany(ProductImg::class, 'product_id','id');
     }
+    public function ProductPrice(){
+
+        return $this->hasMany(ProductPrice::class, 'product_id','id');
+    }
     public function TaxRate(){
 
         return $this->belongsTo(TaxRate::class, 'tax_rate_id','id');

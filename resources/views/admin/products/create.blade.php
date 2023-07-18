@@ -114,9 +114,18 @@
                         {!! $errors->first('code', '<p class="text-danger">:message</p>') !!} 
                         
                     </div>
-                    <div class="col-md-3 mb-3">
+                   {{--  <div class="col-md-3 mb-3">
                         <label class="form-label text-dark-gray" for="">Price</label>
                         <input type="number" name="inclusive_price" step="any" class="form-control font-12 form-control-lg require" value="{{old('inclusive_price')}}">
+                    </div> --}}
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label text-dark-gray" for="">Size for</label>
+                        <select name="size_for" id="size_for" class="form-control require select-one >
+                          <option value="">--select--</option>
+                          @foreach ($product_size_type as $type)
+                              <option value="{{ $type->type }}">{{ ucfirst($type->type )}}</option>
+                          @endforeach
+                      </select>
                     </div>
                     <div class="col-md-3 mb-3">
                         <label class="form-label text-dark-gray" for="">Brand</label>

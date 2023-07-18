@@ -64,6 +64,10 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
 
     /* Start Product Variants Routes */
     Route::get('/product/variants', [ProductController::class, 'variants'])->name('product.variants');
+    Route::get('/product/prices', [ProductController::class, 'prices'])->name('product.prices');
+    Route::post('/product/save-prices', [ProductController::class, 'savePrices'])->name('product.save-prices');
+
+
     Route::get('/product/add-variant', [ProductController::class, 'add_variant'])->name('product.add-variant');
     Route::get('/product/delete-variant', [ProductController::class, 'delete_variant'])->name('product.delete-variant');
     Route::get('/product/add-attribute', [ProductController::class, 'add_attribute'])->name('product.add-attribute');
