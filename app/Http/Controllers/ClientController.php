@@ -106,7 +106,7 @@ class ClientController extends Controller
             }
             if(auth()->user()->can('clients-Previous-Order')){
 
-                $action_list    .= '<a class="dropdown-item" href="'.route('admin.client.previousOrder',$data->id).'"><i class="fa fa-arrow-left"></i>  Previous Orders</a>';
+                $action_list    .= '<a class="dropdown-item" href="'.route('admin.client.previousOrder',$data->id).'"><i class="fa fa-arrow-left"></i> Orders History</a>';
             }
 
             $action_list    .= '</div>
@@ -274,10 +274,10 @@ class ClientController extends Controller
       $client->resale_number = $request->resale_number;
       $client->update();
 
-      if ( count($request->customer_doc) > 0) {
+      if ( isset($request->customer_doc) && count($request->customer_doc) > 0) {
         $this->save_client_docs($request->file('customer_doc'), $id);
     }
-    if (count($request->first_name) > 0) {
+    if (isset($request->first_name) && count($request->first_name) > 0) {
         $this->save_client_sales_rep($request, $id);
     }
     return redirect()->route('admin.clients.index')
