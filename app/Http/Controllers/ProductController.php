@@ -175,7 +175,6 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $rData                      = $request->all();
-        // dd($rData);
         $user_id                    = Auth::user()->id;
         $user_name                  = Auth::user()->name;
         $rules = [
@@ -211,21 +210,20 @@ class ProductController extends Controller
     }
 
     public function set_default_product_variants_attributes($size_for,$productID){
+
         $this->set_default_product_variants('Color',$productID);
-        $variant_id =  $this->set_default_product_variants(ucfirst($size_for).' '.'Size'  ,$productID);
-        $variant = ProductVariant::find( $variant_id);
-
-
-        $product_sizes = ProductSizeType::where('type',$size_for)->get();
-        $variant_attributeArr = [];
+        $variant_id             = $this->set_default_product_variants(ucfirst($size_for).' '.'Size'  ,$productID);
+        $variant                = ProductVariant::find($variant_id);
+        $product_sizes          = ProductSizeType::where('type',$size_for)->get();
+        $variant_attributeArr   = [];
         foreach ($product_sizes as $key => $size) {
-           $variant_attribute          = new ProductVariantAttribute();
+           $variant_attribute                   = new ProductVariantAttribute();
 
-           $variant_attribute->variant_id          = $variant_id;
-           $variant_attribute->name                = $size->name;
-           $variant_attribute->created_by_id       = Auth::user()->id;
-           $variant_attribute->created_by_name     = Auth::user()->name;
-           $variant_attributeArr[]                = $variant_attribute;
+           $variant_attribute->variant_id       = $variant_id;
+           $variant_attribute->name             = $size->name;
+           $variant_attribute->created_by_id    = Auth::user()->id;
+           $variant_attribute->created_by_name  = Auth::user()->name;
+           $variant_attributeArr[]              = $variant_attribute;
        }
 
        $variant->Atrributes()->saveMany($variant_attributeArr);
@@ -365,37 +363,44 @@ public function save_product_imgs($files_arr=[], $product_id){
 
     } 
     public function prices(Request $request){
-        $productColorVariantArr = [];
-        $productSizeVariantArr = [];
-        $productVariantArr = [];
-        $product_id         = $request->product_id;
-        $variants           = ProductVariant::with('Atrributes')
-        ->where("product_id", $product_id)
 
-        ->get();
-        $fixdSize = ["XS","S","M","L",'XS-L' ];
+        $productColorVariantArr     = [];
+        $productSizeVariantArr      = [];
+        $productVariantArr          = [];
+        $product_prices_arr         = [];
+        $product_id                 = $request->product_id;
+        $product_prices             = ProductPrice::where("product_id", $product_id)->get();
+        
+        foreach($product_prices as $price){
+
+            $product_prices_arr[$price->v1_id][$price->v1_attr_id][$price->v2_id][$price->v2_attr_id]   = $price->price;
+        }
+        $variants                   = ProductVariant::with('Atrributes')
+                                        ->where("product_id", $product_id)
+                                        ->get();
+        $fixdSize                   = [
+                                        "S",
+                                        "M",
+                                        "L",
+                                        "XL"
+                                    ];
+        $fixed_sizes_ids            = [];                                
         foreach ($variants as $key => $variant) {
             $productVariantArr[$variant->id] = $variant->name;
 
             foreach ($variant->Atrributes as $key => $atrributes) {
                 if ($variant->name != "Color" ) {
                     if (in_array($atrributes->name, $fixdSize)) {
-
-                        if (!in_array( $variant->id.'_'.$atrributes->id.'_XS-L', $productSizeVariantArr)) {
-                            $productSizeVariantArr[] = $variant->id.'_'.$atrributes->id.'_XS-L' ;
+                        if (!in_array( $variant->id.'_'.$atrributes->id.'_S-XL', $productSizeVariantArr)) {
+                            $productSizeVariantArr[]    = $variant->id.'_'.$atrributes->id.'_S-XL' ;
+                            $fixed_sizes_ids[]          = $atrributes->id;
                         }
-
-
-                    } else{
+                    }else{
                         $productSizeVariantArr[] = $variant->id.'_'.$atrributes->id.'_'.$atrributes->name ;
                     }
-
                 } 
-
             }
-
         } 
-    // dump($variants);
         foreach ($variants as $key => $variant) {
 
 
@@ -408,40 +413,49 @@ public function save_product_imgs($files_arr=[], $product_id){
 
     }  
     $productVariantAtrributesArr = $productColorVariantArr;
-// dump($productVariantArr);
-// dd($productVariantAtrributesArr);
     $product_code       = Product::where('id', $product_id)->select('code', 'name')->first();
-
-
-
-    return view('admin.products.add-product-prices', compact('productVariantArr','productVariantAtrributesArr' ,'product_id', 'product_code'));
+    return view('admin.products.add-product-prices', compact('productVariantArr','productVariantAtrributesArr' ,'product_id', 'product_code', 'fixed_sizes_ids', 'product_prices_arr'));
 
 } 
 public function savePrices(Request $request){
+    
+    $fixed_sizes_ids            = $request->fixed_sizes_ids;
+
     $user_id                    = Auth::user()->id;
     $user_name                  = Auth::user()->name;
     $product                    = Product::find($request->product_id);
-    $productPriceArr = [];
+    $productPriceArr            = [];
     foreach ($request->colorVariantIds as $key => $value) {
-        $productPrice               = new ProductPrice();
-     
-        $productPrice->product_id  = $request->product_id;
-        $productPrice->v1_id = $request->colorVariantIds[$key]; 
-        $productPrice->v1_attr_id = $request->colorAtrributesIds[$key]; 
-        $productPrice->v2_id = $request->sizeVariantIds[$key]; 
-        $productPrice->v2_attr_id = $request->sizerAtrributesIds[$key]; 
-        $productPrice->price = $request->prices[$key]; 
-        $productPrice->created_by_id = Auth::user()->id;
-        $productPrice->created_by_name = Auth::user()->name;
        
-        $productPriceArr[]                = $productPrice;
-
+        if(isset($request->sizerAtrributesIds[$key]) && in_array($request->sizerAtrributesIds[$key], $fixed_sizes_ids)){
+            foreach($fixed_sizes_ids as $fixed_sizes_id){
+                $productPrice                   = new ProductPrice();
+                $productPrice->product_id       = $request->product_id;
+                $productPrice->v1_id            = $request->colorVariantIds[$key]; 
+                $productPrice->v1_attr_id       = $request->colorAtrributesIds[$key]; 
+                $productPrice->v2_id            = $request->sizeVariantIds[$key]; 
+                $productPrice->v2_attr_id       = $fixed_sizes_id; 
+                $productPrice->price            = $request->prices[$key]; 
+                $productPrice->created_by_id    = $user_id;
+                $productPrice->created_by_name  = $user_name;
+                $productPriceArr[]              = $productPrice;
+            }
+        }else{
+            $productPrice                   = new ProductPrice();
+            $productPrice->product_id       = $request->product_id;
+            $productPrice->v1_id            = $request->colorVariantIds[$key]; 
+            $productPrice->v1_attr_id       = $request->colorAtrributesIds[$key]; 
+            $productPrice->v2_id            = $request->sizeVariantIds[$key]; 
+            $productPrice->v2_attr_id       = $request->sizerAtrributesIds[$key]; 
+            $productPrice->price            = $request->prices[$key]; 
+            $productPrice->created_by_id    = $user_id;
+            $productPrice->created_by_name  = $user_name;
+            $productPriceArr[]              = $productPrice;
+        }
+        
     }
-
- 
-       }
-
-       $product->ProductPrice()->saveMany($productPriceArr);
+    $product->ProductPrice()->delete();
+    $product->ProductPrice()->saveMany($productPriceArr);
 
     return json_encode(array("status"=>true, "message"=>"Prices added successfully"));
 } 

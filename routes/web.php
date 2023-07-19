@@ -101,7 +101,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/orders/edit/{order_id}', [OrderController::class, 'edit'])->name('order.edit');
     Route::post('/orders/update/{order_id}', [OrderController::class, 'update'])->name('orders.update');
     Route::get('/orders/product', [OrderController::class, 'product_form'])->name('order.product');
-    Route::get('/orders/product_final_price_form', [OrderController::class, 'product_final_price_form'])->name('order.product_final_price_form');
+    Route::get('/orders/print_nd_loations', [OrderController::class, 'print_nd_loations'])->name('order.print_nd_loations');
 
     Route::get('/orders/view/{order_id}', [OrderController::class, 'orderView'])->name('order.view');
     

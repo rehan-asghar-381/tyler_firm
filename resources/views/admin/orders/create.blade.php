@@ -160,7 +160,7 @@ hr{
                                     <option value=""> Select</option>
                                     {{-- <option value="new">Add New Client</option>--}}
                                     @foreach ($clients as $client)
-                                    <option value="{{ $client->id }}">{{ $client->first_name." ".$client->last_name." (".$client->email.")" }}</option>
+                                    <option value="{{ $client->id }}">{{ $client->company_name}}</option>
                                     @endforeach
                                 </select>
                                 
@@ -229,7 +229,6 @@ hr{
                                     {{-- @include('admin.clients.add-client', ['errors'=>$errors]) --}}
                                 </div>
                                 <div class="row Order-form btn-d-none">
-                                    {{-- @include('admin.orders.rental-form', ['errors'=>$errors]) --}}
                                     <div id="accordion" class="accordion">
                                     </div>
                                 </div>
@@ -244,111 +243,9 @@ hr{
                                             name="projected_units" id="ProjectedUnits" placeholder="">
                                         </div>
                                     </div>
-                                    <div class="form-group row">
-                                        <label for="quantity_break" class="col-md-2 font-weight-600">Quantity Breaks</label>
-                                        <div class="col-sm-3">
-                                            <select name="quantity_break" id="quantity_break" class="form-control select-one">
-                                                <option value="">Select</option>
-                                                <option value="3-47" >3-47</option>
-                                                <option value="48-71" >48-71</option>
-                                                <option value="72-143" >72-143</option>
-                                                <option value="144-287" >144-287</option>
-                                                <option value="288-431" >288-431</option>
-                                                <option value="432-575" >432-575</option>
-                                                <option value="576-999" >576-999</option>
-                                                <option value="1000-2499" >1000-2499</option>
-                                                <option value="1000-2499" >1000-2499</option>
-                                                <option value="2500-4999" >2500-4999</option>
-                                            </select>
-                                        </div>
-                                    </div>
                                 </div>
-
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="pl_s_xl" class="col-sm-2 font-weight-600">S-XL</label>
-                                        <input type="hidden" name="plsize[]" value="S-XL">
-                                        <div class="col-sm-3">
-                                            <input type="number" value="" name="size_price[]" 
-                                            onchange="setDecorationPrice(this);"
-                                            onkeyup="setDecorationPrice(this);" class="my-form-control" id="pl_s_xl" placeholder="">
-                                        </div>
-                                        <label for="color_location1" class="col-sm-2 font-weight-600"># of Colors Location 1</label>
-                                        <input type="hidden" name="location[]" value="# of Colors Location 1" >
-                                        <div class="col-sm-3">
-                                            <input type="number" value="" onchange="getDecorationPrice(this);" onkeyup="getDecorationPrice(this);" name="location_color[]" max="8" min="1" class="my-form-control location_color" id="color_location1" placeholder="">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="pl_xxl" class="col-sm-2 font-weight-600">XXL</label>
-                                        <input type="hidden" name="plsize[]" value="XXL" >
-                                        <div class="col-sm-3">
-                                            <input type="number" value="" name="size_price[]" class="my-form-control" id="pl_xxl" onchange="setDecorationPrice(this);"
-                                            onkeyup="setDecorationPrice(this);" placeholder="">
-                                        </div>
-                                        <label for="color_location2" class="col-sm-2 font-weight-600"># of Colors Location 2</label>
-                                        <input type="hidden" name="location[]" value="# of Colors Location 3" >
-                                        <div class="col-sm-3">
-                                            <input type="number" value="" onchange="getDecorationPrice(this);"
-                                            onkeyup="getDecorationPrice(this);"  name="location_color[]" max="8" min="1" class="my-form-control location_color" id="color_location2" placeholder="">
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="pl_xxxl" class="col-sm-2 font-weight-600">XXXL</label>
-                                        <input type="hidden" name="plsize[]" value="XXXL" >
-                                        <div class="col-sm-3">
-                                            <input type="number" value="" 
-                                            name="size_price[]" class="my-form-control" id="pl_xxxl" onchange="setDecorationPrice(this);"
-                                            onkeyup="setDecorationPrice(this);" placeholder="">
-                                        </div>
-                                        <label for="color_location3" class="col-sm-2 font-weight-600"># of Colors Location 3</label>
-                                        <input type="hidden" name="location[]" value="# of Colors Location 3" >
-                                        <div class="col-sm-3">
-                                            <input type="number" value=""onchange="getDecorationPrice(this);"
-                                            onkeyup="getDecorationPrice(this);" 
-                                            name="location_color[]" max="8" min="1" class="my-form-control location_color" id="color_location3" placeholder="">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="pl_xxxxl" class="col-sm-2 font-weight-600">XXXXL</label>
-                                        <input type="hidden" name="plsize[]" value="XXXXL" >
-                                        <div class="col-sm-3">
-                                            <input type="number" value="" 
-                                            name="size_price[]" class="my-form-control" id="pl_xxxxl" onchange="setDecorationPrice(this);"
-                                            onkeyup="setDecorationPrice(this);" placeholder="">
-                                        </div>
-                                        <label for="color_location4" class="col-sm-2 font-weight-600"># of Colors Location 4</label>
-                                        <input type="hidden" name="location[]" value="# of Colors Location 4" >
-                                        <div class="col-sm-3">
-                                            <input type="number" value=""  
-                                            name="location_color[]" max="8" min="1" class="my-form-control location_color" onchange="getDecorationPrice(this);"
-                                            onkeyup="getDecorationPrice(this);" id="color_location4" placeholder="">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="pl_xxxxxl" class="col-sm-2 font-weight-600">XXXXXL</label>
-                                        <input type="hidden" name="plsize[]" value="XXXXXL" >
-                                        <div class="col-sm-3">
-                                            <input type="number" value="" 
-                                            name="size_price[]"  class="my-form-control" id="pl_xxxxxl" onchange="setDecorationPrice(this);"
-                                            onkeyup="setDecorationPrice(this);" placeholder="">
-                                        </div>
-                                        <label for="color_location5" class="col-sm-2 font-weight-600"># of Colors Location 5</label>
-                                        <input type="hidden" name="location[]" value="# of Colors Location 5" >
-                                        <div class="col-sm-3">
-                                            <input type="number" value="" onchange="getDecorationPrice(this);"
-                                            onkeyup="getDecorationPrice(this);" 
-                                            name="location_color[]" max="8" min="1" class="my-form-control location_color" id="color_location5" placeholder=""> 
-                                        </div>
+                                <div class="row product-print-locations btn-d-none">
+                                    <div id="accordion2" class="accordion2" style="min-height: 200px;">
                                     </div>
                                 </div>
                             </div>
@@ -640,17 +537,6 @@ hr{
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="FinalPrice" role="tabpanel" aria-labelledby="FinalPrice-tab">
-                                <div>
-                                    <div class="row Order-form btn-d-none">
-                                        <div id="accordion2" class="accordion2" style="min-height: 200px;">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 form-check mt-5">
-                                    <button type="submit" class="btn btn-primary mb-3" id="submit-form">Save Order</button>
-                                </div>
-                            </div>
 
                         </div>
                     </form>
@@ -717,95 +603,28 @@ hr{
             var product_id      = e.params.data.id;
             if(product_id != ""){
                 $.ajax({
-                    url: "{{ route('admin.order.product_final_price_form') }}",
+                    url: "{{ route('admin.order.print_nd_loations') }}",
                     type: "GET",
                     data: {
                         product_id      : product_id
                     },
                     success: function(data) {
-                        $('.accordion2').append(data);   
+                        $('#accordion2').append(data);   
                     },
                     beforeSend: function() {
                         $('.page-loader-wrapper').show();
                     },
                     complete: function(){
                         $('.page-loader-wrapper').hide();
-                        $('.Order-form').show();
+                        $('.product-print-locations').show();
                     }
                 });
             } 
         });
-        // function required(seletor=""){
-
-        //     let validated           = true;
-
-        //     var order_type          = $('#order_type').val();
-        //     if(order_type == ""){
-
-        //         alert('Please select Order Type fisrt.');
-        //         $('#order_type').addClass('has-error');
-        //         validated   = false;
-
-        //     }else{
-        //         $('#order_type').removeClass('has-error');
-        //         if(order_type == 2){
-
-        //             $(".require").each(function(key, value){
-        //                 $(this).removeClass('has-error');
-        //             });
-
-        //             $(".required-online").each(function(key, value){
-
-        //                 var value       = $(this).val();
-        //                 if(value == "" || value == null){
-
-        //                     $(this).addClass('has-error');
-        //                     validated   = false;
-
-        //                 }else{
-
-        //                     $(this).removeClass('has-error');
-
-        //                 }
-        //             });
-
-        //         }else{
-        //             $(".require").each(function(key, value){
-
-        //                 var value       = $(this).val();
-        //                 if(value == "" || value == null){
-
-        //                     $(this).addClass('has-error');
-        //                     validated   = false;
-
-        //                 }else{
-
-        //                     $(this).removeClass('has-error');
-
-        //                 }
-        //             });
-        //         }
-        //     }
-        //     return validated;
-        // }
-
-        // $('#submit-form').click(function(event) {
-
-        //     var validate = required();
-        //     if (validate) {
-        //         return true;
-        //     }else{
-        //         event.preventDefault();
-        //     }
-
-        // });
         var init                     = 1;
         $(document).on('click', '.add_product', function(event) {
             event.preventDefault();
             var time = {{time()}};
-            // product_add
-            // console.log($(this).data('add_product'));
-            // console.log('test'+$(this).data('product_id'));
             var  product_id = $(this).data('product_id');
 
             console.log('product_id' + product_id);
@@ -1007,43 +826,6 @@ hr{
                 }
             });
         }
-        $(document).on('change', '.select-supply', function(){
-
-            var item            = $(this).val();
-            var available_quantity      = 0;
-            $.ajax({
-                async:false,
-                {{-- url: "{{ route('admin.supply.get_available_qty') }}", --}}
-                type: "GET",
-                data: {
-                    item      : item
-                },
-                success: function(result) {
-                    result          = JSON.parse(result);
-                    console.log(result);
-                    if(result.status){
-
-                        available_quantity = result.available_qty;
-
-                    }
-                }
-            });
-            $(this).closest('.supply-info').find('.available_quantity').val(available_quantity);
-
-        });
-        $(document).on('change', '.selling_price, .deposit', function(){
-
-            var selling_price               = parseInt($(this).closest('.order-box').find('.selling_price').val());
-            var deposit                     = parseInt($(this).closest('.order-box').find('.deposit').val());
-            var balance                     = 0;
-
-            balance                         = deposit-selling_price;
-
-            $(this).closest('.order-box').find('.balance').val(balance);
-
-        });
-
-        $('.rh-0').hide();
     });
 function setTotal(obj) {
     if (obj.id == "price") {

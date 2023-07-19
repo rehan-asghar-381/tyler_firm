@@ -812,13 +812,11 @@ class OrderController extends Controller
         return view('admin.orders.product', compact('product_detail', 'payments_types'));
         
     }
-    public function product_final_price_form(Request $request){
+    public function print_nd_loations(Request $request){
 
         $product_id         = $request->product_id;
-        $payments_types     = [];
         $product_detail     = Product::with( 'ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
-        return view('admin.orders.product-final-price', compact('product_detail', 'payments_types'));
-        
+        return view('admin.orders.print-locations', compact('product_detail'));
     }
 
     public function get_decoration_price(Request $request)

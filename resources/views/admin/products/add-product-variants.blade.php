@@ -21,8 +21,7 @@
                         <div class="col-md-4 offset-4 ">
                             <div class="form-group">
                                 <div class="icon-addon input-right-icon">
-                                    <input type="text" value="{{$variant->name}}" placeholder="Type variant" class="form-control" id="8" disabled>
-                                    <label class="fa fa-trash rh-pointer v-del" data-id="{{$variant->id}}"></label>
+                                    <input type="text" value="{{$variant->name}}" placeholder="Type variant" class="form-control text-center" id="8" disabled>
                                 </div>
                             </div>
                         </div>
@@ -37,7 +36,9 @@
                                         <div class="form-group">
                                             <div class="icon-addon input-right-icon">
                                                 <input type="text" placeholder="Type attribute" value="{{$attribute->name}}" class="form-control" id="8" disabled>
+                                                @if($variant->name == "Color")
                                                 <label class="fa fa-trash rh-pointer attr-del" data-id="{{$attribute->id}}"></label>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>

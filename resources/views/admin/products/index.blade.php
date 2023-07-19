@@ -80,7 +80,6 @@
         <th>Brand</th>
         <th>Name</th>
         <th>Code</th>
-        <th>Price</th>
         <th>Added By</th>
         <th>Added At</th>
         <th>Action</th>
@@ -183,7 +182,6 @@
       {data: 'brand_id', name: 'brand_id'},
       {data: 'name', name: 'name'},
       {data: 'code', name: 'code'},
-      {data: 'inclusive_price', name: 'inclusive_price'},
       {data: 'created_by_name', name: 'created_by_name'},
       {data: 'time_id', name: 'time_id'},
       {data: 'actions', name: 'actions'}
@@ -412,6 +410,15 @@ $(document).on('click', '.attr-del', function(e){
 
 });
 
+$(document).on("change", "._price", function(){
+  var price         = $(this).val();
+  var selector      = $(this).attr("data-selector");
+  $("."+selector).each(function(index, element){
+    if($(this).val() == ""){
+      $(this).val(price);
+    }
+  });
+});
 
 // $('#add-prices-form').off().submit(function(e) {
 //   e.preventDefault();
@@ -475,6 +482,8 @@ $("#search-button").click(function (e) {
   table.ajax.reload();
 
 });
+
+
 </script>
 @endsection
 
