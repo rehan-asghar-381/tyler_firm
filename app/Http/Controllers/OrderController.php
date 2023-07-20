@@ -38,7 +38,11 @@ use App\Traits\NotificationTrait;
 
 class OrderController extends Controller
 {
+    
     use NotificationTrait;
+
+    public $fixedAdultSize;
+    public $allAdultSizes;
     function __construct()
     {
        $this->middleware('permission:orders-list|orders-edit', ['only' => ['index']]);
@@ -46,6 +50,18 @@ class OrderController extends Controller
        $this->middleware('permission:orders-view', ['only' => ['show']]);
        $this->middleware('permission:orders-change-status', ['only' => ['status_update']]);
        $this->middleware('permission:orders-generate-invoice', ['only' => ['status_update']]);
+       $this->fixedAdultSize        = [
+                                        "S",
+                                        "M",
+                                        "L",
+                                        "XL"
+                                    ];
+       $this->allAdultSizes        = [
+                                        "2XL",
+                                        "3XL",
+                                        "4XL",
+                                        "5XL"
+                                    ];
    }
 
     /**
@@ -225,7 +241,9 @@ class OrderController extends Controller
         $brands             = Brand::get();
         $errors             = [];
         $order_type_id      = 1; 
-        return view('admin.orders.create',compact('pageTitle','products', 'clients', 'brands'));
+        $fixed_sizes        = $this->fixedAdultSize;
+        $all_adult_sizes    = $this->allAdultSizes;
+        return view('admin.orders.create',compact('pageTitle','products', 'clients', 'brands', 'fixed_sizes', 'all_adult_sizes'));
 
     } 
 
@@ -821,10 +839,12 @@ class OrderController extends Controller
 
     public function get_decoration_price(Request $request)
     {
+  
         $number_of_colors       = $request->number_of_colors;
         $total_pieces           = $request->total_pieces;
         $range                  = 0;
         $price_ranges           = PriceRange::orderBy('range')->get();
+        $price                  = 0;
 
         if($total_pieces <= 12){
             $range          = 12;
@@ -840,10 +860,13 @@ class OrderController extends Controller
                 }
             }
         }
-
-        $price  = DecorationPrice::where(["number_of_colors"=>$number_of_colors, "range"=>$range])->first();
-        // dd($price );
-        return $price->value;
+        foreach($number_of_colors as $key=>$number_of_color){
+            $prices         = DecorationPrice::where(["number_of_colors"=>$number_of_color, "range"=>$range])->first('value');
+            $price          = $price+$prices->value;
+        }
+        
+        $price      = number_format($price,2);
+        return $price;
     }
     public function generateInvoice(Request $request)
     {

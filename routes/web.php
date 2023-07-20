@@ -66,6 +66,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/product/variants', [ProductController::class, 'variants'])->name('product.variants');
     Route::get('/product/prices', [ProductController::class, 'prices'])->name('product.prices');
     Route::post('/product/save-prices', [ProductController::class, 'savePrices'])->name('product.save-prices');
+    Route::get('/product/get-price', [ProductController::class, 'get_price'])->name('product.get_price');
 
 
     Route::get('/product/add-variant', [ProductController::class, 'add_variant'])->name('product.add-variant');
@@ -113,10 +114,11 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
 
     Route::get('/get_product_by_brand', [ProductController::class, 'get_product_by_brand'])->name('get_product_by_brand');
 
-      // Start General Setting Routes 
+    // Start General Setting Routes 
     Route::get('/settings/decoration-prices', [PriceController::class, 'index'])->name('price.index');
     Route::get('/settings/decoration-prices/edit', [PriceController::class, 'edit'])->name('price.edit');
     Route::post('/settings/decoration-prices/update', [PriceController::class, 'update'])->name('price.update');
+    
     
 }); 
 /* End Admin Routes */

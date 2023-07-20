@@ -16,7 +16,7 @@
 .row {
     width: 100% !important;
 }
-.accordion2 .card-header:after {
+/* .accordion2 .card-header:after {
     font-family: "Font Awesome 5 Free";
     content: "\f106";
     font-weight: 900; 
@@ -27,7 +27,7 @@
     content: "\f107"; 
     font-weight: 900;
     float: right;
-}
+} */
 .btn-d-none{
     display: none;
 }
@@ -455,10 +455,9 @@ hr{
                                 <hr class="dotted">
                                 <div class="col-md-10">
                                     <div class="form-group row">
-
                                         <div class="col-sm-3 offset-2">
-                                            <label for="min_profit_margin" class="font-weight-600">Min Margin</label>
-                                            <select onchange="setMinMargin(this);" name="min_profit_margin" id="min_profit_margin" class="my-form-control">
+                                            <label class="font-weight-600">Min Margin</label>
+                                            <select name="min_profit_margin" class="my-form-control profit-margin">
                                                 <option value="">Select Min Margin</option>
                                                 @for ($i = 1; $i <=100; $i++)
                                                 <option value="{{$i}}" >{{$i}} %</option>
@@ -540,6 +539,8 @@ hr{
 
                         </div>
                     </form>
+                    <template>{{json_encode($fixed_sizes)}}</template>
+                    <template id="all_adult_sizes">{{json_encode($all_adult_sizes)}}</template>
                 </div>
             </div>
         </div>
@@ -547,21 +548,11 @@ hr{
     @endsection
     @section('footer-script')
     <script>
-        $(document).ready(function(){
-
-            $('#product_ids').on('select2:unselect', function (e) {
-                var p_id        = ".product-detail-"+e.params.data.id;
-                $(p_id).remove();
-            });
-        // $('select').select2();
-        $(".select-supply").select2({
-            tags: true
+    $(document).ready(function(){
+        $('#product_ids').on('select2:unselect', function (e) {
+            var p_id        = ".product-detail-"+e.params.data.id;
+            $(p_id).remove();
         });
-        $("#brand").select2({
-            tags: true
-        });
-        var order_box_template         = $(".order-box").clone();
-        var order_box_parent           = $(".order-box-p");
         $(document).on("change", "#brand", function(){
             var  brand = $("#brand").val();
             $.ajax({
@@ -662,462 +653,230 @@ hr{
                 init--; //Decrement field counter
             }
         });
-
-        $(document).on('change', 'input[name=measurement_type]', function(){
-
-            if($(this).is(':checked')){
-
-                var measurement_type        = $(this).val();
-                $('.rh-m-text').each(function(index, value){
-
-                    if(measurement_type == 'Inches'){
-
-                        $(this).text('Inches');
-                    }else if(measurement_type == 'cms'){
-
-                        $(this).text('cms');
-                    }
-                });
-
-            }
-        });
-
-        $(document).on('change', '#client_id', function(){
-            var client_id       = $(this).val();
-            get_client_recent_order(client_id);
-            if(client_id != 'new'){
-                $('.client-form').addClass('btn-d-none');
-                $.ajax({
-                    {{-- url: "{{ route('admin.client.get_detail') }}",  --}}
-                    type: "GET",
-                    data: {
-                        client_id: client_id
-                    },
-                    success: function(data) {
-
-                        $('input[name=first_name]').val(data.first_name);
-                        $('input[name=last_name]').val(data.last_name);
-                        $('input[name=phone_number]').val(data.phone_number);
-                        $('input[name=email]').val(data.email);   
-
-                        $('input[name=first_name]').attr('readonly', true);
-                        $('input[name=last_name]').attr('readonly', true);
-                        $('input[name=phone_number]').attr('readonly', true);
-                        $('input[name=email]').attr('readonly', true);
-                        $('#add-client').addClass('btn-d-none');
-
-                        get_client_recent_order(client_id);
-                    }
-                });
-
-            }else if(client_id == 'new'){
-
-                $('.client-form').removeClass('btn-d-none');
-                $('input[name=first_name]').val('');
-                $('input[name=last_name]').val('');
-                $('input[name=phone_number]').val('');
-                $('input[name=email]').val('');
-
-                read_only(true);
-            }
-        });
-        function read_only(readonly=false){
-            if(readonly){
-                $('input[name=first_name]').attr('readonly', false);
-                $('input[name=last_name]').attr('readonly', false);
-                $('input[name=phone_number]').attr('readonly', false);
-                $('input[name=email]').attr('readonly', false);
-
-                $('#add-client').removeClass('btn-d-none');
-            }else{
-                $('input[name=first_name]').attr('readonly', true);
-                $('input[name=last_name]').attr('readonly', true);
-                $('input[name=phone_number]').attr('readonly', true);
-                $('input[name=email]').attr('readonly', true);
-
-                $('#add-client').addClass('btn-d-none');
-            }
+        
+    });
+    function setTotal(obj) {
+        if (obj.id == "price") {
+            var price =  $(obj).val();
+            var pieces =  $(obj).parent().prev().find('input[type=number]').val();
+            $(obj).parent().next().find('input[type=number]').val(price*pieces);
         }
-        $(document).on("click", "#add-client", function(event){
+        if (obj.id == "pieces") {
+            var pieces =  $(obj).val();
+            var price =  $(obj).parent().next().find('input[type=number]').val();
+            $(obj).parent().next().next().find('input[type=number]').val(price*pieces);
 
-            event.preventDefault();
-
-            var first_name          = $('input[name=first_name]').val();
-            var last_name           = $('input[name=last_name]').val();
-            var phone_number        = $('input[name=phone_number]').val();
-            var email               = $('input[name=email]').val();
-
-            $.ajax({
-                url: "{{ route('admin.client.add_client') }}",
-                type: "GET",
-                data: {
-                    first_name      : first_name,
-                    last_name       : last_name,
-                    phone_number    : phone_number,
-                    email           : email
-                },
-                success: function(data) {
-                    $('.client-form').html('');
-                    $('.client-form').html(data);
-
-                    if($('#client_return_id').val() != ""){
-
-                        get_clients($('#client_return_id').val());
-                    }
-                    if($('#error_return').val() == ""){
-                        setTimeout(function(){
-                            console.log($('#client_return_id').val());
-                            $('#client_id').val($('#client_return_id').val()).trigger("change");
-                        }, 1000);
-                    }
-                }
-            });
+        }
+        setProjectedUnits();
+    }
+    function setProjectedUnits(){
+        var pieces = $(".pieces");
+        var totalPieces = 0;
+        for(var i = 0; i < pieces.length; i++){
+            totalPieces = totalPieces + + $(pieces[i]).val()
+        }
+        $('#ProjectedUnits').val(totalPieces);
+        $('.location_color').each(function(i, obj) {
+            getDecorationPrice(obj);
         });
-        read_only();
 
-        function get_clients(client_id){
+    }
+    function getDecorationPrice(obj){
+        var ProjectedUnits = $('#ProjectedUnits').val();
+        var number_of_colors = $(obj).val();
+        if (number_of_colors > 8 ) {
+            $(obj).val(0);
+            return false;
+        }
 
+        if (ProjectedUnits > 0 && number_of_colors > 0) {
             $.ajax({
-                url: "{{ route('admin.client.get_client') }}",
+                url: "{{ route('admin.get_decoration_price') }}",
                 type: "GET",
                 data: {
-                    client_id      : client_id
+                    total_pieces: ProjectedUnits,
+                    number_of_colors:number_of_colors,
                 },
-                success: function(data) {
-                    $('select[name=client_id]').html('');
-                    $('select[name=client_id]').html(data);
+                success: function(value) {
+                    
                 }
             });
 
         }
 
-        function get_client_recent_order(client_id){
+    }
+    function location_labels(selector){
+
+        if(selector != ""){
+            var length          = $(selector).find(".print-location").length;
+            $($(selector).find(".print-location")).each(function(index, element){
+                let number              = index+1;             
+                let label_text          = '# '+number;
+                $(this).find('label').text(label_text);
+            });
+        }
+
+    }
+    function projected_units(){
+
+            var projected_units     = 0;
+            $(".pieces").each(function(index, element){
+                let number              = index+1;             
+                let label_text          = '#'+number;
+                projected_units         = projected_units+parseInt($(this).val());
+            });
+            $("#ProjectedUnits").val(projected_units);
+
+    }
+
+    $(document).on('click', '.add-p-location', function(event) {
+        var parent_id                       = $(this).attr('data-id');
+        var parent_selector                 = '.p-print-location-'+parent_id;
+
+        var print_location_template         = $(this).closest(parent_selector).find(".print-location").first().clone();
+        var print_location_parent           = $(this).closest(parent_selector);
+        var new_print_location_template = print_location_template.clone();
+        event.preventDefault();
+        print_location_parent.append(new_print_location_template);
+        new_print_location_template.find('input').val(null);
+
+
+        location_labels(parent_selector);
+    });
+
+    $(document).on('click', '.remove-p-location', function(e) {
+        var parent_id                       = $(this).attr('data-id');
+        var parent_selector                 = '.p-print-location-'+parent_id;
+        e.preventDefault();
+        $(this).closest('.print-location').remove();
+        location_labels(parent_selector);
+    });
+
+    $(document).on("change", ".attribute", function(e){
+        e.preventDefault();
+        let size_selector           = "";
+        var fixed_sizes             = JSON.parse($('template').html());
+        var selector                = '.form-row';
+        var product_id              = $(this).attr('data-product_id');
+        let v1_attr_id              = $(this).closest(selector).find('.v1_attr_id').val();
+        let v2_attr_id              = $(this).closest(selector).find('.v2_attr_id').val();
+        let price_selector          = $(this).closest(selector).find('.price');
+    
+        if(v1_attr_id != "" && v2_attr_id != ""){
             $.ajax({
-                url: "{{ route('admin.order.get_client_recent_order') }}",
+                url: "{{ route('admin.product.get_price') }}",
                 type: "GET",
                 data: {
-                    client_id      : client_id
+                    product_id: product_id,
+                    v1_attr_id: v1_attr_id,
+                    v2_attr_id: v2_attr_id
                 },
                 success: function(result) {
-                    result          = JSON.parse(result);
-                    if(result.status){
-                        data        = result.data;
-                        console.log(data);
-                        $.each(data, function(key, val){
-
-                            if(key == 'measurement_type'){
-                                $.each($('input[name='+key+']'), function(){
-                                    if($(this).val() == val){
-                                        $(this).prop("checked", true);
-                                        $(this).trigger('change');
-                                    }
-                                });
-                            }else if(key == 'title'){
-
-                                $('#title').val(val).trigger('change');
-
-                            }else{
-
-                                $('input[name='+key+']').val(val);
-                            }
-                        });
-
-                    }
+                    result      = JSON.parse(result);
+                    price_selector.val(result.price);
+                    if(jQuery.inArray(result.name, fixed_sizes) != -1) {
+                        size_selector       = "#S-XL-"+product_id;
+                    } else if(result.name == "2XL") {
+                        size_selector       = "#2XL-"+product_id;
+                    } else if(result.name == "3XL") {
+                        size_selector       = "#3XL-"+product_id;
+                    } else if(result.name == "4XL") {
+                        size_selector       = "#4XL-"+product_id;
+                    } else if(result.name == "5XL") {
+                        size_selector       = "#5XL-"+product_id;
+                    } 
+               
+                    $('.product-detail-'+product_id).find(size_selector).val(result.price);
+                    resetPrices(product_id);
+                    calcTotal();
                 }
             });
         }
     });
-function setTotal(obj) {
-    if (obj.id == "price") {
-        var price =  $(obj).val();
-        var pieces =  $(obj).parent().prev().find('input[type=number]').val();
-        $(obj).parent().next().find('input[type=number]').val(price*pieces);
-    }
-    if (obj.id == "pieces") {
-        var pieces =  $(obj).val();
-        var price =  $(obj).parent().next().find('input[type=number]').val();
-        $(obj).parent().next().next().find('input[type=number]').val(price*pieces);
+    $(document).on("change", ".number-of-colors", function(){
+        var ProjectedUnits          = $('#ProjectedUnits').val();
+        var color_locations_arr     = [];
+        var product_id              = $(this).attr('data-product-id');
+        var product_div             = ".product-detail-"+product_id;
+        var selector                = $(this).closest(product_div).find('.number-of-colors');
+        $($(selector)).each(function(index, element){
+            if($(this).val() > 0 && $(this).val() != ""){
 
-    }
-     setProjectedUnits()
-    
-}
-function setProjectedUnits(){
-    var pieces = $(".pieces");
-    var totalPieces = 0;
-    for(var i = 0; i < pieces.length; i++){
-        totalPieces = totalPieces + + $(pieces[i]).val()
-    }
-    $('#ProjectedUnits').val(totalPieces);
-    updateContractShirtPrintPrice();
-    setMinMargin();
-    setMaxMargin();
-    $('.location_color').each(function(i, obj) {
-     // console.log(obj);
-    getDecorationPrice(obj);
- });
-    
-}
-
-
-function getDecorationPrice(obj){
-    var ProjectedUnits = $('#ProjectedUnits').val();
-    var number_of_colors = $(obj).val();
-    if (number_of_colors > 8 ) {
-        $(obj).val(0);
-        return false;
-    }
-    // console.log(obj.id);
-    // console.log(number_of_colors);
-    if (ProjectedUnits > 0 && number_of_colors > 0) {
-      $.ajax({
-        url: "{{ route('admin.get_decoration_price') }}",
-        type: "GET",
-        data: {
-            total_pieces: ProjectedUnits,
-            number_of_colors:number_of_colors,
-        },
-        success: function(value) {
-            if (obj.id == "color_location1") {
-
-                $("#location1_charge").val(value)
-
+                color_locations_arr.push($(this).val());
             }
-            else if (obj.id == "color_location2") {
-
-                $("#location2_charge").val(value)
-
-            }else if (obj.id == "color_location3") {
-
-                $("#location3_charge").val(value)
-
-            }else if (obj.id == "color_location4") {
-
-                $("#location4_charge").val(value)
-
-            }else if (obj.id == "color_location5") {
-
-                $("#location5_charge").val(value)
-
-            }
-            setTimeout(function(){
-
-             updateContractShirtPrintPrice();
-             setMinMargin();
-             setMaxMargin();
-         },300);
-        }
-    });
-
-  }else{
-    {
-        if (obj.id == "color_location1") {
-
-            $("#location1_charge").val(null)
-
-        }
-        else if (obj.id == "color_location2") {
-
-            $("#location2_charge").val(null)
-
-        }else if (obj.id == "color_location3") {
-
-            $("#location3_charge").val(null)
-
-        }else if (obj.id == "color_location4") {
-
-            $("#location4_charge").val(null)
-
-        }else if (obj.id == "color_location5") {
-
-            $("#location5_charge").val(null)
-
-        }
-        setTimeout(function(){
-          updateContractShirtPrintPrice();
-          setMinMargin();
-          setMaxMargin();
-      },300);
-    }
-    
-}
-
-}
-function updateContractShirtPrintPrice() {
-   var totalLocationCharges =  setLocationCharges();
-   console.log('updateContractShirtPrintPrice');
-   var pl_s_xl = $('#pl_s_xl').val();
-   var sp_s_xl = Number(pl_s_xl) + Number(totalLocationCharges);
-   sp_s_xl = (Math.round(sp_s_xl * 100) / 100).toFixed(2);
-   $("#sp_s_xl").val(sp_s_xl);
-
-
-   var pl_xxl = $('#pl_xxl').val();
-   var sp_xxl = Number(pl_xxl) + Number(totalLocationCharges);
-   sp_xxl = (Math.round(sp_xxl * 100) / 100).toFixed(2);
-   $("#sp_xxl").val(sp_xxl);
-
-   var pl_xxxl = $('#pl_xxxl').val();
-   var sp_xxxl = Number(pl_xxxl) + Number(totalLocationCharges);
-   sp_xxxl = (Math.round(sp_xxxl * 100) / 100).toFixed(2);
-   $("#sp_xxxl").val(sp_xxxl);
-
-   var pl_xxxxl = $('#pl_xxxxl').val();
-   var sp_xxxxl = Number(pl_xxxxl) + Number(totalLocationCharges);
-   sp_xxxxl = (Math.round(sp_xxxxl * 100) / 100).toFixed(2);
-   $("#sp_xxxxl").val(sp_xxxxl);
-
-   var pl_xxxxxl = $('#pl_xxxxxl').val();
-   var sp_xxxxxl = Number(pl_xxxxxl) + Number(totalLocationCharges);
-   sp_xxxxxl = (Math.round(sp_xxxxxl * 100) / 100).toFixed(2);
-   $("#sp_xxxxxl").val(sp_xxxxxl);
-}
-function setDecorationPrice(obj){
-    // return false;
-    var totalLocationCharges =  setLocationCharges();
-    if (totalLocationCharges > 0) {
-
-        var price = $(obj).val();
-        if (obj.id == "pl_s_xl"){
-            var sp_s_xl = Number(price) + Number(totalLocationCharges);
-            sp_s_xl = (Math.round(sp_s_xl * 100) / 100).toFixed(2);
-
-            $("#sp_s_xl").val(sp_s_xl);
-        }
-        if (obj.id == "pl_xxl"){
-            var sp_xxl = Number(price) + Number(totalLocationCharges);
-            sp_xxl = (Math.round(sp_xxl * 100) / 100).toFixed(2);
-
-            $("#sp_xxl").val(sp_xxl);
-        }
-
-        if (obj.id == "pl_xxxl"){
-            var sp_xxxl = Number(price) + Number(totalLocationCharges);
-            sp_xxxl = (Math.round(sp_xxxl * 100) / 100).toFixed(2);
-
-            $("#sp_xxxl").val(sp_xxxl);
-        }
-
-        if (obj.id == "pl_xxxxl"){
-            var sp_xxxxl = Number(price) + Number(totalLocationCharges);
-            sp_xxxxl = (Math.round(sp_xxxxl * 100) / 100).toFixed(2);
-
-            $("#sp_xxxxl").val(sp_xxxxl);
-        }
-        if (obj.id == "pl_xxxxxl"){
-            var sp_xxxxxl = Number(price) + Number(totalLocationCharges);
-            sp_xxxxxl = (Math.round(sp_xxxxxl * 100) / 100).toFixed(2);
-
-            $("#sp_xxxxxl").val(sp_xxxxxl);
-        }
-
-    }
-    setMinMargin();
-    setMaxMargin();
-    updateContractShirtPrintPrice();
-}
-    // location_charges
-    function setLocationCharges(){
-        var location_charges = $(".location_charges");
-        var totalLocationCharges = 0;
-        for(var i = 0; i < location_charges.length; i++){
-            totalLocationCharges = totalLocationCharges + + $(location_charges[i]).val()
-        }
-        return totalLocationCharges;
-    }
-    // var diff = 100 - selected precentage  
-    //  var diff2= diff / 100 ;
-    // var value =  sp_s_xl / diff2; 
-    function setMinMargin() {
-        var minMargin = $("#min_profit_margin").val();
-
-        if (minMargin != '') {
-            var diff = (100 - Number(minMargin)); 
-            diff = (diff / 100);
-
-            $("#sxl_min_mar").val(0);
-            $("#xxl_min_mar").val(0);
-            $("#xxxl_min_mar").val(0);
-            $("#xxxxl_min_mar").val(0);
-            $("#xxxxxl_min_mar").val(0);
-
-            if ($("#pl_s_xl").val() > 0 ) {
-
-                var sxl_min_mar =  ($("#sp_s_xl").val() / diff);
-                $("#sxl_min_mar").val((Math.round(sxl_min_mar * 100) / 100).toFixed(2) );
-            }
-            if ($("#pl_xxl").val() > 0 ) {
-
-                var xxl_min_mar =  ($("#sp_xxl").val() / diff);
-                $("#xxl_min_mar").val((Math.round(xxl_min_mar * 100) / 100).toFixed(2) );
-            }
-            if ($("#pl_xxxl").val() > 0 ) {
-                var xxxl_min_mar =  ($("#sp_xxxl").val() / diff);
-                $("#xxxl_min_mar").val((Math.round(xxxl_min_mar * 100) / 100).toFixed(2) );
-            }
-            if ($("#pl_xxxxl").val() > 0 ) {
-                var xxxxl_min_mar =  ($("#sp_xxxxl").val() / diff);
-                $("#xxxxl_min_mar").val((Math.round(xxxxl_min_mar * 100) / 100).toFixed(2) );
-            }
-            if ($("#pl_xxxxxl").val() > 0 ) {
-                var xxxxxl_min_mar =  ($("#sp_xxxxxl").val() / diff);
-                $("#xxxxxl_min_mar").val((Math.round(xxxxxl_min_mar * 100) / 100).toFixed(2) );
-            }
-        }
-
-    }
-    function setMaxMargin() {
-        var maxMargin = $("#max_profit_margin").val();
-        if (maxMargin != '') {
-         var diff = (100 - Number(maxMargin)); 
-         diff = (diff / 100);
-
-         $("#sxl_max_mar").val(0);
-         $("#xxl_max_mar").val(0);
-         $("#xxxl_max_mar").val(0);
-         $("#xxxxl_max_mar").val(0);
-         $("#xxxxxl_max_mar").val(0);
-
-         if ($("#pl_s_xl").val() > 0 ) {
-
-            var sxl_max_mar =  ($("#sp_s_xl").val() / diff);
-            $("#sxl_max_mar").val((Math.round(sxl_max_mar * 100) / 100).toFixed(2) );
-        }
-        if ($("#pl_xxl").val() > 0 ) {
-
-            var xxl_max_mar =  ($("#sp_xxl").val() / diff);
-            $("#xxl_max_mar").val((Math.round(xxl_max_mar * 100) / 100).toFixed(2) );
-        }
-        if ($("#pl_xxxl").val() > 0 ) {
-            var xxxl_max_mar =  ($("#sp_xxxl").val() / diff);
-            $("#xxxl_max_mar").val((Math.round(xxxl_max_mar * 100) / 100).toFixed(2) );
-        }
-        if ($("#pl_xxxxl").val() > 0 ) {
-            var xxxxl_max_mar =  ($("#sp_xxxxl").val() / diff);
-            $("#xxxxl_max_mar").val((Math.round(xxxxl_max_mar * 100) / 100).toFixed(2) );
-        }
-        if ($("#pl_xxxxxl").val() > 0 ) {
-            var xxxxxl_max_mar =  ($("#sp_xxxxxl").val() / diff);
-            $("#xxxxxl_max_mar").val((Math.round(xxxxxl_max_mar * 100) / 100).toFixed(2) );
-        }}
-
-    }
-
-    $(document).on('click', '.add-supply-row', function(event) {
-        var supply_info_template         = $(this).closest('.order-box').find(".supply-info").first().clone();
-        var supply_info_parent           = $(this).closest('.order-box').find(".supply-p");
-
-        supply_info_template.find("span.select2").remove();
-        var new_supply_info_template = supply_info_template.clone();
-        event.preventDefault();
-        new_supply_info_template.find("select").select2({
-            tags: true
         });
-        supply_info_parent.append(new_supply_info_template);
-        new_supply_info_template.find('input').val(null);
-        init_supply++;
+        if(color_locations_arr.length > 0 ){
+            $.ajax({
+            url: "{{ route('admin.get_decoration_price') }}",
+            type: "GET",
+            data: {
+                total_pieces: ProjectedUnits,
+                number_of_colors:color_locations_arr
+            },
+            success: function(price) {
+                $(".print_locations").each(function(index, element){
+                    $(this).val(price);
+                });
+                calcTotal();
+            }
+        });
+        } 
     });
 
+    function calcTotal(){
+        let whole_sale_selector         = ".whole-sale-";
+        let location_selector           = ".location-";
+        let total_selector              = ".total-";
 
+        let whole_sale_price            = 0;
+        let location_price              = 0;
+        let total_price                 = 0;
+        for(var i=1; i <=5; i++){
+            
+            whole_sale_price            = ($(whole_sale_selector+i).val() != "") ? $(whole_sale_selector+i).val(): 0;
+            location_price              = ($(location_selector+i).val() != "")? $(location_selector+i).val(): 0;
+            let total                   = (parseFloat(whole_sale_price)+ parseFloat(location_price)).toFixed(2);
+            $(total_selector+i).val(total);
+            
+        }
+    } 
+    function resetPrices(product_id = 0){
+        let all_adult_sizes             = $("#all_adult_sizes").html();
+        let fixed_sizes                 = JSON.parse($('template').html());
+        let selected_sizes              = [];
+        all_adult_sizes                 = JSON.parse(all_adult_sizes);
+        let flag                        = 0;
+
+        let selector                    = $('.product-detail-'+product_id).find('.v2_attr_id');
+        $(selector).each(function(indx, elm){
+            selected_sizes.push($(this).find('option:selected').text());
+        });
+        
+        $.each(fixed_sizes, function(index, element){
+            if(jQuery.inArray(element, selected_sizes) != -1) {
+                flag                    = 1;
+                console.log('in_array');
+            }
+        });
+        console.log('flag', flag);
+        if(flag == 0){
+            $('.product-detail-'+product_id).find("#S-XL-"+product_id).val('');
+        }
+        $.each(all_adult_sizes, function(index, element){
+            if(jQuery.inArray(element, selected_sizes) != -1) {
+                //do nothing
+            }else{
+                $('.product-detail-'+product_id).find("#"+element+"-"+product_id).val('');
+            }
+        });
+    } 
+
+    $(document).on("change", ".", function(){
+
+    });
+    
+    function calcMargin(prduct_id   = 0){
+        
+    }
 </script>
 @endsection

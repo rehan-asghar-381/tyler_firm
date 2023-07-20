@@ -19,6 +19,7 @@ use Validator;
 use Illuminate\Support\Facades\Auth;
 class ProductController extends Controller
 {
+    public $fixedAdultSize;
     /**
      * Display a listing of the resource.
      *
@@ -31,6 +32,13 @@ class ProductController extends Controller
         $this->middleware('permission:product-create', ['only' => ['create','store']]);
         $this->middleware('permission:product-edit', ['only' => ['edit','update']]);
         $this->middleware('permission:product-list', ['only' => ['index']]);
+
+        $this->fixedAdultSize        = [
+            "S",
+            "M",
+            "L",
+            "XL"
+        ];
     }
 
     public function index(Request $request)
@@ -157,11 +165,11 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $errors         = [];
-        $pageTitle      = "Product";
-        $brands         = Brand::get();
-        $product_size_type         = ProductSizeType::select('type')->groupby('type')->get();
-
+        $errors                     = [];
+        $pageTitle                  = "Product";
+        $brands                     = Brand::get();
+        $product_size_type          = ProductSizeType::select('type')->groupby('type')->get();
+        
         return view('admin.products.create',compact('pageTitle', 'brands','product_size_type'));
 
     }
@@ -378,19 +386,14 @@ public function save_product_imgs($files_arr=[], $product_id){
         $variants                   = ProductVariant::with('Atrributes')
                                         ->where("product_id", $product_id)
                                         ->get();
-        $fixdSize                   = [
-                                        "S",
-                                        "M",
-                                        "L",
-                                        "XL"
-                                    ];
+        $fixed_adult_size           = $this->fixedAdultSize;
         $fixed_sizes_ids            = [];                                
         foreach ($variants as $key => $variant) {
             $productVariantArr[$variant->id] = $variant->name;
 
             foreach ($variant->Atrributes as $key => $atrributes) {
                 if ($variant->name != "Color" ) {
-                    if (in_array($atrributes->name, $fixdSize)) {
+                    if (in_array($atrributes->name, $fixed_adult_size)) {
                         if (!in_array( $variant->id.'_'.$atrributes->id.'_S-XL', $productSizeVariantArr)) {
                             $productSizeVariantArr[]    = $variant->id.'_'.$atrributes->id.'_S-XL' ;
                             $fixed_sizes_ids[]          = $atrributes->id;
@@ -508,7 +511,8 @@ public function delete_attribute(Request $request){
     $variant_attribute->delete();
     return json_encode(array("status"=>true, "message"=>"Attribute deleted successfully"));
 
-} 
+}
+
 public function get_product_by_brand(Request $request){
     $products = Product::where('id',$request->brand)->get();
     $html = '';
@@ -517,4 +521,21 @@ public function get_product_by_brand(Request $request){
     }
     return $html;
 }
+
+public function get_price(Request $request){
+
+    $product_id             = $request->product_id;
+    $v1_attr_id             = $request->v1_attr_id;
+    $v2_attr_id             = $request->v2_attr_id;
+    $product                = ProductPrice::with("v2AttrName")
+                                    ->where([
+                                        "product_id"=>$product_id, 
+                                        "v1_attr_id"=>$v1_attr_id, 
+                                        "v2_attr_id"=>$v2_attr_id
+                                        ])
+                                    ->first();
+    $reponse                = array("price"=>$product->price??0, "name"=>$product->v2AttrName->name);
+    return json_encode($reponse);
+}
+
 }

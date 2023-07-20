@@ -4,12 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\OrderSupply;
-use App\Models\Status;
-use App\Models\OrderImgs;
-use App\Models\OrderAdditional;
-use App\Models\Job;
-use App\Models\Client;
+use App\Models\ProductVariantAttribute;
 
 class ProductPrice extends Model
 {
@@ -37,5 +32,10 @@ class ProductPrice extends Model
 
 
     ];
+
+    public function v2AttrName(){
+
+        return $this->belongsTo(ProductVariantAttribute::class, 'v2_attr_id','id');
+    }
 
 }

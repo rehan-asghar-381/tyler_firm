@@ -1,6 +1,3 @@
-@php
-    // dd($product_detail->ProductVariant);
-@endphp
 <div class="container-fluid mt-3" >
     <div class="row">
         <div class="col-md-9  product-detail product-detail-{{$product_detail->id}}" id="product-detail-{{$product_detail->id}}">
@@ -22,8 +19,8 @@
                                     @foreach ($product_detail->ProductVariant as $ProductVariant)
                                     <div class="form-group col-md-3">
                                         <label>{{$ProductVariant->name}}</label>
-                                        <select type="text" name="attribute_id[{{$product_detail->id}}][{{$ProductVariant->id}}][]"
-                                          class="form-control select-one" >
+                                        <select type="text" data-product_id="{{$product_detail->id}}" name="attribute_id[{{$product_detail->id}}][{{$ProductVariant->id}}][]"
+                                          class="form-control select-one attribute {{ ($ProductVariant->name == "Color") ? "v1_attr_id" : "v2_attr_id" }}" >
                                           <option value="">Select</option>
                                           @if (count($ProductVariant->Atrributes)>0)
                                           @foreach ($ProductVariant->Atrributes as $Atrribute)
