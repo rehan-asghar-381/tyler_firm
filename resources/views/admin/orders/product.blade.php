@@ -33,7 +33,7 @@
                                   @endif
                                   <div class=" form-group col-md-2">
                                     <label class="mr-2" for="pieces">Pieces </label>
-                                    <input type="number" onkeyup="setTotal(this);" onchange="setTotal(this);" name="pieces[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 pieces" id="pieces" placeholder="Pieces" min="1" value="1">
+                                    <input type="number" onkeyup="setTotal(this);" onchange="setTotal(this);" name="pieces[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 pieces" id="pieces" placeholder="Pieces" min="1" value="">
                                 </div> 
                                 <div class="form-group col-md-2">
                                     <label class="mr-3" for="price">Price</label>

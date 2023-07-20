@@ -179,19 +179,10 @@ hr{
                                 <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Garments</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pills-profile-tab" onclick="setProjectedUnits();" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Print Location & Colors</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Contract & Shirt + Print Price</a>
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Print Location & Colors + Contract & Shirt + Print Price</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="OTHERCHARGES-tab" data-toggle="pill" href="#OTHERCHARGES" role="tab" aria-controls="OTHERCHARGES" aria-selected="false">Other Charges</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="MARGINS-tab" data-toggle="pill" href="#MARGINS" role="tab" aria-controls="MARGINS" aria-selected="false">Margins</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="FinalPrice-tab" data-toggle="pill" href="#FinalPrice" role="tab" aria-controls="FinalPrice" aria-selected="false">Final Price</a>
                             </li>
                         </ul>
 
@@ -199,24 +190,9 @@ hr{
                          <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 
                             <div class="row mb-3">
-                                    {{--  
-                                    <div class="col-md-6">
-                                        <label>Brands</label>
-                                        <select  name="brand[]"  id="brand" class="form-control require required-online">
-                                            <option value="">All Brands</option>
-                                            }
-                                            @foreach ($brands as $brand)
-                                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    --}}
                                     <div class="col-md-4">
                                         <label>Products</label>
                                         <select name="product_ids[]" id="product_ids" class="form-control basic-multiple" multiple="multiple">
-                                            {{-- 
-                                            <option value="" selected="">All Product</option>
-                                            --}}
                                             @if (count($products) > 0)
                                             @foreach ($products as $product)
                                             <option value="{{$product->id}}">{{$product->name}} [ {{$product->code}}]</option>
@@ -224,9 +200,6 @@ hr{
                                             @endif
                                         </select>
                                     </div>
-                                </div>
-                                <div class="row client-form btn-d-none">
-                                    {{-- @include('admin.clients.add-client', ['errors'=>$errors]) --}}
                                 </div>
                                 <div class="row Order-form btn-d-none">
                                     <div id="accordion" class="accordion">
@@ -249,8 +222,7 @@ hr{
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-                                {{-- <form class="form-inline offset-md-2"> --}}
+                            {{-- <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
                                     <div class="col-md-10">
                                         <div class="form-group row">
                                             <label for="location1_charge" class="col-sm-2 font-weight-600">Location 1 Charge</label>
@@ -322,225 +294,146 @@ hr{
                                             </div>
                                         </div>
                                     </div>
-                                {{-- </form> --}}
-                            </div>
+                            </div> --}}
                             <div class="tab-pane fade" id="OTHERCHARGES" role="tabpanel" aria-labelledby="OTHERCHARGES-tab">
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="fold_bag_tag_pieces" class="col-sm-2 font-weight-600">FOLD/BAG/TAG</label>
-                                        <div class="col-sm-3">
-                                            <input type="number" min="0" name="fold_bag_tag_pieces" value="" class="my-form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
-
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="fold_bag_tag_pieces" class="col-sm-3 font-weight-600">FOLD/BAG/TAG</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="fold_bag_tag_pieces" value="" class="my-form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
+        
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="fold_bag_tag_prices" value="" class="my-form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-3">
-                                            <input type="number" min="0" name="fold_bag_tag_prices" value="" class="my-form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="hang_tag_pieces" class="col-sm-3 font-weight-600">Hang Tag</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="hang_tag_pieces" value="" class="my-form-control " id="hang_tag_pieces" placeholder="Pieces">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="hang_tag_prices" value="" class="my-form-control mr-2" id="hang_tag_prices" placeholder="Prices">
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="hang_tag_pieces" class="col-sm-2 font-weight-600">Hang Tag</label>
-                                        <div class="col-sm-3">
-                                            <input type="number" min="0" name="hang_tag_pieces" value="" class="my-form-control " id="hang_tag_pieces" placeholder="Pieces">
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="art_fee" class="col-sm-3 font-weight-600">Art Fee</label>
+                                                <div class="col-sm-4">
+                                                    <select name="art_fee" id="art_fee" class="my-form-control">
+                                                        <option value="">Select</option>
+                                                        <option value="0">$0.00</option>
+                                                        <option value="20">$20.00</option>
+                                                        <option value="30">$30.00</option>
+                                                        <option value="40">$40.00</option>
+                                                        <option value="50">$50.00</option>
+                                                        <option value="55">$55.00</option>
+                                                        <option value="60">$60.00</option>
+                                                        <option value="100">$100.00</option>
+                                                        <option value="120">$120.00</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-3">
-                                            <input type="number" min="0" name="hang_tag_prices" value="" class="my-form-control mr-2" id="hang_tag_prices" placeholder="Prices">
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="art_discount" class="col-sm-3 font-weight-600">Art Discount</label>
+                                                <div class="col-sm-4">
+                                                    <select name="art_discount" id="art_discount" class="my-form-control">
+                                                        <option value="">Select</option>
+                                                        <option value="0" >$0.00</option>
+                                                        <option value="20" >-$20.00</option>
+                                                        <option value="25" >-$25.00</option>
+                                                        <option value="30" >-$30.00</option>
+                                                        <option value="35" >-$35.00</option>
+                                                        <option value="40" >-$40.00</option>
+                                                        <option value="50" >-$50.00</option>
+                                                        <option value="60" >-$60.00</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="art_fee" class="col-sm-2 font-weight-600">Art Fee</label>
-                                        <div class="col-sm-3">
-                                            <select name="art_fee" id="art_fee" class="my-form-control">
-                                                <option value="">Select</option>
-                                                <option value="0">$0.00</option>
-                                                <option value="20">$20.00</option>
-                                                <option value="30">$30.00</option>
-                                                <option value="40">$40.00</option>
-                                                <option value="50">$50.00</option>
-                                                <option value="55">$55.00</option>
-                                                <option value="60">$60.00</option>
-                                                <option value="100">$100.00</option>
-                                                <option value="120">$120.00</option>
-                                            </select>
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="art_time" class="col-sm-3 font-weight-600">Art Time</label>
+                                                <div class="col-sm-4">
+                                                    <select name="art_time" id="art_time" class="my-form-control">
+                                                        <option value="">Select</option>
+                                                        <option value="1">1 Hour</option>
+                                                        <option value="2">2 Hour</option>
+                                                        <option value="3">3 Hour</option>
+                                                        <option value="4">4 Hour</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="art_discount" class="col-md-2 font-weight-600">Art Discount</label>
-                                        <div class="col-sm-3">
-                                            <select name="art_discount" id="art_discount" class="my-form-control">
-                                                <option value="">Select</option>
-                                                <option value="0" >$0.00</option>
-                                                <option value="20" >-$20.00</option>
-                                                <option value="25" >-$25.00</option>
-                                                <option value="30" >-$30.00</option>
-                                                <option value="35" >-$35.00</option>
-                                                <option value="40" >-$40.00</option>
-                                                <option value="50" >-$50.00</option>
-                                                <option value="60" >-$60.00</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="art_time" class="col-sm-2 font-weight-600">Art Time</label>
-                                        <div class="col-sm-3">
-                                            <select name="art_time" id="art_time" class="my-form-control">
-                                                <option value="">Select</option>
-                                                <option value="1">1 Hour</option>
-                                                <option value="2">2 Hour</option>
-                                                <option value="3">3 Hour</option>
-                                                <option value="4">4 Hour</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="tax" class="col-md-2 font-weight-600">Tax</label>
-                                        <div class="col-sm-3">
-                                            <select name="tax" id="tax" class="my-form-control">
-                                                <option value="">Select</option>
-                                                <option value="0" >0</option>
-                                                <option value="8.375" >8.375%</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="MARGINS" role="tabpanel" aria-labelledby="MARGINS-tab">
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="transfers_pieces" class="col-sm-2 font-weight-600">Transfers</label>
-                                        <div class="col-sm-3">
-                                            <input type="number" min="0" name="transfers_pieces" value="" class="my-form-control " id="transfers_pieces" placeholder="Pieces">
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <input type="number" min="0" name="transfers_prices" value="" class="my-form-control mr-2" id="transfers_prices" placeholder="Prices">
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="tax" class="col-sm-3 font-weight-600">Tax</label>
+                                                <div class="col-sm-4">
+                                                    <select name="tax" id="tax" class="my-form-control">
+                                                        <option value="">Select</option>
+                                                        <option value="0" >0</option>
+                                                        <option value="8.375" >8.375%</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="ink_color_change_pieces" class="col-sm-2 font-weight-600">Ink Color Change</label>
-                                        <div class="col-sm-3">
-                                            <input type="number" min="0" name="ink_color_change_pieces" value="" class="my-form-control " id="ink_color_change_pieces" placeholder="Pieces">
+                                    <div class="col-md-6">
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="transfers_pieces" class="col-sm-3 font-weight-600">Transfers</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="transfers_pieces" value="" class="my-form-control " id="transfers_pieces" placeholder="Pieces">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="transfers_prices" value="" class="my-form-control mr-2" id="transfers_prices" placeholder="Prices">
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-3">
-                                            <input type="number" min="0" name="art_discount_prices" value="" class="my-form-control mr-2" id="art_discount_prices" placeholder="Prices">
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="ink_color_change_pieces" class="col-sm-3 font-weight-600">Ink Color Change</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="ink_color_change_pieces" value="" class="my-form-control " id="ink_color_change_pieces" placeholder="Pieces">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="art_discount_prices" value="" class="my-form-control mr-2" id="art_discount_prices" placeholder="Prices">
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="hang_tag1" class="col-sm-2 font-weight-600">Shipping</label>
-                                        <div class="col-sm-3">
-                                            <select name="art_fee" id="art_fee" class="my-form-control">
-                                                <option value="">Select</option>
-                                                <option value="20">$20.00</option>
-                                                <option value="30">$30.00</option>
-                                                <option value="40">$40.00</option>
-                                                <option value="50">$50.00</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-3">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr class="dotted">
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <div class="col-sm-3 offset-2">
-                                            <label class="font-weight-600">Min Margin</label>
-                                            <select name="min_profit_margin" class="my-form-control profit-margin">
-                                                <option value="">Select Min Margin</option>
-                                                @for ($i = 1; $i <=100; $i++)
-                                                <option value="{{$i}}" >{{$i}} %</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label for="max_profit_margin" class="font-weight-600">Max Margin</label>
-                                            <select name="max_profit_margin" onchange="setMaxMargin();" id="max_profit_margin" class="my-form-control">
-                                                <option value="">Select Max Margin</option>
-                                                @for ($i = 1; $i <=100; $i++)
-                                                <option value="{{$i}}" >{{$i}} %</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="sxl_min_mar" class="col-sm-2 font-weight-600">S-XL</label>
-                                        <input type="hidden" name="margin_size[]" value="S-XL">
-                                        <div class="col-sm-3">
-                                            <input type="number" class="my-form-control" placeholder="Min" name="min_margin[]" readonly="" id="sxl_min_mar">
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="sxl_max_mar">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="xxl_min_mar" class="col-sm-2 font-weight-600">XXL</label>
-                                        <input type="hidden" name="margin_size[]" value="XXL">
-                                        <div class="col-sm-3">
-                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxl_min_mar">
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <input type="number" class="my-form-control" placeholder="Max"  name="max_margin[]" readonly="" id="xxl_max_mar">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="xxxl_min_mar" class="col-sm-2 font-weight-600">XXXL</label>
-                                        <input type="hidden" name="margin_size[]" value="XXXL">
-                                        <div class="col-sm-3">
-                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxl_min_mar">
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxl_max_mar">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="xxxl_min_mar" class="col-sm-2 font-weight-600">XXXXL</label>
-                                        <input type="hidden" name="margin_size[]" value="XXXXL">
-                                        <div class="col-sm-3">
-                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxl_min_mar">
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <input type="number" class="my-form-control" placeholder="Max" name="max_margin[]" readonly="" id="xxxxl_max_mar">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="form-group row">
-                                        <label for="xxxxxl_min_mar" class="col-sm-2 font-weight-600">XXXXXL</label>
-                                        <input type="hidden" name="margin_size[]" value="XXXXXL">
-                                        <div class="col-sm-3">
-                                            <input type="number" class="my-form-control" name="min_margin[]" placeholder="Min" readonly="" id="xxxxxl_min_mar">
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <input type="number" class="my-form-control"  placeholder="Max" name="max_margin[]" readonly="" id="xxxxxl_max_mar">
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="hang_tag1" class="col-sm-3 font-weight-600">Shipping</label>
+                                                <div class="col-sm-4">
+                                                    <select name="art_fee" id="art_fee" class="my-form-control">
+                                                        <option value="">Select</option>
+                                                        <option value="20">$20.00</option>
+                                                        <option value="30">$30.00</option>
+                                                        <option value="40">$40.00</option>
+                                                        <option value="50">$50.00</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-3">
+        
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </form>
                     <template>{{json_encode($fixed_sizes)}}</template>
                     <template id="all_adult_sizes">{{json_encode($all_adult_sizes)}}</template>
+                    <template id="fixed_baby_sizes">{{json_encode($fixed_baby_sizes)}}</template>
+                    <template id="all_baby_sizes">{{json_encode($all_baby_sizes)}}</template>
                 </div>
             </div>
         </div>
@@ -617,9 +510,6 @@ hr{
             event.preventDefault();
             var time = {{time()}};
             var  product_id = $(this).data('product_id');
-
-            console.log('product_id' + product_id);
-            console.log('init' + init);
             // Clone Final Price Tab
             var final_price_clone = $(".clone-product-"+product_id).clone().find("input").val("").end();
 
@@ -630,11 +520,9 @@ hr{
 
             var product_add             = $(this).parent().parent().clone();
             var append_parent           = $(this).parent().parent().parent().last();
-            // console.log(append_parent);
             var new_product_add         = product_add.clone().find("input").val("").end();
             var ttt = $(new_product_add).children().eq(1).children().eq(0).attr('data-add_product',product_id+'-'+init);
             var ttt = $(new_product_add).children().eq(1).children().eq(1).attr('data-remove_product',product_id+'-'+init);
-            // console.log(ttt);
             append_parent.append(new_product_add);
             init++;
         });
@@ -642,9 +530,6 @@ hr{
             e.preventDefault();
             var  product_id = $(this).data('product_id');
             var  remove_product = $(this).data('remove_product');
-
-            console.log('product_id  length' + product_id);
-            console.log('remove_product :' + remove_product);
             if(product_id != remove_product){
                 $(this).parent().parent().remove();
                 var id  = $(this).attr('data-remove_product');
@@ -661,26 +546,9 @@ hr{
             var pieces =  $(obj).parent().prev().find('input[type=number]').val();
             $(obj).parent().next().find('input[type=number]').val(price*pieces);
         }
-        if (obj.id == "pieces") {
-            var pieces =  $(obj).val();
-            var price =  $(obj).parent().next().find('input[type=number]').val();
-            $(obj).parent().next().next().find('input[type=number]').val(price*pieces);
-
-        }
-        setProjectedUnits();
+       
     }
-    function setProjectedUnits(){
-        var pieces = $(".pieces");
-        var totalPieces = 0;
-        for(var i = 0; i < pieces.length; i++){
-            totalPieces = totalPieces + + $(pieces[i]).val()
-        }
-        $('#ProjectedUnits').val(totalPieces);
-        $('.location_color').each(function(i, obj) {
-            getDecorationPrice(obj);
-        });
 
-    }
     function getDecorationPrice(obj){
         var ProjectedUnits = $('#ProjectedUnits').val();
         var number_of_colors = $(obj).val();
@@ -717,15 +585,19 @@ hr{
         }
 
     }
+    $(document).on("change", ".pieces", function(index, element){
+        projected_units();
+    });
     function projected_units(){
 
             var projected_units     = 0;
             $(".pieces").each(function(index, element){
                 let number              = index+1;             
                 let label_text          = '#'+number;
-                projected_units         = projected_units+parseInt($(this).val());
+                projected_units         = projected_units+parseInt(($(this).val()!="")?$(this).val():0);
             });
             $("#ProjectedUnits").val(projected_units);
+            $("#ProjectedUnits").trigger("change");
 
     }
 
@@ -750,18 +622,39 @@ hr{
         e.preventDefault();
         $(this).closest('.print-location').remove();
         location_labels(parent_selector);
+        $("#ProjectedUnits").trigger("change");
     });
 
     $(document).on("change", ".attribute", function(e){
         e.preventDefault();
         let size_selector           = "";
-        var fixed_sizes             = JSON.parse($('template').html());
-        var selector                = '.form-row';
+        let size_select             = "";
+        let all_adult_sizes         = JSON.parse($("#all_adult_sizes").html());
+        let adult_fixed_sizes       = JSON.parse($('template').html());
+        let fixed_baby_sizes        = JSON.parse($("#fixed_baby_sizes").html());
+        let all_baby_sizes          = JSON.parse($('#all_baby_sizes').html());
+        let all_sizes               = [];
+        let fixed_sizes             = [];
         var product_id              = $(this).attr('data-product_id');
+        
+        if($('.product-detail-'+product_id).find(".product-type").val() == "Baby Size"){
+            all_sizes                   = all_baby_sizes;
+            fixed_sizes                 = fixed_baby_sizes;
+            size_select                 = "OSFA-18M-";
+        }else{
+            all_sizes                   = all_adult_sizes;
+            fixed_sizes                 = adult_fixed_sizes;
+            size_select                 = "XS-XL-";
+        }
+        var selector                = '.form-row';
+        let type                    = "";
         let v1_attr_id              = $(this).closest(selector).find('.v1_attr_id').val();
         let v2_attr_id              = $(this).closest(selector).find('.v2_attr_id').val();
         let price_selector          = $(this).closest(selector).find('.price');
-    
+
+        if($('.product-detail-'+product_id).find(".product-type").val() == "Baby Size"){
+            type                = "Baby Size";
+        }
         if(v1_attr_id != "" && v2_attr_id != ""){
             $.ajax({
                 url: "{{ route('admin.product.get_price') }}",
@@ -775,30 +668,24 @@ hr{
                     result      = JSON.parse(result);
                     price_selector.val(result.price);
                     if(jQuery.inArray(result.name, fixed_sizes) != -1) {
-                        size_selector       = "#S-XL-"+product_id;
-                    } else if(result.name == "2XL") {
-                        size_selector       = "#2XL-"+product_id;
-                    } else if(result.name == "3XL") {
-                        size_selector       = "#3XL-"+product_id;
-                    } else if(result.name == "4XL") {
-                        size_selector       = "#4XL-"+product_id;
-                    } else if(result.name == "5XL") {
-                        size_selector       = "#5XL-"+product_id;
+                        size_selector       = "#"+size_select+product_id;
+                    }else{
+                        size_selector       = "#"+result.name+"-"+product_id;
                     } 
                
                     $('.product-detail-'+product_id).find(size_selector).val(result.price);
                     resetPrices(product_id);
-                    calcTotal();
+                    calcTotal(product_id);
+                    calcMargin(product_id);
                 }
             });
         }
     });
-    $(document).on("change", ".number-of-colors", function(){
+    function calcDecogrationPrice(product_id=0){
         var ProjectedUnits          = $('#ProjectedUnits').val();
         var color_locations_arr     = [];
-        var product_id              = $(this).attr('data-product-id');
         var product_div             = ".product-detail-"+product_id;
-        var selector                = $(this).closest(product_div).find('.number-of-colors');
+        var selector                = $(product_div).find('.number-of-colors');
         $($(selector)).each(function(index, element){
             if($(this).val() > 0 && $(this).val() != ""){
 
@@ -814,40 +701,57 @@ hr{
                 number_of_colors:color_locations_arr
             },
             success: function(price) {
-                $(".print_locations").each(function(index, element){
+                $(product_div).find(".print_locations").each(function(index, element){
                     $(this).val(price);
                 });
-                calcTotal();
+                calcTotal(product_id);
+                calcMargin(product_id);
             }
         });
         } 
+    }
+    $(document).on("change", ".number-of-colors", function(){
+        var product_id              = $(this).attr('data-product-id');
+        calcDecogrationPrice(product_id);
     });
 
-    function calcTotal(){
-        let whole_sale_selector         = ".whole-sale-";
-        let location_selector           = ".location-";
-        let total_selector              = ".total-";
+    function calcTotal(product_id=0){
 
         let whole_sale_price            = 0;
         let location_price              = 0;
         let total_price                 = 0;
-        for(var i=1; i <=5; i++){
+        for(var i=1; i <=6; i++){
             
-            whole_sale_price            = ($(whole_sale_selector+i).val() != "") ? $(whole_sale_selector+i).val(): 0;
-            location_price              = ($(location_selector+i).val() != "")? $(location_selector+i).val(): 0;
+            let whole_sale_price         =  $('.product-detail-'+product_id).find(".whole-sale-"+i).val();
+            let location_price           =  $('.product-detail-'+product_id).find(".location-"+i).val();
+
+            whole_sale_price            = (whole_sale_price != "") ? whole_sale_price: 0;
+            location_price              = (location_price != "")? location_price: 0;
             let total                   = (parseFloat(whole_sale_price)+ parseFloat(location_price)).toFixed(2);
-            $(total_selector+i).val(total);
-            
+            $($('.product-detail-'+product_id).find(".total-"+i)).val(total);
         }
     } 
     function resetPrices(product_id = 0){
-        let all_adult_sizes             = $("#all_adult_sizes").html();
-        let fixed_sizes                 = JSON.parse($('template').html());
+        let size_selector               = "";
+        let all_adult_sizes             = JSON.parse($("#all_adult_sizes").html());
+        let adult_fixed_sizes           = JSON.parse($('template').html());
+        let fixed_baby_sizes            = JSON.parse($("#fixed_baby_sizes").html());
+        let all_baby_sizes              = JSON.parse($('#all_baby_sizes').html());
+        let all_sizes                   = [];
+        let fixed_sizes                 = [];
         let selected_sizes              = [];
-        all_adult_sizes                 = JSON.parse(all_adult_sizes);
         let flag                        = 0;
-
         let selector                    = $('.product-detail-'+product_id).find('.v2_attr_id');
+
+        if($('.product-detail-'+product_id).find(".product-type").val() == "Baby Size"){
+            all_sizes                   = all_baby_sizes;
+            fixed_sizes                 = fixed_baby_sizes;
+            size_selector               = "#OSFA-18M-";
+        }else{
+            all_sizes                   = all_adult_sizes;
+            fixed_sizes                 = adult_fixed_sizes;
+            size_selector               = "#S-XL-";
+        }
         $(selector).each(function(indx, elm){
             selected_sizes.push($(this).find('option:selected').text());
         });
@@ -855,14 +759,12 @@ hr{
         $.each(fixed_sizes, function(index, element){
             if(jQuery.inArray(element, selected_sizes) != -1) {
                 flag                    = 1;
-                console.log('in_array');
             }
         });
-        console.log('flag', flag);
         if(flag == 0){
-            $('.product-detail-'+product_id).find("#S-XL-"+product_id).val('');
+            $('.product-detail-'+product_id).find(size_selector+product_id).val('');
         }
-        $.each(all_adult_sizes, function(index, element){
+        $.each(all_sizes, function(index, element){
             if(jQuery.inArray(element, selected_sizes) != -1) {
                 //do nothing
             }else{
@@ -871,12 +773,41 @@ hr{
         });
     } 
 
-    $(document).on("change", ".", function(){
+    $(document).on("change", ".profit-margin", function(){
+        let product_id          = $(this).attr('data-product-id');
+        calcMargin(product_id);
+    });
+
+    function calcMargin(product_id= 0){
+
+        let profit_margin               = $('.product-detail-'+product_id).find('.profit-margin').val();
+        let total_selector              = ".total-";
+        let profit_margin_selector      = ".margin-";
+        let final_price_selector        = ".final-price-";
+        if(profit_margin > 0){
+            var diff = 100 - parseInt(profit_margin); 
+            var diff2= diff / 100 ;
+            
+            for(var i=1; i <=6; i++){
+
+                let total           = $('.product-detail-'+product_id).find(total_selector+i).val();
+                let value           =  total / diff2; 
+                $('.product-detail-'+product_id).find(profit_margin_selector+i).val(value.toFixed(2));   
+                $('.product-detail-'+product_id).find(final_price_selector+i).val(value.toFixed(2));   
+            }
+        }
+    }
+
+    $(document).on("change","#ProjectedUnits", function(){
+        let product_ids     = $("#product_ids").val();
+        $.each(product_ids, function(index, element){
+            
+            resetPrices(element);
+            calcDecogrationPrice(element);
+            calcTotal(element);
+            calcMargin(element);
+        });
 
     });
-    
-    function calcMargin(prduct_id   = 0){
-        
-    }
 </script>
 @endsection

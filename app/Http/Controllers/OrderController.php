@@ -43,6 +43,9 @@ class OrderController extends Controller
 
     public $fixedAdultSize;
     public $allAdultSizes;
+
+    public $fixedBabySize;
+    public $allBabySizes;
     function __construct()
     {
        $this->middleware('permission:orders-list|orders-edit', ['only' => ['index']]);
@@ -51,6 +54,7 @@ class OrderController extends Controller
        $this->middleware('permission:orders-change-status', ['only' => ['status_update']]);
        $this->middleware('permission:orders-generate-invoice', ['only' => ['status_update']]);
        $this->fixedAdultSize        = [
+                                        "XS",
                                         "S",
                                         "M",
                                         "L",
@@ -60,7 +64,23 @@ class OrderController extends Controller
                                         "2XL",
                                         "3XL",
                                         "4XL",
-                                        "5XL"
+                                        "5XL",
+                                        "6XL"
+                                    ];
+
+       $this->fixedBabySize        = [
+                                        "OSFA",
+                                        "New Born",
+                                        "6M",
+                                        "12M",
+                                        "18M"
+                                    ];
+       $this->allBabySizes        = [
+                                        "2T",
+                                        "3T",
+                                        "4T",
+                                        "5T",
+                                        "6T"
                                     ];
    }
 
@@ -243,7 +263,10 @@ class OrderController extends Controller
         $order_type_id      = 1; 
         $fixed_sizes        = $this->fixedAdultSize;
         $all_adult_sizes    = $this->allAdultSizes;
-        return view('admin.orders.create',compact('pageTitle','products', 'clients', 'brands', 'fixed_sizes', 'all_adult_sizes'));
+        $fixed_baby_sizes   = $this->fixedBabySize;
+        $all_baby_sizes    = $this->allBabySizes;
+        
+        return view('admin.orders.create',compact('pageTitle','products', 'clients', 'brands', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes'));
 
     } 
 
@@ -824,17 +847,23 @@ class OrderController extends Controller
     public function product_form(Request $request){
 
         $product_id         = $request->product_id;
-        // $payments_types     = PaymentType::where('is_active', 'Y')->get();
-        $payments_types     = [];
         $product_detail     = Product::with( 'ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
-        return view('admin.orders.product', compact('product_detail', 'payments_types'));
+        return view('admin.orders.product', compact('product_detail'));
         
     }
     public function print_nd_loations(Request $request){
-
+       
+        $type               = "";   
         $product_id         = $request->product_id;
-        $product_detail     = Product::with( 'ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
-        return view('admin.orders.print-locations', compact('product_detail'));
+        $product_detail     = Product::with('ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
+        foreach($product_detail->ProductVariant as $productVariant){
+            
+            if($productVariant->name == "Baby Size"){
+                $type       = "Baby Size";
+                break;
+            }
+        }
+        return view('admin.orders.print-locations', compact('product_detail', 'type'));
     }
 
     public function get_decoration_price(Request $request)

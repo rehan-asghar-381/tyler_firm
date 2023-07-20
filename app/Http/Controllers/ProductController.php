@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 class ProductController extends Controller
 {
     public $fixedAdultSize;
+    public $fixedBabySize;
     /**
      * Display a listing of the resource.
      *
@@ -39,11 +40,18 @@ class ProductController extends Controller
             "L",
             "XL"
         ];
+
+        $this->fixedBabySize        = [
+            "OSFA",
+            "New Born",
+            "6M",
+            "12M",
+            "18M"
+        ];
     }
 
     public function index(Request $request)
     {
-        // dd(auth()->user()->getAllPermissions()  );
         $pageTitle          = "Products";
         $brands             = Brand::get();
         return view('admin.products.index',compact('pageTitle', 'brands'));
@@ -337,19 +345,6 @@ public function save_product_imgs($files_arr=[], $product_id){
         return redirect()->route('admin.product.index')
         ->with('success','Product updated successfully');
     }
-    
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    // public function destroy($id)
-    // {
-    //     User::find($id)->delete();
-    //     return redirect()->route('admin.users.index')
-    //                     ->with('success','User deleted successfully');
-    // }
 
     public function delete_image(Request $request)
     {
@@ -371,7 +366,8 @@ public function save_product_imgs($files_arr=[], $product_id){
 
     } 
     public function prices(Request $request){
-
+        $type                       = "";
+        $postfix                    = "";
         $productColorVariantArr     = [];
         $productSizeVariantArr      = [];
         $productVariantArr          = [];
@@ -386,16 +382,29 @@ public function save_product_imgs($files_arr=[], $product_id){
         $variants                   = ProductVariant::with('Atrributes')
                                         ->where("product_id", $product_id)
                                         ->get();
-        $fixed_adult_size           = $this->fixedAdultSize;
+        foreach($variants as $variant){
+            if($variant->name == "Baby Size"){
+                $type               = "Baby Size";
+                break;
+            }
+        }
+        if($type == "Baby Size"){
+
+            $fixed_sizes            = $this->fixedBabySize;
+            $postfix                = "_OSFA-18M";
+        }else{
+            $fixed_sizes            = $this->fixedAdultSize;
+            $postfix                = "_S-XL";
+        }
         $fixed_sizes_ids            = [];                                
         foreach ($variants as $key => $variant) {
             $productVariantArr[$variant->id] = $variant->name;
 
             foreach ($variant->Atrributes as $key => $atrributes) {
                 if ($variant->name != "Color" ) {
-                    if (in_array($atrributes->name, $fixed_adult_size)) {
-                        if (!in_array( $variant->id.'_'.$atrributes->id.'_S-XL', $productSizeVariantArr)) {
-                            $productSizeVariantArr[]    = $variant->id.'_'.$atrributes->id.'_S-XL' ;
+                    if (in_array($atrributes->name, $fixed_sizes)) {
+                        if (!in_array( $variant->id.'_'.$atrributes->id.$postfix, $productSizeVariantArr)) {
+                            $productSizeVariantArr[]    = $variant->id.'_'.$atrributes->id.$postfix ;
                             $fixed_sizes_ids[]          = $atrributes->id;
                         }
                     }else{
@@ -405,7 +414,6 @@ public function save_product_imgs($files_arr=[], $product_id){
             }
         } 
         foreach ($variants as $key => $variant) {
-
 
            foreach ($variant->Atrributes as $key => $atrributes) {
             if ($variant->name == "Color" ) {
