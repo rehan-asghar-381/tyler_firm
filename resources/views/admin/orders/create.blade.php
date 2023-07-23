@@ -222,79 +222,6 @@ hr{
                                     </div>
                                 </div>
                             </div>
-                            {{-- <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-                                    <div class="col-md-10">
-                                        <div class="form-group row">
-                                            <label for="location1_charge" class="col-sm-2 font-weight-600">Location 1 Charge</label>
-                                            <input type="hidden" name="location_charge[]" value="Location 1 Charge">
-                                            <div class="col-sm-3">
-                                                <input type="number" min="0" name="location_charge_price[]" readonly value="" class="my-form-control location_charges" id="location1_charge" placeholder="">
-                                            </div>
-                                            <label for="s-xl" class="col-sm-2 font-weight-600">S-XL</label>
-                                            <input type="hidden" name="size[]" value="S-XL">
-                                            <div class="col-sm-3">
-                                                <input type="number" min="0" name="size_total_price[]" readonly value="" class="my-form-control" id="sp_s_xl" placeholder="">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <div class="form-group row">
-                                            <label for="location2_charge" class="col-sm-2 font-weight-600">Location 2 Charge</label>
-                                            <input type="hidden" name="location_charge[]" value="Location 2 Charge">
-                                            <div class="col-sm-3">
-                                                <input type="number" min="0" name="location_charge_price[]" readonly value="" class="my-form-control location_charges" id="location2_charge" placeholder="">
-                                            </div>
-                                            <label for="sp_xxl" class="col-sm-2 font-weight-600">XXL</label>
-                                            <input type="hidden" name="size[]" value="XXL">
-                                            <div class="col-sm-3">
-                                                <input type="number" min="0" name="size_total_price[]" readonly value="" class="my-form-control" id="sp_xxl" placeholder="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <div class="form-group row">
-                                            <label for="location3_charge" class="col-sm-2 font-weight-600">Location 3 Charge</label>
-                                            <input type="hidden" name="location_charge[]" value="Location 3 Charge">
-                                            <div class="col-sm-3">
-                                                <input type="number" min="0" name="location_charge_price[]" readonly value="" class="my-form-control location_charges" id="location3_charge" placeholder="">
-                                            </div>
-                                            <label for="sp_xxxl" class="col-sm-2 font-weight-600">XXXL</label>
-                                            <input type="hidden" name="size[]" value="XXXL">
-                                            <div class="col-sm-3">
-                                                <input type="number" min="0" name="size_total_price[]" readonly value="" class="my-form-control" id="sp_xxxl" placeholder="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <div class="form-group row">
-                                            <label for="location4_charge" class="col-sm-2 font-weight-600">Location 4 Charge</label>
-                                            <input type="hidden" name="location_charge[]" value="Location 4 Charge">
-                                            <div class="col-sm-3">
-                                                <input type="number" min="0" name="location_charge_price[]" readonly value="" class="my-form-control location_charges" id="location4_charge" placeholder="">
-                                            </div>
-                                            <label for="sp_xxxxl" class="col-sm-2 font-weight-600">XXXXL</label>
-                                            <input type="hidden" name="size[]" value="XXXXL">
-                                            <div class="col-sm-3">
-                                                <input type="number" min="0" name="size_total_price[]" readonly value="" class="my-form-control" id="sp_xxxxl" placeholder="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <div class="form-group row">
-                                            <label for="location5_charge" class="col-sm-2 font-weight-600">Location 5 Charge</label>
-                                            <input type="hidden" name="location_charge[]" value="Location 5 Charge">
-                                            <div class="col-sm-3">
-                                                <input type="number" min="0" name="location_charge_price[]" readonly value="" class="my-form-control location_charges" id="location5_charge" placeholder="">
-                                            </div>
-                                            <label for="sp_xxxxxl" class="col-sm-2 font-weight-600">XXXXXL</label>
-                                            <input type="hidden" name="size[]" value="XXXXXL">
-                                            <div class="col-sm-3">
-                                                <input type="number" min="0" name="size_total_price[]" readonly value="" class="my-form-control" id="sp_xxxxxl" placeholder="">
-                                            </div>
-                                        </div>
-                                    </div>
-                            </div> --}}
                             <div class="tab-pane fade" id="OTHERCHARGES" role="tabpanel" aria-labelledby="OTHERCHARGES-tab">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -426,6 +353,9 @@ hr{
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-12 form-check mt-5">
+                                        <button type="submit" class="btn btn-primary mb-3" id="submit-form">Save Order</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -540,39 +470,15 @@ hr{
         });
         
     });
-    function setTotal(obj) {
-        if (obj.id == "price") {
-            var price =  $(obj).val();
-            var pieces =  $(obj).parent().prev().find('input[type=number]').val();
-            $(obj).parent().next().find('input[type=number]').val(price*pieces);
-        }
-       
-    }
-
-    function getDecorationPrice(obj){
-        var ProjectedUnits = $('#ProjectedUnits').val();
-        var number_of_colors = $(obj).val();
-        if (number_of_colors > 8 ) {
-            $(obj).val(0);
-            return false;
+    $(document).on("change", ".pieces, .price", function(){
+        $(this).closest('.form-row').find('.total').val('');
+        let pieces      = $(this).closest('.form-row').find('.pieces').val();
+        let price       = $(this).closest('.form-row').find('.price').val();
+        if(pieces != "" && price != ""){
+            $(this).closest('.form-row').find('.total').val((pieces*price).toFixed(2));
         }
 
-        if (ProjectedUnits > 0 && number_of_colors > 0) {
-            $.ajax({
-                url: "{{ route('admin.get_decoration_price') }}",
-                type: "GET",
-                data: {
-                    total_pieces: ProjectedUnits,
-                    number_of_colors:number_of_colors,
-                },
-                success: function(value) {
-                    
-                }
-            });
-
-        }
-
-    }
+    });
     function location_labels(selector){
 
         if(selector != ""){
@@ -604,25 +510,33 @@ hr{
     $(document).on('click', '.add-p-location', function(event) {
         var parent_id                       = $(this).attr('data-id');
         var parent_selector                 = '.p-print-location-'+parent_id;
-
+        let count                           = $('.product-detail-'+parent_id).find('.location-count').val();
         var print_location_template         = $(this).closest(parent_selector).find(".print-location").first().clone();
         var print_location_parent           = $(this).closest(parent_selector);
-        var new_print_location_template = print_location_template.clone();
+        var new_print_location_template     = print_location_template.clone();
         event.preventDefault();
         print_location_parent.append(new_print_location_template);
         new_print_location_template.find('input').val(null);
-
-
         location_labels(parent_selector);
+        count                               = parseInt(count)+1;
+        $('.product-detail-'+parent_id).find('.location-count').val(count);
     });
 
     $(document).on('click', '.remove-p-location', function(e) {
         var parent_id                       = $(this).attr('data-id');
         var parent_selector                 = '.p-print-location-'+parent_id;
+        console.log(parent_id);
+        let count                           = $('.product-detail-'+parent_id).find('.location-count').val();
+        count                               = parseInt(count)-1;
+        console.log(count);
         e.preventDefault();
-        $(this).closest('.print-location').remove();
-        location_labels(parent_selector);
-        $("#ProjectedUnits").trigger("change");
+        if(count >= 1){
+            $(this).closest('.print-location').remove();
+            $($('.product-detail-'+parent_id)).find('.location-count').val(count);
+            location_labels(parent_selector);
+            $("#ProjectedUnits").trigger("change");
+        }
+        
     });
 
     $(document).on("change", ".attribute", function(e){

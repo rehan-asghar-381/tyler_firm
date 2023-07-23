@@ -4,14 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\OrderSupply;
 use App\Models\Status;
 use App\Models\OrderImgs;
-use App\Models\OrderAdditional;
-use App\Models\Job;
 use App\Models\Client;
 use App\Models\OrderTill;
-use App\Models\SupplyInventoryItem;
+use App\Models\OrderPrice;
+use App\Models\OrderColorPerLocation;
 
 class Order extends Model
 {
@@ -38,11 +36,15 @@ class Order extends Model
 
     ];
 
-    public function OrderSupply(){
+    public function OrderPrice(){
         
-        return $this->hasMany(OrderSupply::class, "order_id", "id");
+        return $this->hasMany(OrderPrice::class, "order_id", "id");
     }
 
+    public function OrderColorPerLocation(){
+
+        return $this->hasMany(OrderColorPerLocation::class, "order_id", "id");
+    }
     public function OrderImgs(){
         
         return $this->hasMany(OrderImgs::class, "order_id", "id");

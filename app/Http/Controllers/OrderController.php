@@ -29,6 +29,8 @@ use App\Models\OrderProduct;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantAttribute;
 use App\Models\DecorationPrice;
+use App\Models\OrderPrice;
+use App\Models\OrderColorPerLocation;
 use App\Models\OrderFinalPriceProductVariants;
 use App\Models\OrderPrintLocationColor;
 use App\Models\SupplyInventoryItem;
@@ -67,7 +69,6 @@ class OrderController extends Controller
                                         "5XL",
                                         "6XL"
                                     ];
-
        $this->fixedBabySize        = [
                                         "OSFA",
                                         "New Born",
@@ -265,127 +266,104 @@ class OrderController extends Controller
         $all_adult_sizes    = $this->allAdultSizes;
         $fixed_baby_sizes   = $this->fixedBabySize;
         $all_baby_sizes    = $this->allBabySizes;
-        
         return view('admin.orders.create',compact('pageTitle','products', 'clients', 'brands', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes'));
 
     } 
 
     public function store(Request $request)
-    {  
+    { 
         $user_id                    = Auth::user()->id;
         $user_name                  = Auth::user()->name;     
         $rData                      = $request->all();
-  
         $order                      = new Order();
         $order->time_id             = date('U');
         $order->client_id           = $rData['client_id'];
         $order->job_name            = $rData['job_name'];
         $order->order_number        = $rData['order_number'];
+        $order->projected_units     = $rData['projected_units'];
         $order->status              = 1;
         $order->created_by_id       = $user_id;
         $order->created_by_name     = $user_name;
         $order->save();
         $orderID                    = $order->id;
+        $orderID                    = 1;
         $product_ids                = $rData['product_ids'];
         $products_name              = $rData['products_name'];
+        if(count($product_ids) > 0){
+            $this->save_order_prices($orderID, $rData);
+        }
         if (count($product_ids) > 0) {
-
             $this->save_order_products($product_ids,$products_name, $orderID);
         }
-
         $attribute_id                           = $rData['attribute_id'];
         $pieces                                 = $rData['pieces'];
         $prices                                 = $rData['price'];
         $total                                  = $rData['total'];
-
         if (count($attribute_id) > 0) {
-
             $this->save_product_attribute($attribute_id,$pieces,$prices,$total, $orderID);
         }
-        $plsize                                     = $rData['plsize'];
-        if (count($plsize) > 0) {
-
-            $this->save_order_print_location_colors($rData, $orderID);
-        }
-        $location_charge                            = $rData['location_charge'];
-        if (count($location_charge) > 0) {
-
-            $this->save_order_contract_print_prices($rData, $orderID);
-        }
         $fold_bag_tag_pieces                            = $rData['fold_bag_tag_pieces'];
-        if (isset($location_charge)) {
-
+        if (isset($fold_bag_tag_pieces)) {
             $this->save_order_other_charges($rData, $orderID);
         }
         $this->order_transfer($rData, $orderID);
-        $margin_size                            = $rData['margin_size'];
-        if (count($margin_size) > 0) {
-
-            $this->order_margins($rData, $orderID);
-        }
-        $fp_attribute_id                                 = $rData['fp_attribute_id'];
-        $fp_price                                        = $rData['fp_price'];
-        if (count($fp_attribute_id) > 0) {
-            $this->save_order_final_price_product_variants($fp_attribute_id,$fp_price, $orderID);
-        }
-        
         return redirect()->route("admin.order.create")->withSuccess('Order data has been saved successfully!');
+    }
+    public function save_order_prices($order_id, $rData){
+        $order                          = Order::find($order_id);
+        $product_ids                    = $rData['product_ids'];
+        $product_sizes                  = $rData['product_size'];
+        $wholesale_price                = $rData['wholesale_price'];
+        $print_price                    = $rData['print_price'];
+        $profit_margin                  = $rData['profit_margin'];
+        $total_price                    = $rData['total_price'];
+        $final_price                    = $rData['final_price'];
+        $color_per_location             = $rData['color_per_location'];
+        $order_price_arr                = [];
+        $order_color_perlocation_arr    = [];
+        foreach($product_ids as $key=> $product_id){
+    
+            foreach($product_sizes[$product_id] as $p_key=>$product_size){
+     
+                $order_price                    = new OrderPrice();
+                $order_price->product_id        = $product_id;
+                $order_price->product_size      = $product_size;
+                $order_price->wholesale_price   = $wholesale_price[$product_id][$key];
+                $order_price->print_price       = $print_price[$product_id][$key];
+                $order_price->total_price       = $total_price[$product_id][$key];
+                $order_price->profit_margin     = $profit_margin[$product_id][$key];
+                $order_price->final_price       = $final_price[$product_id][$key];
+                $order_price_arr[]              = $order_price;
+                
+            }
+            foreach($color_per_location[$product_id] as $key=>$color){
+             
+                $order_color_perlocation                        = new OrderColorPerLocation();
+                $order_color_perlocation->product_id            = $product_id;
+                $order_color_perlocation->color_per_location    = $color;
+                $order_color_perlocation->location_number       = $key+1;
+                $order_color_perlocation_arr[]                  = $order_color_perlocation;
+                
+            }
+            
+        }
+       $order->OrderPrice()->saveMany($order_price_arr);
+       $order->OrderColorPerLocation()->saveMany($order_color_perlocation_arr);
     }
     public function order_transfer($rData, $order_id){
 
-        $order                            = Order::find($order_id);
-        $order_transfer                   = new OrderTransfer();
-        $order_transfer->order_id         = $order_id;
-        $order_transfer->transfers_pieces = $rData['transfers_pieces'];
-        $order_transfer->transfers_pieces = $rData['transfers_pieces'];
-        $order_transfer->transfers_prices = $rData['transfers_prices'];
-        $order_transfer->ink_color_change_pieces = $rData['ink_color_change_pieces'];
-        $order_transfer->art_discount_prices = $rData['art_discount_prices'];
+        $order_transfer                             = new OrderTransfer();
+        $order_transfer->order_id                   = $order_id;
+        $order_transfer->transfers_pieces           = $rData['transfers_pieces'];
+        $order_transfer->transfers_pieces           = $rData['transfers_pieces'];
+        $order_transfer->transfers_prices           = $rData['transfers_prices'];
+        $order_transfer->ink_color_change_pieces    = $rData['ink_color_change_pieces'];
+        $order_transfer->art_discount_prices        = $rData['art_discount_prices'];
+        $order_transfer->art_discount_prices        = $rData['art_discount_prices'];
         $order_transfer->save();
-
-    }
-
-    public function order_margins($rData, $order_id){
-        $order                  = Order::find($order_id);
-        $order_margin_arr = [];
-        foreach ($rData['margin_size'] as $key => $label) {
-
-            $order_margin                         = new OrderMargin();
-
-            $order_margin->order_id               = $order_id;
-            $order_margin->min_profit_margin      = $rData['min_profit_margin'];
-            $order_margin->max_profit_margin      = $rData['max_profit_margin'];
-            $order_margin->margin_size            = $rData['margin_size'][$key];
-            $order_margin->min_margin             = $rData['min_margin'][$key];
-            $order_margin->max_margin             = $rData['max_margin'][$key];
-            // dd($order_margin);
-            $order_margin_arr[]                   = $order_margin;
-            $order->OrderMargin()->saveMany($order_margin_arr);
-        }
-
-
-    } 
-    public function save_order_final_price_product_variants($attribute_id,$prices,$order_id){
-        $order                  = Order::find($order_id);
-        $order_product_variant_arr = [];
-        foreach ($attribute_id as $product_id => $attr_ids) {
-            foreach ($attr_ids as $at_id => $ids) {
-                $order_product_var               = new OrderFinalPriceProductVariants();
-                $order_product_var->order_id     = $order_id;
-                $order_product_var->product_id        = $product_id;
-                $product_variant = ProductVariant::find($at_id);
-                $order_product_var->variant_id = $at_id;
-                $order_product_var->variant_name = $product_variant->name;
-                $product_variant_attribute = ProductVariantAttribute::find($ids[0]);
-                $order_product_var->attribute_id = $ids[0];
-                $order_product_var->attribute_name = $product_variant_attribute->name;
-                $order_product_var->price = $prices[$product_id][0];
-                $order_product_variant_arr[]  = $order_product_var;
-                $order->OrderFinalPriceProductVariants()->saveMany($order_product_variant_arr);
-            }
-        }
     }
     public function save_order_other_charges($rData, $order_id){
+
         $order_other_charges                        = new OrderOtherCharges();
         $order_other_charges->order_id              = $order_id;
         $order_other_charges->fold_bag_tag_pieces   = $rData['fold_bag_tag_pieces'];
@@ -398,41 +376,6 @@ class OrderController extends Controller
         $order_other_charges->tax                   = $rData['tax'];
         $order_other_charges->save();
     } 
-    public function save_order_contract_print_prices($rData, $order_id){
-        $order                  = Order::find($order_id);
-        $order_contract_print_price_arr = [];
-        foreach ($rData['location_charge'] as $key => $label) {
-
-            $order_contract_print_price               = new OrderContractPrintPrice();
-
-            $order_contract_print_price->order_id               = $order_id;
-            $order_contract_print_price->location_charge        = $label;
-            $order_contract_print_price->location_charge_price  = $rData['location_charge_price'][$key];
-            $order_contract_print_price->size                   = $rData['location'][$key];
-            $order_contract_print_price->size_total_price       = $rData['location_color'][$key];
-            $order_contract_print_price_arr[]                   = $order_contract_print_price;
-            $order->OrderProducts()->saveMany($order_contract_print_price_arr);
-        }
-    } 
-    public function save_order_print_location_colors($rData, $order_id){
-        $order                  = Order::find($order_id);
-        $order_print_price_location_arr = [];
-        foreach ($rData['plsize'] as $key => $label) {
-
-            $order_print_price_location               = new OrderPrintLocationColor();
-
-            $order_print_price_location->order_id     = $order_id;
-            $order_print_price_location->projected_units        = $rData['projected_units'];
-            $order_print_price_location->quantity_break        = $rData['quantity_break'];
-            $order_print_price_location->size        = $label;
-            $order_print_price_location->size_price        = $rData['size_price'][$key];
-            $order_print_price_location->location        = $rData['location'][$key];
-            $order_print_price_location->location_color        = $rData['location_color'][$key];
-            $order_print_price_location_arr[]  = $order_print_price_location;
-            $order->OrderProducts()->saveMany($order_print_price_location_arr);
-
-        }
-    }
 
     public function save_product_attribute($attribute_id,$pieces,$prices,$total, $order_id){
         $order                  = Order::find($order_id);

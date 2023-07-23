@@ -33,18 +33,16 @@
                                   @endif
                                   <div class=" form-group col-md-2">
                                     <label class="mr-2" for="pieces">Pieces </label>
-                                    <input type="number" onkeyup="setTotal(this);" onchange="setTotal(this);" name="pieces[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 pieces" id="pieces" placeholder="Pieces" min="1" value="">
+                                    <input type="number" name="pieces[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 pieces" id="pieces" placeholder="Pieces" min="1" value="">
                                 </div> 
                                 <div class="form-group col-md-2">
                                     <label class="mr-3" for="price">Price</label>
                                     <input type="hidden" class="form-control mb-2 mr-sm-2 inc-lusive-price"  value="{{$product_detail->inclusive_price}}">
-                                    <input type="number" value=""  name="price[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 price" id="price" placeholder="Price" onchange="setTotal(this);"  onkeyup="setTotal(this);" 
-                                    {{-- value="{{$product_detail->inclusive_price}}"  --}}
-                                    >
+                                    <input type="number" value=""  name="price[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 price" id="price" placeholder="Price">
                                 </div>
                                 <div class="form-group col-md-2">
                                     <label class="mr-3" for="total">Total </label>
-                                    <input type="number" name="total[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 total" id="total" readonly="" placeholder="Total" value="" >
+                                    <input type="number" name="total[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2 total" id="total" readonly="" step="any" placeholder="Total" value="" >
                                 </div>   
                             </div>
                         </div>
