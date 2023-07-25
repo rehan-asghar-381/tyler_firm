@@ -11,7 +11,7 @@ use App\Models\OrderAdditional;
 use App\Models\Job;
 use App\Models\Client;
 use App\Models\OrderTill;
-use App\Models\SupplyInventoryItem;
+use App\Models\ProductVariant;
 
 class OrderProduct extends Model
 {
@@ -71,6 +71,11 @@ class OrderProduct extends Model
     public function OrderTill(){
         
         return $this->hasOne(OrderTill::class, "order_id", "id");
+    }
+
+    public function ProductVariant(){
+
+        return $this->hasMany(ProductVariant::class, 'product_id','id');
     }
 
 }

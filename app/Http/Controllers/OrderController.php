@@ -237,11 +237,10 @@ class OrderController extends Controller
         $products           = Product::get();
         $brands             = Brand::get();
         $errors             = [];
-        $order_type_id      = 1; 
         $fixed_sizes        = $this->fixedAdultSize;
         $all_adult_sizes    = $this->allAdultSizes;
         $fixed_baby_sizes   = $this->fixedBabySize;
-        $all_baby_sizes    = $this->allBabySizes;
+        $all_baby_sizes     = $this->allBabySizes;
         return view('admin.orders.create',compact('pageTitle','products', 'clients', 'brands', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes'));
 
     } 
@@ -401,20 +400,29 @@ class OrderController extends Controller
     public function edit($id)
     {
         $pageTitle                  = "Orders";
-        $errors                     = [];
         $order                      = Order::with([
-            'OrderSupply', 
-            'OrderImgs', 
-            'AdditionalFields', 
+            'OrderPrice', 
+            'OrderColorPerLocation', 
+            'OrderProducts', 
+            'OrderProducts.ProductVariant', 
             'Orderstatus',
-            'OrderTill'
+            'OrderProductVariant'
         ])->find($id);
-        $order_types                = OrderType::where('is_active', 'Y')->get();
-        $shop_sizes                 = ShopSize::where('is_active', 'Y')->get();
+        $order_product_ids_arr      = [];
         $clients                    = Client::get();
-        $payments_types             = PaymentType::where('is_active', 'Y')->get();
-        $inventory_items            = SupplyInventoryItem::get();
-        return view('admin.orders.edit',compact('pageTitle', 'order', 'order_types', 'shop_sizes', 'clients', 'errors', 'inventory_items', 'payments_types'));
+        $products                   = Product::get();
+        $fixed_sizes                = $this->fixedAdultSize;
+        $all_adult_sizes            = $this->allAdultSizes;
+        $fixed_baby_sizes           = $this->fixedBabySize;
+        $all_baby_sizes             = $this->allBabySizes;
+        if(count($order->OrderProducts) > 0){
+
+            foreach($order->OrderProducts as $orderProduct){
+
+                $order_product_ids_arr[]    = $orderProduct->id;
+            }
+        }
+        return view('admin.orders.edit',compact('pageTitle', 'order', 'clients', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr'));
 
     }
 

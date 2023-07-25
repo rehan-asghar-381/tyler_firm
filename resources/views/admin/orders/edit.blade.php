@@ -160,7 +160,7 @@ hr{
                                     <option value=""> Select</option>
                                     {{-- <option value="new">Add New Client</option>--}}
                                     @foreach ($clients as $client)
-                                    <option value="{{ $client->id }}">{{ $client->company_name}}</option>
+                                    <option value="{{ $client->id }}" @if($order->client_id == $client->id) {{ "selected" }} @endif>{{ $client->company_name}}</option>
                                     @endforeach
                                 </select>
                                 
@@ -175,17 +175,17 @@ hr{
                             </div>
                             <div class="col-md-3">
                                 <label>Job Name</label>
-                                <input type="text" class="form-control" name="job_name" value="" placeholder="Job Name">
+                                <input type="text" class="form-control" name="job_name" value="{{$order->job_name}}" placeholder="Job Name">
                             </div>
                             <div class="col-md-3">
                                 <label>Purchase Order #</label>
-                                <input type="text" class="form-control" name="order_number" value="" placeholder="Order Number">
+                                <input type="text" class="form-control" name="order_number" value="{{$order->order_number}}" placeholder="Order Number">
                             </div>
                             <div class="col-md-3 mb-3">
                                 <div class="form-group">
                                     <label>Due Date: </label>&nbsp;&nbsp;&nbsp;
                                     <div class="input-group date">
-                                        <input type="text" name="due_date" class="form-control bg-light flatpickr" value="" required="" id="due_date">
+                                        <input type="text" name="due_date" class="form-control bg-light flatpickr" value="{{date("Y-m-d h:i", $order->due_date)}}" required="" id="due_date">
                                         <div class="input-group-addon input-group-append">
                                             <div class="input-group-text">
                                                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
@@ -200,8 +200,8 @@ hr{
 
                                     <select name="event" id="event" class="form-control"  >
                                         <option value=""> Select</option>
-                                        <option value="Yes"> Yes</option>
-                                        <option value="No"> No</option>
+                                        <option value="Yes" @if($order->event == "Yes") {{ "selected" }} @endif> Yes</option>
+                                        <option value="No" @if($order->event == "No") {{ "selected" }} @endif> No</option>
                                 </select>
                                 </div>
                                 
@@ -209,7 +209,7 @@ hr{
                             <div class="col-md-3">
                                 <div class="form-group">
                                 <label>Shipping Address</label>
-                                <textarea type="text" value="" class="form-control" name="shipping_address" id="shipping_address" placeholder="" rows="3" ></textarea>
+                                <textarea type="text" value="" class="form-control" name="shipping_address" id="shipping_address" placeholder="" rows="3" >{{$order->shipping_address}}</textarea>
                                 </div>
                                 
                             </div>
@@ -225,7 +225,6 @@ hr{
                                 <a class="nav-link" id="OTHERCHARGES-tab" data-toggle="pill" href="#OTHERCHARGES" role="tab" aria-controls="OTHERCHARGES" aria-selected="false">Other Charges</a>
                             </li>
                         </ul>
-
                         <div class="tab-content" id="pills-tabContent">
                          <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 
@@ -235,7 +234,7 @@ hr{
                                         <select name="product_ids[]" id="product_ids" class="form-control basic-multiple" multiple="multiple">
                                             @if (count($products) > 0)
                                             @foreach ($products as $product)
-                                            <option value="{{$product->id}}">{{$product->name}} [ {{$product->code}}]</option>
+                                            <option value="{{$product->id}}" @if(in_array($product->id, $order_product_ids_arr)) {{"selected"}} @endif>{{$product->name}} [ {{$product->code}}]</option>
                                             @endforeach
                                             @endif
                                         </select>
@@ -243,6 +242,13 @@ hr{
                                 </div>
                                 <div class="row Order-form btn-d-none">
                                     <div id="accordion" class="accordion">
+                                        @if(count($order->OrderProducts) > 0)
+                                            @foreach($order->OrderProducts as $product_detail)
+
+                                                @include('admin.orders.product', ['product_detail'=>$product_detail]))
+
+                                            @endforeach
+                                        @endif
                                     </div>
                                 </div>
 
@@ -416,15 +422,18 @@ hr{
             var p_id        = ".product-detail-"+e.params.data.id;
             $(p_id).remove();
         });
+        var _client_id      = '{{$order->client_id}}';
+        var _sale_rep       = '{{$order->sales_rep}}';
 
+        get_sales_rep(_client_id, _sale_rep);
         $('#client_id').on('change', function(e) {
             var client_id       = $(this).val();
             get_sales_rep(client_id);
         });
 
-        function get_sales_rep(client_id=""){
+        function get_sales_rep(client_id="", _sale_rep = ""){
 
-            if(client_id != ""){
+            if(client_id != "" && _sale_rep != ""){
                 
                 $.ajax({
                     url: "{{ route('admin.client.get_sales_rep') }}",
@@ -436,8 +445,11 @@ hr{
                         $('#sales_rep').empty();
                         var html    = '<option value=""> --Select-- </option>';
                         $.each(data.sales_rep, function(index, sales_rep) {
-                            console.log(sales_rep);
-                            html +='<option value="' + sales_rep.id + '">' + sales_rep.first_name + ' ' +sales_rep.last_name+'</option>';
+                            let selected        = '';
+                            if(sales_rep.id == _sale_rep){
+                                selected        = 'selected';
+                            }
+                            html +='<option value="' + sales_rep.id + '" '+selected+'>' + sales_rep.first_name + ' ' +sales_rep.last_name+'</option>';
                         })
                         console.log(html);
                         $('#sales_rep').html(html);
