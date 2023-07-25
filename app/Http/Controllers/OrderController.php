@@ -155,51 +155,27 @@ class OrderController extends Controller
             else
                 return '-';
         })
-        ->addColumn('reseller_number', function ($data) {
-            if (isset($data->client->reseller_number) && $data->client->reseller_number != "")
-                return $data->client->reseller_number;
-            else
-                return '-';
-        })
-        ->editColumn('first_name', function ($data) {
-            if (isset($data->client->first_name) && $data->client->first_name != "")
-                return $data->client->first_name;
-            else
-                return '-';
-        })
-        ->editColumn('last_name', function ($data) {
-            if (isset($data->client->last_name) && $data->client->last_name != "")
-                return $data->client->last_name;
-            else
-                return '-';
-        })
-        ->editColumn('email', function ($data) {
-            if (isset($data->client->email) && $data->client->email != "")
-                return $data->client->email;
-            else
-                return '-';
-        })
-        ->editColumn('phone_number', function ($data) {
-            if (isset($data->client->phone_number) && $data->client->phone_number != "")
-                return $data->client->phone_number;
-            else
-                return '-';
-        })
-        ->editColumn('country', function ($data) {
-            if ($data->country != "")
-                return $data->country;
-            else
-                return '-';
-        })
-        ->editColumn('title', function ($data) {
-            if ($data->title != "")
-                return $data->title;
-            else
-                return '-';
-        })
         ->editColumn('job_name', function ($data) {
             if ($data->job_name != "")
                 return $data->job_name;
+            else
+                return '-';
+        })
+        ->editColumn('projected_units', function ($data) {
+            if ($data->projected_units != "")
+                return $data->projected_units;
+            else
+                return '-';
+        })
+        ->editColumn('due_date', function ($data) {
+            if ($data->due_date != "")
+                return date("Y-m-d h:i", $data->due_date);
+            else
+                return '-';
+        })
+        ->editColumn('event', function ($data) {
+            if ($data->event != "")
+                return $data->event;
             else
                 return '-';
         })
@@ -278,6 +254,10 @@ class OrderController extends Controller
         $order                      = new Order();
         $order->time_id             = date('U');
         $order->client_id           = $rData['client_id'];
+        $order->sales_rep           = $rData['sales_rep'];
+        $order->due_date            = (isset($rData['due_date']) && $rData['due_date'] != "")?strtotime($rData['due_date']):0;
+        $order->event               = $rData['event'];
+        $order->shipping_address    = $rData['shipping_address'];
         $order->job_name            = $rData['job_name'];
         $order->order_number        = $rData['order_number'];
         $order->projected_units     = $rData['projected_units'];
@@ -286,7 +266,7 @@ class OrderController extends Controller
         $order->created_by_name     = $user_name;
         $order->save();
         $orderID                    = $order->id;
-        $orderID                    = 1;
+        // $orderID                    = 1;
         $product_ids                = $rData['product_ids'];
         $products_name              = $rData['products_name'];
         if(count($product_ids) > 0){
@@ -378,27 +358,29 @@ class OrderController extends Controller
     } 
 
     public function save_product_attribute($attribute_id,$pieces,$prices,$total, $order_id){
-        $order                  = Order::find($order_id);
-        $order_product_variant_arr = [];
+        $order                          = Order::find($order_id);
+        $order_product_variant_arr      = [];
         foreach ($attribute_id as $product_id => $attr_ids) {
-            foreach ($attr_ids as $at_id => $ids) {
-                
-                $order_product_var               = new OrderProductVariant();
-                $order_product_var->order_id     = $order_id;
-                $order_product_var->product_id        = $product_id;
-                $product_variant = ProductVariant::find($at_id);
-                $order_product_var->variant_id = $at_id;
-                $order_product_var->variant_name = $product_variant->name;
-                $product_variant_attribute = ProductVariantAttribute::find($ids[0]);
-                $order_product_var->attribute_id = $ids[0];
-                $order_product_var->attribute_name = $product_variant_attribute->name;
-                $order_product_var->pieces = $pieces[$product_id][0];
-                $order_product_var->price = $prices[$product_id][0];
-                $order_product_var->total = $total[$product_id][0];
-                $order_product_variant_arr[]  = $order_product_var;
-                $order->OrderProductVariant()->saveMany($order_product_variant_arr);
+            foreach ($attr_ids as $at_id => $idss) {
+                foreach ($idss as $key=>$ids) {
+                    $order_product_var                  = new OrderProductVariant();
+                    $order_product_var->order_id        = $order_id;
+                    $order_product_var->product_id      = $product_id;
+                    $product_variant                    = ProductVariant::find($at_id);
+                    $order_product_var->variant_id      = $at_id;
+                    $order_product_var->variant_name    = $product_variant->name;
+
+                    $product_variant_attribute          = ProductVariantAttribute::find($ids);
+                    $order_product_var->attribute_id    = $ids;
+                    $order_product_var->attribute_name  = $product_variant_attribute->name;
+                    $order_product_var->pieces          = $pieces[$product_id][$key];
+                    $order_product_var->price           = $prices[$product_id][$key];
+                    $order_product_var->total           = $total[$product_id][$key];
+                    $order_product_variant_arr[]        = $order_product_var;
+                }
             }
         }
+        $order->OrderProductVariant()->saveMany($order_product_variant_arr);
     }
 
     public function save_order_products($product_ids,$products_name, $order_id){

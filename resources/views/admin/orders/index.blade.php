@@ -104,13 +104,13 @@
 								<tr>
 									
 									<th width="250px">Sr.</th>
-									<th width="250px">Order Number</th>
+									<th width="250px">PO #</th>
 									<th width="250px">Job Name</th>
 									<th width="250px">Company Name</th>
-									<th width="250px">Reseller Number</th>
-									<th width="250px">Email Address</th>
-									<th width="250px">Order Date</th>
-									<th width="250px">Order Status</th>
+									<th width="250px">Quantity of Pieces</th>
+									<th width="250px">Due Date</th>
+									<th width="250px">Event</th>
+									<th width="250px">Status</th>
 									<th>Action</th>
 								</tr>
 							</thead>
@@ -190,9 +190,9 @@
 		{data: 'order_number', name: 'order_number', width:"250px"},
 		{data: 'job_name', name: 'job_name', width:"250px"},
 		{data: 'company_name', name: 'company_name', width:"250px"},
-		{data: 'reseller_number', name: 'reseller_number', width:"250px"},
-		{data: 'email', name: 'email', width:"250px"},
-		{data: 'order_date', name: 'order_date', width:"250px"},
+		{data: 'projected_units', name: 'projected_units', width:"250px"},
+		{data: 'due_date', name: 'due_date', width:"250px"},
+		{data: 'event', name: 'event', width:"250px"},
 		{data: 'status', name: 'status', width:"250px"},
 		{data: 'actions', name: 'actions'}
 		]

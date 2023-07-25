@@ -354,4 +354,14 @@ class ClientController extends Controller
         return json_encode(array("status"=>true));
 
     }
+
+    public function get_sales_rep(Request $request){
+        
+        $client_id          = $request->client_id;
+        $sales_rep          = ClientSaleRep::where('client_id', $client_id)->get();
+        return response()->json([
+            'sales_rep' => $sales_rep
+        ]);
+
+    }
 }

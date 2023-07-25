@@ -92,6 +92,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     
     Route::get('/clients/get_client', [ClientController::class, 'get_client'])->name('client.get_client');
     Route::get('/clients/add_client', [ClientController::class, 'add_client'])->name('client.add_client');
+    Route::get('/clients/get_sales_rep', [ClientController::class, 'get_sales_rep'])->name('client.get_sales_rep');
     Route::get('/order/get_client_recent_order', [OrderController::class, 'get_client_recent_order'])->name('order.get_client_recent_order');
 
 

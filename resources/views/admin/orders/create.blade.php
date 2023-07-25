@@ -153,7 +153,7 @@ hr{
                         @csrf
 
                         <div class="row mb-4">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label>Client</label>
 
                                 <select name="client_id" id="client_id" class="form-control search_test select-one"  >
@@ -165,13 +165,53 @@ hr{
                                 </select>
                                 
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <label>Sales Rep.</label>
+
+                                <select name="sales_rep" id="sales_rep" class="form-control"  >
+                                    <option value=""> Select</option>
+                                </select>
+                                
+                            </div>
+                            <div class="col-md-3">
                                 <label>Job Name</label>
                                 <input type="text" class="form-control" name="job_name" value="" placeholder="Job Name">
                             </div>
-                            <div class="col-md-4">
-                                <label>Order Number</label>
+                            <div class="col-md-3">
+                                <label>Purchase Order #</label>
                                 <input type="text" class="form-control" name="order_number" value="" placeholder="Order Number">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="form-group">
+                                    <label>Due Date: </label>&nbsp;&nbsp;&nbsp;
+                                    <div class="input-group date">
+                                        <input type="text" name="due_date" class="form-control bg-light flatpickr" value="" required="" id="due_date">
+                                        <div class="input-group-addon input-group-append">
+                                            <div class="input-group-text">
+                                                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Event</label>
+
+                                    <select name="event" id="event" class="form-control"  >
+                                        <option value=""> Select</option>
+                                        <option value="Yes"> Yes</option>
+                                        <option value="No"> No</option>
+                                </select>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                <label>Shipping Address</label>
+                                <textarea type="text" value="" class="form-control" name="shipping_address" id="shipping_address" placeholder="" rows="3" ></textarea>
+                                </div>
+                                
                             </div>
                         </div>
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -376,6 +416,49 @@ hr{
             var p_id        = ".product-detail-"+e.params.data.id;
             $(p_id).remove();
         });
+
+        $('#client_id').on('change', function(e) {
+            var client_id       = $(this).val();
+            get_sales_rep(client_id);
+        });
+
+        function get_sales_rep(client_id=""){
+
+            if(client_id != ""){
+                
+                $.ajax({
+                    url: "{{ route('admin.client.get_sales_rep') }}",
+                    type: "GET",
+                    data: {
+                        client_id: client_id
+                    },
+                    success: function(data) {
+                        $('#sales_rep').empty();
+                        var html    = '<option value=""> --Select-- </option>';
+                        $.each(data.sales_rep, function(index, sales_rep) {
+                            console.log(sales_rep);
+                            html +='<option value="' + sales_rep.id + '">' + sales_rep.first_name + ' ' +sales_rep.last_name+'</option>';
+                        })
+                        console.log(html);
+                        $('#sales_rep').html(html);
+                        // $('select#sales_rep').trigger('change');
+                    },
+                    beforeSend: function() {
+                    $('#preloader').show();
+                    },
+                    complete: function(){
+                    $('#preloader').hide();
+                    },
+                })
+
+            }else{
+
+                $('#dictrict').empty();
+                var html    = '<option value=""> --Select-- </option>';
+                $('#dictrict').html(html);
+            }
+
+        }
         $(document).on("change", "#brand", function(){
             var  brand = $("#brand").val();
             $.ajax({
