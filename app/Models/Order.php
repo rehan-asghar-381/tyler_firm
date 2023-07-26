@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Status;
 use App\Models\OrderImgs;
 use App\Models\Client;
-use App\Models\OrderTill;
+use App\Models\OrderOtherCharges;
 use App\Models\OrderPrice;
 use App\Models\OrderColorPerLocation;
+use App\Models\OrderTransfer;
 
 class Order extends Model
 {
@@ -92,9 +93,13 @@ class Order extends Model
         
         return $this->belongsTo(Client::class, "client_id", "id");
     }
-    public function OrderTill(){
+    public function OrderTransfer(){
         
-        return $this->hasOne(OrderTill::class, "order_id", "id");
+        return $this->hasOne(OrderTransfer::class, "order_id", "id");
+    }
+    public function OrderOtherCharges(){
+        
+        return $this->hasOne(OrderOtherCharges::class, "order_id", "id");
     }
 
 }

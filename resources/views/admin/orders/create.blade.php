@@ -379,7 +379,7 @@ hr{
                                             <div class="form-group row">
                                                 <label for="hang_tag1" class="col-sm-3 font-weight-600">Shipping</label>
                                                 <div class="col-sm-4">
-                                                    <select name="art_fee" id="art_fee" class="my-form-control">
+                                                    <select name="shipping_charges" id="shipping_charges" class="my-form-control">
                                                         <option value="">Select</option>
                                                         <option value="20">$20.00</option>
                                                         <option value="30">$30.00</option>

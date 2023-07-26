@@ -240,15 +240,9 @@ hr{
                                         </select>
                                     </div>
                                 </div>
+                                
                                 <div class="row Order-form btn-d-none">
                                     <div id="accordion" class="accordion">
-                                        @if(count($order->OrderProducts) > 0)
-                                            @foreach($order->OrderProducts as $product_detail)
-
-                                                @include('admin.orders.product', ['product_detail'=>$product_detail]))
-
-                                            @endforeach
-                                        @endif
                                     </div>
                                 </div>
 
@@ -258,7 +252,7 @@ hr{
                                     <div class="form-group row">
                                         <label for="art_fee" class="col-sm-2 font-weight-600">Projected Units</label>
                                         <div class="col-sm-3">
-                                            <input type="text" value="" readonly="" style="background-color: #ced4da" class="my-form-control" 
+                                            <input type="text" value="{{$order->projected_units}}" readonly="" style="background-color: #ced4da" class="my-form-control" 
                                             name="projected_units" id="ProjectedUnits" placeholder="">
                                         </div>
                                     </div>
@@ -275,11 +269,11 @@ hr{
                                             <div class="form-group row">
                                                 <label for="fold_bag_tag_pieces" class="col-sm-3 font-weight-600">FOLD/BAG/TAG</label>
                                                 <div class="col-sm-4">
-                                                    <input type="number" min="0" name="fold_bag_tag_pieces" value="" class="my-form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
+                                                    <input type="number" min="0" name="fold_bag_tag_pieces" value="{{$order->OrderOtherCharges->fold_bag_tag_pieces ?? 0}}" class="my-form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
         
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <input type="number" min="0" name="fold_bag_tag_prices" value="" class="my-form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
+                                                    <input type="number" min="0" name="fold_bag_tag_prices" value="{{$order->OrderOtherCharges->fold_bag_tag_prices ?? 0}}" class="my-form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
                                                 </div>
                                             </div>
                                         </div>
@@ -287,10 +281,10 @@ hr{
                                             <div class="form-group row">
                                                 <label for="hang_tag_pieces" class="col-sm-3 font-weight-600">Hang Tag</label>
                                                 <div class="col-sm-4">
-                                                    <input type="number" min="0" name="hang_tag_pieces" value="" class="my-form-control " id="hang_tag_pieces" placeholder="Pieces">
+                                                    <input type="number" min="0" name="hang_tag_pieces" value="{{$order->OrderOtherCharges->hang_tag_pieces ?? 0}}" class="my-form-control " id="hang_tag_pieces" placeholder="Pieces">
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <input type="number" min="0" name="hang_tag_prices" value="" class="my-form-control mr-2" id="hang_tag_prices" placeholder="Prices">
+                                                    <input type="number" min="0" name="hang_tag_prices" value="{{$order->OrderOtherCharges->hang_tag_prices ?? 0}}" class="my-form-control mr-2" id="hang_tag_prices" placeholder="Prices">
                                                 </div>
                                             </div>
                                         </div>
@@ -300,15 +294,15 @@ hr{
                                                 <div class="col-sm-4">
                                                     <select name="art_fee" id="art_fee" class="my-form-control">
                                                         <option value="">Select</option>
-                                                        <option value="0">$0.00</option>
-                                                        <option value="20">$20.00</option>
-                                                        <option value="30">$30.00</option>
-                                                        <option value="40">$40.00</option>
-                                                        <option value="50">$50.00</option>
-                                                        <option value="55">$55.00</option>
-                                                        <option value="60">$60.00</option>
-                                                        <option value="100">$100.00</option>
-                                                        <option value="120">$120.00</option>
+                                                        <option value="0" @if(isset($order->OrderOtherCharges->art_fee) && $order->OrderOtherCharges->art_fee == 0) {{"selected"}} @endif>$0.00</option>
+                                                        <option value="20" @if(isset($order->OrderOtherCharges->art_fee) && $order->OrderOtherCharges->art_fee == 20) {{"selected"}} @endif>$20.00</option>
+                                                        <option value="30" @if(isset($order->OrderOtherCharges->art_fee) && $order->OrderOtherCharges->art_fee == 30) {{"selected"}} @endif>$30.00</option>
+                                                        <option value="40" @if(isset($order->OrderOtherCharges->art_fee) && $order->OrderOtherCharges->art_fee == 40) {{"selected"}} @endif>$40.00</option>
+                                                        <option value="50" @if(isset($order->OrderOtherCharges->art_fee) && $order->OrderOtherCharges->art_fee == 50) {{"selected"}} @endif>$50.00</option>
+                                                        <option value="55" @if(isset($order->OrderOtherCharges->art_fee) && $order->OrderOtherCharges->art_fee == 55) {{"selected"}} @endif>$55.00</option>
+                                                        <option value="60" @if(isset($order->OrderOtherCharges->art_fee) && $order->OrderOtherCharges->art_fee == 60) {{"selected"}} @endif>$60.00</option>
+                                                        <option value="100" @if(isset($order->OrderOtherCharges->art_fee) && $order->OrderOtherCharges->art_fee == 100) {{"selected"}} @endif>$100.00</option>
+                                                        <option value="120" @if(isset($order->OrderOtherCharges->art_fee) && $order->OrderOtherCharges->art_fee == 120) {{"selected"}} @endif>$120.00</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -319,14 +313,14 @@ hr{
                                                 <div class="col-sm-4">
                                                     <select name="art_discount" id="art_discount" class="my-form-control">
                                                         <option value="">Select</option>
-                                                        <option value="0" >$0.00</option>
-                                                        <option value="20" >-$20.00</option>
-                                                        <option value="25" >-$25.00</option>
-                                                        <option value="30" >-$30.00</option>
-                                                        <option value="35" >-$35.00</option>
-                                                        <option value="40" >-$40.00</option>
-                                                        <option value="50" >-$50.00</option>
-                                                        <option value="60" >-$60.00</option>
+                                                        <option value="0"  @if(isset($order->OrderOtherCharges->art_discount) && $order->OrderOtherCharges->art_discount == 0) {{"selected"}} @endif>$0.00</option>
+                                                        <option value="20"  @if(isset($order->OrderOtherCharges->art_discount) && $order->OrderOtherCharges->art_discount == 20) {{"selected"}} @endif>-$20.00</option>
+                                                        <option value="25"  @if(isset($order->OrderOtherCharges->art_discount) && $order->OrderOtherCharges->art_discount == 25) {{"selected"}} @endif>-$25.00</option>
+                                                        <option value="30"  @if(isset($order->OrderOtherCharges->art_discount) && $order->OrderOtherCharges->art_discount == 30) {{"selected"}} @endif>-$30.00</option>
+                                                        <option value="35"  @if(isset($order->OrderOtherCharges->art_discount) && $order->OrderOtherCharges->art_discount == 35) {{"selected"}} @endif>-$35.00</option>
+                                                        <option value="40"  @if(isset($order->OrderOtherCharges->art_discount) && $order->OrderOtherCharges->art_discount == 40) {{"selected"}} @endif>-$40.00</option>
+                                                        <option value="50"  @if(isset($order->OrderOtherCharges->art_discount) && $order->OrderOtherCharges->art_discount == 50) {{"selected"}} @endif>-$50.00</option>
+                                                        <option value="60"  @if(isset($order->OrderOtherCharges->art_discount) && $order->OrderOtherCharges->art_discount == 60) {{"selected"}} @endif>-$60.00</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -337,10 +331,10 @@ hr{
                                                 <div class="col-sm-4">
                                                     <select name="art_time" id="art_time" class="my-form-control">
                                                         <option value="">Select</option>
-                                                        <option value="1">1 Hour</option>
-                                                        <option value="2">2 Hour</option>
-                                                        <option value="3">3 Hour</option>
-                                                        <option value="4">4 Hour</option>
+                                                        <option value="1" @if(isset($order->OrderOtherCharges->art_time) && $order->OrderOtherCharges->art_time == 1) {{"selected"}} @endif>1 Hour</option>
+                                                        <option value="2" @if(isset($order->OrderOtherCharges->art_time) && $order->OrderOtherCharges->art_time == 2) {{"selected"}} @endif>2 Hour</option>
+                                                        <option value="3" @if(isset($order->OrderOtherCharges->art_time) && $order->OrderOtherCharges->art_time == 3) {{"selected"}} @endif>3 Hour</option>
+                                                        <option value="4" @if(isset($order->OrderOtherCharges->art_time) && $order->OrderOtherCharges->art_time == 4) {{"selected"}} @endif>4 Hour</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -351,8 +345,8 @@ hr{
                                                 <div class="col-sm-4">
                                                     <select name="tax" id="tax" class="my-form-control">
                                                         <option value="">Select</option>
-                                                        <option value="0" >0</option>
-                                                        <option value="8.375" >8.375%</option>
+                                                        <option value="0" @if(isset($order->OrderOtherCharges->tax) && $order->OrderOtherCharges->tax == 0) {{"selected"}} @endif>0</option>
+                                                        <option value="8.375" @if(isset($order->OrderOtherCharges->tax) && $order->OrderOtherCharges->tax == 8.375) {{"selected"}} @endif>8.375%</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -363,10 +357,10 @@ hr{
                                             <div class="form-group row">
                                                 <label for="transfers_pieces" class="col-sm-3 font-weight-600">Transfers</label>
                                                 <div class="col-sm-4">
-                                                    <input type="number" min="0" name="transfers_pieces" value="" class="my-form-control " id="transfers_pieces" placeholder="Pieces">
+                                                    <input type="number" min="0" name="transfers_pieces" value="{{$order->OrderTransfer->transfers_pieces ?? 0}}" class="my-form-control " id="transfers_pieces" placeholder="Pieces">
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <input type="number" min="0" name="transfers_prices" value="" class="my-form-control mr-2" id="transfers_prices" placeholder="Prices">
+                                                    <input type="number" min="0" name="transfers_prices" value="{{$order->OrderTransfer->transfers_prices ?? 0}}" class="my-form-control mr-2" id="transfers_prices" placeholder="Prices">
                                                 </div>
                                             </div>
                                         </div>
@@ -374,23 +368,23 @@ hr{
                                             <div class="form-group row">
                                                 <label for="ink_color_change_pieces" class="col-sm-3 font-weight-600">Ink Color Change</label>
                                                 <div class="col-sm-4">
-                                                    <input type="number" min="0" name="ink_color_change_pieces" value="" class="my-form-control " id="ink_color_change_pieces" placeholder="Pieces">
+                                                    <input type="number" min="0" name="ink_color_change_pieces" value="{{$order->OrderTransfer->ink_color_change_pieces ?? 0}}" class="my-form-control " id="ink_color_change_pieces" placeholder="Pieces">
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <input type="number" min="0" name="art_discount_prices" value="" class="my-form-control mr-2" id="art_discount_prices" placeholder="Prices">
+                                                    <input type="number" min="0" name="art_discount_prices" value="{{$order->OrderTransfer->art_discount_prices ?? 0}}" class="my-form-control mr-2" id="art_discount_prices" placeholder="Prices">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group row">
-                                                <label for="hang_tag1" class="col-sm-3 font-weight-600">Shipping</label>
+                                                <label for="hang_tag1" class="col-sm-3 font-weight-600">Shipping charges</label>
                                                 <div class="col-sm-4">
-                                                    <select name="art_fee" id="art_fee" class="my-form-control">
+                                                    <select name="shipping_charges" id="shipping_charges" class="my-form-control">
                                                         <option value="">Select</option>
-                                                        <option value="20">$20.00</option>
-                                                        <option value="30">$30.00</option>
-                                                        <option value="40">$40.00</option>
-                                                        <option value="50">$50.00</option>
+                                                        <option value="20" @if(isset($order->OrderTransfer->shipping_charges) && $order->OrderTransfer->shipping_charges == 20) {{"selected"}} @endif>$20.00</option>
+                                                        <option value="30" @if(isset($order->OrderTransfer->shipping_charges) && $order->OrderTransfer->shipping_charges == 30) {{"selected"}} @endif>$30.00</option>
+                                                        <option value="40" @if(isset($order->OrderTransfer->shipping_charges) && $order->OrderTransfer->shipping_charges == 40) {{"selected"}} @endif>$40.00</option>
+                                                        <option value="50" @if(isset($order->OrderTransfer->shipping_charges) && $order->OrderTransfer->shipping_charges == 50) {{"selected"}} @endif>$50.00</option>
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-3">
@@ -407,6 +401,7 @@ hr{
                         </div>
                     </form>
                     <template>{{json_encode($fixed_sizes)}}</template>
+                    <template id="order_product_ids">{{json_encode($order_product_ids_arr)}}</template>
                     <template id="all_adult_sizes">{{json_encode($all_adult_sizes)}}</template>
                     <template id="fixed_baby_sizes">{{json_encode($fixed_baby_sizes)}}</template>
                     <template id="all_baby_sizes">{{json_encode($all_baby_sizes)}}</template>
@@ -418,13 +413,22 @@ hr{
     @section('footer-script')
     <script>
     $(document).ready(function(){
+        var _order_id       = '{{$order->id}}';
         $('#product_ids').on('select2:unselect', function (e) {
             var p_id        = ".product-detail-"+e.params.data.id;
             $(p_id).remove();
         });
+        
+        let order_product_ids       = JSON.parse($("#order_product_ids").html());
+        console.log("order_product_ids", order_product_ids);
+        $.each(order_product_ids, function(index, product_id){
+            console.log("product_id:", product_id);
+            accordian_products(product_id, _order_id);
+            accordian2_products(product_id, _order_id);
+        });
+    
         var _client_id      = '{{$order->client_id}}';
         var _sale_rep       = '{{$order->sales_rep}}';
-
         get_sales_rep(_client_id, _sale_rep);
         $('#client_id').on('change', function(e) {
             var client_id       = $(this).val();
@@ -451,7 +455,6 @@ hr{
                             }
                             html +='<option value="' + sales_rep.id + '" '+selected+'>' + sales_rep.first_name + ' ' +sales_rep.last_name+'</option>';
                         })
-                        console.log(html);
                         $('#sales_rep').html(html);
                         // $('select#sales_rep').trigger('change');
                     },
@@ -486,14 +489,14 @@ hr{
             });
 
         });
-        $("#product_ids").on("select2:select", function (e){
-            var product_id      = e.params.data.id;
+        function accordian_products(product_id="", order_id){
             if(product_id != ""){
                 $.ajax({
                     url: "{{ route('admin.order.product') }}",
                     type: "GET",
                     data: {
-                        product_id      : product_id
+                        product_id      : product_id,
+                        order_id        : order_id
                     },
                     success: function(data) {
                         $('.accordion').append(data);   
@@ -507,15 +510,21 @@ hr{
                     }
                 });
             } 
-        });
+        }
         $("#product_ids").on("select2:select", function (e){
             var product_id      = e.params.data.id;
+            accordian_products(product_id="");
+            
+        });
+        function accordian2_products(product_id="", order_id=""){
+
             if(product_id != ""){
                 $.ajax({
                     url: "{{ route('admin.order.print_nd_loations') }}",
                     type: "GET",
                     data: {
-                        product_id      : product_id
+                        product_id      : product_id,
+                        order_id        : order_id
                     },
                     success: function(data) {
                         $('#accordion2').append(data);   
@@ -529,6 +538,10 @@ hr{
                     }
                 });
             } 
+        }
+        $("#product_ids").on("select2:select", function (e){
+            var product_id      = e.params.data.id;
+            accordian2_products(product_id);
         });
         var init                     = 1;
         $(document).on('click', '.add_product', function(event) {
