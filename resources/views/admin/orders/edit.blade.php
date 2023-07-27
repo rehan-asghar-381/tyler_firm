@@ -149,7 +149,7 @@ hr{
                         {{ Session::get('success') }}
                     </div>
                     @endif
-                    <form  method="POST"  action="{{ route('admin.order.store') }}" enctype="multipart/form-data" novalidate>
+                    <form  method="POST"  action="{{ route('admin.orders.update', $order->id) }}" enctype="multipart/form-data" novalidate>
                         @csrf
 
                         <div class="row mb-4">
@@ -566,15 +566,14 @@ hr{
         });
         $(document).on('click', '#remove_product', function(e) {
             e.preventDefault();
-            var  product_id = $(this).data('product_id');
-            var  remove_product = $(this).data('remove_product');
-            if(product_id != remove_product){
-                $(this).parent().parent().remove();
-                var id  = $(this).attr('data-remove_product');
-
-                $(".clone-product-"+id).remove();
-                init--; //Decrement field counter
+            var  product_id     = $(this).data('product_id');
+            let initializer     = $('#product-detail-'+product_id).find('.add_product').length;
+            console.log(initializer);
+            if(initializer>1){
+                $(this).closest('.row').remove();
             }
+            
+            
         });
         
     });

@@ -106,6 +106,7 @@ class OrderController extends Controller
     } 
 
     public function previousOrder(Request $request,$id){
+    
         $pageTitle          = "Client  Previous Order";
         $statuses           = Status::where('id', 5)->get(['id', 'name']);
         
@@ -211,6 +212,9 @@ class OrderController extends Controller
             if(auth()->user()->can('orders-edit')){
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.edit', $data->id).'"><i class="far fa-edit"></i> Edit</a>';
             }
+         
+            $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.recreate', $data->id).'"><i class="fas fa-arrows-h"></i> Re-Order</a>';
+
             if(auth()->user()->can('orders-generate-invoice')){
                 $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice') .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
             }
@@ -492,7 +496,7 @@ class OrderController extends Controller
         }
         $this->order_transfer($rData, $orderID);
 
-        return redirect()->route("admin.order.index")->withSuccess('Order data has been updated successfully!');
+        return redirect()->route("admin.order.edit", $orderID)->withSuccess('Order data has been updated successfully!');
     }
 
     public function orderView(Request $request, $id)
@@ -787,5 +791,129 @@ class OrderController extends Controller
     {
          $pageTitle                              = "Invoice";
         return view('admin.orders.generate-invoice',compact('pageTitle'));
+    }
+
+    public function recreate(Request $request, $id){
+        $order                  = Order::with([
+            'OrderPrice', 
+            'OrderColorPerLocation', 
+            'OrderProducts', 
+            'Orderstatus',
+            'OrderProductVariant',
+            'OrderTransfer',
+            'OrderOtherCharges',
+        ])->find($id);
+
+        $user_id                        = Auth::user()->id;
+        $user_name                      = Auth::user()->name;     
+        $new_order                      = new Order();
+        $new_order->time_id             = date('U');
+        $new_order->client_id           = $order->client_id;
+        $new_order->sales_rep           = $order->sales_rep;
+        $new_order->due_date            = $order->due_date;
+        $new_order->event               = $order->event;
+        $new_order->shipping_address    = $order->shipping_address;
+        $new_order->job_name            = $order->job_name;
+        $new_order->order_number        = $order->order_number;
+        $new_order->projected_units     = $order->projected_units;
+        $new_order->updated_by_id       = $user_id;
+        $new_order->updated_by_name     = $user_name;
+        $new_order->save();
+        $order_id                       = $new_order->id;
+        $order_price_arr                = [];
+        $order_product_variant_arr      =[];
+        $order_color_perlocation_arr    = [];
+        $order_products_arr             = [];
+        foreach($order->OrderPrice as $_OrderPrice)
+        {   
+            $or_price                   = new OrderPrice();
+            $or_price->product_id        = $_OrderPrice->product_id;
+            $or_price->product_size      = $_OrderPrice->product_size;
+            $or_price->wholesale_price   = $_OrderPrice->wholesale_price;
+            $or_price->print_price       = $_OrderPrice->print_price ;
+            $or_price->total_price       = $_OrderPrice->total_price ;
+            $or_price->profit_margin     = $_OrderPrice->profit_margin;
+            $or_price->profit_margin_percentage     = $_OrderPrice->profit_margin_percentage;
+            $or_price->final_price       = $_OrderPrice->final_price;
+            $order_price_arr[]      = $or_price;
+           
+            
+        }
+        $new_order->OrderPrice()->saveMany($order_price_arr);
+
+        foreach($order->OrderColorPerLocation as $_OrderColorPerLocation)
+        {
+            $order_color_perlocation                        = new OrderColorPerLocation();
+            $order_color_perlocation->product_id            = $_OrderColorPerLocation->product_id;
+            $order_color_perlocation->color_per_location    = $_OrderColorPerLocation->color_per_location;
+            $order_color_perlocation->location_number       = $_OrderColorPerLocation->location_number;
+            $order_color_perlocation_arr[]                  = $order_color_perlocation;
+            
+           
+        }
+        $new_order->OrderColorPerLocation()->saveMany($order_color_perlocation_arr);
+
+        foreach($order->OrderProductVariant as $_OrderProductVariant)
+        {
+            $order_product_var                      = new OrderProductVariant();
+                $order_product_var->product_id          = $_OrderProductVariant->product_id;
+                $order_product_var->variant1_id         = $_OrderProductVariant->variant1_id;
+                $order_product_var->variant1_name       = $_OrderProductVariant->variant1_name ;
+                $order_product_var->variant2_id         = $_OrderProductVariant->variant2_id;
+                $order_product_var->variant2_name       = $_OrderProductVariant->variant2_name;
+                $order_product_var->attribute1_id       = $_OrderProductVariant->attr_id;
+                $order_product_var->attribute1_name     = $_OrderProductVariant->attribute1_name;
+                $order_product_var->attribute2_id       = $_OrderProductVariant->attribute2_id;
+                $order_product_var->attribute2_name     = $_OrderProductVariant->attribute2_name ;
+                $order_product_var->pieces              = $_OrderProductVariant->pieces;
+                $order_product_var->price               = $_OrderProductVariant->price;
+                $order_product_var->total               = $_OrderProductVariant->total;
+                $order_product_variant_arr[]            = $order_product_var;
+            
+           
+        }
+        $new_order->OrderProductVariant()->saveMany($order_product_variant_arr);
+
+        foreach($order->OrderProducts as $_OrderProducts)
+        {
+            $order_products               = new OrderProduct();
+            $order_products->product_id        = $_OrderProducts->product_id;
+            $order_products->product_name        = $_OrderProducts->product_name;
+            $order_products_arr[]  = $order_products;
+        }
+        $new_order->OrderProducts()->saveMany($order_products_arr);
+
+       
+        $new_order->OrderProducts()->saveMany($order_products_arr);
+
+        $or_other                                   = $order->OrderOtherCharges;
+        $order_other_charges                        = new OrderOtherCharges();
+        $order_other_charges->order_id              = $order_id;
+        $order_other_charges->fold_bag_tag_pieces   = $or_other->fold_bag_tag_pieces;
+        $order_other_charges->fold_bag_tag_prices   = $or_other->fold_bag_tag_prices;
+        $order_other_charges->hang_tag_pieces       = $or_other->hang_tag_pieces;
+        $order_other_charges->hang_tag_prices       = $or_other->hang_tag_prices;
+        $order_other_charges->art_fee               = $or_other->art_fee;
+        $order_other_charges->art_discount          = $or_other->art_discount;
+        $order_other_charges->art_time              = $or_other->art_time;
+        $order_other_charges->tax                   = $or_other->tax;
+        $order_other_charges->save();
+
+        $or_transfer                                   = $order->OrderTransfer; 
+
+
+        $order_transfer                             = new OrderTransfer();
+        $order_transfer->order_id                   = $order_id;
+        $order_transfer->transfers_pieces           = $or_transfer->transfers_pieces;
+        $order_transfer->transfers_prices           = $or_transfer->transfers_prices;
+        $order_transfer->ink_color_change_pieces    = $or_transfer->ink_color_change_pieces;
+        $order_transfer->art_fee                    = $or_transfer->art_fee;
+        $order_transfer->art_discount_prices        = $or_transfer->art_discount_prices;
+        $order_transfer->shipping_charges           = $or_transfer->shipping_charges;
+        $order_transfer->save();
+      
+
+        return redirect()->route("admin.orders.index")->withSuccess('Order has been replicated successfully!');
+        
     }
 }

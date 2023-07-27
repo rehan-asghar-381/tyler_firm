@@ -160,7 +160,7 @@ class ClientController extends Controller
         $client->save();
         $clientID                                  = $client->id;
         
-        if (count($request->customer_doc) > 0) {
+        if (isset($request->customer_doc) && count($request->customer_doc) > 0) {
             // dd($request->customer_doc);
             $this->save_client_docs($request->file('customer_doc'), $clientID);
         }

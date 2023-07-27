@@ -104,11 +104,10 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::post('/orders/update/{order_id}', [OrderController::class, 'update'])->name('orders.update');
     Route::get('/orders/product', [OrderController::class, 'product_form'])->name('order.product');
     Route::get('/orders/print_nd_loations', [OrderController::class, 'print_nd_loations'])->name('order.print_nd_loations');
-
     Route::get('/orders/view/{order_id}', [OrderController::class, 'orderView'])->name('order.view');
-    
-     Route::get('/orders/status_update', [OrderController::class, 'status_update'])->name('order.status_update');
-     Route::get('/orders/generate_invoice', [OrderController::class, 'generateInvoice'])->name('order.generateInvoice');
+    Route::get('/orders/status_update', [OrderController::class, 'status_update'])->name('order.status_update');
+    Route::get('/orders/generate_invoice', [OrderController::class, 'generateInvoice'])->name('order.generateInvoice');
+    Route::get('/orders/recreate/{order_id}', [OrderController::class, 'recreate'])->name('order.recreate');
 
 
     Route::get('/get_decoration_price', [OrderController::class, 'get_decoration_price'])->name('get_decoration_price');
