@@ -501,22 +501,37 @@ class OrderController extends Controller
 
     public function orderView(Request $request, $id)
     {
-
-        $order_detail               = Order::with([
-            // 'OrderSupply', 
-            // 'OrderImgs', 
-            // 'AdditionalFields', 
-            'Orderstatus',
-            // 'OrderJobs',
-            // 'OrderType',
-            'client',
-            // 'OrderSupply.SupplyInventoryItem',
-            // 'OrderTill'
-        ])->find($id);
-        $inventory_items            = [];
-        $payments_types             = [];
         $pageTitle                  = "Order Detail ";
-        return view('admin.orders.order-detail', compact('pageTitle', 'order_detail', 'inventory_items', 'payments_types'));
+
+        $order                      = Order::with([
+            'OrderPrice.OrderColorPerLocation', 
+            'OrderColorPerLocation', 
+            'OrderProducts.OrderProductVariant', 
+            'Orderstatus',
+            'OrderTransfer',
+            'OrderOtherCharges'
+        ])->find($id);
+
+
+
+        $order_product_ids_arr      = [];
+        $clients                    = Client::get();
+        $products                   = Product::get();
+        $fixed_sizes                = $this->fixedAdultSize;
+        $all_adult_sizes            = $this->allAdultSizes;
+        $fixed_baby_sizes           = $this->fixedBabySize;
+        $all_baby_sizes             = $this->allBabySizes;
+        if(count($order->OrderProducts) > 0){
+
+            foreach($order->OrderProducts as $orderProduct){
+
+                $order_product_ids_arr[]    = $orderProduct->product_id;
+            }
+        }
+       
+        return view('admin.orders.order-detail',compact('pageTitle', 'order', 'clients', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr'));
+
+        
 
     }
 
@@ -754,6 +769,43 @@ class OrderController extends Controller
             }
         }
         return view('admin.orders.print-locations', compact('product_detail', 'type', 'order_price', 'order_color_location'));
+    }
+    public function print_nd_loations_view(Request $request){
+       
+        $type                       = "";  
+        $order_price                = []; 
+        $order_color_location      = []; 
+        $product_id         = $request->product_id;
+        $order_id           = (isset($request->order_id) && $request->order_id != "")?$request->order_id:0;
+        $product_detail     = Product::with('ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
+
+
+        if($order_id > 0){
+            $order_prices    = OrderPrice::where(["order_id"=>$order_id, "product_id"=>$product_id])->get();
+            
+            foreach($order_prices as $key=>$price){
+                $order_price['whole_sale'][]        = $price->wholesale_price;
+                $order_price['print_price'][]       = $price->print_price;
+                $order_price['total_price'][]       = $price->total_price;
+                $order_price['profit_margin'][]     = $price->profit_margin;
+                $order_price['final_price'][]       = $price->final_price;
+                $order_price['profit_margin_percentage'][]       = $price->profit_margin_percentage;
+            }
+            $order_color_locations    = OrderColorPerLocation::where(["order_id"=>$order_id, "product_id"=>$product_id])->get();
+
+            foreach($order_color_locations as $key=>$location){
+                $order_color_location[]        = $location->color_per_location;
+            }
+        }
+        foreach($product_detail->ProductVariant as $productVariant){
+            
+            if($productVariant->name == "Baby Size"){
+                $type       = "Baby Size";
+                break;
+            }
+        }
+        $pageTitle = '';
+        return view('admin.orders.print-locations_view', compact('product_detail', 'pageTitle','type', 'order_price', 'order_color_location'));
     }
 
     public function get_decoration_price(Request $request)

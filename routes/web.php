@@ -101,6 +101,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/orders/create', [OrderController::class, 'create'])->name('order.create');
     Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
     Route::get('/orders/edit/{order_id}', [OrderController::class, 'edit'])->name('order.edit');
+     Route::get('/orders/print_nd_loations/view', [OrderController::class, 'print_nd_loations_view'])->name('order.print_nd_loations_view');
     Route::post('/orders/update/{order_id}', [OrderController::class, 'update'])->name('orders.update');
     Route::get('/orders/product', [OrderController::class, 'product_form'])->name('order.product');
     Route::get('/orders/print_nd_loations', [OrderController::class, 'print_nd_loations'])->name('order.print_nd_loations');

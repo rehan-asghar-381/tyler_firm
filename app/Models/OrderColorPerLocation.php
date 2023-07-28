@@ -21,4 +21,9 @@ class OrderColorPerLocation extends Model
     public function Orders(){
         return $this->belongsTo(Order::class, "order_id", "id");
     }
+    public function OrderPrice(){
+        return $this->belongsTo(OrderPrice::class, "product_id", "product_id");
+    }
+
+    
 }
