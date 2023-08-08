@@ -1,16 +1,14 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\OrderSupply;
 
-class OrderProductVariant extends Model
+class PrintLocation extends Model
 {
     use HasFactory;
 
-    protected $table            = 'order_product_variants';
+    protected $table            = 'print_locations';
     protected $primary_key      = 'id';
     /**
      * The attributes that are mass assignable.
@@ -18,14 +16,10 @@ class OrderProductVariant extends Model
      * @var array
      */
     protected $fillable = [
-        "order_id",
-        "product_id",
-        "variant_id",
-        "variant_name",
-        "attribute_id",
-        "attribute_name",
-        "created_at",
-        "updated_at",
+        'name',
+        'abbr',
+        'is_active'
     ];
+
 
 }

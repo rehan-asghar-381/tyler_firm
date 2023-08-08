@@ -151,7 +151,27 @@ hr{
                     @endif
                     <form  method="POST"  action="{{ route('admin.orders.update', $order->id) }}" enctype="multipart/form-data" novalidate>
                         @csrf
-
+                        <div class="row">
+                            <div class="upload__box">
+                              <div class="upload__btn-box">
+                                <label class="upload__btn">
+                                  <p>Upload images</p>
+                                  <input type="file" name="filePhoto[]" multiple="" data-max_length="20" class="upload__inputfile">
+                                </label>
+                              </div>
+                              <div class="upload__img-wrap">
+                                @if(count($order->OrderImgs) > 0)
+                                @foreach($order->OrderImgs as $key=>$OrderImg)
+                                <div class='upload__img-box'>
+                                  <div style='background-image: url("{{asset($OrderImg->image)}}")' data-number='{{ $key }}' data-file='" + f.name + "' class='img-bg'>
+                                    <div class='upload__img-close' data-order-id='{{ $order->id }}' data-img-id='{{ $OrderImg->id }}'></div>
+                                  </div>
+                                </div>
+                                @endforeach
+                                @endif
+                              </div>
+                            </div>
+                        </div>
                         <div class="row mb-4">
                             <div class="col-md-3">
                                 <label>Client</label>
@@ -196,6 +216,19 @@ hr{
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
+                                    <label>Ship Date: </label>&nbsp;&nbsp;&nbsp;
+                                    <div class="input-group date">
+                                        <input type="text" name="ship_date" class="form-control bg-light flatpickr" value="{{date("Y-m-d h:i",$order->ship_date)}}" required="" id="ship_date">
+                                        <div class="input-group-addon input-group-append">
+                                            <div class="input-group-text">
+                                                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
                                     <label>Event</label>
 
                                     <select name="event" id="event" class="form-control"  >
@@ -209,9 +242,14 @@ hr{
                             <div class="col-md-3">
                                 <div class="form-group">
                                 <label>Shipping Address</label>
-                                <textarea type="text" value="" class="form-control" name="shipping_address" id="shipping_address" placeholder="" rows="3" >{{$order->shipping_address}}</textarea>
+                                <textarea type="text" value="" class="form-control" name="shipping_address" id="shipping_address" placeholder="" rows="2" >{{$order->shipping_address}}</textarea>
                                 </div>
-                                
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Notes</label>
+                                    <textarea type="text" value="" class="form-control" name="notes" id="notes" placeholder="" rows="2" >{{$order->notes}}</textarea>
+                                </div>
                             </div>
                         </div>
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -219,7 +257,7 @@ hr{
                                 <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Garments</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Print Location & Colors + Contract & Shirt + Print Price</a>
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Print Details</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="OTHERCHARGES-tab" data-toggle="pill" href="#OTHERCHARGES" role="tab" aria-controls="OTHERCHARGES" aria-selected="false">Other Charges</a>
@@ -371,7 +409,7 @@ hr{
                                                     <input type="number" min="0" name="ink_color_change_pieces" value="{{$order->OrderTransfer->ink_color_change_pieces ?? 0}}" class="my-form-control " id="ink_color_change_pieces" placeholder="Pieces">
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <input type="number" min="0" name="art_discount_prices" value="{{$order->OrderTransfer->art_discount_prices ?? 0}}" class="my-form-control mr-2" id="art_discount_prices" placeholder="Prices">
+                                                    <input type="number" min="0" name="ink_color_change_prices" value="{{$order->OrderTransfer->ink_color_change_prices ?? 0}}" class="my-form-control mr-2" id="ink_color_change_prices" placeholder="Prices">
                                                 </div>
                                             </div>
                                         </div>
@@ -511,11 +549,6 @@ hr{
                 });
             } 
         }
-        $("#product_ids").on("select2:select", function (e){
-            var product_id      = e.params.data.id;
-            accordian_products(product_id="");
-            
-        });
         function accordian2_products(product_id="", order_id=""){
 
             if(product_id != ""){
@@ -541,6 +574,7 @@ hr{
         }
         $("#product_ids").on("select2:select", function (e){
             var product_id      = e.params.data.id;
+            accordian_products(product_id);
             accordian2_products(product_id);
         });
         var init                     = 1;
@@ -830,5 +864,83 @@ hr{
         });
 
     });
+    function ImgUpload() {
+          var imgWrap = "";
+          var imgArray = [];
+
+          $('.upload__inputfile').each(function () {
+            $(this).on('change', function (e) {
+              imgWrap = $(this).closest('.upload__box').find('.upload__img-wrap');
+              var maxLength = $(this).attr('data-max_length');
+
+              var files = e.target.files;
+              var filesArr = Array.prototype.slice.call(files);
+              var iterator = 0;
+              filesArr.forEach(function (f, index) {
+
+                if (!f.type.match('image.*')) {
+                  return;
+                }
+
+                if (imgArray.length > maxLength) {
+                  return false
+                } else {
+                  var len = 0;
+                  for (var i = 0; i < imgArray.length; i++) {
+                    if (imgArray[i] !== undefined) {
+                      len++;
+                    }
+                  }
+                  if (len > maxLength) {
+                    return false;
+                  } else {
+                    imgArray.push(f);
+
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                      var html = "<div class='upload__img-box'><div style='background-image: url(" + e.target.result + ")' data-number='" + $(".upload__img-close").length + "' data-file='" + f.name + "' class='img-bg'><div class='upload__img-close' data-order-id='' data-img-id=''></div></div></div>";
+                      imgWrap.append(html);
+                      iterator++;
+                    }
+                    reader.readAsDataURL(f);
+                  }
+                }
+              });
+            });
+          });
+
+          $(document).on('click', ".upload__img-close", function (e) {
+            var file = $(this).parent().data("file");
+            for (var i = 0; i < imgArray.length; i++) {
+              if (imgArray[i].name === file) {
+                imgArray.splice(i, 1);
+                break;
+              }
+            }
+            $(this).parent().parent().remove();
+
+            var order_id        = $(this).attr('data-order-id');
+            var img_id          = $(this).attr('data-img-id');
+            
+            if(order_id != "" && img_id != ""){
+
+              if(confirm("Are you sure?")){
+                $.ajax({
+                    url: "{{ route('admin.order.delete-image') }}",
+                    type: "GET",
+                    data: {
+                        order_id: order_id,
+                        img_id: img_id
+                    },
+                    success: function(data) {
+                        console.log(data);
+                    }
+                })
+              }
+              
+            }
+          });
+        }  
+        ImgUpload();  
 </script>
 @endsection

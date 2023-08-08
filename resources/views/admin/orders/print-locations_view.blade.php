@@ -166,7 +166,7 @@
          <table class="table">
                <thead class="thead-light">
                 <th>&nbsp;</th>
-                <th></th>
+                <th>Color Per Location</th>
             </thead>
             <tbody>
                 <tr><td>&nbsp; </td></tr>
@@ -177,7 +177,7 @@
             <tbody>
                 @foreach ($order_color_location as $k=>$item)
                 <tr>
-                    <th>#{{$k+1}}</th>
+                    <th>{{$order_color_location_number[$k]}}</th>
                     <td>{{$item}}</td>
                 </tr>
                 @endforeach

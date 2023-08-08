@@ -12,6 +12,7 @@ use App\Models\Job;
 use App\Models\Client;
 use App\Models\OrderTill;
 use App\Models\ProductVariant;
+use App\Models\Product;
 
 class OrderProduct extends Model
 {
@@ -81,5 +82,10 @@ class OrderProduct extends Model
     public function OrderProductVariant(){
 
         return $this->hasMany(OrderProductVariant::class, 'product_id','product_id');
+    }
+
+    public function Product(){
+        
+        return $this->belongsTo(Product::class, "product_id", "id");
     }
 }

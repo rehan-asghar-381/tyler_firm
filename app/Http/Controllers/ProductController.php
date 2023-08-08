@@ -206,7 +206,7 @@ class ProductController extends Controller
         $product->name              = $rData['name'];
         $product->code              = $rData['code'];
         $product->description       = $rData['description'];
-        // $product->inclusive_price   = $rData['inclusive_price'];
+        $product->size_for          = $rData['size_for'];
         $product->brand_id          = $rData['brand_id'];
         $product->created_by_id                     = $user_id;
         $product->created_by_name                   = $user_name;
@@ -301,7 +301,8 @@ public function save_product_imgs($files_arr=[], $product_id){
         $brands         = Brand::get();
         $pageTitle      = "Product";
         $product        = Product::with('ProductImg')->find($id);
-        return view('admin.products.edit',compact('pageTitle', 'product','brands'));
+        $product_size_type          = ProductSizeType::select('type')->groupby('type')->get();
+        return view('admin.products.edit',compact('pageTitle', 'product','brands', 'product_size_type'));
     }
     
     /**
@@ -331,7 +332,7 @@ public function save_product_imgs($files_arr=[], $product_id){
         $product->name              = $rData['name'];
         $product->code              = $rData['code'];
         $product->description       = $rData['description'];
-        // $product->inclusive_price   = $rData['inclusive_price'];
+        $product->size_for          = $rData['size_for'];
         $product->brand_id          = $rData['brand_id'];
         $product->updated_by_id     = $user_id;
         $product->updated_by_name   = $user_name;

@@ -1,8 +1,5 @@
 @extends("admin.template", ["pageTitle"=>$pageTitle])
 @section('content')
-@php
-$measurement_text       = ($order->measurement == 'cms')? 'cms': 'Inches'; 
-@endphp
 <div class="body-content">
     <div class="row">
         <div class="col-sm-12 col-xl-8">
@@ -15,6 +12,22 @@ $measurement_text       = ($order->measurement == 'cms')? 'cms': 'Inches';
          </div>
      </div>
  </div>
+ <div class="row">
+    <div class="col-sm-12 col-xl-8">
+        <div class="media d-flex m-1 ">
+            @if(count($order->OrderImgs) > 0)
+                @foreach($order->OrderImgs as $key=>$OrderImg)
+                    <div class="align-left p-1">
+                        <div class="zoom-box">
+                            <img src="{{asset($OrderImg->image)}}" style="object-fit: cover;" width="200" height="150" data-zoom-image="{{asset($OrderImg->image)}}" class="img-zoom-m"/>
+                            
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
+</div>
  <div class="row">
     <div class="col-lg-3">
         <div class="card mb-4">
@@ -110,10 +123,28 @@ $measurement_text       = ($order->measurement == 'cms')? 'cms': 'Inches';
                 <hr>
                 <div class="row align-items-center">
                     <div class="col">
+                        <h6 class="mb-0 font-weight-600">Ship Date</h6>
+                    </div>
+                    <div class="col-auto">
+                        <a href="#!" class="fs-13 font-weight-600">{{ date('Y-m-d h:i',$order->ship_date) ?? "-" }}</a>
+                    </div>
+                </div>
+                <hr>
+                <div class="row align-items-center">
+                    <div class="col">
                         <h6 class="mb-0 font-weight-600">Created Date</h6>
                     </div>
                     <div class="col-auto">
                         <a href="#!" class="fs-13 font-weight-600">{{ date('Y-m-d h:i',$order->time_id) ?? "-" }}</a>
+                    </div>
+                </div>
+                <hr>
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h6 class="mb-0 font-weight-600">Notes</h6>
+                    </div>
+                    <div class="col-auto">
+                        <a href="#!" class="fs-13 font-weight-600">{{ $order->notes ?? "-" }}</a>
                     </div>
                 </div>
             </div>
@@ -231,7 +262,7 @@ $measurement_text       = ($order->measurement == 'cms')? 'cms': 'Inches';
                         <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->transfers_pieces : ''}}</td>
                         <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->transfers_prices : ''}}</td>
                         <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->ink_color_change_pieces : ''}}</td>
-                        <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->art_discount_prices : ''}}</td>
+                        <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->ink_color_change_prices : ''}}</td>
                     </tr>
                     <tr>
                         <th>Shipping Charges</th>

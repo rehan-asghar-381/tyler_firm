@@ -128,16 +128,25 @@
                 <div class="row">
                   <div class="col-md-3 mb-3">
                     <label class="form-label text-dark-gray" for="">SKU</label>
-                    <input type="text" name="code" class="form-control font-12 form-control-lg require" value="{{ $product->code }}">
+                    <input type="text" name="code" class="form-control font-12 form-control-lg" value="{{ $product->code }}">
                     {!! $errors->default->first('code', '<p class="text-danger">:message</p>') !!}
                   </div>
                   <div class="col-md-3 mb-3">
+                    <label class="form-label text-dark-gray" for="">Size for</label>
+                    <select name="size_for" id="size_for" class="form-control require select-one >
+                      <option value="">--select--</option>
+                      @foreach ($product_size_type as $type)
+                          <option value="{{ $type->type }}" @if($product->size_for == $type->type) {{"selected"}} @endif>{{ ucfirst(str_replace("_", " ",$type->type))}}</option>
+                      @endforeach
+                  </select>
+                </div>
+                  <div class="col-md-3 mb-3">
                       <label class="form-label text-dark-gray" for="">Price</label>
-                      <input type="number" name="inclusive_price" class="form-control font-12 form-control-lg require cost" value="{{ $product->inclusive_price }}" step="any">
+                      <input type="number" name="inclusive_price" class="form-control font-12 form-control-lg cost" value="{{ $product->inclusive_price }}" step="any">
                   </div>
                   <div class="col-md-3 mb-3">
                     <label class="form-label text-dark-gray" for="">Brand</label>
-                    <select type="text" name="brand_id" id="brand_id" class="form-control require select-one" value="" >
+                    <select type="text" name="brand_id" id="brand_id" class="form-control select-one" value="" >
                       <option value="">--select--</option>
                       @foreach ($brands as $brand)
                           <option value="{{ $brand->id }}" @if($product->brand_id == $brand->id) {{"selected"}} @endif>{{ $brand->name }}</option>

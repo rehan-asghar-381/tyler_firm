@@ -5,39 +5,28 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderImgs;
 use App\Models\Status;
-use App\Models\Job;
 use App\Models\Client;
 use App\Models\OrderTransfer;
-use App\Models\OrderMargin;
-use App\Models\OrderSupply;
-use App\Models\OrderType;
-use App\Models\OrderAdditional;
-use App\Models\ShopSize;
-use App\Models\OrderTill;
-use App\Models\PaymentType;
+use App\Models\PrintLocation;
 use App\Models\Product;
 use App\Models\Brand;
 use App\Models\OrderOtherCharges;
 use App\Models\OrderProductVariant;
 use App\Models\PriceRange;
-use App\Models\OrderContractPrintPrice;
 use App\Models\OrderProduct;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantAttribute;
 use App\Models\DecorationPrice;
 use App\Models\OrderPrice;
 use App\Models\OrderColorPerLocation;
-use App\Models\OrderFinalPriceProductVariants;
-use App\Models\OrderPrintLocationColor;
-use App\Models\SupplyInventoryItem;
-use App\Models\ClientMeasurement;
+use App\Models\OrderDYellow;
+use App\Models\DYellowInkColor;
 use Yajra\DataTables\DataTables;
 use App\Traits\NotificationTrait;
-
+use PDF;
 class OrderController extends Controller
 {
     
@@ -93,7 +82,7 @@ class OrderController extends Controller
     public function index()
     {
         $pageTitle                              = "Orders";
-        // $statuses_arr                           = [];
+        $statuses_arr                           = [];
         $statuses                               = Status::where('is_active', 'Y')->get(['id', 'name']);
         
         foreach($statuses as $key=>$status){
@@ -105,43 +94,21 @@ class OrderController extends Controller
         return view('admin.orders.index', compact('pageTitle', 'statuses_arr', 'clients'));
     } 
 
-    public function previousOrder(Request $request,$id){
-    
-        $pageTitle          = "Client  Previous Order";
-        $statuses           = Status::where('id', 5)->get(['id', 'name']);
-        
-        foreach($statuses as $key=>$status){
-
-            $statuses_arr['"'.$key.'"']          = $status;
-        }
-        $clients        = Client::get();
-
-        $clients               = Client::where('id',$id)->orderBy('id','DESC')->get();
-        return view('admin.orders.previous-order', compact('pageTitle', 'statuses_arr', 'clients'));
-    }
     public function ajaxtData(Request $request){
 
         $rData              = Order::with(["client"]);
         if($request->client_id != ""){
-
             $rData              = $rData->where('client_id', $request->client_id);
         }
-
         if($request->date_from != ""){
-
             $rData              = $rData->where('time_id', '>=', strtotime($request->date_from));
         }
-
         if($request->date_to != ""){
-
             $rData              = $rData->where('time_id', '<=', strtotime($request->date_to));
         }
-
         if($request->status_id != ""){
-
             $rData              = $rData->where('status', '=', $request->status_id);
         }
-        
         return DataTables::of($rData->get())
         ->addIndexColumn()
         ->editColumn('id', function ($data) {
@@ -212,11 +179,12 @@ class OrderController extends Controller
             if(auth()->user()->can('orders-edit')){
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.edit', $data->id).'"><i class="far fa-edit"></i> Edit</a>';
             }
-         
-            $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.recreate', $data->id).'"><i class="fas fa-arrows-h"></i> Re-Order</a>';
+            $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.recreate', $data->id).'"><i class="far fa fa-retweet"></i> Re-Order</a>';
+
+            $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.DYellow', $data->id).'"><i class="far fa fa-file"></i> D Yellow</a>';
 
             if(auth()->user()->can('orders-generate-invoice')){
-                $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice') .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
+                $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice', $data->id) .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
             }
             if(auth()->user()->can('orders-change-status')){
                 $action_list    .= '<a class="dropdown-item btn-change-status" href="#" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-life-ring"></i> Change Status</a>';
@@ -227,7 +195,7 @@ class OrderController extends Controller
         ->rawColumns(['actions'])
         ->make(TRUE);
     }
-
+  
     /**
      * Write code on Method
      *
@@ -261,6 +229,9 @@ class OrderController extends Controller
         $order->due_date            = (isset($rData['due_date']) && $rData['due_date'] != "")?strtotime($rData['due_date']):0;
         $order->event               = $rData['event'];
         $order->shipping_address    = $rData['shipping_address'];
+        $order->ship_date           = (isset($rData['ship_date']) && $rData['ship_date'] != "")?strtotime($rData['ship_date']):0;
+        $order->shipping_address    = $rData['shipping_address'];
+        $order->notes               = $rData['notes'];
         $order->job_name            = $rData['job_name'];
         $order->order_number        = $rData['order_number'];
         $order->projected_units     = $rData['projected_units'];
@@ -271,6 +242,11 @@ class OrderController extends Controller
         $orderID                    = $order->id;
         $product_ids                = $rData['product_ids'];
         $products_name              = $rData['products_name'];
+        if($request->hasFile('filePhoto')){
+            if(count($request->file('filePhoto')) > 0 ){
+                $this->save_order_imgs($request->file('filePhoto'), $orderID);
+            }
+        }
         if(count($product_ids) > 0){
             $this->save_order_prices($orderID, $rData);
         }
@@ -283,13 +259,9 @@ class OrderController extends Controller
         $prices                                 = $rData['price'];
         $total                                  = $rData['total'];
         if (count($attribute_color) > 0 ) {
-           
             $this->save_product_attribute($product_ids, $attribute_color,$attribute_size,$pieces,$prices,$total, $orderID);
         }
-        $fold_bag_tag_pieces                            = $rData['fold_bag_tag_pieces'];
-        if (isset($fold_bag_tag_pieces)) {
-            $this->save_order_other_charges($rData, $orderID);
-        }
+        $this->save_order_other_charges($rData, $orderID);
         $this->order_transfer($rData, $orderID);
         return redirect()->route("admin.order.create")->withSuccess('Order data has been saved successfully!');
     }
@@ -303,13 +275,12 @@ class OrderController extends Controller
         $profit_margin_percentage       = $rData['profit_margin_percentage'];
         $total_price                    = $rData['total_price'];
         $final_price                    = $rData['final_price'];
+        $location_number                = $rData['location_number'];
         $color_per_location             = $rData['color_per_location'];
         $order_price_arr                = [];
         $order_color_perlocation_arr    = [];
         foreach($product_ids as $key=> $product_id){
-    
             foreach($product_sizes[$product_id] as $p_key=>$product_size){
-     
                 $order_price                    = new OrderPrice();
                 $order_price->product_id        = $product_id;
                 $order_price->product_size      = $product_size;
@@ -320,18 +291,15 @@ class OrderController extends Controller
                 $order_price->profit_margin_percentage     = $profit_margin_percentage[$product_id][0];
                 $order_price->final_price       = $final_price[$product_id][$p_key];
                 $order_price_arr[]              = $order_price;
-                
             }
             foreach($color_per_location[$product_id] as $key=>$color){
-             
                 $order_color_perlocation                        = new OrderColorPerLocation();
                 $order_color_perlocation->product_id            = $product_id;
                 $order_color_perlocation->color_per_location    = $color;
-                $order_color_perlocation->location_number       = $key+1;
+                $order_color_perlocation->location_number       = $location_number[$product_id][$key];
                 $order_color_perlocation_arr[]                  = $order_color_perlocation;
                 
-            }
-            
+            }   
         }
        $order->OrderPrice()->delete();
        $order->OrderPrice()->saveMany($order_price_arr);
@@ -339,7 +307,7 @@ class OrderController extends Controller
        $order->OrderColorPerLocation()->saveMany($order_color_perlocation_arr);
     }
     public function order_transfer($rData, $order_id){
-
+        OrderTransfer::where("order_id", $order_id)->delete();
         $order_transfer                             = OrderTransfer::firstOrNew(['order_id'=>$order_id]);
         $order_transfer->order_id                   = $order_id;
         $order_transfer->transfers_pieces           = $rData['transfers_pieces'];
@@ -347,11 +315,12 @@ class OrderController extends Controller
         $order_transfer->transfers_prices           = $rData['transfers_prices'];
         $order_transfer->ink_color_change_pieces    = $rData['ink_color_change_pieces'];
         $order_transfer->art_fee                    = $rData['art_fee'];
-        $order_transfer->art_discount_prices        = $rData['art_discount_prices'];
+        $order_transfer->ink_color_change_prices    = $rData['ink_color_change_prices'];
         $order_transfer->shipping_charges           = $rData['shipping_charges'];
         $order_transfer->save();
     }
     public function save_order_other_charges($rData, $order_id){
+        OrderOtherCharges::where("order_id", $order_id)->delete();
         $order_other_charges                        = OrderOtherCharges::firstOrNew(['order_id'=>$order_id]);
         $order_other_charges->order_id              = $order_id;
         $order_other_charges->fold_bag_tag_pieces   = $rData['fold_bag_tag_pieces'];
@@ -370,7 +339,6 @@ class OrderController extends Controller
         $order                          = Order::find($order_id);
         $order_product_variant_arr      = [];
         foreach ($product_ids as $product_id) {
-            
             foreach($attribute_color[$product_id] as $variant_id=>$attr_arr){
                 $variant1_id            = $variant_id;
                 $product_variant        = ProductVariant::find($variant_id);
@@ -392,29 +360,24 @@ class OrderController extends Controller
                 $order_product_var->variant1_name       = $variant1_name ;
                 $order_product_var->variant2_id         = $variant2_id;
                 $order_product_var->variant2_name       = $variant2_name;
-                $order_product_var->attribute1_id       = $attr_id;
+                $order_product_var->attribute1_id       = $attr_id ?? 0;
                 $product_variant_attribute              = ProductVariantAttribute::find($attr_id);
-                $order_product_var->attribute1_name     = $product_variant_attribute->name;
+                $order_product_var->attribute1_name     = $product_variant_attribute->name ??"";
                 $order_product_var->attribute2_id       = $size_attr_arr[$key];
                 $product_variant_attribute              = ProductVariantAttribute::find($size_attr_arr[$key]);
-                $order_product_var->attribute2_name     = $product_variant_attribute->name;
+                $order_product_var->attribute2_name     = $product_variant_attribute->name??"";
                 $order_product_var->pieces              = $pieces[$product_id][$key];
                 $order_product_var->price               = $prices[$product_id][$key];
                 $order_product_var->total               = $total[$product_id][$key];
                 $order_product_variant_arr[]            = $order_product_var;
-
             }     
         }
-
         $order->OrderProductVariant()->delete();
         $order->OrderProductVariant()->saveMany($order_product_variant_arr);
     }
-
     public function save_order_products($product_ids,$products_name, $order_id){
-        
         $order                  = Order::find($order_id);
         $order_products_arr     = [];
-        
         foreach ($product_ids as $key=>$product) {
             $order_products               = new OrderProduct();
             $order_products->order_id     = $order_id;
@@ -422,7 +385,6 @@ class OrderController extends Controller
             $order_products->product_name        = $products_name[$product];
             $order_products_arr[]  = $order_products;
         }
-
         $order->OrderProducts()->delete();
         $order->OrderProducts()->saveMany($order_products_arr);
     }
@@ -431,6 +393,7 @@ class OrderController extends Controller
         $pageTitle                  = "Orders";
         $order                      = Order::with([
             'OrderPrice', 
+            'OrderImgs', 
             'OrderColorPerLocation', 
             'OrderProducts', 
             'Orderstatus',
@@ -465,8 +428,10 @@ class OrderController extends Controller
         $order->client_id           = $rData['client_id'];
         $order->sales_rep           = $rData['sales_rep'];
         $order->due_date            = (isset($rData['due_date']) && $rData['due_date'] != "")?strtotime($rData['due_date']):0;
+        $order->ship_date           = (isset($rData['ship_date']) && $rData['ship_date'] != "")?strtotime($rData['ship_date']):0;
         $order->event               = $rData['event'];
         $order->shipping_address    = $rData['shipping_address'];
+        $order->notes               = $rData['notes'];
         $order->job_name            = $rData['job_name'];
         $order->order_number        = $rData['order_number'];
         $order->projected_units     = $rData['projected_units'];
@@ -490,10 +455,7 @@ class OrderController extends Controller
         if (count($attribute_color) > 0 ) {
             $this->save_product_attribute($product_ids, $attribute_color,$attribute_size,$pieces,$prices,$total, $orderID);
         }
-        $fold_bag_tag_pieces                            = $rData['fold_bag_tag_pieces'];
-        if (isset($fold_bag_tag_pieces)) {
-            $this->save_order_other_charges($rData, $orderID);
-        }
+        $this->save_order_other_charges($rData, $orderID);
         $this->order_transfer($rData, $orderID);
 
         return redirect()->route("admin.order.edit", $orderID)->withSuccess('Order data has been updated successfully!');
@@ -501,19 +463,18 @@ class OrderController extends Controller
 
     public function orderView(Request $request, $id)
     {
-        $pageTitle                  = "Order Detail ";
-
+        $pageTitle                  = "Order Detail";
         $order                      = Order::with([
-            'OrderPrice.OrderColorPerLocation', 
+            'OrderProducts', 
             'OrderColorPerLocation', 
-            'OrderProducts.OrderProductVariant', 
+            'OrderPrice.OrderColorPerLocation', 
+            'OrderProducts.OrderProductVariant'=>function($q) use($id){
+                $q->where('order_id', '=', $id);
+            },
             'Orderstatus',
             'OrderTransfer',
             'OrderOtherCharges'
         ])->find($id);
-
-
-
         $order_product_ids_arr      = [];
         $clients                    = Client::get();
         $products                   = Product::get();
@@ -522,32 +483,23 @@ class OrderController extends Controller
         $fixed_baby_sizes           = $this->fixedBabySize;
         $all_baby_sizes             = $this->allBabySizes;
         if(count($order->OrderProducts) > 0){
-
             foreach($order->OrderProducts as $orderProduct){
 
                 $order_product_ids_arr[]    = $orderProduct->product_id;
             }
         }
-       
         return view('admin.orders.order-detail',compact('pageTitle', 'order', 'clients', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr'));
-
-        
-
     }
 
     public function status_update(Request $request)
     {
-
         $user_id                = Auth::user()->id;
         $user_name              = Auth::user()->name;
-
         $order_id               = $request->get('order_id');
         $status                 = $request->get('status_id');
-
         $order                  = Order::find($order_id);
         $order->status          = $status;
         $order->save();
-
         // $body                           = $user_name." set Status to <strong>".$order->Orderstatus->name."</strong> for Order ( <strong>#".$order->id."</strong> )";
         // $data['idFK']                   = $order->id;
         // $data['type']                   = 'orders';
@@ -556,11 +508,8 @@ class OrderController extends Controller
         // $data['body']                   = $body;
         // $data['time_id']                = date('U');
         // $this->add_notification($data);
-
         return json_encode(array("status"=>true, "message"=>"Status has been updated successfully!"));
-
     }
-
     public function delete_image(Request $request)
     {
         $order_id               = $request->order_id;
@@ -569,158 +518,18 @@ class OrderController extends Controller
         return json_encode(array("status"=>true));
 
     }
-
-    public function get_job_template(Request $request)
-    {
-        $order_id                               = $request->order_id;
-        $statuses_arr                           = [];
-        $jobs_arr                               = [];
-
-        $tailors = User::with(['roles' => function($q) {
-            $q->where('name', '=', 'Tailor');
-        }])->where('id', '<>', 1)->get();
-
-        $statuses                               = Status::where(['is_active'=>'Y', 'is_job'=>'Y'])->where('name', '!=', 'New')->orderBy('priority', 'asc')->get(['id', 'name']);
-        foreach($statuses as $status){
-
-            $statuses_arr[$status->id]          = $status->name;
-        }
-
-        $jobs                                   = Job::where(['order_id'=>$order_id])->get();
-
-        foreach($jobs as $job){
-            $job_status_id                      = $job->status_id;
-            
-            $jobs_arr[$job_status_id]['order_id']                   = $job->order_id;
-            $jobs_arr[$job_status_id]['status_id']                  = $job->status_id;
-            $jobs_arr[$job_status_id]['tailor_id'][]                 = $job->tailor_id;
-            $jobs_arr[$job_status_id]['start_date_time']            = $job->start_date_time;
-            $jobs_arr[$job_status_id]['completion_date_time']       = $job->completion_date_time;
-            $jobs_arr[$job_status_id]['notes']                      = $job->notes;
-
-
-        }
-        
-        return view('admin.orders.assign-jobs', compact('tailors', 'statuses_arr', 'order_id', 'jobs_arr'));
-
-    }
-
     public function destroy(Request $request, $id)
     {
-
         $order                  = Order::find($id);
         $order->AdditionalFields()->delete();
         $order->OrderImgs()->delete();
         $order->OrderSupply()->delete();
         $order->OrderJobs()->delete();
-
         $order->delete();
-
         return redirect()->route("admin.order.index")->withSuccess('Order data has been deleted successfully!');
-
     }
-
-    public function get_client_recent_order(Request $request)
+    public function product_form(Request $request)
     {
-        $client_id              = $request->client_id;
-        $order_measurements     = [];
-        // $order                  = ClientMeasurement::where('client_id', $client_id)->first();
-        $order                  = [];
-
-        $order_measurements['field1_hb']            = $order->field1_hb ?? "";
-        $order_measurements['field2_b']             = $order->field2_b ?? "";
-        $order_measurements['field3_w']             = $order->field3_w ?? "";
-        $order_measurements['field4_hh']            = $order->field4_hh ?? "";
-        $order_measurements['field5_h']             = $order->field5_h ?? "";
-        $order_measurements['field6_sh']            = $order->field6_sh ?? "";
-        $order_measurements['field7_half_sh']       = $order->field7_half_sh ?? "";
-        $order_measurements['field8_sh_w']          = $order->field8_sh_w ?? "";
-        $order_measurements['field9_sh_kn']         = $order->field9_sh_kn ?? "";
-        $order_measurements['field10_sh_g']         = $order->field10_sh_g ?? "";
-        $order_measurements['field11_w_kn']         = $order->field11_w_kn ?? "";
-        $order_measurements['field12_w_g']          = $order->field12_w_g ?? "";
-        $order_measurements['field13_arm']          = $order->field13_arm ?? "";
-        $order_measurements['field14_half_arm']     = $order->field14_half_arm ?? "";
-        $order_measurements['field15_arm_depth']    = $order->field15_arm_depth ?? "";
-        $order_measurements['field16_bicep']        = $order->field16_bicep ?? "";
-        $order_measurements['field17_wrist']        = $order->field17_wrist ?? "";
-        $order_measurements['field18_sh_w']         = $order->field18_sh_w ?? "";
-        $order_measurements['field19_tw']           = $order->field19_tw ?? "";
-        $order_measurements['field20_sh_hh']        = $order->field20_sh_hh ?? "";
-        $order_measurements['measurement_type']     = $order->measurement_type ?? "";
-        $order_measurements['title']                = $order->title ?? "";
-        
-
-        return json_encode(["status"=>true, "data"=>$order_measurements]);
-        
-
-    }
-
-    public function save_order_imgs($files_arr=[], $order_id){
-        $order                  = Order::find($order_id);
-        foreach($files_arr as $file){             
-            if(is_file($file)){
-                $original_name = $file->getClientOriginalName();
-                $file_name = time().rand(100,999).$original_name;
-                $destinationPath = public_path('/uploads/order/');
-                $file->move($destinationPath, $file_name);
-                $file_slug  = "/uploads/order/".$file_name;
-
-                $order_img                      = new OrderImgs();
-                $order_img->order_id            = $order_id;
-                $order_img->image               = $file_slug;
-                $order_images[]                 = $order_img;
-            }
-            
-        }
-        $order->OrderImgs()->saveMany($order_images);
-    }
-    public function save_additional_fields($fields=[], $labels=[], $order_id){
-
-        $order                  = Order::find($order_id);
-        foreach ($fields as $key=>$field_value) {
-
-            $additional_field               = new OrderAdditional();
-
-            $additional_field->order_id     = $order_id;
-            $additional_field->label        = $labels[$key];
-            $additional_field->value        = $field_value;
-
-            $order_additional_fields_arr[]  = $additional_field;
-        }
-
-        $order->AdditionalFields()->saveMany($order_additional_fields_arr);
-    }
-    public function save_order_supplies($supplies=[], $supply_quantities=[], $order_id){
-        $user_id                = Auth::user()->id;
-        $user_name              = Auth::user()->name;
-        $order                  = Order::find($order_id);
-        foreach ($supplies as $key=>$supply) {
-
-            $item_slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $supply)));
-
-            $supply_iventorty_item                      = SupplyInventoryItem::firstOrNew(["item_slug"=>$item_slug]);
-
-            $supply_iventorty_item->item                = ($supply_iventorty_item->item != "") 
-            ? $supply_iventorty_item->item
-            : $supply;
-            $supply_iventorty_item->item_slug           = $item_slug;
-            $supply_iventorty_item->created_by_id       = $user_id;
-            $supply_iventorty_item->created_by_name     = $user_name;
-            $supply_iventorty_item->save();
-
-            $order_supplies                 = new OrderSupply();
-
-            $order_supplies->order_id       = $order_id;
-            $order_supplies->item_slug      = $item_slug;
-            $order_supplies->quantity       = $supply_quantities[$key];
-
-            $order_supplies_arr[]           = $order_supplies;
-        }
-
-        $order->OrderSupply()->saveMany($order_supplies_arr);
-    }
-    public function product_form(Request $request){
         $order_product_variants     = [];
         $product_id         = $request->product_id;
         $order_id           = (isset($request->order_id) && $request->order_id != "")? $request->order_id: 0;
@@ -728,17 +537,18 @@ class OrderController extends Controller
         if($order_id  > 0){
             $order_product_variants         = OrderProductVariant::where(['order_id'=> $order_id, 'product_id'=> $product_id])->get();
         }
-        
-        // dd( $order_product_variants);
         $product_detail     = Product::with( 'ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
         return view('admin.orders.product', compact('product_detail', 'order_product_variants'));
         
     }
-    public function print_nd_loations(Request $request){
-       
-        $type                       = "";  
-        $order_price                = []; 
-        $order_color_location      = []; 
+    public function print_nd_loations(Request $request)
+    {
+        $type                           = "";  
+        $order_price                    = []; 
+        $order_color_location           = []; 
+        $order_color_location_number    = []; 
+        $print_locations                = PrintLocation::where("is_active", "Y")->get();
+        
         $product_id         = $request->product_id;
         $order_id           = (isset($request->order_id) && $request->order_id != "")?$request->order_id:0;
         $product_detail     = Product::with('ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
@@ -758,7 +568,8 @@ class OrderController extends Controller
             $order_color_locations    = OrderColorPerLocation::where(["order_id"=>$order_id, "product_id"=>$product_id])->get();
 
             foreach($order_color_locations as $key=>$location){
-                $order_color_location[]        = $location->color_per_location;
+                $order_color_location[]         = $location->color_per_location;
+                $order_color_location_number[]  = $location->location_number;
             }
         }
         foreach($product_detail->ProductVariant as $productVariant){
@@ -768,13 +579,15 @@ class OrderController extends Controller
                 break;
             }
         }
-        return view('admin.orders.print-locations', compact('product_detail', 'type', 'order_price', 'order_color_location'));
+        return view('admin.orders.print-locations', compact('product_detail', 'type', 'order_price', 'order_color_location', 'print_locations', 'order_color_location_number'));
     }
-    public function print_nd_loations_view(Request $request){
+    public function print_nd_loations_view(Request $request)
+    {
        
-        $type                       = "";  
-        $order_price                = []; 
-        $order_color_location      = []; 
+        $type                           = "";  
+        $order_price                    = []; 
+        $order_color_location           = []; 
+        $order_color_location_number    = []; 
         $product_id         = $request->product_id;
         $order_id           = (isset($request->order_id) && $request->order_id != "")?$request->order_id:0;
         $product_detail     = Product::with('ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
@@ -795,6 +608,7 @@ class OrderController extends Controller
 
             foreach($order_color_locations as $key=>$location){
                 $order_color_location[]        = $location->color_per_location;
+                $order_color_location_number[]  = $location->location_number;
             }
         }
         foreach($product_detail->ProductVariant as $productVariant){
@@ -805,12 +619,10 @@ class OrderController extends Controller
             }
         }
         $pageTitle = '';
-        return view('admin.orders.print-locations_view', compact('product_detail', 'pageTitle','type', 'order_price', 'order_color_location'));
+        return view('admin.orders.print-locations_view', compact('product_detail', 'pageTitle','type', 'order_price', 'order_color_location', 'order_color_location_number'));
     }
-
     public function get_decoration_price(Request $request)
     {
-  
         $number_of_colors       = $request->number_of_colors;
         $total_pieces           = $request->total_pieces;
         $range                  = 0;
@@ -839,13 +651,92 @@ class OrderController extends Controller
         $price      = number_format($price,2);
         return $price;
     }
-    public function generateInvoice(Request $request)
+    public function generateInvoice(Request $request, $id)
     {
-         $pageTitle                              = "Invoice";
-        return view('admin.orders.generate-invoice',compact('pageTitle'));
-    }
+        $pageTitle  = "Invoice";
+        $order      = Order::with([
+            'OrderPrice', 
+            'OrderColorPerLocation', 
+            'OrderColorPerLocation.Product', 
+            'OrderProducts', 
+            'OrderProducts.Product', 
+            'OrderProducts.OrderProductVariant'=>function($query) use($id){
+                $query->where("order_id", "=", $id);
+            },
+            'OrderTransfer',
+            'OrderOtherCharges'
+        ])->find($id);
+       
+        $extra_details          = [];
+        $client_details         = [];
+        $order_prices           = [];
+        $invoice_details        = [];
+        $color_per_locations    = [];
+        foreach($order->OrderColorPerLocation as $colorPerLocation){
+            $product_name       = $colorPerLocation->Product->name;
+            $color_per_locations[$product_name]["location_number"][]        = $colorPerLocation->location_number;
+            $color_per_locations[$product_name]["color_per_location"][]     = $colorPerLocation->color_per_location;
+        }
+      
+        foreach($order->OrderPrice as $OrderPrice){
+            $order_prices[$OrderPrice->product_size]    = $OrderPrice->final_price;
+        }
+        foreach($order->OrderProducts as $OrderProduct){
+            foreach($OrderProduct->OrderProductVariant as $order_product_variant){
+                $size_for       = $OrderProduct->Product->size_for;
+                $product_n      = $OrderProduct->product_name;
+                $attr1_name     = $order_product_variant->attribute1_name;
+                $attr2_name     = $order_product_variant->attribute2_name;
+                $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["pieces"]  = $order_product_variant->pieces;
+                if($size_for == "adult_sizes"){
+                    $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedAdultSize))
+                                                                                        ?$order_prices["XS-XL"]
+                                                                                        :$order_prices[$attr2_name];
+                }
+                if($size_for == "baby_sizes"){
+                    
+                    $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedBabySize))
+                                                                                        ?$order_prices["OSFA-18M"]
+                                                                                        :$order_prices[$attr2_name];
+                }
+            }
+        }
+        $client_details["date"]                     = date("m/d/Y", $order->time_id);
+        $client_details["company_name"]             = $order->client->company_name;
+        $client_details["job_name"]                 = $order->job_name;
+        $client_details["order_number"]             = $order->order_number;
+        $client_details["email"]                    = $order->client->email;
+        $client_details["invoice_number"]           = $order->id;
+        $client_details["projected_units"]          = $order->projected_units;
+        
+        $extra_details["fold_bag_tag_pieces"]       = $order->OrderOtherCharges->fold_bag_tag_pieces ?? 0;
+        $extra_details["fold_bag_tag_prices"]       = $order->OrderOtherCharges->fold_bag_tag_prices ?? 0;
+        $extra_details["hang_tag_pieces"]           = $order->OrderOtherCharges->hang_tag_pieces ?? 0;
+        $extra_details["hang_tag_prices"]           = $order->OrderOtherCharges->hang_tag_prices ?? 0;
+        $extra_details["art_fee"]                   = $order->OrderOtherCharges->art_fee ?? 0;
+        $extra_details["art_discount"]              = $order->OrderOtherCharges->art_discount ?? 0;
+        $extra_details["art_time"]                  = $order->OrderOtherCharges->art_time ?? 0;
+        $extra_details["tax"]                       = $order->OrderOtherCharges->tax ?? 0;
+        $extra_details["transfers_pieces"]          = $order->OrderTransfer->transfers_pieces ?? 0;
+        $extra_details["transfers_prices"]          = $order->OrderTransfer->transfers_prices ?? 0;
+        $extra_details["ink_color_change_pieces"]   = $order->OrderTransfer->ink_color_change_pieces ?? 0;
+        $extra_details["ink_color_change_prices"]   = $order->OrderTransfer->ink_color_change_prices ?? 0;
+        $extra_details["shipping_charges"]          = $order->OrderTransfer->shipping_charges ?? 0;
+        $extra_details["order_id"]                  = $order->id;
+        $fixed_adult_sizes                          = $this->fixedAdultSize;
+        $fixed_baby_sizes                           = $this->fixedBabySize;
 
-    public function recreate(Request $request, $id){
+        if($request->has('download_invoice') && $request->download_invoice==true){
+            // return view('admin.orders.download-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations'));
+            $customPaper = array(0,0,700,700);
+            $pdf = PDF::loadView('admin.orders.download-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations'))->setOptions(['defaultFont' => 'sans-serif'])->setPaper($customPaper, 'landscape');
+            return $pdf->download('invoice.pdf');
+        }   
+    
+        return view('admin.orders.generate-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations'));
+    }
+    public function recreate(Request $request, $id)
+    {
         $order                  = Order::with([
             'OrderPrice', 
             'OrderColorPerLocation', 
@@ -876,6 +767,16 @@ class OrderController extends Controller
         $order_product_variant_arr      =[];
         $order_color_perlocation_arr    = [];
         $order_products_arr             = [];
+        $order_products_arr             = [];
+        $order_images                   = [];
+        foreach($order->OrderImgs as $OrderImg)
+        {   
+            $order_img                      = new OrderImgs();
+            $order_img->order_id            = $order_id;
+            $order_img->image               = $OrderImg->image;
+            $order_images[]                 = $order_img;
+        }
+        $new_order->OrderImgs()->saveMany($order_images);
         foreach($order->OrderPrice as $_OrderPrice)
         {   
             $or_price                   = new OrderPrice();
@@ -899,9 +800,7 @@ class OrderController extends Controller
             $order_color_perlocation->product_id            = $_OrderColorPerLocation->product_id;
             $order_color_perlocation->color_per_location    = $_OrderColorPerLocation->color_per_location;
             $order_color_perlocation->location_number       = $_OrderColorPerLocation->location_number;
-            $order_color_perlocation_arr[]                  = $order_color_perlocation;
-            
-           
+            $order_color_perlocation_arr[]                  = $order_color_perlocation; 
         }
         $new_order->OrderColorPerLocation()->saveMany($order_color_perlocation_arr);
 
@@ -913,7 +812,7 @@ class OrderController extends Controller
                 $order_product_var->variant1_name       = $_OrderProductVariant->variant1_name ;
                 $order_product_var->variant2_id         = $_OrderProductVariant->variant2_id;
                 $order_product_var->variant2_name       = $_OrderProductVariant->variant2_name;
-                $order_product_var->attribute1_id       = $_OrderProductVariant->attr_id;
+                $order_product_var->attribute1_id       = $_OrderProductVariant->attribute1_id;
                 $order_product_var->attribute1_name     = $_OrderProductVariant->attribute1_name;
                 $order_product_var->attribute2_id       = $_OrderProductVariant->attribute2_id;
                 $order_product_var->attribute2_name     = $_OrderProductVariant->attribute2_name ;
@@ -951,21 +850,155 @@ class OrderController extends Controller
         $order_other_charges->tax                   = $or_other->tax;
         $order_other_charges->save();
 
-        $or_transfer                                   = $order->OrderTransfer; 
-
-
+        $or_transfer                                = $order->OrderTransfer; 
         $order_transfer                             = new OrderTransfer();
         $order_transfer->order_id                   = $order_id;
         $order_transfer->transfers_pieces           = $or_transfer->transfers_pieces;
         $order_transfer->transfers_prices           = $or_transfer->transfers_prices;
         $order_transfer->ink_color_change_pieces    = $or_transfer->ink_color_change_pieces;
         $order_transfer->art_fee                    = $or_transfer->art_fee;
-        $order_transfer->art_discount_prices        = $or_transfer->art_discount_prices;
+        $order_transfer->ink_color_change_prices    = $or_transfer->ink_color_change_prices;
         $order_transfer->shipping_charges           = $or_transfer->shipping_charges;
         $order_transfer->save();
       
 
         return redirect()->route("admin.orders.index")->withSuccess('Order has been replicated successfully!');
         
+    }
+    public function DYellow(Request $request, $id)
+    {
+        $pageTitle  = "D Yellow";
+        $order      = Order::with([
+            'client', 
+            'client.ClientSaleRep', 
+            'OrderPrice', 
+            'OrderColorPerLocation', 
+            'OrderColorPerLocation.Product', 
+            'OrderProducts', 
+            'OrderProducts.Product', 
+            'OrderProducts.OrderProductVariant'=>function($query) use($id){
+                $query->where("order_id", "=", $id);
+            },
+            'OrderTransfer',
+            'OrderOtherCharges'
+        ])->find($id);
+       
+        $print_locations        = PrintLocation::where("is_active", "Y")->get();
+        $extra_details          = [];
+        $client_details         = [];
+        $order_prices           = [];
+        $invoice_details        = [];
+        $color_per_locations    = [];
+        foreach($order->OrderColorPerLocation as $colorPerLocation){
+            $product_name       = $colorPerLocation->Product->name;
+            $color_per_locations[$product_name]["location_number"][]        = $colorPerLocation->location_number;
+            $color_per_locations[$product_name]["color_per_location"][]     = $colorPerLocation->color_per_location;
+        }
+        foreach($order->OrderPrice as $OrderPrice){
+            $order_prices[$OrderPrice->product_size]    = $OrderPrice->final_price;
+        }
+        foreach($order->OrderProducts as $OrderProduct){
+            foreach($OrderProduct->OrderProductVariant as $order_product_variant){
+                $size_for       = $OrderProduct->Product->size_for;
+                $product_n      = $OrderProduct->product_name;
+                $attr1_name     = $order_product_variant->attribute1_name;
+                $attr2_name     = $order_product_variant->attribute2_name;
+                $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["pieces"]  = $order_product_variant->pieces;
+                if($size_for == "adult_sizes"){
+                    $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedAdultSize))
+                                                                                        ?$order_prices["XS-XL"]
+                                                                                        :$order_prices[$attr2_name];
+                }
+                if($size_for == "baby_sizes"){
+                    
+                    $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedBabySize))
+                                                                                        ?$order_prices["OSFA-18M"]
+                                                                                        :$order_prices[$attr2_name];
+                }
+            }
+        }
+        $sales_rep                                  = $order->client->ClientSaleRep->where("id", $order->sales_rep)->first();
+        $client_details["date"]                     = date("m/d/Y", $order->time_id);
+        $client_details["company_name"]             = $order->client->company_name;
+        $client_details["company_name"]             = $order->client->company_name;
+        $client_details["job_name"]                 = $order->job_name;
+        $client_details["order_number"]             = $order->order_number;
+        $client_details["address"]                  = $order->client->address;
+        $client_details["email"]                    = $order->client->email;
+        $first_name                                 = $sales_rep->first_name??"";
+        $last_name                                 = $sales_rep->last_name??"";
+        $client_details["sales_rep"]                = $first_name." ".$last_name;
+        $client_details["invoice_number"]           = $order->id;
+        $client_details["projected_units"]          = $order->projected_units;
+    
+        $extra_details["fold_bag_tag_pieces"]       = $order->OrderOtherCharges->fold_bag_tag_pieces ?? 0;
+        $extra_details["fold_bag_tag_prices"]       = $order->OrderOtherCharges->fold_bag_tag_prices ?? 0;
+        $extra_details["hang_tag_pieces"]           = $order->OrderOtherCharges->hang_tag_pieces ?? 0;
+        $extra_details["hang_tag_prices"]           = $order->OrderOtherCharges->hang_tag_prices ?? 0;
+        $extra_details["art_fee"]                   = $order->OrderOtherCharges->art_fee ?? 0;
+        $extra_details["art_discount"]              = $order->OrderOtherCharges->art_discount ?? 0;
+        $extra_details["art_time"]                  = $order->OrderOtherCharges->art_time ?? 0;
+        $extra_details["tax"]                       = $order->OrderOtherCharges->tax ?? 0;
+        $extra_details["transfers_pieces"]          = $order->OrderTransfer->transfers_pieces ?? 0;
+        $extra_details["transfers_prices"]          = $order->OrderTransfer->transfers_prices ?? 0;
+        $extra_details["ink_color_change_pieces"]   = $order->OrderTransfer->ink_color_change_pieces ?? 0;
+        $extra_details["ink_color_change_prices"]   = $order->OrderTransfer->ink_color_change_prices ?? 0;
+        $extra_details["shipping_charges"]          = $order->OrderTransfer->shipping_charges ?? 0;
+        $extra_details["order_id"]                  = $order->id;
+        $fixed_adult_sizes                          = $this->fixedAdultSize;
+        $fixed_baby_sizes                           = $this->fixedBabySize; 
+        $order_d_yellow                             = OrderDYellow::where("order_id", $id)->first();
+        $order_d_yellow_inks                        = DYellowInkColor::where("order_id", $id)->get();
+        $max_key                                    = DYellowInkColor::where("order_id", $id)->max('key');
+        return view('admin.orders.d-yellow',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'print_locations', 'order', 'order_d_yellow', 'order_d_yellow_inks', 'max_key'));
+    }
+
+    public function storeDYellow(Request $request){
+       
+        $rData                                  = $request->all();
+        $order_id                               =(isset($rData["order_id"]))?$rData["order_id"]:0;
+        $order_d_yellow                         = OrderDYellow::firstOrNew(["order_id"=>$order_id]);
+        $order_d_yellow->order_id               = $order_id;
+        $order_d_yellow->time_id                = date("U");
+        $order_d_yellow->print_crew             = $rData["print_crew"];
+        $order_d_yellow->goods_rec              = $rData["goods_rec"];
+        $order_d_yellow->boxes                  = $rData["boxes"];
+        $order_d_yellow->production_sample      = $rData["production_sample"];
+        $order_d_yellow->palletize              = $rData["palletize"];
+        $order_d_yellow->palletize_opt          = $rData["palletize_opt"];
+        $order_d_yellow->in_hands               = $rData["in_hands"];
+        $order_d_yellow->design                 = $rData["design"];
+        $order_d_yellow->ship                   = $rData["ship"];
+        $order_d_yellow->acct                   = $rData["acct"];
+        $order_d_yellow->alpha                  = $rData["alpha"];
+        $order_d_yellow->s_and_s                = $rData["s_and_s"];
+        $order_d_yellow->sanmar                 = $rData["sanmar"];
+        $order_d_yellow->is_rejected            = $rData["is_rejected"];
+        $order_d_yellow->notes                  = $rData["notes"];
+        $order_d_yellow->save();
+
+        $order                                  = Order::find($order_id);
+        $location_number                        = $rData["location_number"];
+        $color_per_location                     = $rData["color_per_location"];
+        $ink_color                              = $rData["ink_color"];
+        $ink_colors_arr                         = [];
+        foreach($location_number as $key=>$location){
+            $json_arr                       = [];
+            foreach($ink_color[$key] as $k=>$value) {
+                $json_arr['"'.$k.'"']     = $value;
+            }
+            $new_ink_color                      = new DYellowInkColor();
+            $new_ink_color->key                 = $key+1;
+            $new_ink_color->time_id             = date("U");
+            $new_ink_color->location_number     = $location[0];
+            $new_ink_color->color_per_location  = $color_per_location[$key][0];
+            $new_ink_color->ink_colors          = json_encode($json_arr);
+            $ink_colors_arr[]                   = $new_ink_color;
+        }
+        $order->DYellowInkColors()->delete();
+        $order->DYellowInkColors()->saveMany($ink_colors_arr);
+        return redirect()->back();
+
+
     }
 }

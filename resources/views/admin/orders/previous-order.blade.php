@@ -8,18 +8,8 @@
 </style>
 <div class="body-content">
 	<form action="" id="reportForm">
+		<input type="hidden" name="client_id" value="{{$client_id}}">
 		<div class="row mb-4">
-			{{-- <div class="col-md-2 mb-3" style="margin-right: 10px;">
-				<div class="form-group">
-
-					<label>Client: </label>&nbsp;&nbsp;&nbsp;
-					<select type="text" name="client_id" id="client_id" class="form-control select-one" value="" >
-						@foreach ($clients as $client)
-						<option value="{{ $client->id }}" selected="">{{ $client->company_name}}</option>
-						@endforeach
-					</select>
-				</div>
-			</div> --}}
 			<div class="col-md-3 mb-3">
 				<div class="form-group">
 					<label>Date From: </label>&nbsp;&nbsp;&nbsp;
@@ -101,15 +91,14 @@
 						<table class="table table-borderless">
 							<thead>
 								<tr>
-									
 									<th width="250px">Sr.</th>
-									<th width="250px">Order Number</th>
+									<th width="250px">PO #</th>
 									<th width="250px">Job Name</th>
 									<th width="250px">Company Name</th>
-									<th width="250px">Reseller Number</th>
-									<th width="250px">Email Address</th>
-									<th width="250px">Order Date</th>
-									<th width="250px">Order Status</th>
+									<th width="250px">Quantity of Pieces</th>
+									<th width="250px">Due Date</th>
+									<th width="250px">Event</th>
+									<th width="250px">Status</th>
 									<th>Action</th>
 								</tr>
 							</thead>
@@ -175,9 +164,9 @@
 		}
 		],
 		ajax: {
-			'url': '{!! route('admin.orders.ajaxdata') !!}',
+			'url': '{!! route('admin.clients.ajaxClientsOrderHistory') !!}',
 			'data': function (d) {
-				d.client_id = $("select[name='client_id']").val();
+				d.client_id = $("input[name='client_id']").val();
 				d.date_from = $("input[name='date_from']").val();
 				d.date_to = $("input[name='date_to']").val();
 				d.status_id = $("select[name='status_id']").val();
@@ -185,13 +174,13 @@
 			}
 		},
 		columns: [
-		{data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center'},
+			{data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center'},
 		{data: 'order_number', name: 'order_number', width:"250px"},
 		{data: 'job_name', name: 'job_name', width:"250px"},
 		{data: 'company_name', name: 'company_name', width:"250px"},
-		{data: 'reseller_number', name: 'reseller_number', width:"250px"},
-		{data: 'email', name: 'email', width:"250px"},
-		{data: 'order_date', name: 'order_date', width:"250px"},
+		{data: 'projected_units', name: 'projected_units', width:"250px"},
+		{data: 'due_date', name: 'due_date', width:"250px"},
+		{data: 'event', name: 'event', width:"250px"},
 		{data: 'status', name: 'status', width:"250px"},
 		{data: 'actions', name: 'actions'}
 		]

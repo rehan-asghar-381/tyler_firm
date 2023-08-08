@@ -46,7 +46,7 @@
     color: #fff;
     text-align: center;
     min-width: 116px;
-    padding: 5px;
+    /* padding: 5px; */
     transition: all 0.3s ease;
     cursor: pointer;
     border: 2px solid;
@@ -151,9 +151,19 @@ hr{
                     @endif
                     <form  method="POST"  action="{{ route('admin.order.store') }}" enctype="multipart/form-data" novalidate>
                         @csrf
-
+                        <div class="row">
+                            <div class="upload__box">
+                              <div class="upload__btn-box">
+                                <label class="upload__btn">
+                                  <p>Add Attachments</p>
+                                  <input type="file" name="filePhoto[]" multiple="" data-max_length="20" class="upload__inputfile">
+                                </label>
+                              </div>
+                              <div class="upload__img-wrap"></div>
+                            </div>
+                        </div>
                         <div class="row mb-4">
-                            <div class="col-md-3">
+                            <div class="col-md-3 mb-4">
                                 <label>Client</label>
 
                                 <select name="client_id" id="client_id" class="form-control search_test select-one"  >
@@ -181,7 +191,7 @@ hr{
                                 <label>Purchase Order #</label>
                                 <input type="text" class="form-control" name="order_number" value="" placeholder="Order Number">
                             </div>
-                            <div class="col-md-3 mb-3">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Due Date: </label>&nbsp;&nbsp;&nbsp;
                                     <div class="input-group date">
@@ -196,8 +206,20 @@ hr{
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
+                                    <label>Ship Date: </label>&nbsp;&nbsp;&nbsp;
+                                    <div class="input-group date">
+                                        <input type="text" name="ship_date" class="form-control bg-light flatpickr" value="" required="" id="ship_date">
+                                        <div class="input-group-addon input-group-append">
+                                            <div class="input-group-text">
+                                                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
                                     <label>Event</label>
-
                                     <select name="event" id="event" class="form-control"  >
                                         <option value=""> Select</option>
                                         <option value="Yes"> Yes</option>
@@ -208,10 +230,15 @@ hr{
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                <label>Shipping Address</label>
-                                <textarea type="text" value="" class="form-control" name="shipping_address" id="shipping_address" placeholder="" rows="3" ></textarea>
+                                    <label>Shipping Address</label>
+                                    <textarea type="text" value="" class="form-control" name="shipping_address" id="shipping_address" placeholder="" rows="2" ></textarea>
                                 </div>
-                                
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Notes</label>
+                                    <textarea type="text" value="" class="form-control" name="notes" id="notes" placeholder="" rows="2" ></textarea>
+                                </div>
                             </div>
                         </div>
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -219,13 +246,12 @@ hr{
                                 <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Garments</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Print Location & Colors + Contract & Shirt + Print Price</a>
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Print Details</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="OTHERCHARGES-tab" data-toggle="pill" href="#OTHERCHARGES" role="tab" aria-controls="OTHERCHARGES" aria-selected="false">Other Charges</a>
                             </li>
                         </ul>
-
                         <div class="tab-content" id="pills-tabContent">
                          <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 
@@ -270,7 +296,6 @@ hr{
                                                 <label for="fold_bag_tag_pieces" class="col-sm-3 font-weight-600">FOLD/BAG/TAG</label>
                                                 <div class="col-sm-4">
                                                     <input type="number" min="0" name="fold_bag_tag_pieces" value="" class="my-form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
-        
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <input type="number" min="0" name="fold_bag_tag_prices" value="" class="my-form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
@@ -371,7 +396,7 @@ hr{
                                                     <input type="number" min="0" name="ink_color_change_pieces" value="" class="my-form-control " id="ink_color_change_pieces" placeholder="Pieces">
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <input type="number" min="0" name="art_discount_prices" value="" class="my-form-control mr-2" id="art_discount_prices" placeholder="Prices">
+                                                    <input type="number" min="0" name="ink_color_change_prices" value="" class="my-form-control mr-2" id="ink_color_change_prices" placeholder="Prices">
                                                 </div>
                                             </div>
                                         </div>
@@ -562,18 +587,18 @@ hr{
         }
 
     });
-    function location_labels(selector){
+    // function location_labels(selector){
 
-        if(selector != ""){
-            var length          = $(selector).find(".print-location").length;
-            $($(selector).find(".print-location")).each(function(index, element){
-                let number              = index+1;             
-                let label_text          = '# '+number;
-                $(this).find('label').text(label_text);
-            });
-        }
+    //     if(selector != ""){
+    //         var length          = $(selector).find(".print-location").length;
+    //         $($(selector).find(".print-location")).each(function(index, element){
+    //             let number              = index+1;             
+    //             let label_text          = '# '+number;
+    //             $(this).find('label').text(label_text);
+    //         });
+    //     }
 
-    }
+    // }
     $(document).on("change", ".pieces", function(index, element){
         projected_units();
     });
@@ -600,7 +625,7 @@ hr{
         event.preventDefault();
         print_location_parent.append(new_print_location_template);
         new_print_location_template.find('input').val(null);
-        location_labels(parent_selector);
+        // location_labels(parent_selector);
         count                               = parseInt(count)+1;
         $('.product-detail-'+parent_id).find('.location-count').val(count);
     });
@@ -616,7 +641,7 @@ hr{
         if(count >= 1){
             $(this).closest('.print-location').remove();
             $($('.product-detail-'+parent_id)).find('.location-count').val(count);
-            location_labels(parent_selector);
+            // location_labels(parent_selector);
             $("#ProjectedUnits").trigger("change");
         }
         
@@ -794,7 +819,6 @@ hr{
             }
         }
     }
-
     $(document).on("change","#ProjectedUnits", function(){
         let product_ids     = $("#product_ids").val();
         $.each(product_ids, function(index, element){
@@ -806,5 +830,63 @@ hr{
         });
 
     });
+    function ImgUpload() {
+          var imgWrap = "";
+          var imgArray = [];
+
+          $('.upload__inputfile').each(function () {
+            $(this).on('change', function (e) {
+              imgWrap = $(this).closest('.upload__box').find('.upload__img-wrap');
+              var maxLength = $(this).attr('data-max_length');
+
+              var files = e.target.files;
+              var filesArr = Array.prototype.slice.call(files);
+              var iterator = 0;
+              filesArr.forEach(function (f, index) {
+
+                if (!f.type.match('image.*')) {
+                  return;
+                }
+
+                if (imgArray.length > maxLength) {
+                  return false
+                } else {
+                  var len = 0;
+                  for (var i = 0; i < imgArray.length; i++) {
+                    if (imgArray[i] !== undefined) {
+                      len++;
+                    }
+                  }
+                  if (len > maxLength) {
+                    return false;
+                  } else {
+                    imgArray.push(f);
+
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                      var html = "<div class='upload__img-box'><div style='background-image: url(" + e.target.result + ")' data-number='" + $(".upload__img-close").length + "' data-file='" + f.name + "' class='img-bg'><div class='upload__img-close'></div></div></div>";
+                      imgWrap.append(html);
+                      iterator++;
+                    }
+                    reader.readAsDataURL(f);
+                  }
+                }
+              });
+            });
+          });
+
+          $('body').on('click', ".upload__img-close", function (e) {
+            var file = $(this).parent().data("file");
+            for (var i = 0; i < imgArray.length; i++) {
+              if (imgArray[i].name === file) {
+                imgArray.splice(i, 1);
+                break;
+              }
+            }
+            $(this).parent().parent().remove();
+          });
+      }  
+
+      ImgUpload();
 </script>
 @endsection

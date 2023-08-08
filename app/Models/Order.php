@@ -11,6 +11,7 @@ use App\Models\OrderOtherCharges;
 use App\Models\OrderPrice;
 use App\Models\OrderColorPerLocation;
 use App\Models\OrderTransfer;
+use App\Models\DYellowInkColor;
 
 class Order extends Model
 {
@@ -28,6 +29,14 @@ class Order extends Model
         'client_id',
         'job_name',
         'order_number',
+        'projected_units',
+        'sales_rep',
+        'due_date',
+        'ship_date',
+        'event',
+        'shipping_address',
+        'notes',
+        'notes',
         'created_by_id',
         'created_by_name',
         'updated_by_id',
@@ -83,6 +92,10 @@ class Order extends Model
         
         return $this->hasMany(Job::class, "order_id", "id");
     }
+    public function DYellowInkColors(){
+        
+        return $this->hasMany(DYellowInkColor::class, "order_id", "id");
+    }
 
     public function OrderType(){
         
@@ -100,49 +113,6 @@ class Order extends Model
     public function OrderOtherCharges(){
         
         return $this->hasOne(OrderOtherCharges::class, "order_id", "id");
-    }
-    public function replicateOrder()
-    {
-       
-        $new = $this->replicate();
-
-        //save model before you recreate relations (so it has an id)
-        $new->push();
-
-        //reset relations on EXISTING MODEL (this way you can control which ones will be loaded
-        $this->relations = [];
-
-        //load relations on EXISTING MODEL
-        $this->load('OrderPrice','OrderColorPerLocation', 'OrderProducts', 'OrderProductVariant', 'OrderTransfer' ,'OrderOtherCharges');
-
-        //re-sync everything
-        foreach ($this->relations as $relationName => $values){
-            $new->{$relationName}()->sync($values);
-        }
-        foreach($this->OrderPrice as $OrderPrice)
-        {
-           $clone->OrderPrice()->create($OrderPrice->toArray());
-        }
-
-        foreach($this->OrderColorPerLocation as $OrderColorPerLocation)
-        {
-           $clone->OrderColorPerLocation()->create($OrderColorPerLocation->toArray());
-        }
-     
-        foreach($this->OrderProducts as $OrderProducts)
-        {
-           $clone->OrderProducts()->create($OrderProducts->toArray());
-        }
-
-        foreach($this->OrderProductVariant as $OrderProductVariant)
-        {
-           $clone->OrderProductVariant()->create($OrderProductVariant->toArray());
-        }
-
-        $clone->OrderTransfer()->save($this->OrderTransfer);
-        $clone->OrderOtherCharges()->save($this->OrderOtherCharges);
-  
-       $clone->save();
     }
 
 }

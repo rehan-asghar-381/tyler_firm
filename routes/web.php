@@ -10,7 +10,6 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PriceController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,7 +31,6 @@ Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.pos
 Route::get('registration', [AuthController::class, 'registration'])->name('register');
 Route::post('post-registration', [AuthController::class, 'postRegistration'])->name('register.post'); 
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
-
 /* Start Admin Routes */
 Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     /* Start Dashboard Routes */
@@ -61,14 +59,11 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::post('/product/update/{product_id}', [ProductController::class, 'update'])->name('product.update');
     Route::get('/product/show/{product_id}', [ProductController::class, 'productDetail'])->name('product.detail');
     Route::get('/product/delete-image', [ProductController::class, 'delete_image'])->name('product.delete-image');
-
     /* Start Product Variants Routes */
     Route::get('/product/variants', [ProductController::class, 'variants'])->name('product.variants');
     Route::get('/product/prices', [ProductController::class, 'prices'])->name('product.prices');
     Route::post('/product/save-prices', [ProductController::class, 'savePrices'])->name('product.save-prices');
     Route::get('/product/get-price', [ProductController::class, 'get_price'])->name('product.get_price');
-
-
     Route::get('/product/add-variant', [ProductController::class, 'add_variant'])->name('product.add-variant');
     Route::get('/product/delete-variant', [ProductController::class, 'delete_variant'])->name('product.delete-variant');
     Route::get('/product/add-attribute', [ProductController::class, 'add_attribute'])->name('product.add-attribute');
@@ -77,19 +72,15 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     /* Start Clients Routes */
     Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
     Route::get('/clients/ajaxData', [ClientController::class, 'ajaxtData'])->name('clients.ajax_data');
+    Route::get('/clients/order-history-data', [ClientController::class, 'ajaxClientsOrderHistory'])->name('clients.ajaxClientsOrderHistory');
     Route::get('/clients/create', [ClientController::class, 'create'])->name('clients.create');
     Route::post('/clients/store', [ClientController::class, 'store'])->name('clients.store');
     Route::get('/clients/edit/{client_id}', [ClientController::class, 'edit'])->name('clients.edit');
     Route::post('/clients/update/{client_id}', [ClientController::class, 'update'])->name('clients.update');
     Route::get('/clients/delete-doc', [ClientController::class, 'delete_doc'])->name('clients.delete-doc');
     Route::get('/clients/show/{product_id}', [ClientController::class, 'clientDetail'])->name('client.detail');
-
-    Route::get('/clients/previous-order/{client_id}', [OrderController::class, 'previousOrder'])->name('client.previousOrder');
-
-
+    Route::get('/clients/previous-order/{client_id}', [ClientController::class, 'previousOrder'])->name('client.previousOrder');
     /* Start Order Routes */
-
-    
     Route::get('/clients/get_client', [ClientController::class, 'get_client'])->name('client.get_client');
     Route::get('/clients/add_client', [ClientController::class, 'add_client'])->name('client.add_client');
     Route::get('/clients/get_sales_rep', [ClientController::class, 'get_sales_rep'])->name('client.get_sales_rep');
@@ -107,20 +98,18 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/orders/print_nd_loations', [OrderController::class, 'print_nd_loations'])->name('order.print_nd_loations');
     Route::get('/orders/view/{order_id}', [OrderController::class, 'orderView'])->name('order.view');
     Route::get('/orders/status_update', [OrderController::class, 'status_update'])->name('order.status_update');
-    Route::get('/orders/generate_invoice', [OrderController::class, 'generateInvoice'])->name('order.generateInvoice');
+    Route::get('/orders/generate_invoice/{order_id}', [OrderController::class, 'generateInvoice'])->name('order.generateInvoice');
     Route::get('/orders/recreate/{order_id}', [OrderController::class, 'recreate'])->name('order.recreate');
-
+    Route::get('/order/delete-image', [OrderController::class, 'delete_image'])->name('order.delete-image');
+    Route::get('/orders/d_yellow/{order_id}', [OrderController::class, 'DYellow'])->name('order.DYellow');
+    Route::post('/orders/d_yellow/store_d_yellow', [OrderController::class, 'storeDYellow'])->name('order.storeDYellow');
 
     Route::get('/get_decoration_price', [OrderController::class, 'get_decoration_price'])->name('get_decoration_price');
-
     Route::get('/get_product_by_brand', [ProductController::class, 'get_product_by_brand'])->name('get_product_by_brand');
-
     // Start General Setting Routes 
     Route::get('/settings/decoration-prices', [PriceController::class, 'index'])->name('price.index');
     Route::get('/settings/decoration-prices/edit', [PriceController::class, 'edit'])->name('price.edit');
     Route::post('/settings/decoration-prices/update', [PriceController::class, 'update'])->name('price.update');
-    
-    
 }); 
 /* End Admin Routes */
 

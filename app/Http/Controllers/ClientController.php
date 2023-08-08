@@ -7,9 +7,9 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\ClientDoc;
-use App\Models\ShopSize;
+use App\Models\Status;
 use App\Models\ClientSaleRep;
-use App\Models\ClientMeasurement;
+use App\Models\Order;
 use Yajra\DataTables\DataTables;
 use Validator;
 use Illuminate\Support\Facades\Auth;
@@ -363,5 +363,108 @@ class ClientController extends Controller
             'sales_rep' => $sales_rep
         ]);
 
+    }
+
+    public function previousOrder(Request $request,$id){
+    
+        $pageTitle          = "Client  Previous Order";
+        $statuses           = Status::where('id', 5)->get(['id', 'name']);
+        
+        foreach($statuses as $key=>$status){
+
+            $statuses_arr['"'.$key.'"']          = $status;
+        }
+
+        $client_id          = $id;
+        return view('admin.orders.previous-order', compact('pageTitle', 'statuses_arr', 'client_id'));
+    }
+
+    public function ajaxClientsOrderHistory(Request $request){
+        
+        $rData          = Order::where('client_id', $request->client_id);
+        if($request->date_from != ""){
+            $rData      = $rData->where('time_id', '>=', strtotime($request->date_from));
+        }
+        if($request->date_to != ""){
+            $rData      = $rData->where('time_id', '<=', strtotime($request->date_to));
+        }
+        if($request->status_id != ""){
+            $rData      = $rData->where('status', '=', $request->status_id);
+        }
+        return DataTables::of($rData->get())
+        ->addIndexColumn()
+        ->editColumn('id', function ($data) {
+            if (isset($data->id) && $data->id != "")
+                return $data->id;
+            else
+                return '-';
+        })
+        ->addColumn('company_name', function ($data) {
+            if (isset($data->client->company_name) && $data->client->company_name != "")
+                return $data->client->company_name;
+            else
+                return '-';
+        })
+        ->editColumn('job_name', function ($data) {
+            if ($data->job_name != "")
+                return $data->job_name;
+            else
+                return '-';
+        })
+        ->editColumn('projected_units', function ($data) {
+            if ($data->projected_units != "")
+                return $data->projected_units;
+            else
+                return '-';
+        })
+        ->editColumn('due_date', function ($data) {
+            if ($data->due_date != "")
+                return date("Y-m-d h:i", $data->due_date);
+            else
+                return '-';
+        })
+        ->editColumn('event', function ($data) {
+            if ($data->event != "")
+                return $data->event;
+            else
+                return '-';
+        })
+        ->editColumn('order_number', function ($data) {
+            if ($data->order_number != "")
+                return $data->order_number;
+            else
+                return '-';
+        })
+        ->editColumn('status', function ($data) {
+
+            if (isset($data->Orderstatus->name) && $data->Orderstatus->name != "")
+                return $data->Orderstatus->name;
+            else
+                return '-';
+        })
+        ->editColumn('order_date', function ($data) {
+            if ($data->time_id > 0 )
+                return date('Y-m-d',$data->time_id);
+            else
+                return '-';
+        })
+        ->addColumn('actions', function ($data){
+            $action_list    = '<div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="ti-more-alt"></i>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
+            if(auth()->user()->can('orders-view')){
+                $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.view', $data->id).'"><i class="far fa-eye"></i> View Details</a>';
+            }
+            $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.recreate', $data->id).'"><i class="far fa fa-retweet"></i> Replicate-Order</a>';
+            if(auth()->user()->can('orders-generate-invoice')){
+                $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice', $data->id) .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
+            }
+            $action_list        .= '</div></div>';
+            return  $action_list;
+        })
+        ->rawColumns(['actions'])
+        ->make(TRUE);
     }
 }

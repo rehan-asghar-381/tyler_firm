@@ -20,6 +20,7 @@ class Product extends Model
         'code',
         'description',
         'quantity',
+        'size_for',
         'tax_rate_id',
         'cost',
         'inclusive_price',

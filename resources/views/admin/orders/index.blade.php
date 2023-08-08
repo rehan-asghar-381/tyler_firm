@@ -102,7 +102,6 @@
 						<table class="table table-borderless">
 							<thead>
 								<tr>
-									
 									<th width="250px">Sr.</th>
 									<th width="250px">PO #</th>
 									<th width="250px">Job Name</th>

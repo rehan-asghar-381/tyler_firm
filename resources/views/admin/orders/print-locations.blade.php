@@ -22,8 +22,8 @@
                         <div class="col-md-4">
                             <label class="font-weight-600">Profit Margin</label>
                             <select name="profit_margin_percentage[{{$product_detail->id}}][]" class="my-form-control profit-margin" data-product-id="{{$product_detail->id}}">
-                                <option value="">Select Margin</option>
-                                @for ($i = 1; $i <=100; $i++)
+                                <option value="0">No Markup</option>
+                                @for ($i = 18; $i <=100; $i++)
                                 <option value="{{$i}}" @if(isset($order_price['profit_margin_percentage'][0]) && $order_price['profit_margin_percentage'][0] ==$i ) {{"selected"}} @endif>{{$i}} %</option>
                                 @endfor
                             </select>
@@ -177,8 +177,15 @@
                                 @if(count($order_color_location) > 0)
                                 @foreach ($order_color_location as $k=>$item)
                                 <div class="form-group row print-location">
-                                    <label class="col-sm-2 font-weight-600">#{{$k+1}}</label>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-5">
+                                        <select class="form-control" data-product-id="{{$product_detail->id}}" name="location_number[{{$product_detail->id}}][]">
+                                            <option value="">select</option>
+                                            @foreach ($print_locations as $print_location)
+                                                <option value="{{$print_location->name}}" @if($print_location->name == $order_color_location_number[$k]) {{"selected"}} @endif>{{$print_location->abbr}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-5">
                                         <input class="form-control number-of-colors" data-product-id="{{$product_detail->id}}" name="color_per_location[{{$product_detail->id}}][]" type="number" value="{{$item}}">
                                     </div>
                                     <div class="col-sm-1">
@@ -191,8 +198,15 @@
                                 @endforeach
                                 @else
                                 <div class="form-group row print-location">
-                                    <label class="col-sm-2 font-weight-600">#1</label>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-5">
+                                        <select class="form-control" data-product-id="{{$product_detail->id}}" name="location_number[{{$product_detail->id}}][]">
+                                            <option value="">select</option>
+                                            @foreach ($print_locations as $print_location)
+                                                <option value="{{$print_location->name}}">{{$print_location->abbr}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-5">
                                         <input class="form-control number-of-colors" data-product-id="{{$product_detail->id}}" name="color_per_location[{{$product_detail->id}}][]" type="number" value="">
                                     </div>
                                     <div class="col-sm-1">
