@@ -584,7 +584,7 @@ textarea {
                     </div>
                     <div class="col-md-12 form-check mt-5">
                         <button type="submit" class="btn btn-primary mb-3 no-print" id="submit-form">Submit</button>
-                        <button type="button" class="btn btn-success mb-3 no-print" onclick='printDiv();' id="submit-form">
+                        <button type="button" class="btn btn-lg btn-success mb-3 no-print" onclick='printDiv();' id="submit-form">
                             <span class="fa fa-print">
                             </span>
                         </button>
