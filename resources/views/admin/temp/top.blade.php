@@ -1,4 +1,4 @@
-<nav class="navbar-custom-menu navbar navbar-expand-lg m-0">
+<nav class="navbar-custom-menu navbar navbar-expand-lg m-0 no-print">
 	<div class="sidebar-toggle-icon" id="sidebarCollapse">
 		sidebar toggle<span></span>
 	</div>

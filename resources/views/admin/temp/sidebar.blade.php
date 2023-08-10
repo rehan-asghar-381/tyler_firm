@@ -1,4 +1,4 @@
-<nav class="sidebar sidebar-bunker">
+<nav class="sidebar sidebar-bunker no-print no-print">
 	<div class="sidebar-header">
 		<a href="#" class="logo"><span>Tyler Firm</span></a>
 		{{-- <a href="index-2.html" class="logo"><img src="{{ asset('b/dist/img/logo.png') }}" alt=""></a> --}}
