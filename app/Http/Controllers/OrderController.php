@@ -43,7 +43,9 @@ class OrderController extends Controller
        $this->middleware('permission:orders-edit', ['only' => ['edit','update']]);
        $this->middleware('permission:orders-view', ['only' => ['show']]);
        $this->middleware('permission:orders-change-status', ['only' => ['status_update']]);
-       $this->middleware('permission:orders-generate-invoice', ['only' => ['status_update']]);
+       $this->middleware('permission:orders-generate-invoice', ['only' => ['generateInvoice']]);
+       $this->middleware('permission:orders-recreate', ['only' => ['recreate']]);
+
        $this->fixedAdultSize        = [
                                         "XS",
                                         "S",
@@ -179,10 +181,13 @@ class OrderController extends Controller
             if(auth()->user()->can('orders-edit')){
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.edit', $data->id).'"><i class="far fa-edit"></i> Edit</a>';
             }
+            if(auth()->user()->can('orders-recreate')){
+            
             $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.recreate', $data->id).'"><i class="far fa fa-retweet"></i> Re-Order</a>';
-
+            }
+            if(auth()->user()->can('orders-generate-d-yellow')){
             $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.DYellow', $data->id).'"><i class="far fa fa-file"></i> D Yellow</a>';
-
+            }
             if(auth()->user()->can('orders-generate-invoice')){
                 $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice', $data->id) .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
             }

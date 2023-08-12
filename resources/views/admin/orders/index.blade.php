@@ -72,7 +72,7 @@
 						<div>
 							<h6 class="fs-17 font-weight-600 mb-0">Orders List</h6>
 						</div>
-						@can('clients-create')
+						@can('order-create')
 						<div class="text-right">
 							<a class="" href="{{ route('admin.order.create') }}"><i class="far fa fa-plus"></i> Add Order</a>
 						</div>

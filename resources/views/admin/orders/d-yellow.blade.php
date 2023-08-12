@@ -3,9 +3,11 @@
 
     .form-control {
         height:calc(1.8em + 0.25rem + 0px) !important;
+        font-size:13px !important;
     }
     table td, table th{
         padding:2px 10px !important;
+        font-size: 13px !important;
     }
     table>thead>tr>th{
          padding:2px 10px !important;
@@ -94,7 +96,7 @@ textarea {
                                 {{ Session::get('success') }}
                             </div>
                             @endif
-                            <h5 class="font-weight-600 text-center" style="background: #d3d3d3;">Tyler</h5>
+                            <h6 class="font-weight-600 text-center" style="background: #d3d3d3;">Tyler</h6>
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="form-row">
@@ -174,7 +176,7 @@ textarea {
                                     </div>
                                 </div>
                             </div>
-                            <h5 class="font-weight-600 text-center" style="background: #d3d3d3;">Customer</h5>
+                            <h6 class="font-weight-600 text-center" style="background: #d3d3d3;">Customer</h6>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-row">
@@ -240,7 +242,7 @@ textarea {
                             </div>
                         </div>
                     </div> 
-                    <h5 class="font-weight-600 text-center" style="background: #d3d3d3; padding: 13px;"></h5>
+                    <h6 class="font-weight-600 text-center" style="background: #d3d3d3; padding: 13px;"></h6>
                     @if(count($order_d_yellow_inks) > 0)
                     @php
                 // dd($order_d_yellow_inks);
@@ -446,7 +448,7 @@ textarea {
                         </div>
                     </div>
                     @endif
-                    <h5 class="font-weight-600 text-center" style="background: #d3d3d3;padding:13px;"></h5>
+                    <h6 class="font-weight-600 text-center" style="background: #d3d3d3;padding:13px;"></h6>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-row">
@@ -644,7 +646,7 @@ textarea {
                                 {{-- </div> --}}
                                 <label for="is_rejected" style="font-size: 11px;font-weight: bold; margin-bottom:unset;width: 100%">List Rejects(Size/QTY) 
                             </div>
-                            <div class="form-group row mt-5 " style="margin-bottom:8rem !important;margin-top:6rem !important">
+                            <div class="form-group row mt-5 " style="margin-bottom:4rem !important;margin-top:4rem !important">
                                 <label for="notes" class="col-sm-8 font-weight-600 text-center">Notes</label>
                                         <input type="hidden" name="notes" id="notes" value="">
 
@@ -656,7 +658,7 @@ textarea {
 
                              @if(count($order_d_yellow_inks) > 0)
                    
-                                <div class="row mt-5">
+                                <div class="row mt-3">
                                     <div class="col-md-12">
                                         <div class="form">
                                             <div class="p-print-location">
@@ -692,8 +694,11 @@ textarea {
                             {{--  --}}
                         </div>
                     </div>
+
                     <div class="col-md-12 form-check mt-5">
-                        <button type="submit" class="btn btn-primary mb-3 no-print" id="submit-form">Submit</button>
+                        @if(auth()->user()->can('orders-update-d-yellow')){
+                            <button type="submit" class="btn btn-primary mb-3 no-print" id="submit-form">Submit</button>
+                        @endif
                         <button type="button" class="btn btn-lg btn-success mb-3 no-print" onclick='printDiv();' id="submit-form">
                             <span class="fa fa-print">
                             </span>
