@@ -265,6 +265,25 @@ class OrderController extends Controller
         $this->order_transfer($rData, $orderID);
         return redirect()->route("admin.order.create")->withSuccess('Order data has been saved successfully!');
     }
+   public function save_order_imgs($files_arr=[], $order_id){
+        $order                  = Order::find($order_id);
+        foreach($files_arr as $file){             
+            if(is_file($file)){
+                $original_name = $file->getClientOriginalName();
+                $file_name = time().rand(100,999).$original_name;
+                $destinationPath = public_path('/uploads/order/');
+                $file->move($destinationPath, $file_name);
+                $file_slug  = "/uploads/order/".$file_name;
+
+                $order_img                      = new OrderImgs();
+                $order_img->order_id            = $order_id;
+                $order_img->image               = $file_slug;
+                $order_images[]                 = $order_img;
+            }
+            
+        }
+        $order->OrderImgs()->saveMany($order_images);
+    }
     public function save_order_prices($order_id, $rData){
         $order                          = Order::find($order_id);
         $product_ids                    = $rData['product_ids'];
@@ -446,6 +465,11 @@ class OrderController extends Controller
         }
         if (count($product_ids) > 0) {
             $this->save_order_products($product_ids,$products_name, $orderID);
+        }
+        if($request->hasFile('filePhoto')){
+            if(count($request->file('filePhoto')) > 0 ){
+                $this->save_order_imgs($request->file('filePhoto'), $orderID);
+            }
         }
         $attribute_color                        = $rData['attribute_color'];
         $attribute_size                         = $rData['attribute_size'];
@@ -872,6 +896,7 @@ class OrderController extends Controller
             'client', 
             'client.ClientSaleRep', 
             'OrderPrice', 
+            'OrderImgs',
             'OrderColorPerLocation', 
             'OrderColorPerLocation.Product', 
             'OrderProducts', 

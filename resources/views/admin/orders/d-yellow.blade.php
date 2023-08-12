@@ -1,4 +1,39 @@
 @extends("admin.template", ["pageTitle"=>$pageTitle])
+<style type="text/css">
+
+    .form-control {
+        height:calc(1.8em + 0.25rem + 0px) !important;
+    }
+    table td, table th{
+        padding:2px 10px !important;
+    }
+    table>thead>tr>th{
+         padding:2px 10px !important;
+    }
+    .imagess {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 30px;
+        padding: 20px;
+    }
+
+    .photo {
+        max-width: 31.333%;
+        padding: 0 10px;
+        height: 200px;
+    }
+
+    .photo img {
+        width: 100%;
+        height: 100%;
+    }
+    label{
+        margin-bottom:none !important;
+    }
+   .productionSample{
+        margin-left: 9%;
+   }
+</style>
 <style media="print">
 @page {
     size: auto ;
@@ -11,7 +46,7 @@
         display: none !important;
     }
     #DivIdToPrint{
-        margin-top: -50px !important;
+        margin-top: -60px !important;
     }
     .row{
         margin: 0px !important;
@@ -36,9 +71,13 @@ input  select{
 textarea {
   resize: none !important;
 }
-
+.productionSample{
+        margin-left: 6% !important;
+   }
 }
+
 </style>
+
 @section('content')
 <div class="body-content">
     <div class="card">
@@ -60,43 +99,54 @@ textarea {
                                 <div class="col-md-8">
                                     <div class="form-row">
                                         <div class="col-md-3 mb-3">
-                                            <label for="print_crew" style="font-size: 11px;font-weight: bold;">PRINT CREW</label>
-                                            <input type="text" name="print_crew" class="form-control" id="print_crew" value="{{$order_d_yellow->print_crew ?? ""}}">
+                                            <label for="print_crew" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">PRINT CREW</label>
+                                            <input type="text" name="print_crew" class="form-control input-sm" id="print_crew" readonly="" value="{{$order_d_yellow->print_crew ?? ""}}">
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <label for="goods_rec" style="font-size: 11px;font-weight: bold;">Goods REC'D</label>
-                                            <input type="text" name="goods_rec" class="form-control" id="goods_rec" value="{{$order_d_yellow->goods_rec ?? ""}}">
+                                            <label for="goods_rec" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">Goods REC'D</label>
+                                            <input type="text" name="goods_rec" readonly="" class="form-control input-sm" id="goods_rec" value="{{$order_d_yellow->goods_rec ?? ""}}">
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <label for="order_date" style="font-size: 11px;font-weight: bold;">ORDER DATE</label>
-                                            <input type="text" name="order_date" class="form-control" id="order_date" value="{{date("m/d/Y", $order->time_id)}}" disabled>
+                                            <label for="order_date" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">ORDER DATE</label>
+                                            <input type="text" name="order_date" class="form-control input-sm" id="order_date" value="{{date("m/d/Y", $order->time_id)}}" disabled>
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <label for="boxes" style="font-size: 11px;font-weight: bold;">TOTAL # OF BOXES</label>
-                                            <input type="text" name="boxes" class="form-control" id="boxes" value="{{$order_d_yellow->boxes ?? ""}}">
+                                            <label for="boxes" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">TOTAL # OF BOXES</label>
+                                            <input type="text" readonly="" name="boxes" class="form-control input-sm" id="boxes" value="{{$order_d_yellow->boxes ?? ""}}">
                                         </div>
-                                        <div class="col-md-3 mb-3">
-                                            <label for="production_sample" style="font-size: 11px;font-weight: bold;">PRODUCTION SAMPLE</label>
-                                            <select name="production_sample" id="production_sample" class="form-control">
+                                        <div class="col-md-6 mt-4">
+                                            <label for="production_sample" style="font-size: 11px;font-weight: bold; margin-bottom:unset;width: 100%">PRODUCTION SAMPLE 
+                                            <span  class="productionSample" >Yes</span>
+                                            <span class="productionSample">No</span>
+                                            <span class="productionSample">1</span>
+                                            <span class="productionSample">2</span>
+                                            <span class="productionSample" >3</span></label>
+                                        <input type="hidden" name="production_sample" id="production_sample" value="">
+                                            {{-- <select name="production_sample" id="production_sample" class="form-control input-sm">
                                                 <option value="">Select</option>
                                                 <option value="Yes" @if(isset($order_d_yellow->production_sample) && $order_d_yellow->production_sample == "Yes") {{"selected"}} @endif>Yes</option>
                                                 <option value="No" @if(isset($order_d_yellow->production_sample) && $order_d_yellow->production_sample == "No") {{"selected"}} @endif>No</option>
                                                 <option value="1" @if(isset($order_d_yellow->production_sample) && $order_d_yellow->production_sample == "1") {{"selected"}} @endif>1</option>
                                                 <option value="2" @if(isset($order_d_yellow->production_sample) && $order_d_yellow->production_sample == "2") {{"selected"}} @endif>2</option>
                                                 <option value="3" @if(isset($order_d_yellow->production_sample) && $order_d_yellow->production_sample == "3") {{"selected"}} @endif>3</option>
-                                            </select>
+                                            </select> --}}
                                         </div>
-                                        <div class="col-md-3 mb-3">
-                                            <label for="event" class="font-weight-600" style="font-size: 11px;font-weight: bold;">EVENT</label>
-                                            <select name="event" id="event" class="form-control" disabled>
+                                        <div class="col-md-6 mt-4">
+                                            <label for="event" style="font-size: 11px;font-weight: bold; margin-bottom:unset;width: 100%">**EVENT** 
+                                            <span style="margin-left: 30%;">Yes</span>
+                                            <span style="margin-left: 30%;">No</span>
+                                            </label>
+                                        <input type="hidden" name="event" id="event" value="">
+
+                                            {{-- <select name="event" id="event" class="form-control input-sm" disabled>
                                                 <option value="">Select</option>
                                                 <option value="Yes" @if($order->event == "Yes") {{"selected"}} @endif>Yes</option>
                                                 <option value="No" @if($order->event == "No") {{"selected"}} @endif>No</option>
-                                            </select>
+                                            </select >--}}
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-row">
                                         <div class="table-responsive">
                                             <table class="table table-bordered">
@@ -129,23 +179,23 @@ textarea {
                                 <div class="col-md-12">
                                     <div class="form-row">
                                         <div class="col-md-2 mb-3">
-                                            <label for="company_name" style="font-size: 11px;font-weight: bold;">CUSTOMER</label>
-                                            <input type="text" name="company_name" class="form-control" id="company_name" value="{{$client_details["company_name"]}}" disabled>
+                                            <label for="company_name" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">CUSTOMER</label>
+                                            <input type="text" name="company_name" class="form-control input-sm" id="company_name" value="{{$client_details["company_name"]}}" disabled>
                                         </div>
                                         <div class="col-md-2 mb-3">
-                                            <label for="order_number" style="font-size: 11px;font-weight: bold;">P.O #</label>
+                                            <label for="order_number" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">P.O #</label>
                                             <input type="text" name="order_number" class="form-control" id="order_number" value="{{$order->order_number}}" disabled>
                                         </div>
                                         <div class="col-md-2 mb-3">
-                                            <label for="ship_date" style="font-size: 11px;font-weight: bold;">SHIP DATE</label>
+                                            <label for="ship_date" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">SHIP DATE</label>
                                             <input type="text" name="ship_date" class="form-control" id="ship_date" value="{{date("Y-m-d", $order->ship_date)}}" disabled>
                                         </div>
                                         <div class="col-md-2 mb-3">
-                                            <label for="other_info" style="font-size: 11px;font-weight: bold;">OTHER INFO</label>
+                                            <label for="other_info" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">OTHER INFO</label>
                                             <input type="text" name="other_info" class="form-control" id="other_info" value="{{$client_details["sales_rep"]}}" disabled>
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <label for="palletize" style="font-size: 11px;font-weight: bold;">PALLETIZE</label>
+                                            <label for="palletize" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">PALLETIZE</label>
                                             <div class="form-row">
                                                 <input type="text" name="palletize" class="form-control col-md-6" id="palletize" value="{{$order_d_yellow->palletize ?? ""}}">
                                                 <select name="palletize_opt" id="palletize_opt" class="form-control col-md-6">
@@ -156,15 +206,15 @@ textarea {
                                             </div>
                                         </div>
                                         <div class="col-md-2 mb-3">
-                                            <label for="in_hands" class="font-weight-600" style="font-size: 11px;font-weight: bold;">IN HANDS</label>
+                                            <label for="in_hands" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">IN HANDS</label>
                                             <input type="text" name="in_hands" class="form-control" id="in_hands" value="{{$order_d_yellow->in_hands ?? ""}}">
                                         </div>
                                         <div class="col-md-2 mb-3">
-                                            <label for="design" class="font-weight-600" style="font-size: 11px;font-weight: bold;">DESIGN</label>
+                                            <label for="design" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">DESIGN</label>
                                             <input type="text" name="design" class="form-control" id="design" value="{{$order_d_yellow->design ?? ""}}">
                                         </div>
                                         <div class="col-md-2 mb-3">
-                                            <label for="ship" class="font-weight-600" style="font-size: 11px;font-weight: bold;">SHIP</label>
+                                            <label for="ship" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">SHIP</label>
                                             <select name="ship" id="ship" class="form-control">
                                                 <option value="">Select</option>
                                                 <option value="WC" @if(isset($order_d_yellow->ship) && $order_d_yellow->ship == "WC") {{"selected"}} @endif>WC</option>
@@ -178,11 +228,11 @@ textarea {
                                             </select>
                                         </div>
                                         <div class="col-md-2 mb-3">
-                                            <label for="acct" class="font-weight-600" style="font-size: 11px;font-weight: bold;">ACCNT</label>
+                                            <label for="acct" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">ACCNT</label>
                                             <input type="text" name="acct" class="form-control" id="acct" value="{{$order_d_yellow->acct ?? ""}}">
                                         </div>
                                         <div class="col-md-2 mb-3">
-                                            <label for="ship_date" class="font-weight-600" style="font-size: 11px;font-weight: bold;">DATE SHIPPED</label>
+                                            <label for="ship_date" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">DATE SHIPPED</label>
                                             <input type="text" name="ship_date" class="form-control" id="ship_date" value="{{date("Y-m-d", $order->ship_date)}}" disabled>
                                         </div>
                                     </div>
@@ -410,15 +460,15 @@ textarea {
                                         <tbody>
                                             <tr>
                                                 <th scope="row">Alpha#</th>
-                                                <td><input type="text" name="alpha" class="form-control" id="alpha" value="{{$order_d_yellow->alpha ?? ""}}"></td>
+                                                <td><input type="text" name="alpha" readonly="" class="form-control" id="alpha" value="{{$order_d_yellow->alpha ?? ""}}"></td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">S&S#</th>
-                                                <td><input type="text" name="s_and_s" class="form-control" id="s_and_s" value="{{$order_d_yellow->s_and_s ?? ""}}"></td>
+                                                <td><input type="text" name="s_and_s" readonly="" class="form-control" id="s_and_s" value="{{$order_d_yellow->s_and_s ?? ""}}"></td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">SANMAR#</th>
-                                                <td><input type="text" name="sanmar" class="form-control" id="sanmar" value="{{$order_d_yellow->sanmar ?? ""}}"></td>
+                                                <td><input type="text" name="sanmar" readonly="" class="form-control" id="sanmar" value="{{$order_d_yellow->sanmar ?? ""}}"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -555,6 +605,18 @@ textarea {
                     <div class="row">
                         <div class="col-md-7">
                             <div class="form-row">
+                              <div class="row imagess">
+                                {{-- {{dd($order->OrderImgs)}} --}}
+                                @if(count($order->OrderImgs) > 0)
+                                @foreach($order->OrderImgs as $key=>$OrderImg)
+                                <div class="col-md-4 photo mt-1">
+                                    
+                               <img src="{{asset($OrderImg->image)}}" class="img-rounded" alt="{{$OrderImg->order_id}}" >
+                                </div>
+                                @endforeach
+                                @endif
+                               
+                            </div>
                             </div>
                         </div>
                         <div class="col-md-5">
@@ -565,21 +627,69 @@ textarea {
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="is_rejected" class="col-sm-4 font-weight-600">Any Rejects OR Shortages</label>
-                                <div class="col-sm-8">
-                                    <select name="is_rejected" id="is_rejected" class="form-control">
+                                {{-- <label for="is_rejected" class="col-sm-4 font-weight-600">Any Rejects OR Shortages</label> --}}
+                                <label for="is_rejected" style="font-size: 11px;font-weight: bold; margin-bottom:unset;width: 100%">Any Rejects OR Shortages? 
+                                            <span style="margin-left: 20%;">Yes</span>
+                                            <span style="margin-left: 20%;">No</span>
+                                            </label>
+                                        <input type="hidden" name="is_rejected" id="is_rejected" value="">
+
+                                            <hr>
+                                {{-- <div class="col-sm-8"> --}}
+                                    {{-- <select name="is_rejected" id="is_rejected" class="form-control">
                                         <option value="">Select</option>
                                         <option value="Yes" @if(isset($order_d_yellow->is_rejected) && $order_d_yellow->is_rejected == "Yes") {{"selected"}} @endif>Yes</option>
                                         <option value="No" @if(isset($order_d_yellow->is_rejected) && $order_d_yellow->is_rejected == "No") {{"selected"}} @endif>No</option>
-                                    </select>
-                                </div>
+                                    </select> --}}
+                                {{-- </div> --}}
+                                <label for="is_rejected" style="font-size: 11px;font-weight: bold; margin-bottom:unset;width: 100%">List Rejects(Size/QTY) 
                             </div>
-                            <div class="form-group row">
-                                <label for="notes" class="col-sm-4 font-weight-600">Notes</label>
+                            <div class="form-group row mt-5 " style="margin-bottom:8rem !important;margin-top:6rem !important">
+                                <label for="notes" class="col-sm-8 font-weight-600 text-center">Notes</label>
+                                        <input type="hidden" name="notes" id="notes" value="">
+
                                 <div class="col-sm-8">
-                                    <textarea type="text" value="" class="form-control" name="notes" id="notes" placeholder="" rows="4">{{$order_d_yellow->notes ?? ""}}</textarea>
+                                    {{-- <textarea type="text" value="" class="form-control" name="notes" id="notes" placeholder="" rows="4">{{$order_d_yellow->notes ?? ""}}</textarea> --}}
                                 </div>
                             </div>
+                            {{--  --}}
+
+                             @if(count($order_d_yellow_inks) > 0)
+                   
+                                <div class="row mt-5">
+                                    <div class="col-md-12">
+                                        <div class="form">
+                                            <div class="p-print-location">
+                                                 @php
+                                                $table_header_arr       = [];
+                                                $table_body_arr         = [];
+                                                $keys_arr               = [];
+                                                @endphp
+                                                @foreach ($order_d_yellow_inks as $order_d_yellow_ink)
+                                                @php
+                                                $table_header_arr[$order_d_yellow_ink->key] = $order_d_yellow_ink->location_number;
+                                                $table_body_arr[$order_d_yellow_ink->key]   = json_decode($order_d_yellow_ink->ink_colors, true);
+                                                $keys_arr[]         = $order_d_yellow_ink->key;
+                                                @endphp
+                                                <div class="form-group row print-location">
+                                                    <div class="col-sm-5">
+                                                        
+                                                        <input class="form-control number-of-colors"  disabled="" value="{{$order_d_yellow_ink->location_number}}">
+                                                    </div>
+                                                    <div class="col-sm-5">
+                                                        <input class="form-control number-of-colors"  disabled=""  type="number" value="{{$order_d_yellow_ink->color_per_location}}">
+                                                    </div>
+                                                </div>
+                                                @endforeach
+                                                @php
+                                                @endphp
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                @endif
+                            {{--  --}}
                         </div>
                     </div>
                     <div class="col-md-12 form-check mt-5">
