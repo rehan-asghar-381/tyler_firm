@@ -772,7 +772,7 @@ hr{
         }else{
             all_sizes                   = all_adult_sizes;
             fixed_sizes                 = adult_fixed_sizes;
-            size_selector               = "#S-XL-";
+            size_selector               = "#XS-XL-";
         }
         $(selector).each(function(indx, elm){
             selected_sizes.push($(this).find('option:selected').text());

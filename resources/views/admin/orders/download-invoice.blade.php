@@ -162,29 +162,28 @@
                     @endforeach
                 @endforeach
                 @if ($initializer == $flag)
+                    <tr><td colspan="16" style="background-color: #dfdada;padding:5px;font-weight:bold;text-align:center;">Additional Services</td></tr>
                     @if($extra_details["fold_bag_tag_pieces"] > 0 && $extra_details["fold_bag_tag_prices"] > 0)
                     <tr>
-                        <td colspan="2">
+                        <td colspan="12">
                             <div><strong>Fold/Bag/Tag</strong></div>
                         </td>
-                        <td colspan="3">
-                            <div style="font-size: 16px;">Quantity</div>
-                            <small>{{ $extra_details["fold_bag_tag_pieces"] }}</small>
-                        </td>
-                        <td colspan="3">
-                            <div style="font-size: 16px;">Price Per Piece</div>
-                            <small>{{ $extra_details["fold_bag_tag_prices"] }}</small>
+                        <td colspan="2">
+                            <strong style="font-size: 16px;">{{ $extra_details["fold_bag_tag_pieces"] }}</strong>
                         </td>
                         <td colspan="2">
+                            <strong style="font-size: 16px;">{{ $extra_details["fold_bag_tag_pieces"]*$extra_details["fold_bag_tag_prices"] }}</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="12">
                             <div><strong>Transfers</strong></div>
                         </td>
-                        <td colspan="3">
-                            <div style="font-size: 16px;">Quantity</div>
-                            <small>{{ $extra_details["transfers_pieces"] }}</small>
+                        <td colspan="2">
+                            <strong style="font-size: 16px;">{{ $extra_details["transfers_pieces"] }}</strong>
                         </td>
-                        <td colspan="3">
-                            <div style="font-size: 16px;">Price Per Piece</div>
-                            <small>{{ $extra_details["transfers_prices"] }}</small>
+                        <td colspan="2">
+                            <strong style="font-size: 16px;">{{ $extra_details["transfers_pieces"]*$extra_details["transfers_prices"] }}</strong>
                         </td>
                     </tr>
                     @endif
@@ -192,38 +191,28 @@
                     </tr>
                     @if($extra_details["fold_bag_tag_pieces"] > 0 && $extra_details["fold_bag_tag_prices"] > 0)
                     <tr>
-                        <td  colspan="2">
+                        <td  colspan="12">
                             <div><strong>Hang Tags</strong></div>
                         </td>
-                        <td  colspan="3">
-                            <div style="font-size: 16px;">Quantity</div>
-                            <small>{{ $extra_details["hang_tag_pieces"] }}</small>
+                        <td  colspan="2">
+                            <strong style="font-size: 16px;">{{ $extra_details["hang_tag_pieces"] }}</strong>
                         </td>
-                        <td  colspan="3">
-                            <div style="font-size: 16px;">Price Per Piece</div>
-                            <small>{{ $extra_details["hang_tag_prices"] }}</small>
+                        <td  colspan="2">
+                            <strong style="font-size: 16px;">{{ $extra_details["hang_tag_pieces"]*$extra_details["hang_tag_prices"] }}</strong>
                         </td>
-                        <td colspan="2">
+                    </tr>
+                    <tr>
+                        <td colspan="12">
                             <div><strong>Ink Color Change</strong></div>
                         </td>
-                        <td  colspan="3">
-                            <div style="font-size: 16px;">Quantity</div>
-                            <small>{{ $extra_details["transfers_prices"] }}</small>
+                        <td  colspan="2">
+                            <strong style="font-size: 16px;">{{ $extra_details["transfers_prices"] }}</strong>
                         </td>
-                        <td  colspan="3">
-                            <div style="font-size: 16px;">Price Per Piece</div>
-                            <small>{{ $extra_details["transfers_prices"] }}</small>
+                        <td  colspan="2">
+                            <strong style="font-size: 16px;">{{ $extra_details["transfers_prices"]*$extra_details["transfers_prices"] }}</strong>
                         </td>
                     </tr>
                     @endif
-                    <tr>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <div>Art/Separation</div>
-                        </td>
-                        <td colspan="14" style="margin-top: 20px;"><div><small>One Time Charge To Get Your Design Print Ready!</small></div><small>10</small></td>
-                    </tr>
                 @endif
             </table> 
             @endforeach
@@ -247,7 +236,7 @@
                             @foreach ($color_per_locations as $p_name=>$color_per_location)
                             <li><strong style="padding-right: 24px;font-size:14px;">{{$p_name}}</strong></li>
                                 @foreach ($color_per_location["color_per_location"] as $key=>$location)
-                                <li><strong style="padding-right: 24px;font-size:14px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$color_per_location["location_number"][$key]}}</strong>{{$location}}</li>
+                                <li><strong style="padding-right: 24px;font-size:14px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$color_per_location["location_number"][$key]}}</strong>{{$location." colors"}}</li>
                                 @endforeach
                             @endforeach
                         @endif

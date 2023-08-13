@@ -302,7 +302,7 @@ textarea {
                                         <tr>
 
                                             @foreach ($table_header_arr as $kk=>$name)
-                                            <td colspan="1" style="font-size: 12px;font-weight: bold;">INK COLORS</td>
+                                            <td colspan="1" class="{{$kk}}" style="font-size: 12px;font-weight: bold;">INK COLORS</td>
                                             @endforeach
                                         </tr>
                                         <tr>
@@ -414,7 +414,7 @@ textarea {
                                     </thead>
                                     <tbody class="t-body">
                                         <tr>
-                                            <td colspan="1" style="font-size: 12px;font-weight: bold;">INK COLORS</td>
+                                            <td colspan="1" class="1" style="font-size: 12px;font-weight: bold;">INK COLORS</td>
                                         </tr>
                                         <tr>
                                             <td colspan="1" class="1" style="padding:0px;"><input type="text" name="ink_color[1][]" class="form-control" value="" style="border-radius: 0 !important;"></td>
@@ -741,7 +741,7 @@ $(document).on("change", ".location-name", function(){
     });
 function add_column(class_name=""){
     let header_html     ='<th colspan="1" class="'+class_name+'"></th>';
-    let ink_color       ='<td colspan="1" class="'+class_name+'">INK COLORS</td>';
+    let ink_color       ='<td colspan="1" class="'+class_name+'" style="font-size: 12px;font-weight: bold;">INK COLORS</td>';
     let body_html       ='<td colspan="1" class="'+class_name+'" style="padding:0px;"><input type="text" name="ink_color['+class_name+'][]" class="form-control" value="" style="border-radius: 0 !important;"></td>';
     $(".t-header").append(header_html);
     $("body .t-body tr").each(function(index, element){

@@ -168,81 +168,64 @@
                             @endforeach
                         @endforeach
                         @if ($initializer == $flag)
+                                <tr><td colspan="10" style="background-color: #dfdada;padding:5px;font-weight:bold;text-align:center;">Additional Services</td></tr>
                             @if($extra_details["fold_bag_tag_pieces"] > 0 && $extra_details["fold_bag_tag_prices"] > 0)
                                 <tr>
-                                    <td rowspan="2">
+                                    <td colspan="8">
                                         <div><strong>Fold/Bag/Tag</strong></div>
                                     </td>
                                     <td>
-                                        <div><strong>Quantity</strong></div>
-                                        <small>{{ $extra_details["fold_bag_tag_pieces"] }}</small>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["fold_bag_tag_pieces"] }}</strong>
                                     </td>
                                     <td>
-                                        <div><strong>Price Per Piece</strong></div>
-                                        <small>{{ $extra_details["fold_bag_tag_prices"] }}</small>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ $extra_details["fold_bag_tag_pieces"]*$extra_details["fold_bag_tag_prices"] }}</strong>
                                     </td>
-                                    <td rowspan="2">
+                                </tr>
+                                <tr>
+                                    <td colspan="8">
                                         <div><strong>Transfers</strong></div>
                                     </td>
                                     <td>
-                                        <div><strong>Quantity</strong></div>
-                                        <small>{{ $extra_details["transfers_pieces"] }}</small>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["transfers_pieces"] }}</small>
                                     </td>
                                     <td>
-                                        <div><strong>Price Per Piece</strong></div>
-                                        <small>{{ $extra_details["transfers_prices"] }}</small>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ $extra_details["transfers_pieces"]*$extra_details["transfers_prices"] }}</strong>
                                     </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                 </tr>
                             @endif
                             @if($extra_details["fold_bag_tag_pieces"] > 0 && $extra_details["fold_bag_tag_prices"] > 0)
                                 <tr>
-                                    <td rowspan="2">
+                                    <td colspan="8">
                                         <div><strong>Hang Tags</strong></div>
                                     </td>
                                     <td>
-                                        <div><strong>Quantity</strong></div>
-                                        <small>{{ $extra_details["hang_tag_pieces"] }}</small>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["hang_tag_pieces"] }}</strong>
                                     </td>
                                     <td>
-                                        <div><strong>Price Per Piece</strong></div>
-                                        <small>{{ $extra_details["hang_tag_prices"] }}</small>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ $extra_details["hang_tag_pieces"]*$extra_details["hang_tag_prices"] }}</strong>
                                     </td>
-                                    <td rowspan="2">
+                                    
+                                </tr>
+                                <tr>
+                                    <td colspan="8">
                                         <div><strong>Ink Color Change</strong></div>
                                     </td>
                                     <td>
-                                        <div><strong>Quantity</strong></div>
-                                        <small>{{ $extra_details["ink_color_change_pieces"] }}</small>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["ink_color_change_pieces"] }}</strong>
                                     </td>
                                     <td>
-                                        <div><strong>Price Per Piece</strong></div>
-                                        <small>{{ $extra_details["ink_color_change_prices"] }}</small>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ $extra_details["ink_color_change_pieces"]*$extra_details["ink_color_change_prices"] }}</strong>
                                     </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                 </tr>
                             @endif
-                            <tr style="border-top: 1px solid #dfdada !important;">
-                                <td rowspan="2">
-                                    <div><strong>Art/Separation</strong></div>
-                                </td>
-                                <td rowspan="2"><div><small>One Time Charge To Get Your Design Print Ready!</small></div><small>10</small></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
                         @endif
                     </tbody>
                 </table>
@@ -268,7 +251,7 @@
                             @foreach ($color_per_locations as $p_name=>$color_per_location)
                             <li><strong style="padding-right: 24px;">{{$p_name}}</strong></li>
                                 @foreach ($color_per_location["color_per_location"] as $key=>$location)
-                                <li><strong style="padding-right: 24px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$color_per_location["location_number"][$key]}}</strong>{{$location}}</li>
+                                <li><strong style="padding-right: 24px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$color_per_location["location_number"][$key]}}</strong>{{$location." colors"}}</li>
                                 @endforeach
                             @endforeach
                             
