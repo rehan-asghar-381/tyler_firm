@@ -148,12 +148,12 @@ class ProductController extends Controller
 
                 $action_list    .= '<a class="dropdown-item add-p-price" data-product-id="'.$data->id.'" href="#"><i class="fas fa-plus"></i></i> Add Prices</a>';
             }
-            if(auth()->user()->can('brand-view')){
+            if(auth()->user()->can('product-view')){
 
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.product.detail',$data->id).'"><i class="fas fa fa-eye"></i> View</a>';
             }
 
-            if(auth()->user()->can('brand-edit')){
+            if(auth()->user()->can('product-edit')){
 
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.product.edit',$data->id).'"><i class="far fa-edit"></i> Edit</a>';
             }

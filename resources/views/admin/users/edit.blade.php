@@ -5,7 +5,7 @@
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="fs-17 font-weight-600 mb-0">Create User</h6>
+                    <h6 class="fs-17 font-weight-600 mb-0">Edit User</h6>
                 </div>
                 <div class="text-right">
                     
@@ -35,7 +35,7 @@
                         {!! Form::password('confirm-password', array('placeholder' => 'Confirm Password','class' => 'form-control font-12 form-control-lg require')) !!}
                     </div>
                 </div>
-                @if (!auth()->user()->hasRole('Super Admin'))
+                {{-- @if (!auth()->user()->hasRole('Super Admin')) --}}
                     
                     <div class="form-group">
                         <div class="roles_titles mt-4 mb-4" style="font-size: 16px;font-weight: bold;">Roles</div>
@@ -72,7 +72,7 @@
                         </div>
                         @endif
                     </div>
-                @endif
+                {{-- @endif --}}
                 <button type="submit" class="btn btn-success">Submit</button>
             </form>
         </div>
