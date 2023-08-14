@@ -140,11 +140,7 @@
                       @endforeach
                   </select>
                 </div>
-                  <div class="col-md-3 mb-3">
-                      <label class="form-label text-dark-gray" for="">Price</label>
-                      <input type="number" name="inclusive_price" class="form-control font-12 form-control-lg cost" value="{{ $product->inclusive_price }}" step="any">
-                  </div>
-                  <div class="col-md-3 mb-3">
+                <div class="col-md-3 mb-3">
                     <label class="form-label text-dark-gray" for="">Brand</label>
                     <select type="text" name="brand_id" id="brand_id" class="form-control select-one" value="" >
                       <option value="">--select--</option>

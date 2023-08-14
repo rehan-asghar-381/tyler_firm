@@ -70,14 +70,14 @@
                             </div>
                             <div class="col-md-6 pr-md-1">
                                 <div class="form-group">
-                                    <label class="font-weight-600">Product Code</label>
+                                    <label class="font-weight-600">SKU</label>
                                     <input type="text" class="form-control" disabled="" value="{{ $product->code }}">
                                 </div>
                             </div>
                             <div class="col-md-6 pr-md-1">
                                 <div class="form-group">
-                                    <label class="font-weight-600">Price</label>
-                                    <input type="text" class="form-control" disabled="" value="{{ $product->inclusive_price }}">
+                                    <label class="font-weight-600">Brand</label>
+                                    <input type="text" class="form-control" disabled="" value="{{ $product->Brand->name ?? "" }}">
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">

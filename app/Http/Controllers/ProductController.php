@@ -35,6 +35,7 @@ class ProductController extends Controller
         $this->middleware('permission:product-list', ['only' => ['index']]);
 
         $this->fixedAdultSize        = [
+            "XS",
             "S",
             "M",
             "L",
@@ -285,7 +286,7 @@ public function save_product_imgs($files_arr=[], $product_id){
     public function productDetail(Request $request, $id)
     {
         $pageTitle      = "Product";
-        $product        = Product::with('ProductImg','ProductVariant', 'ProductVariant.Atrributes')->find($id);
+        $product        = Product::with('Brand', 'ProductImg','ProductVariant', 'ProductVariant.Atrributes')->find($id);
         return view('admin.products.show',compact('pageTitle', 'product'));
 
     }
@@ -383,8 +384,9 @@ public function save_product_imgs($files_arr=[], $product_id){
         $variants                   = ProductVariant::with('Atrributes')
                                         ->where("product_id", $product_id)
                                         ->get();
+        
         foreach($variants as $variant){
-            if($variant->name == "Baby Size"){
+            if($variant->name == "Baby_sizes Size"){
                 $type               = "Baby Size";
                 break;
             }
@@ -395,7 +397,7 @@ public function save_product_imgs($files_arr=[], $product_id){
             $postfix                = "_OSFA-18M";
         }else{
             $fixed_sizes            = $this->fixedAdultSize;
-            $postfix                = "_S-XL";
+            $postfix                = "_XS-XL";
         }
         $fixed_sizes_ids            = [];                                
         foreach ($variants as $key => $variant) {
@@ -468,8 +470,8 @@ public function savePrices(Request $request){
     }
     $product->ProductPrice()->delete();
     $product->ProductPrice()->saveMany($productPriceArr);
-
-    return json_encode(array("status"=>true, "message"=>"Prices added successfully"));
+    return redirect()->route('admin.product.index')
+        ->with('success','Prices added successfully');
 } 
 public function add_variant(Request $request){
     $user_id                    = Auth::user()->id;

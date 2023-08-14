@@ -581,8 +581,6 @@ class OrderController extends Controller
         $product_id         = $request->product_id;
         $order_id           = (isset($request->order_id) && $request->order_id != "")?$request->order_id:0;
         $product_detail     = Product::with('ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
-
-
         if($order_id > 0){
             $order_prices    = OrderPrice::where(["order_id"=>$order_id, "product_id"=>$product_id])->get();
             
@@ -602,12 +600,13 @@ class OrderController extends Controller
             }
         }
         foreach($product_detail->ProductVariant as $productVariant){
-            
-            if($productVariant->name == "Baby Size"){
+        
+            if($productVariant->name == "Baby_sizes Size"){
                 $type       = "Baby Size";
                 break;
             }
         }
+    
         return view('admin.orders.print-locations', compact('product_detail', 'type', 'order_price', 'order_color_location', 'print_locations', 'order_color_location_number'));
     }
     public function print_nd_loations_view(Request $request)

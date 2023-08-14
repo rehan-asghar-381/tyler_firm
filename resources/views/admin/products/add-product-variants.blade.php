@@ -17,6 +17,14 @@
             <div class="modal-body" style="max-height: calc(100vh - 210px);overflow-y: auto;">
                 @if (count($variants) > 0)
                     @foreach ($variants as $variant)
+                    @php
+                        if($variant->name     == "Adult_sizes Size"){
+                            $variant->name    = "Adult Size";
+                        }
+                        if($variant->name     == "Baby_sizes Size"){
+                            $variant->name    = "Baby Size";
+                        }
+                    @endphp
                     <div class="row">
                         <div class="col-md-4 offset-4 ">
                             <div class="form-group">

@@ -696,7 +696,7 @@ textarea {
                     </div>
 
                     <div class="col-md-12 form-check mt-5">
-                        @if(auth()->user()->can('orders-update-d-yellow')){
+                        @if(auth()->user()->can('orders-update-d-yellow'))
                             <button type="submit" class="btn btn-primary mb-3 no-print" id="submit-form">Submit</button>
                         @endif
                         <button type="button" class="btn btn-lg btn-success mb-3 no-print" onclick='printDiv();' id="submit-form">

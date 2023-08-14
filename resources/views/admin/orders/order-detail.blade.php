@@ -177,10 +177,18 @@
                             <tbody>
                                 @if(count($product->OrderProductVariant) > 0)
                                 @foreach ($product->OrderProductVariant as $order_product_variant)
+                                @php
+                                    if($order_product_variant->variant2_name     == "Adult_sizes Size"){
+                                        $variant2_name    = "Adult Size";
+                                    }
+                                    if($order_product_variant->variant2_name     == "Baby_sizes Size"){
+                                        $variant2_name    = "Baby Size";
+                                    }
+                                @endphp
                                 @if($loop->first)
                                 <tr>
                                     <th>{{$order_product_variant->variant1_name}}</th>
-                                    <th>{{$order_product_variant->variant2_name}}</th>
+                                    <th>{{$variant2_name}}</th>
                                     <th>Pieces</th>
                                     <th>Price</th>
                                     <th>Total</th>

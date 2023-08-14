@@ -26,6 +26,14 @@
                      <div class="row mb-4 ">
                          @if (count($productVariantArr) > 0)
                          @foreach ($productVariantArr as $variant)
+                         @php
+                            if($variant     == "Adult_sizes Size"){
+                                $variant    = "Adult Size";
+                            }
+                            if($variant     == "Baby_sizes Size"){
+                                $variant    = "Baby Size";
+                            }
+                         @endphp
                          <div class="col-md-4">
                             <div class="form-group">
                                 <div class="icon-addon input-right-icon">
@@ -53,7 +61,7 @@
                                     @php 
                                         [$colorVariantId,$colorAtrributesId ,$colorVariantName]     = explode('_', $color);
                                         [$sizeVariantId,$sizerAtrributesId , $sizeVariantName]      = explode('_', $size);
-                                        @endphp
+                                    @endphp
 
                                     @if (in_array($sizerAtrributesId, $fixed_sizes_ids) && $flag  == 0)
                                     
