@@ -13,6 +13,8 @@ use App\Models\OrderTransfer;
 use App\Models\PrintLocation;
 use App\Models\Product;
 use App\Models\Brand;
+use App\Models\QuoteApproval;
+use App\Models\Blank;
 use App\Models\OrderOtherCharges;
 use App\Models\OrderProductVariant;
 use App\Models\PriceRange;
@@ -91,9 +93,26 @@ class OrderController extends Controller
 
             $statuses_arr['"'.$key.'"']          = $status;
         }
+// 
+        $blank_arr                           = [];
+        $blank                               = Blank::where('is_active', 'Y')->get(['id', 'name']);
+        
+        foreach($blank as $key=>$status){
+
+            $blank_arr['"'.$key.'"']          = $status;
+        }
+
+        $quote_approval_arr                           = [];
+        $quote_approval                               = QuoteApproval::where('is_active', 'Y')->get(['id', 'name']);
+        
+        foreach($quote_approval as $key=>$status){
+
+            $quote_approval_arr['"'.$key.'"']          = $status;
+        }
+        
         $clients        = Client::get();
 
-        return view('admin.orders.index', compact('pageTitle', 'statuses_arr', 'clients'));
+        return view('admin.orders.index', compact('pageTitle', 'statuses_arr', 'blank_arr','quote_approval_arr','clients'));
     } 
 
     public function ajaxtData(Request $request){
@@ -162,6 +181,20 @@ class OrderController extends Controller
             else
                 return '-';
         })
+        ->editColumn('quote_approval', function ($data) {
+
+            if (isset($data->QuoteApproval->name) && $data->QuoteApproval->name != "")
+                return $data->QuoteApproval->name;
+            else
+                return '-';
+        })
+        ->editColumn('blank', function ($data) {
+
+            if (isset($data->Blank->name) && $data->Blank->name != "")
+                return $data->Blank->name;
+            else
+                return '-';
+        })
         ->editColumn('order_date', function ($data) {
             if ($data->time_id > 0 )
                 return date('Y-m-d',$data->time_id);
@@ -186,13 +219,19 @@ class OrderController extends Controller
             $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.recreate', $data->id).'"><i class="far fa fa-retweet"></i> Re-Order</a>';
             }
             if(auth()->user()->can('orders-generate-d-yellow')){
-            $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.DYellow', $data->id).'"><i class="far fa fa-file"></i> D Yellow</a>';
+            $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.DYellow', $data->id).'"><i class="far fa fa-file"></i> Create Yellow</a>';
             }
             if(auth()->user()->can('orders-generate-invoice')){
                 $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice', $data->id) .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
             }
             if(auth()->user()->can('orders-change-status')){
                 $action_list    .= '<a class="dropdown-item btn-change-status" href="#" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-life-ring"></i> Change Status</a>';
+            }
+             if(auth()->user()->can('orders-quote-approval')){
+                $action_list    .= '<a class="dropdown-item btn-change-quote_approval" href="#" data-quote_approval="'.$data->quote_approval.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-galactic-republic"></i> Quote Approval</a>';
+            }
+             if(auth()->user()->can('orders-blanks')){
+                $action_list    .= '<a class="dropdown-item btn-change-blank" href="#" data-blank="'.$data->blank.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-hornbill"></i> Blanks</a>';
             }
             $action_list        .= '</div></div>';
             return  $action_list;
@@ -537,6 +576,28 @@ class OrderController extends Controller
         // $data['body']                   = $body;
         // $data['time_id']                = date('U');
         // $this->add_notification($data);
+        return json_encode(array("status"=>true, "message"=>"Status has been updated successfully!"));
+    }
+    public function quote_update(Request $request)
+    {
+        $user_id                = Auth::user()->id;
+        $user_name              = Auth::user()->name;
+        $order_id               = $request->get('order_id');
+        $status                 = $request->get('status_id');
+        $order                  = Order::find($order_id);
+        $order->quote_approval  = $status;
+        $order->save();
+        return json_encode(array("status"=>true, "message"=>"Status has been updated successfully!"));
+    }
+    public function blank_update(Request $request)
+    {
+        $user_id                = Auth::user()->id;
+        $user_name              = Auth::user()->name;
+        $order_id               = $request->get('order_id');
+        $status                 = $request->get('status_id');
+        $order                  = Order::find($order_id);
+        $order->blank          = $status;
+        $order->save();
         return json_encode(array("status"=>true, "message"=>"Status has been updated successfully!"));
     }
     public function delete_image(Request $request)

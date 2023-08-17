@@ -87,6 +87,14 @@ class Order extends Model
         
         return $this->belongsTo(Status::class, "status", "id");
     }
+    public function QuoteApproval(){
+        
+        return $this->belongsTo(QuoteApproval::class, "quote_approval", "id");
+    }
+    public function Blank(){
+        
+        return $this->belongsTo(Blank::class, "blank", "id");
+    }
 
     public function OrderJobs(){
         
