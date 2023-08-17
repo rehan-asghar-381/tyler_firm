@@ -104,6 +104,7 @@
 								<tr>
 									<th width="250px">Sr.</th>
 									<th width="250px">PO #</th>
+									<th width="250px">Assignee</th>
 									<th width="250px">Job Name</th>
 									<th width="250px">Company Name</th>
 									<th width="250px">Quantity of Pieces</th>
@@ -192,6 +193,7 @@
 		columns: [
 		{data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center'},
 		{data: 'order_number', name: 'order_number', width:"250px"},
+		{data: 'created_by_name', name: 'created_by_name', width:"250px"},
 		{data: 'job_name', name: 'job_name', width:"250px"},
 		{data: 'company_name', name: 'company_name', width:"250px"},
 		{data: 'projected_units', name: 'projected_units', width:"250px"},
@@ -480,7 +482,7 @@ table.ajax.reload();
 				$('.flatpickr-jobs').flatpickr({
 					enableTime: true,
 					minDate: 'today',
-					dateFormat: "Y-m-d H:i",
+					dateFormat: "m-d-Y H:i",
 				});
 			}
 		});

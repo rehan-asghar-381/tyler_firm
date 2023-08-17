@@ -374,7 +374,7 @@ table.ajax.reload();
 				$('.flatpickr-jobs').flatpickr({
 					enableTime: true,
 					minDate: 'today',
-					dateFormat: "Y-m-d H:i",
+					dateFormat: "m-d-Y H:i",
 				});
 			}
 		});

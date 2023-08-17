@@ -25,6 +25,7 @@ use App\Models\DecorationPrice;
 use App\Models\OrderPrice;
 use App\Models\OrderColorPerLocation;
 use App\Models\OrderDYellow;
+use App\Models\ClientSaleRep;
 use App\Models\DYellowInkColor;
 use Yajra\DataTables\DataTables;
 use App\Traits\NotificationTrait;
@@ -117,7 +118,7 @@ class OrderController extends Controller
 
     public function ajaxtData(Request $request){
 
-        $rData              = Order::with(["client"]);
+        $rData              = Order::with(["client"])->where('status','<>',5);
         if($request->client_id != ""){
             $rData              = $rData->where('client_id', $request->client_id);
         }
@@ -158,7 +159,7 @@ class OrderController extends Controller
         })
         ->editColumn('due_date', function ($data) {
             if ($data->due_date != "")
-                return date("Y-m-d h:i", $data->due_date);
+                return date("m-d-Y h:i", $data->due_date);
             else
                 return '-';
         })
@@ -197,7 +198,7 @@ class OrderController extends Controller
         })
         ->editColumn('order_date', function ($data) {
             if ($data->time_id > 0 )
-                return date('Y-m-d',$data->time_id);
+                return date('m-d-Y',$data->time_id);
             else
                 return '-';
         })
@@ -544,7 +545,7 @@ class OrderController extends Controller
             'OrderOtherCharges'
         ])->find($id);
         $order_product_ids_arr      = [];
-        $clients                    = Client::get();
+        $sales_rep                    = ClientSaleRep::find($order->sales_rep);
         $products                   = Product::get();
         $fixed_sizes                = $this->fixedAdultSize;
         $all_adult_sizes            = $this->allAdultSizes;
@@ -556,7 +557,7 @@ class OrderController extends Controller
                 $order_product_ids_arr[]    = $orderProduct->product_id;
             }
         }
-        return view('admin.orders.order-detail',compact('pageTitle', 'order', 'clients', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr'));
+        return view('admin.orders.order-detail',compact('pageTitle', 'order', 'sales_rep', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr'));
     }
 
     public function status_update(Request $request)

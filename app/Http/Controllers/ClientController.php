@@ -419,7 +419,7 @@ class ClientController extends Controller
         })
         ->editColumn('due_date', function ($data) {
             if ($data->due_date != "")
-                return date("Y-m-d h:i", $data->due_date);
+                return date("m-d-Y h:i", $data->due_date);
             else
                 return '-';
         })
@@ -444,7 +444,7 @@ class ClientController extends Controller
         })
         ->editColumn('order_date', function ($data) {
             if ($data->time_id > 0 )
-                return date('Y-m-d',$data->time_id);
+                return date('m-d-Y',$data->time_id);
             else
                 return '-';
         })

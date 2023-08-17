@@ -107,7 +107,7 @@ class ClientTillController extends Controller
                 
                 if ($data->order->time_id != ""){
 
-                    return date('Y-m-d h:i:s', $data->order->time_id);
+                    return date('m-d-Y h:i:s', $data->order->time_id);
                 }else{
 
                     return '-';

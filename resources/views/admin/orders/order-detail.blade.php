@@ -90,7 +90,7 @@
                         <h6 class="mb-0 font-weight-600">Sales Rep</h6>
                     </div>
                     <div class="col-auto">
-                        <a href="#!" class="fs-13 font-weight-600">{{ $order->sales_rep ?? "-" }}</a>
+                        <a href="#!" class="fs-13 font-weight-600">{{ $order->sales_rep !='' ?  $sales_rep->first_name .' ' . $sales_rep->last_name : "-" }}</a>
                     </div>
                 </div>
                 <hr>
