@@ -38,7 +38,7 @@ trait NotificationTrait
             $html   .= '<div class="row"><div class="col-md-10"><div class="media new">
                         <div class="media-body">
                             <h6>'.$notification->body.'</h6>
-                            <span>'.date('Y-m-d h:i:s', $notification->time_id).'</span>
+                            <span>'.date('m-d-Y h:i:s', $notification->time_id).'</span>
                         </div>
                     </div></div><div class="col-md-2"><div style="width:20%"><i style="cursor: pointer;" data-nt-id="'.$nt_id.'" class="fas '.$envelop.'"></i></div></div></div>';
             }

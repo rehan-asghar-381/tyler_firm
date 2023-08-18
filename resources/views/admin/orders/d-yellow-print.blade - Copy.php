@@ -95,7 +95,7 @@
     <tr >
         <td style=" text-align: center;">{{$client_details["company_name"]}}</td>
         <td style=" text-align: center;">{{$order->order_number}}</td>
-        <td style=" text-align: center;">{{date("Y-m-d", $order->ship_date)}}</td>
+        <td style=" text-align: center;">{{date("m-d-Y", $order->ship_date)}}</td>
         <td style=" text-align: center;">{{$client_details["sales_rep"]}}</td>
         <td style=" text-align: center;">{{$order_d_yellow->palletize ?? ""}}</td>
         <td style=" text-align: center;">{{$order_d_yellow->palletize_opt?? ""}}</td>
@@ -113,7 +113,7 @@
         <td style=" text-align: center;">{{$order_d_yellow->design ?? ""}}</td>
         <td style=" text-align: center;">{{$order_d_yellow->ship ?? ""}}</td>
         <td  style=" text-align: center;" colspan="" rowspan="" headers=""> {{$order_d_yellow->acct ?? ""}}</td>
-        <td colspan="2" style=" text-align: center;">{{$order->ship_date > 0  ?  date("Y-m-d", $order->ship_date) : "-"}}</td>
+        <td colspan="2" style=" text-align: center;">{{$order->ship_date > 0  ?  date("m-d-Y", $order->ship_date) : "-"}}</td>
     </tr>
 </tbody>
 

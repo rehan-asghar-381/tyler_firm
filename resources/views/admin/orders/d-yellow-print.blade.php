@@ -113,7 +113,7 @@
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label for="ship_date" style="font-size: 11px;font-weight: bold;">SHIP DATE</label>
-                                    <input type="text" name="ship_date" class="form-control" id="ship_date" value="{{date("Y-m-d", $order->ship_date)}}" disabled>
+                                    <input type="text" name="ship_date" class="form-control" id="ship_date" value="{{date("m-d-Y", $order->ship_date)}}" disabled>
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label for="other_info" style="font-size: 11px;font-weight: bold;">OTHER INFO</label>
@@ -158,7 +158,7 @@
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label for="ship_date" class="font-weight-600" style="font-size: 11px;font-weight: bold;">DATE SHIPPED</label>
-                                    <input type="text" name="ship_date" class="form-control" id="ship_date" value="{{date("Y-m-d", $order->ship_date)}}" disabled>
+                                    <input type="text" name="ship_date" class="form-control" id="ship_date" value="{{date("m-d-Y", $order->ship_date)}}" disabled>
                                 </div>
                             </div>
                         </div>

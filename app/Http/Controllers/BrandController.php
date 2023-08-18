@@ -53,7 +53,7 @@ class BrandController extends Controller
             })
             ->editColumn('time_id', function ($data) {
                 if ($data->time_id != "")
-                    return date('Y-m-d h:i:s', $data->time_id);
+                    return date('m-d-Y h:i:s', $data->time_id);
                 else
                     return '-';
             })

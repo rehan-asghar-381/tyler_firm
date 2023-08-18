@@ -104,12 +104,15 @@
 								<tr>
 									<th width="250px">Sr.</th>
 									<th width="250px">PO #</th>
+									<th width="250px">Assignee</th>
 									<th width="250px">Job Name</th>
 									<th width="250px">Company Name</th>
 									<th width="250px">Quantity of Pieces</th>
 									<th width="250px">Due Date</th>
 									<th width="250px">Event</th>
 									<th width="250px">Status</th>
+									<th width="250px">Quote Approval</th>
+									<th width="250px">Blank</th>
 									<th>Action</th>
 								</tr>
 							</thead>
@@ -124,6 +127,9 @@
 		<template>
 			{{ json_encode($statuses_arr) }}
 		</template>
+             <template id="quote_approval">{{json_encode($quote_approval_arr)}}</template>
+             <template id="blank">{{json_encode($blank_arr)}}</template>
+
 		<div class="job-template">
 
 		</div>
@@ -187,12 +193,15 @@
 		columns: [
 		{data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center'},
 		{data: 'order_number', name: 'order_number', width:"250px"},
+		{data: 'created_by_name', name: 'created_by_name', width:"250px"},
 		{data: 'job_name', name: 'job_name', width:"250px"},
 		{data: 'company_name', name: 'company_name', width:"250px"},
 		{data: 'projected_units', name: 'projected_units', width:"250px"},
 		{data: 'due_date', name: 'due_date', width:"250px"},
 		{data: 'event', name: 'event', width:"250px"},
 		{data: 'status', name: 'status', width:"250px"},
+		{data: 'quote_approval', name: 'quote_approval', width:"250px"},
+		{data: 'blank', name: 'blank', width:"250px"},
 		{data: 'actions', name: 'actions'}
 		]
 	});
@@ -259,6 +268,7 @@ table.ajax.reload();
 		event.preventDefault();
 		var statuses 			= $('template').html();
 		var statuses_arr		= JSON.parse(statuses);
+				console.log(statuses_arr);
 		var status 				= $(this).attr("data-status");
 		var id 					= $(this).attr("data-id");
 		
@@ -266,7 +276,6 @@ table.ajax.reload();
 			title : "Change Status",
 			content:function(){
 				var html = "";
-				console.log(statuses_arr);
 				$.each(statuses_arr, function(index, value){
 					console.log(value);
 					if(value.id==status){
@@ -284,7 +293,8 @@ table.ajax.reload();
 					btnClass:"btn btn-success confirmed",
 					action:function(){
 						var v = this.$content.find("input[type='radio']:checked").val();
-						save_status(v, id);
+						let url = "{{ route('admin.order.status_update') }}";
+						save_status(v, id,url);
 						alert('Status has been updated successfully!');
 						// window.location.reload();
 						table.ajax.reload();
@@ -297,11 +307,98 @@ table.ajax.reload();
 		});
 		return false;
 	});	
-
-	function save_status(status_id, order_id){
+		$(document).on("click", ".btn-change-quote_approval", function(event){
+		event.preventDefault();
+	
+		 let quote_approval_arr       = JSON.parse($("#quote_approval").html());
+		 console.log(quote_approval_arr);
+		var status 				= $(this).attr("data-status");
+		var id 					= $(this).attr("data-id");
+		
+		$.confirm({
+			title : "Change Status",
+			content:function(){
+				var html = "";
+				// console.log(statuses_arr);
+				$.each(quote_approval_arr, function(index, value){
+					console.log(value);
+					if(value.id==status){
+						html+="<label><input type='radio' name='status' value='"+value.id+"' checked> "+value.name+"</label><br>";
+					}else{
+						html+="<label><input type='radio' name='status' value='"+value.id+"'> "+value.name+"</label><br>";
+					}
+				});
+				
+				return html;
+			},
+			buttons:{
+				ok:{
+					text:"Save",
+					btnClass:"btn btn-success confirmed",
+					action:function(){
+						var v = this.$content.find("input[type='radio']:checked").val();
+						let url = "{{ route('admin.order.quote_update') }}";
+						save_status(v, id,url);
+						alert('Quote has been updated successfully!');
+						// window.location.reload();
+						table.ajax.reload();
+					}
+				},
+				no:{
+					text:"Cancel"
+				}
+			}
+		});
+		return false;
+	});
+			$(document).on("click", ".btn-change-blank", function(event){
+		event.preventDefault();
+	
+		 let blank_arr       = JSON.parse($("#blank").html());
+		 console.log(blank_arr);
+		var status 				= $(this).attr("data-status");
+		var id 					= $(this).attr("data-id");
+		
+		$.confirm({
+			title : "Change Status",
+			content:function(){
+				var html = "";
+				// console.log(statuses_arr);
+				$.each(blank_arr, function(index, value){
+					console.log(value);
+					if(value.id==status){
+						html+="<label><input type='radio' name='status' value='"+value.id+"' checked> "+value.name+"</label><br>";
+					}else{
+						html+="<label><input type='radio' name='status' value='"+value.id+"'> "+value.name+"</label><br>";
+					}
+				});
+				
+				return html;
+			},
+			buttons:{
+				ok:{
+					text:"Save",
+					btnClass:"btn btn-success confirmed",
+					action:function(){
+						var v = this.$content.find("input[type='radio']:checked").val();
+						let url = "{{ route('admin.order.blank_update') }}";
+						save_status(v, id,url);
+						alert('Blank has been updated successfully!');
+						// window.location.reload();
+						table.ajax.reload();
+					}
+				},
+				no:{
+					text:"Cancel"
+				}
+			}
+		});
+		return false;
+	});
+	function save_status(status_id, order_id,url){
 
 		$.ajax({
-			url: "{{ route('admin.order.status_update') }}", 
+			url: url, 
 			type: "GET",
 			data: {
 				status_id: status_id,
@@ -385,7 +482,7 @@ table.ajax.reload();
 				$('.flatpickr-jobs').flatpickr({
 					enableTime: true,
 					minDate: 'today',
-					dateFormat: "Y-m-d H:i",
+					dateFormat: "m-d-Y H:i",
 				});
 			}
 		});

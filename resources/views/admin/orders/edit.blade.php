@@ -171,6 +171,10 @@ hr{
                                 @endif
                               </div>
                             </div>
+                            
+                            <a href="{{url('admin/orders/generate_invoice/'.$order->id)}}"  class="btn btn-primary" style="height: 40px;margin-top: 30px;margin-left: 12px;">Create Quote</a>
+                            <a href="{{url('admin/orders/d_yellow/'.$order->id)}}"  class="btn btn-primary" style="height: 40px;margin-top: 30px;margin-left: 12px;">Create Yellow</a>
+                            
                         </div>
                         <div class="row mb-4">
                             <div class="col-md-3">
@@ -205,7 +209,7 @@ hr{
                                 <div class="form-group">
                                     <label>Due Date: </label>&nbsp;&nbsp;&nbsp;
                                     <div class="input-group date">
-                                        <input type="text" name="due_date" class="form-control bg-light flatpickr" value="{{date("Y-m-d h:i", $order->due_date)}}" required="" id="due_date">
+                                        <input type="text" name="due_date" class="form-control bg-light flatpickr" value="{{date("m-d-Y h:i", $order->due_date)}}" required="" id="due_date">
                                         <div class="input-group-addon input-group-append">
                                             <div class="input-group-text">
                                                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
@@ -218,7 +222,7 @@ hr{
                                 <div class="form-group">
                                     <label>Ship Date: </label>&nbsp;&nbsp;&nbsp;
                                     <div class="input-group date">
-                                        <input type="text" name="ship_date" class="form-control bg-light flatpickr" value="{{date("Y-m-d h:i",$order->ship_date)}}" required="" id="ship_date">
+                                        <input type="text" name="ship_date" class="form-control bg-light flatpickr" value="{{date("m-d-Y h:i",$order->ship_date)}}" required="" id="ship_date">
                                         <div class="input-group-addon input-group-append">
                                             <div class="input-group-text">
                                                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
