@@ -4,12 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\OrderSupply;
-use App\Models\Status;
-use App\Models\OrderImgs;
-use App\Models\OrderAdditional;
-use App\Models\Job;
-use App\Models\Client;
 
 class OrderFinalPriceProductVariants extends Model
 {

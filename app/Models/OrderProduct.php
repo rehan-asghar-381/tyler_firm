@@ -7,10 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\OrderSupply;
 use App\Models\Status;
 use App\Models\OrderImgs;
-use App\Models\OrderAdditional;
-use App\Models\Job;
 use App\Models\Client;
-use App\Models\OrderTill;
 use App\Models\ProductVariant;
 use App\Models\Product;
 
@@ -45,19 +42,9 @@ class OrderProduct extends Model
         return $this->hasMany(OrderImgs::class, "order_id", "id");
     }
 
-    public function AdditionalFields(){
-        
-        return $this->hasMany(OrderAdditional::class, "order_id", "id");
-    }
-
     public function Orderstatus(){
         
         return $this->belongsTo(Status::class, "status", "id");
-    }
-
-    public function OrderJobs(){
-        
-        return $this->hasMany(Job::class, "order_id", "id");
     }
 
     public function OrderType(){
@@ -68,10 +55,6 @@ class OrderProduct extends Model
     public function client(){
         
         return $this->belongsTo(Client::class, "client_id", "id");
-    }
-    public function OrderTill(){
-        
-        return $this->hasOne(OrderTill::class, "order_id", "id");
     }
 
     public function ProductVariant(){

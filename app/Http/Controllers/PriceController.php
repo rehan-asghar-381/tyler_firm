@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
     
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Models\PriceRange;
 use App\Models\DecorationPrice;
-use Validator;
-use Illuminate\Support\Facades\Auth;
 class PriceController extends Controller
 {
     /**

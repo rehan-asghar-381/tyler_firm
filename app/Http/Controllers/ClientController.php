@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\ClientDoc;
@@ -12,7 +11,6 @@ use App\Models\ClientSaleRep;
 use App\Models\Order;
 use Yajra\DataTables\DataTables;
 use Validator;
-use Illuminate\Support\Facades\Auth;
 class ClientController extends Controller
 {
     /**
