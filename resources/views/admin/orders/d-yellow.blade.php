@@ -10,7 +10,7 @@ textarea {
   width: auto !important; 
 }
 .img-rounded{
-    object-fit:fill;
+    object-fit:cover;
 }
 table td, table th{
     padding:2px 10px !important;
@@ -123,7 +123,7 @@ textarea {
                                             <label for="boxes" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">TOTAL # OF BOXES</label>
                                             <input type="text" readonly="" name="boxes" class="form-control input-sm" id="boxes" value="{{$order_d_yellow->boxes ?? ""}}">
                                         </div>
-                                        <div class="col-md-3 mt-4">
+                                        <div class="col-md-4  mt-4">
                                             <label for="production_sample" style="font-size: 11px;font-weight: bold; margin-bottom:unset;width: 100%">PRODUCTION SAMPLE 
                                                 <span  class="productionSample" >Yes</span>
                                                 <span class="productionSample">No</span>
@@ -140,7 +140,7 @@ textarea {
                                                 <option value="3" @if(isset($order_d_yellow->production_sample) && $order_d_yellow->production_sample == "3") {{"selected"}} @endif>3</option>
                                             </select> --}}
                                         </div>
-                                        <div class="col-md-6 mt-4">
+                                        <div class="col-md-5 mt-4">
                                             <label for="production_sample" style="font-size: 11px;font-weight: bold; margin-bottom:unset;width: 100%">BURN PLACEMENT
                                                 <span  class="productionSample">1</span>
                                                 <span class="productionSample">2</span>
@@ -149,18 +149,19 @@ textarea {
                                                 <span class="productionSample">5</span>
                                                 {{-- <span class="productionSample">1</span> --}}
                                                 {{-- <span class="productionSample">2</span> --}}
-                                                {{-- <span class="productionSample" >3</span></label> --}}
+                                                {{-- <span class="productionSample" >3</span> --}}
+                                            </label>
                                                 <input type="hidden" name="production_sample" id="production_sample" value="">
 
                                             </div>
-                                            <div class="col-md-2 mt-4 mb-1" style="margin-left: -25px;">
-                                                <label for="event" style="font-size: 11px;font-weight: bold; margin-bottom:unset;width: 100%">**EVENT** 
+                                            <div class="col-md-2 mt-4 mb-1">
+                                                <label for="event" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">EVENT
                                                     {{-- <span style="margin-left: 30%;">Yes</span> --}}
                                                     {{-- <span style="margin-left: 30%;">No</span> --}}
                                                 </label>
                                                 {{-- <input type="hidden" name="event" id="event" value=""> --}}
 
-                                                <select name="event" id="event" class="form-control input-sm" style="margin-left: 75px;margin-top: -22px;">
+                                                <select name="event" id="event" class="form-control input-sm" style="margin-left: 65px;margin-top: -22px;" disabled>
                                                     <option value="">Select</option>
                                                     <option value="Yes" @if($order->event == "Yes") {{"selected"}} @endif>Yes</option>
                                                     <option value="No" @if($order->event == "No") {{"selected"}} @endif>No</option>
@@ -205,6 +206,10 @@ textarea {
                                                 <input type="text" name="company_name" class="form-control input-sm" id="company_name" value="{{$client_details["company_name"]}}" disabled>
                                             </div>
                                             <div class="col-md-2 mb-3">
+                                                <label for="design" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">DESIGN</label>
+                                                <input type="text" name="design" class="form-control" id="design" value="{{$order_d_yellow->design ?? ""}}">
+                                            </div>
+                                            <div class="col-md-2 mb-3">
                                                 <label for="order_number" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">P.O #</label>
                                                 <input type="text" name="order_number" class="form-control" id="order_number" value="{{$order->order_number}}" disabled>
                                             </div>
@@ -216,24 +221,17 @@ textarea {
                                                 <label for="other_info" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">Seles Rep</label>
                                                 <input type="text" name="other_info" class="form-control" id="other_info" value="{{$client_details["sales_rep"]}}" disabled>
                                             </div>
-                                            <div class="col-md-4 mb-3">
+                                            <div class="col-md-2 mb-3">
                                                 <label for="palletize" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">PALLETIZE</label>
-                                                <div class="form-row">
-                                                    <input type="hidden" name="palletize" class="form-control col-md-6" id="palletize" value="">
-                                                    <select name="palletize_opt" id="palletize_opt" class="form-control col-md-6">
-                                                        <option value="">Select</option>
-                                                        <option value="Yes" @if(isset($order_d_yellow->palletize_opt) && $order_d_yellow->palletize_opt == "Yes") {{"selected"}} @endif>Yes</option>
-                                                        <option value="No" @if(isset($order_d_yellow->palletize_opt) && $order_d_yellow->palletize_opt == "No") {{"selected"}} @endif>No</option>
-                                                    </select>
-                                                </div>
+                                                <select name="palletize_opt" id="palletize_opt" class="form-control">
+                                                    <option value="">Select</option>
+                                                    <option value="Yes" @if(isset($order_d_yellow->palletize_opt) && $order_d_yellow->palletize_opt == "Yes") {{"selected"}} @endif>Yes</option>
+                                                    <option value="No" @if(isset($order_d_yellow->palletize_opt) && $order_d_yellow->palletize_opt == "No") {{"selected"}} @endif>No</option>
+                                                </select>
                                             </div>
                                             <div class="col-md-2 mb-3">
                                                 <label for="in_hands" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">IN HANDS</label>
                                                 <input type="text" name="in_hands" class="form-control" id="in_hands" value="{{$order_d_yellow->in_hands ?? ""}}">
-                                            </div>
-                                            <div class="col-md-2 mb-3">
-                                                <label for="design" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">DESIGN</label>
-                                                <input type="text" name="design" class="form-control" id="design" value="{{$order_d_yellow->design ?? ""}}">
                                             </div>
                                             <div class="col-md-2 mb-3">
                                                 <label for="ship" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">SHIP</label>
@@ -506,35 +504,46 @@ textarea {
                                 $sub_total                  = 0;
                                 $grand_total                = 0; 
                                 $tax_percent                = 0;
-                                $flag   = (isset($invoice_details["adult_sizes"]))?1:0;
-                                $flag   += (isset($invoice_details["baby_sizes"]))?1:0;
+                                $flag                       = (isset($invoice_details["adult_sizes"]))?1:0;
+                                $flag                       += (isset($invoice_details["baby_sizes"]))?1:0;
                                 $initializer    = 0;
+
+                                // dd($invoice_details);
                                 @endphp
-                                @foreach ($invoice_details as $size=>$invoice)
+                                
+                                @foreach ($invoice_details as $size_for=>$invoice)
                                 @php
                                 $initializer++;
                                 @endphp
-                                <table class="table table-nowrap" border="0" style=" overflow: hidden;">
+                                <table class="table table-nowrap" border="0" style=" overflow: hidden;"  colspan="13" width="100%">
                                     <thead>
                                         <tr>
-                                            @if($size == "adult_sizes")
-                                            <th></th>
-                                            <th>Description</th>
-                                            <th>XS-XL</th>
-                                            <th>2XL</th>
-                                            <th>3XL</th>
-                                            <th>4XL</th>
-                                            <th>5XL</th>
-                                            <th>6XL</th>
-                                            @elseif($size == "baby_sizes")
-                                            <th></th>
-                                            <th>Description</th>
-                                            <th>OSFA-18M</th>
-                                            <th>2T</th>
-                                            <th>3T</th>
-                                            <th>4T</th>
-                                            <th>5T</th>
-                                            <th>6T</th>
+                                            @if($size_for == "adult_sizes")
+                                            <th colspan="1" style="width: 45%;">Description</th>
+                                            <th colspan="1">Color</th>
+                                            <th colspan="1">XS</th>
+                                            <th colspan="1">S</th>
+                                            <th colspan="1">M</th>
+                                            <th colspan="1">L</th>
+                                            <th colspan="1">XL</th>
+                                            <th colspan="1">2XL</th>
+                                            <th colspan="1">3XL</th>
+                                            <th colspan="1">4XL</th>
+                                            <th colspan="1">5XL</th>
+                                            <th colspan="1">6XL</th>
+                                            @elseif($size_for == "baby_sizes")
+                                            <th colspan="1" style="width: 45%;">Description</th>
+                                            <th colspan="1">Color</th>
+                                            <th colspan="1">OSFA</th>
+                                            <th colspan="1">New Born</th>
+                                            <th colspan="1">6M</th>
+                                            <th colspan="1">12M</th>
+                                            <th colspan="1">18M</th>
+                                            <th colspan="1">2T</th>
+                                            <th colspan="1">3T</th>
+                                            <th colspan="1">4T</th>
+                                            <th colspan="1">5T</th>
+                                            <th colspan="1">6T</th>
                                             @endif
                                         </tr>
                                     </thead>
@@ -564,61 +573,95 @@ textarea {
                                         $r_total            +=($fixed_sizes_qty*$fixed_size_price);
                                         $sub_total          += $r_total;
                                         @endphp
+                                        @if($size_for == "adult_sizes")
                                         <tr>
                                             <td>
-                                                <div><strong>Brand & Sizes</strong></div>
-                                                <div><strong>Garment Color</strong></div>
-                                            </td>
-                                            <td>
                                                 <div><strong>{{ $product_name }}</strong></div>
-                                                <small>{{$color}} </small>
-
-                                                <small>{{$fixed_sizes}}</small>
                                             </td>
                                             <td>
-                                                <div>{{($fixed_sizes_qty>0)?$fixed_sizes_qty:""}}</div>
+                                                <div> {{$color}}</div>
+                                            </td>
+                                            <td>
+                                                <div> {{ (isset($detail["XS"]["pieces"]))?$detail["XS"]["pieces"]:""}}</div>
+                                            </td>
+                                            <td>
+                                                <div> {{ (isset($detail["S"]["pieces"]))?$detail["S"]["pieces"]:""}}</div>
+                                            </td>
+                                            <td>
+                                                <div> {{ (isset($detail["M"]["pieces"]))?$detail["M"]["pieces"]:""}}</div>
+                                            </td>
+                                            <td>
+                                                <div> {{ (isset($detail["L"]["pieces"]))?$detail["L"]["pieces"]:""}}</div>
+                                            </td>
+                                            <td>
+                                                <div> {{ (isset($detail["XL"]["pieces"]))?$detail["XL"]["pieces"]:""}}</div>
                                             </td>
                                             <td>
                                                 <div>
                                                     {{ (isset($detail["2XL"]["pieces"]))?$detail["2XL"]["pieces"]:""}}
-                                                </div>
-                                                <div>
-                                                    {{ (isset($detail["2XL"]["price"])) ? "$".$detail["2XL"]["price"] : ""}}
                                                 </div>
                                             </td>
                                             <td>
                                                 <div>
                                                     {{ (isset($detail["3XL"]["pieces"]))?$detail["3XL"]["pieces"]:""}}
                                                 </div>
-                                                <div>
-                                                    {{ (isset($detail["3XL"]["price"])) ? "$".$detail["3XL"]["price"] : ""}}
-                                                </div>
                                             </td>
                                             <td>
                                                 <div>
                                                     {{ (isset($detail["4XL"]["pieces"]))?$detail["4XL"]["pieces"]:""}}
-                                                </div>
-                                                <div>
-                                                    {{ (isset($detail["4XL"]["price"])) ? "$".$detail["4XL"]["price"] : ""}}
                                                 </div>
                                             </td>
                                             <td>
                                                 <div>
                                                     {{ (isset($detail["5XL"]["pieces"]))?$detail["5XL"]["pieces"]:""}}
                                                 </div>
-                                                <div>
-                                                    {{ (isset($detail["5XL"]["price"])) ? "$".$detail["5XL"]["price"] : ""}}
-                                                </div>
                                             </td>
                                             <td>
                                                 <div>
                                                     {{ (isset($detail["6XL"]["pieces"]))?$detail["6XL"]["pieces"]:""}}
                                                 </div>
-                                                <div>
-                                                    {{ (isset($detail["6XL"]["price"])) ? "$".$detail["6XL"]["price"] : ""}}
-                                                </div>
                                             </td>
                                         </tr>
+                                        @elseif($size_for == "baby_sizes")
+                                        <tr>
+                                            <td>
+                                                <div><strong>{{ $product_name }}</strong></div>
+                                            </td>
+                                            <td>
+                                                <div> {{$color}}</div>
+                                            </td>
+                                            <td>
+                                                <div> {{ (isset($detail["OSFA"]["pieces"]))?$detail["OSFA"]["pieces"]:""}}</div>
+                                            </td>
+                                            <td>
+                                                <div> {{ (isset($detail["New Born"]["pieces"]))?$detail["New Born"]["pieces"]:""}}</div>
+                                            </td>
+                                            <td>
+                                                <div> {{ (isset($detail["6M"]["pieces"]))?$detail["6M"]["pieces"]:""}}</div>
+                                            </td>
+                                            <td>
+                                                <div> {{ (isset($detail["12M"]["pieces"]))?$detail["12M"]["pieces"]:""}}</div>
+                                            </td>
+                                            <td>
+                                                <div> {{ (isset($detail["18M"]["pieces"]))?$detail["18M"]["pieces"]:""}}</div>
+                                            </td>
+                                            <td>
+                                                <div>{{ (isset($detail["2T"]["pieces"]))?$detail["2T"]["pieces"]:""}}</div>
+                                            </td>
+                                            <td>
+                                                <div>{{ (isset($detail["3T"]["pieces"]))?$detail["3T"]["pieces"]:""}}</div>
+                                            </td>
+                                            <td>
+                                                <div>{{ (isset($detail["4T"]["pieces"]))?$detail["4T"]["pieces"]:""}}</div>
+                                            </td>
+                                            <td>
+                                                <div>{{ (isset($detail["5T"]["pieces"]))?$detail["5T"]["pieces"]:""}}</div>
+                                            </td>
+                                            <td>
+                                                <div>{{ (isset($detail["6T"]["pieces"]))?$detail["6T"]["pieces"]:""}}</div>
+                                            </td>
+                                        </tr>
+                                        @endif
                                         @endforeach
                                         @endforeach
                                     </tbody>

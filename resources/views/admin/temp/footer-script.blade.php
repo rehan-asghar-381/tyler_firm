@@ -35,7 +35,7 @@
 		$(document).ready(function(){
 			$('.flatpickr').flatpickr({
 				enableTime: true,
-				dateFormat: "Y-m-d H:i",
+				dateFormat: "m-d-Y",
 			});
 		});
 		$('.select-one').SumoSelect({

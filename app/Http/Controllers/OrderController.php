@@ -32,9 +32,7 @@ use App\Traits\NotificationTrait;
 use PDF;
 class OrderController extends Controller
 {
-    
     use NotificationTrait;
-
     public $fixedAdultSize;
     public $allAdultSizes;
 
@@ -378,23 +376,37 @@ class OrderController extends Controller
         $order_transfer->transfers_pieces           = $rData['transfers_pieces'];
         $order_transfer->transfers_prices           = $rData['transfers_prices'];
         $order_transfer->ink_color_change_pieces    = $rData['ink_color_change_pieces'];
-        $order_transfer->art_fee                    = $rData['art_fee'];
         $order_transfer->ink_color_change_prices    = $rData['ink_color_change_prices'];
+        $order_transfer->art_fee                    = $rData['art_fee'];
+        $order_transfer->shipping_pieces            = $rData['shipping_pieces'];
         $order_transfer->shipping_charges           = $rData['shipping_charges'];
         $order_transfer->save();
     }
     public function save_order_other_charges($rData, $order_id){
+
         OrderOtherCharges::where("order_id", $order_id)->delete();
-        $order_other_charges                        = OrderOtherCharges::firstOrNew(['order_id'=>$order_id]);
-        $order_other_charges->order_id              = $order_id;
-        $order_other_charges->fold_bag_tag_pieces   = $rData['fold_bag_tag_pieces'];
-        $order_other_charges->fold_bag_tag_prices   = $rData['fold_bag_tag_prices'];;
-        $order_other_charges->hang_tag_pieces       = $rData['hang_tag_pieces'];
-        $order_other_charges->hang_tag_prices       = $rData['hang_tag_prices'];
-        $order_other_charges->art_fee               = $rData['art_fee'];
-        $order_other_charges->art_discount          = $rData['art_discount'];
-        $order_other_charges->art_time              = $rData['art_time'];
-        $order_other_charges->tax                   = $rData['tax'];
+        $order_other_charges                            = OrderOtherCharges::firstOrNew(['order_id'=>$order_id]);
+        $order_other_charges->order_id                  = $order_id;
+        $order_other_charges->fold_bag_tag_pieces       = $rData['fold_bag_tag_pieces'];
+        $order_other_charges->fold_bag_tag_prices       = $rData['fold_bag_tag_prices'];;
+        $order_other_charges->hang_tag_pieces           = $rData['hang_tag_pieces'];
+        $order_other_charges->hang_tag_prices           = $rData['hang_tag_prices'];
+        $order_other_charges->label_pieces              = $rData['label_pieces'];
+        $order_other_charges->label_prices              = $rData['label_prices'];
+        $order_other_charges->fold_pieces               = $rData['fold_pieces'];
+        $order_other_charges->fold_prices               = $rData['fold_prices'];
+        $order_other_charges->foil_pieces               = $rData['foil_pieces'];
+        $order_other_charges->foil_prices               = $rData['foil_prices'];
+        $order_other_charges->fold_bag_pieces           = $rData['fold_bag_pieces'];
+        $order_other_charges->fold_bag_prices           = $rData['fold_bag_prices'];
+        $order_other_charges->palletizing_pieces        = $rData['palletizing_pieces'];
+        $order_other_charges->palletizing_prices        = $rData['palletizing_prices'];
+        $order_other_charges->remove_packaging_pieces   = $rData['remove_packaging_pieces'];
+        $order_other_charges->remove_packaging_prices   = $rData['remove_packaging_prices'];
+        $order_other_charges->art_fee                   = $rData['art_fee'];
+        $order_other_charges->art_discount              = $rData['art_discount'];
+        $order_other_charges->art_time                  = $rData['art_time'];
+        $order_other_charges->tax                       = $rData['tax'];
         $order_other_charges->save();
     } 
 
@@ -950,8 +962,6 @@ class OrderController extends Controller
         $order_transfer->ink_color_change_prices    = $or_transfer->ink_color_change_prices;
         $order_transfer->shipping_charges           = $or_transfer->shipping_charges;
         $order_transfer->save();
-      
-
         return redirect()->route("admin.orders.index")->withSuccess('Order has been replicated successfully!');
         
     }
@@ -988,6 +998,7 @@ class OrderController extends Controller
         foreach($order->OrderPrice as $OrderPrice){
             $order_prices[$OrderPrice->product_size]    = $OrderPrice->final_price;
         }
+       
         foreach($order->OrderProducts as $OrderProduct){
             foreach($OrderProduct->OrderProductVariant as $order_product_variant){
                 $size_for       = $OrderProduct->Product->size_for;
@@ -1008,6 +1019,7 @@ class OrderController extends Controller
                 }
             }
         }
+        
         $sales_rep                                  = $order->client->ClientSaleRep->where("id", $order->sales_rep)->first();
         $client_details["date"]                     = date("m/d/Y", $order->time_id);
         $client_details["company_name"]             = $order->client->company_name;

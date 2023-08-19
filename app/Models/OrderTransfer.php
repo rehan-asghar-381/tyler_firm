@@ -21,6 +21,8 @@ class OrderTransfer extends Model
         'order_id',
         'transfers_pieces',
         'transfers_prices',
+        'shiping_pieces',
+        'shiping_charges',
         'ink_color_change_pieces',
         'art_discount_prices',
         'created_at',

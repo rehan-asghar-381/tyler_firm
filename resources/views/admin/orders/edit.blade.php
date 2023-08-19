@@ -161,19 +161,19 @@ hr{
                               </div>
                               <div class="upload__img-wrap">
                                 @if(count($order->OrderImgs) > 0)
-                                @foreach($order->OrderImgs as $key=>$OrderImg)
-                                <div class='upload__img-box'>
-                                  <div style='background-image: url("{{asset($OrderImg->image)}}")' data-number='{{ $key }}' data-file='" + f.name + "' class='img-bg'>
-                                    <div class='upload__img-close' data-order-id='{{ $order->id }}' data-img-id='{{ $OrderImg->id }}'></div>
-                                  </div>
-                                </div>
-                                @endforeach
+                                    @foreach($order->OrderImgs as $key=>$OrderImg)
+                                        <div class='upload__img-box'>
+                                            <div style='background-image: url("{{asset($OrderImg->image)}}")' data-number='{{ $key }}' data-file='" + f.name + "' class='img-bg'>
+                                                <div class='upload__img-close' data-order-id='{{ $order->id }}' data-img-id='{{ $OrderImg->id }}'></div>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 @endif
                               </div>
                             </div>
                             
                             <a href="{{url('admin/orders/generate_invoice/'.$order->id)}}"  class="btn btn-primary" style="height: 40px;margin-top: 30px;margin-left: 12px;">Create Quote</a>
-                            <a href="{{url('admin/orders/d_yellow/'.$order->id)}}"  class="btn btn-primary" style="height: 40px;margin-top: 30px;margin-left: 12px;">Create Yellow</a>
+                            <a href="{{url('admin/orders/d_yellow/'.$order->id)}}"  class="btn btn-danger" style="height: 40px;margin-top: 30px;margin-left: 12px;">Create Yellow</a>
                             
                         </div>
                         <div class="row mb-4">
@@ -397,40 +397,123 @@ hr{
                                     <div class="col-md-6">
                                         <div class="col-md-12">
                                             <div class="form-group row">
-                                                <label for="transfers_pieces" class="col-sm-3 font-weight-600">Transfers</label>
-                                                <div class="col-sm-4">
-                                                    <input type="number" min="0" name="transfers_pieces" value="{{$order->OrderTransfer->transfers_pieces ?? 0}}" class="my-form-control " id="transfers_pieces" placeholder="Pieces">
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <input type="number" min="0" name="transfers_prices" value="{{$order->OrderTransfer->transfers_prices ?? 0}}" class="my-form-control mr-2" id="transfers_prices" placeholder="Prices">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group row">
                                                 <label for="ink_color_change_pieces" class="col-sm-3 font-weight-600">Ink Color Change</label>
                                                 <div class="col-sm-4">
-                                                    <input type="number" min="0" name="ink_color_change_pieces" value="{{$order->OrderTransfer->ink_color_change_pieces ?? 0}}" class="my-form-control " id="ink_color_change_pieces" placeholder="Pieces">
+                                                    <input type="number" min="0" name="ink_color_change_pieces" value="{{$order->OrderTransfer->ink_color_change_pieces ?? ""}}" class="my-form-control " id="ink_color_change_pieces" placeholder="Pieces">
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <input type="number" min="0" name="ink_color_change_prices" value="{{$order->OrderTransfer->ink_color_change_prices ?? 0}}" class="my-form-control mr-2" id="ink_color_change_prices" placeholder="Prices">
+                                                    <input type="number" min="0" name="ink_color_change_prices" value="{{$order->OrderTransfer->ink_color_change_prices ?? ""}}" class="my-form-control mr-2" id="ink_color_change_prices" placeholder="Prices">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group row">
-                                                <label for="hang_tag1" class="col-sm-3 font-weight-600">Shipping charges</label>
+                                                <label for="shipping_pieces" class="col-sm-3 font-weight-600">Shipping Charges</label>
                                                 <div class="col-sm-4">
-                                                    <select name="shipping_charges" id="shipping_charges" class="my-form-control">
-                                                        <option value="">Select</option>
-                                                        <option value="20" @if(isset($order->OrderTransfer->shipping_charges) && $order->OrderTransfer->shipping_charges == 20) {{"selected"}} @endif>$20.00</option>
-                                                        <option value="30" @if(isset($order->OrderTransfer->shipping_charges) && $order->OrderTransfer->shipping_charges == 30) {{"selected"}} @endif>$30.00</option>
-                                                        <option value="40" @if(isset($order->OrderTransfer->shipping_charges) && $order->OrderTransfer->shipping_charges == 40) {{"selected"}} @endif>$40.00</option>
-                                                        <option value="50" @if(isset($order->OrderTransfer->shipping_charges) && $order->OrderTransfer->shipping_charges == 50) {{"selected"}} @endif>$50.00</option>
-                                                    </select>
+                                                    <input type="number" min="0" name="shipping_pieces" value="{{$order->OrderTransfer->shipping_pieces ?? ""}}" class="my-form-control " id="shipping_pieces" placeholder="Pieces">
                                                 </div>
-                                                <div class="col-sm-3">
-        
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="shipping_charges" value="{{$order->OrderTransfer->shipping_charges ?? ""}}" class="my-form-control mr-2" id="shipping_charges" placeholder="Prices">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="label_pieces" class="col-sm-3 font-weight-600">Inside Labels</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="label_pieces" value="{{$order->OrderOtherCharges->label_pieces ?? ""}}" class="my-form-control " id="label_pieces" placeholder="Pieces">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="label_prices" value="{{$order->OrderOtherCharges->label_prices ?? ""}}" class="my-form-control mr-2" id="label_prices" placeholder="Prices">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            
+                                            <div class="form-group row">
+                                                <label for="fold_pieces" class="col-sm-3 font-weight-600">Fold Only</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="fold_pieces" value="{{$order->OrderOtherCharges->fold_pieces ?? ""}}" class="my-form-control " id="fold_pieces" placeholder="Pieces">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="fold_prices" value="{{$order->OrderOtherCharges->fold_prices ?? ""}}" class="my-form-control mr-2" id="fold_prices" placeholder="Prices">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="fold_bag_pieces" class="col-sm-3 font-weight-600">Fold Bag Only</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="fold_bag_pieces" value="{{$order->OrderOtherCharges->fold_bag_pieces ?? ""}}" class="my-form-control " id="fold_bag_pieces" placeholder="Pieces">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="fold_bag_prices" value="{{$order->OrderOtherCharges->fold_bag_prices ?? ""}}" class="my-form-control mr-2" id="fold_bag_prices" placeholder="Prices">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="fold_bag_tag_pieces" class="col-sm-3 font-weight-600">FOLD/BAG/TAG</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="fold_bag_tag_pieces" value="{{$order->OrderOtherCharges->fold_bag_tag_pieces ?? ""}}" class="my-form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="fold_bag_tag_prices" value="{{$order->OrderOtherCharges->fold_bag_tag_prices ?? ""}}" class="my-form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="hang_tag_pieces" class="col-sm-3 font-weight-600">Hang Tag</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="hang_tag_pieces" value="{{$order->OrderOtherCharges->hang_tag_pieces ?? ""}}" class="my-form-control " id="hang_tag_pieces" placeholder="Pieces">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="hang_tag_prices" value="{{$order->OrderOtherCharges->hang_tag_prices ?? ""}}" class="my-form-control mr-2" id="hang_tag_prices" placeholder="Prices">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="fold_pieces" class="col-sm-3 font-weight-600">Foil</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="foil_pieces" value="{{$order->OrderOtherCharges->foil_pieces ?? ""}}" class="my-form-control " id="fold_pieces" placeholder="Pieces">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="foil_prices" value="{{$order->OrderOtherCharges->foil_prices ?? ""}}" class="my-form-control mr-2" id="fold_prices" placeholder="Prices">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="transfers_pieces" class="col-sm-3 font-weight-600">Transfers</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="transfers_pieces" value="{{$order->OrderTransfer->transfers_pieces ?? ""}}" class="my-form-control " id="transfers_pieces" placeholder="Pieces">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="transfers_prices" value="{{$order->OrderTransfer->transfers_prices ?? ""}}" class="my-form-control mr-2" id="transfers_prices" placeholder="Prices">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="palletizing_pieces" class="col-sm-3 font-weight-600">Palletizing</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="palletizing_pieces" value="{{$order->OrderOtherCharges->palletizing_pieces ?? ""}}" class="my-form-control " id="palletizing_pieces" placeholder="Pieces">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="palletizing_prices" value="{{$order->OrderOtherCharges->palletizing_prices ?? ""}}" class="my-form-control mr-2" id="palletizing_prices" placeholder="Prices">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="remove_packaging_pieces" class="col-sm-3 font-weight-600">Remove Packaging</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="remove_packaging_pieces" value="{{$order->OrderOtherCharges->remove_packaging_pieces ?? ""}}" class="my-form-control " id="remove_packaging_pieces" placeholder="Pieces">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <input type="number" min="0" name="remove_packaging_prices" value="{{$order->OrderOtherCharges->remove_packaging_prices ?? ""}}" class="my-form-control mr-2" id="remove_packaging_prices" placeholder="Prices">
                                                 </div>
                                             </div>
                                         </div>

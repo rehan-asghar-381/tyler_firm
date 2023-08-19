@@ -1,4 +1,15 @@
-ALTER TABLE `tyler_firm_git`.`clients` 
-ADD COLUMN `company_name` varchar(50) NULL AFTER `phone_number`,
-ADD COLUMN `reseller_number` varchar(50) NULL AFTER `company_name`,
-ADD COLUMN `tax_examp` varchar(10) NULL AFTER `reseller_number`;
+ALTER TABLE `tyler_firm`.`order_transfer` 
+ADD COLUMN `shipping_pieces` int NULL AFTER `ink_color_change_prices`;
+ALTER TABLE `tyler_firm`.`order_other_charges` 
+ADD COLUMN `label_pieces` int NULL AFTER `hang_tag_prices`,
+ADD COLUMN `label_prices` float NULL AFTER `label_pieces`,
+ADD COLUMN `fold_pieces` int NULL AFTER `label_prices`,
+ADD COLUMN `fold_prices` float NULL AFTER `fold_pieces`,
+ADD COLUMN `fold_bag_pieces` int NULL AFTER `fold_prices`,
+ADD COLUMN `fold_bag_prices` float NULL AFTER `fold_bag_pieces`,
+ADD COLUMN `foil_pieces` int NULL AFTER `fold_bag_prices`,
+ADD COLUMN `foil_prices` float NULL AFTER `foil_pieces`,
+ADD COLUMN `palletizing_pieces` int NULL AFTER `foil_prices`,
+ADD COLUMN `palletizing_prices` float NULL AFTER `palletizing_pieces`,
+ADD COLUMN `remove_packaging_pieces` int NULL AFTER `palletizing_prices`,
+ADD COLUMN `remove_packaging_prices` float NULL AFTER `remove_packaging_pieces`;
