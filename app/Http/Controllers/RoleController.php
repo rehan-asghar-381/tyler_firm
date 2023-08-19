@@ -8,9 +8,7 @@ use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\DataTables;
-use Illuminate\Support\Facades\Config;
 use DB;
-use Illuminate\Support\Facades\Auth;
 class RoleController extends Controller
 {
     
@@ -43,7 +41,7 @@ class RoleController extends Controller
     public function ajaxtData(Request $request){
 
         
-        $rData              = Role::with('permissions')->where('name', '!=', 'Super-Admin')->orderBy('id','ASC');
+        $rData              = Role::with('permissions')->where('name', '!=', 'Super Admin')->orderBy('id','ASC');
         return DataTables::of($rData->get())
             ->addIndexColumn()
             ->editColumn('name', function ($data) {

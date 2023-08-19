@@ -322,7 +322,7 @@ textarea {
                                             <tr>
 
                                                 @foreach ($table_header_arr as $kk=>$name)
-                                                <td colspan="1" style="font-size: 12px;font-weight: bold;">INK COLORS</td>
+                                                <td colspan="1" style="font-size: 12px;font-weight: bold;" class="{{$kk}}">INK COLORS</td>
                                                 @endforeach
                                             </tr>
                                             <tr>
@@ -728,34 +728,27 @@ textarea {
                                     <div class="col-md-12">
                                         <div class="form">
                                             <div class="p-print-location">
-                                               @php
-                                               $table_header_arr       = [];
-                                               $table_body_arr         = [];
-                                               $keys_arr               = [];
-                                               @endphp
-                                               @foreach ($order_d_yellow_inks as $order_d_yellow_ink)
-                                               @php
-                                               $table_header_arr[$order_d_yellow_ink->key] = $order_d_yellow_ink->location_number;
-                                               $table_body_arr[$order_d_yellow_ink->key]   = json_decode($order_d_yellow_ink->ink_colors, true);
-                                               $keys_arr[]         = $order_d_yellow_ink->key;
-                                               @endphp
-                                               <div class="form-group row print-location">
-                                                <div class="col-sm-5">
-
-                                                    <input class="form-control number-of-colors"  disabled="" value="{{$order_d_yellow_ink->location_number}}">
+                                                @php
+                                                    // dd($extra_details);
+                                                @endphp
+                                                @foreach ($extra_details as $service=>$value)
+                                                @if ($service != "order_id")
+                                                <div class="form-group row print-location">
+                                                    <div class="col-sm-5">
+                                                        <input class="form-control number-of-colors"  disabled="" value="{{$value}}">
+                                                    </div>
+                                                    <div class="col-sm-5">
+                                                        <input class="form-control number-of-colors"  disabled=""  type="number" value="">
+                                                    </div>
                                                 </div>
-                                                <div class="col-sm-5">
-                                                    <input class="form-control number-of-colors"  disabled=""  type="number" value="{{$order_d_yellow_ink->color_per_location}}">
-                                                </div>
+                                                @endif
+                                                
+                                                @endforeach
                                             </div>
-                                            @endforeach
-                                            @php
-                                            @endphp
                                         </div>
                                     </div>
-                                </div>
 
-                            </div>
+                                </div>
                             @endif
                             {{--  --}}
                         </div>
@@ -812,7 +805,7 @@ $(document).on("change", ".location-name", function(){
     });
 function add_column(class_name=""){
     let header_html     ='<th colspan="1" class="'+class_name+'"></th>';
-    let ink_color       ='<td colspan="1" class="'+class_name+'">INK COLORS</td>';
+    let ink_color       ='<td colspan="1" class="'+class_name+'" style="font-size: 12px;font-weight: bold;">INK COLORS</td>';
     let body_html       ='<td colspan="1" class="'+class_name+'" style="padding:0px;"><input type="text" name="ink_color['+class_name+'][]" class="form-control" value="" style="border-radius: 0 !important;"></td>';
     $(".t-header").append(header_html);
     $("body .t-body tr").each(function(index, element){

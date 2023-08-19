@@ -232,21 +232,68 @@
     </div>
     <div class="card mt-2">
         <div class="card-body">
-            <h5>Other Charges</h5>
+            <h5>Additional Services</h5>
             <div class="table-responsive">
                 <table class="table">
-
                     <tr>
-                        <th>FOLD/BAG/TAG Pieces </th>
-                        <th>FOLD/BAG/TAG Prices</th>
-                        <th>Hang Tag Pieces</th>
-                        <th>Hang Tag  Prices</th>
+                        <th>Ink Color Change Pieces</th>
+                        <th>Ink Color Change Prices</th>
+                        <th>Shipping Pieces</th>
+                        <th>Shipping Prices</th>
                     </tr>
                     <tr>
+                        <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->ink_color_change_pieces : ''}}</td>
+                        <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->ink_color_change_prices : ''}}</td>
+                        <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->shipping_pieces : ''}}</td>
+                        <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->shipping_charges : ''}}</td>
+                    </tr>
+                    <tr>
+                        <th>Inside Label Pieces </th>
+                        <th>Inside Label Prices</th>
+                        <th>Fold Only Pieces</th>
+                        <th>Fold Only  Prices</th>
+                    </tr>
+                    <tr>
+                        <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->label_pieces : '' }}</td>
+                        <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->label_prices : '' }}</td>
+                        <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->fold_pieces : '' }}</td>
+                        <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->fold_prices : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fold Bag Pieces </th>
+                        <th>Fold Bag Prices</th>
+                        <th>FOLD/BAG/TAG Pieces </th>
+                        <th>FOLD/BAG/TAG Prices</th>
+                    </tr>
+                    <tr>
+                        <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->fold_bag_pieces : '' }}</td>
+                        <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->fold_bag_prices : '' }}</td>
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->fold_bag_tag_pieces : '' }}</td>
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->fold_bag_tag_prices : '' }}</td>
-                        <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->hang_tag_pieces : '' }}</td>
-                        <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->hang_tag_prices : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Foil Pieces</th>
+                        <th>Foil  Prices</th>
+                        <th>Transfers Pieces</th>
+                        <th>Transfers Prices</th>
+                    </tr>
+                    <tr>
+                        <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->foil_pieces : '' }}</td>
+                        <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->foil_prices : '' }}</td>
+                        <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->transfers_pieces : ''}}</td>
+                        <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->transfers_prices : ''}}</td>
+                    </tr>
+                    <tr>
+                        <th>Palletizing Pieces</th>
+                        <th>Palletizing  Prices</th>
+                        <th>Remove Packaging Pieces</th>
+                        <th>Remove Packaging Prices</th>
+                    </tr>
+                    <tr>
+                        <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->palletizing_pieces : '' }}</td>
+                        <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->palletizing_prices : '' }}</td>
+                        <td>{{ isset($order->OrderOtherCharges) ? $order->OrderOtherCharges->remove_packaging_pieces : ''}}</td>
+                        <td>{{ isset($order->OrderOtherCharges) ? $order->OrderOtherCharges->remove_packaging_prices : ''}}</td>
                     </tr>
                     <tr>
                         <th>Art Fee</th>
@@ -259,31 +306,6 @@
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->art_discount : '' }}</td>
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->art_time : '' }}</td>
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->tax : '' }}</td>
-                    </tr>
-                    <tr>
-                        <th>Transfers Pieces</th>
-                        <th>Transfers Prices</th>
-                        <th>Ink Color Change Pieces</th>
-                        <th>Ink Color Change Prices</th>
-                    </tr>
-                    <tr>
-                        <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->transfers_pieces : ''}}</td>
-                        <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->transfers_prices : ''}}</td>
-                        <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->ink_color_change_pieces : ''}}</td>
-                        <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->ink_color_change_prices : ''}}</td>
-                    </tr>
-                    <tr>
-                        <th>Shipping Charges</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-
-                    </tr>
-                    <tr>
-                        <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->shipping_charges : ''}}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
                     </tr>
                 </table>
             </div>

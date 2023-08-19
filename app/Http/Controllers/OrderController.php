@@ -758,6 +758,7 @@ class OrderController extends Controller
         $pageTitle  = "Invoice";
         $order      = Order::with([
             'OrderPrice', 
+            'OrderImgs', 
             'OrderColorPerLocation', 
             'OrderColorPerLocation.Product', 
             'OrderProducts', 
@@ -769,6 +770,7 @@ class OrderController extends Controller
             'OrderOtherCharges'
         ])->find($id);
        
+        $order_images           = $order->OrderImgs;
         $extra_details          = [];
         $client_details         = [];
         $order_prices           = [];
@@ -810,7 +812,18 @@ class OrderController extends Controller
         $client_details["email"]                    = $order->client->email;
         $client_details["invoice_number"]           = $order->id;
         $client_details["projected_units"]          = $order->projected_units;
-        
+        $extra_details["label_pieces"]              = $order->OrderOtherCharges->label_pieces ?? 0;
+        $extra_details["label_prices"]              = $order->OrderOtherCharges->label_prices ?? 0;
+        $extra_details["fold_pieces"]               = $order->OrderOtherCharges->fold_pieces ?? 0;
+        $extra_details["fold_prices"]               = $order->OrderOtherCharges->fold_prices ?? 0;
+        $extra_details["fold_bag_pieces"]           = $order->OrderOtherCharges->fold_bag_pieces ?? 0;
+        $extra_details["fold_bag_prices"]           = $order->OrderOtherCharges->fold_bag_prices ?? 0;
+        $extra_details["foil_pieces"]               = $order->OrderOtherCharges->foil_pieces ?? 0;
+        $extra_details["foil_prices"]               = $order->OrderOtherCharges->foil_prices ?? 0;
+        $extra_details["palletizing_pieces"]        = $order->OrderOtherCharges->palletizing_pieces ?? 0;
+        $extra_details["palletizing_prices"]        = $order->OrderOtherCharges->palletizing_prices ?? 0;
+        $extra_details["remove_packaging_pieces"]   = $order->OrderOtherCharges->remove_packaging_pieces ?? 0;
+        $extra_details["remove_packaging_prices"]   = $order->OrderOtherCharges->remove_packaging_prices ?? 0;
         $extra_details["fold_bag_tag_pieces"]       = $order->OrderOtherCharges->fold_bag_tag_pieces ?? 0;
         $extra_details["fold_bag_tag_prices"]       = $order->OrderOtherCharges->fold_bag_tag_prices ?? 0;
         $extra_details["hang_tag_pieces"]           = $order->OrderOtherCharges->hang_tag_pieces ?? 0;
@@ -823,11 +836,12 @@ class OrderController extends Controller
         $extra_details["transfers_prices"]          = $order->OrderTransfer->transfers_prices ?? 0;
         $extra_details["ink_color_change_pieces"]   = $order->OrderTransfer->ink_color_change_pieces ?? 0;
         $extra_details["ink_color_change_prices"]   = $order->OrderTransfer->ink_color_change_prices ?? 0;
+        $extra_details["shipping_pieces"]           = $order->OrderTransfer->shipping_pieces ?? 0;
         $extra_details["shipping_charges"]          = $order->OrderTransfer->shipping_charges ?? 0;
         $extra_details["order_id"]                  = $order->id;
         $fixed_adult_sizes                          = $this->fixedAdultSize;
         $fixed_baby_sizes                           = $this->fixedBabySize;
-
+        // dd($extra_details);
         if($request->has('download_invoice') && $request->download_invoice==true){
             // return view('admin.orders.download-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations'));
             $customPaper = array(0,0,700,700);
@@ -835,7 +849,7 @@ class OrderController extends Controller
             return $pdf->download('invoice.pdf');
         }   
     
-        return view('admin.orders.generate-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations'));
+        return view('admin.orders.generate-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images'));
     }
     public function recreate(Request $request, $id)
     {
@@ -1029,24 +1043,26 @@ class OrderController extends Controller
         $client_details["address"]                  = $order->client->address;
         $client_details["email"]                    = $order->client->email;
         $first_name                                 = $sales_rep->first_name??"";
-        $last_name                                 = $sales_rep->last_name??"";
+        $last_name                                  = $sales_rep->last_name??"";
         $client_details["sales_rep"]                = $first_name." ".$last_name;
         $client_details["invoice_number"]           = $order->id;
         $client_details["projected_units"]          = $order->projected_units;
     
-        $extra_details["fold_bag_tag_pieces"]       = $order->OrderOtherCharges->fold_bag_tag_pieces ?? 0;
-        $extra_details["fold_bag_tag_prices"]       = $order->OrderOtherCharges->fold_bag_tag_prices ?? 0;
-        $extra_details["hang_tag_pieces"]           = $order->OrderOtherCharges->hang_tag_pieces ?? 0;
-        $extra_details["hang_tag_prices"]           = $order->OrderOtherCharges->hang_tag_prices ?? 0;
-        $extra_details["art_fee"]                   = $order->OrderOtherCharges->art_fee ?? 0;
-        $extra_details["art_discount"]              = $order->OrderOtherCharges->art_discount ?? 0;
-        $extra_details["art_time"]                  = $order->OrderOtherCharges->art_time ?? 0;
-        $extra_details["tax"]                       = $order->OrderOtherCharges->tax ?? 0;
-        $extra_details["transfers_pieces"]          = $order->OrderTransfer->transfers_pieces ?? 0;
-        $extra_details["transfers_prices"]          = $order->OrderTransfer->transfers_prices ?? 0;
-        $extra_details["ink_color_change_pieces"]   = $order->OrderTransfer->ink_color_change_pieces ?? 0;
-        $extra_details["ink_color_change_prices"]   = $order->OrderTransfer->ink_color_change_prices ?? 0;
-        $extra_details["shipping_charges"]          = $order->OrderTransfer->shipping_charges ?? 0;
+        $extra_details["label_pieces"]              = ($order->OrderOtherCharges->label_pieces > 0) ? "Inside Labels": "";
+        $extra_details["fold_pieces"]               = ($order->OrderOtherCharges->fold_pieces > 0) ? "Fold Only": "";
+        $extra_details["fold_bag_pieces"]           = ($order->OrderOtherCharges->fold_bag_pieces > 0) ? "Fold Bag Only": "";
+        $extra_details["foil_pieces"]               = ($order->OrderOtherCharges->foil_pieces > 0) ? "Foil": "";
+        $extra_details["palletizing_pieces"]        = ($order->OrderOtherCharges->palletizing_pieces > 0) ? "Palletizing": "";
+        $extra_details["remove_packaging_pieces"]   = ($order->OrderOtherCharges->remove_packaging_pieces > 0) ? "Remove Packaging": "";
+        $extra_details["fold_bag_tag_pieces"]       = ($order->OrderOtherCharges->fold_bag_tag_pieces > 0) ? "FOLD/BAG/TAG": "";
+        $extra_details["hang_tag_pieces"]           = ($order->OrderOtherCharges->hang_tag_pieces > 0) ? "Hang Tag": "";
+        $extra_details["art_fee"]                   = ($order->OrderOtherCharges->art_fee > 0) ? "Art Fee": "";
+        $extra_details["art_discount"]              = ($order->OrderOtherCharges->art_discount > 0) ? "Art Fee": "";
+        $extra_details["art_time"]                  = ($order->OrderOtherCharges->art_time > 0) ? "Art Time": "";
+        $extra_details["tax"]                       = ($order->OrderOtherCharges->tax > 0) ? "Tax": "";
+        $extra_details["transfers_pieces"]          = ($order->OrderTransfer->transfers_pieces > 0) ? "Transfers": "";
+        $extra_details["ink_color_change_pieces"]   = ($order->OrderTransfer->ink_color_change_pieces > 0) ? "Ink Color Change": "";
+        $extra_details["shipping_pieces"]           = ($order->OrderTransfer->shipping_pieces > 0) ? "Shipping Charges": "";
         $extra_details["order_id"]                  = $order->id;
         $fixed_adult_sizes                          = $this->fixedAdultSize;
         $fixed_baby_sizes                           = $this->fixedBabySize; 
@@ -1067,7 +1083,6 @@ class OrderController extends Controller
         $order_d_yellow->goods_rec              = $rData["goods_rec"];
         $order_d_yellow->boxes                  = $rData["boxes"];
         $order_d_yellow->production_sample      = $rData["production_sample"];
-        $order_d_yellow->palletize              = $rData["palletize"];
         $order_d_yellow->palletize_opt          = $rData["palletize_opt"];
         $order_d_yellow->in_hands               = $rData["in_hands"];
         $order_d_yellow->design                 = $rData["design"];

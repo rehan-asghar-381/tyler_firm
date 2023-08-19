@@ -1,7 +1,7 @@
 <nav class="sidebar sidebar-bunker no-print no-print">
 	<div class="sidebar-header">
-		<a href="#" class="logo"><span>Tyler Firm</span></a>
-		{{-- <a href="index-2.html" class="logo"><img src="{{ asset('b/dist/img/logo.png') }}" alt=""></a> --}}
+		{{-- <a href="#" class="logo"><span>Tyler Firm</span></a> --}}
+		<a href="{{url("/")}}" class="logo"><img src="{{asset('assets/images/logo/logo.webp')}}" alt=""></a>
 	</div>
 	<div class="profile-element d-flex align-items-center flex-shrink-0">
 		{{-- <div class="avatar online">
@@ -12,7 +12,6 @@
 			<span>{{ auth()->user()->email }}</span>
 		</div>
 	</div>
-	
 	<div class="sidebar-body" style="height: 100% !important;">
 		<nav class="sidebar-nav">
 			<ul class="metismenu">
