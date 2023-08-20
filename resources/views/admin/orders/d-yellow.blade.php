@@ -214,11 +214,7 @@ textarea {
                                                 <input type="text" name="order_number" class="form-control" id="order_number" value="{{$order->order_number}}" disabled>
                                             </div>
                                             <div class="col-md-2 mb-3">
-                                                <label for="ship_date" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">SHIP DATE</label>
-                                                <input type="text" name="ship_date" class="form-control" id="ship_date" value="{{date("m-d-Y", $order->ship_date)}}" disabled>
-                                            </div>
-                                            <div class="col-md-2 mb-3">
-                                                <label for="other_info" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">Seles Rep</label>
+                                                <label for="other_info" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">Sales Rep</label>
                                                 <input type="text" name="other_info" class="form-control" id="other_info" value="{{$client_details["sales_rep"]}}" disabled>
                                             </div>
                                             <div class="col-md-2 mb-3">
@@ -232,6 +228,10 @@ textarea {
                                             <div class="col-md-2 mb-3">
                                                 <label for="in_hands" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">IN HANDS</label>
                                                 <input type="text" name="in_hands" class="form-control" id="in_hands" value="{{$order_d_yellow->in_hands ?? ""}}">
+                                            </div>
+                                            <div class="col-md-2 mb-3">
+                                                <label for="ship_date" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">SHIP DATE</label>
+                                                <input type="text" name="ship_date" class="form-control" id="ship_date" value="{{date("m-d-Y", $order->ship_date)}}" disabled>
                                             </div>
                                             <div class="col-md-2 mb-3">
                                                 <label for="ship" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">SHIP</label>
@@ -722,23 +722,17 @@ textarea {
                                 </div>
                                 {{--  --}}
 
-                                @if(count($order_d_yellow_inks) > 0)
+                                @if(count($extra_details) > 0)
 
                                 <div class="row mt-3">
                                     <div class="col-md-12">
                                         <div class="form">
                                             <div class="p-print-location">
-                                                @php
-                                                    // dd($extra_details);
-                                                @endphp
                                                 @foreach ($extra_details as $service=>$value)
-                                                @if ($service != "order_id")
+                                                @if ($service != "order_id" && $value != "")
                                                 <div class="form-group row print-location">
                                                     <div class="col-sm-5">
                                                         <input class="form-control number-of-colors"  disabled="" value="{{$value}}">
-                                                    </div>
-                                                    <div class="col-sm-5">
-                                                        <input class="form-control number-of-colors"  disabled=""  type="number" value="">
                                                     </div>
                                                 </div>
                                                 @endif
@@ -770,11 +764,11 @@ textarea {
 </div>
 @endsection 
 @section('footer-script')
+
 <script>
     function printDiv() 
     {
         setTimeout(function(){
-            console.log('test');
             window.print();
 
         },200);
@@ -799,8 +793,6 @@ textarea {
 $(document).on("change", ".location-name", function(){
     let class_name      = "."+$(this).attr("data-column");
     let column_header   = $(this).val();
-        // console.log("class_name", class_name);
-        // console.log("column_header", column_header);
         $(".t-header").find(class_name).text(column_header);
     });
 function add_column(class_name=""){

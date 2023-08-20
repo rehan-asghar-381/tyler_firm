@@ -152,6 +152,12 @@ hr{
                     <form  method="POST"  action="{{ route('admin.orders.update', $order->id) }}" enctype="multipart/form-data" novalidate>
                         @csrf
                         <div class="row">
+                            <div class="col-md-12">
+                                <a href="{{url('admin/orders/generate_invoice/'.$order->id)}}"  class="btn btn-primary" style="height: 40px;margin-top: 30px;margin-left: 12px;float:right;">Create Quote</a>
+                                <a href="{{url('admin/orders/d_yellow/'.$order->id)}}"  class="btn btn-danger" style="height: 40px;margin-top: 30px;margin-left: 12px;float:right;">Create Yellow</a>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="upload__box">
                               <div class="upload__btn-box">
                                 <label class="upload__btn">
@@ -171,10 +177,6 @@ hr{
                                 @endif
                               </div>
                             </div>
-                            
-                            <a href="{{url('admin/orders/generate_invoice/'.$order->id)}}"  class="btn btn-primary" style="height: 40px;margin-top: 30px;margin-left: 12px;">Create Quote</a>
-                            <a href="{{url('admin/orders/d_yellow/'.$order->id)}}"  class="btn btn-danger" style="height: 40px;margin-top: 30px;margin-left: 12px;">Create Yellow</a>
-                            
                         </div>
                         <div class="row mb-4">
                             <div class="col-md-3">
@@ -307,29 +309,6 @@ hr{
                             <div class="tab-pane fade" id="OTHERCHARGES" role="tabpanel" aria-labelledby="OTHERCHARGES-tab">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="col-md-12">
-                                            <div class="form-group row">
-                                                <label for="fold_bag_tag_pieces" class="col-sm-3 font-weight-600">FOLD/BAG/TAG</label>
-                                                <div class="col-sm-4">
-                                                    <input type="number" min="0" name="fold_bag_tag_pieces" value="{{$order->OrderOtherCharges->fold_bag_tag_pieces ?? 0}}" class="my-form-control " id="fold_bag_tag_pieces" placeholder="Pieces">
-        
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <input type="number" min="0" name="fold_bag_tag_prices" value="{{$order->OrderOtherCharges->fold_bag_tag_prices ?? 0}}" class="my-form-control mr-2" id="fold_bag_tag_prices" placeholder="Prices">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group row">
-                                                <label for="hang_tag_pieces" class="col-sm-3 font-weight-600">Hang Tag</label>
-                                                <div class="col-sm-4">
-                                                    <input type="number" min="0" name="hang_tag_pieces" value="{{$order->OrderOtherCharges->hang_tag_pieces ?? 0}}" class="my-form-control " id="hang_tag_pieces" placeholder="Pieces">
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <input type="number" min="0" name="hang_tag_prices" value="{{$order->OrderOtherCharges->hang_tag_prices ?? 0}}" class="my-form-control mr-2" id="hang_tag_prices" placeholder="Prices">
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div class="col-md-12">
                                             <div class="form-group row">
                                                 <label for="art_fee" class="col-sm-3 font-weight-600">Art Fee</label>

@@ -29,6 +29,7 @@ use App\Models\ClientSaleRep;
 use App\Models\DYellowInkColor;
 use Yajra\DataTables\DataTables;
 use App\Traits\NotificationTrait;
+use App\Models\EmailLog;
 use PDF;
 class OrderController extends Controller
 {
@@ -116,7 +117,7 @@ class OrderController extends Controller
 
     public function ajaxtData(Request $request){
 
-        $rData              = Order::with(["client"])->where('status','<>',5);
+        $rData              = Order::with(["client", "ClientSaleRep"])->where('status','<>',5);
         if($request->client_id != ""){
             $rData              = $rData->where('client_id', $request->client_id);
         }
@@ -231,6 +232,9 @@ class OrderController extends Controller
             }
              if(auth()->user()->can('orders-blanks')){
                 $action_list    .= '<a class="dropdown-item btn-change-blank" href="#" data-blank="'.$data->blank.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-hornbill"></i> Blanks</a>';
+            }
+            if(auth()->user()->can('orders-send-email')){
+                $action_list    .= '<a class="dropdown-item  send-email-modal" href="#" data-client_id="'.$data->client_id.'" data-id="'.$data->id.'" data-email="'.($data->ClientSaleRep->email ?? '').'"   data-toggle="modal" data-target="#send-email-modal"><i class="hvr-buzz-out far fa-envelope"></i> Send Email</a>';
             }
             $action_list        .= '</div></div>';
             return  $action_list;
@@ -1056,10 +1060,6 @@ class OrderController extends Controller
         $extra_details["remove_packaging_pieces"]   = ($order->OrderOtherCharges->remove_packaging_pieces > 0) ? "Remove Packaging": "";
         $extra_details["fold_bag_tag_pieces"]       = ($order->OrderOtherCharges->fold_bag_tag_pieces > 0) ? "FOLD/BAG/TAG": "";
         $extra_details["hang_tag_pieces"]           = ($order->OrderOtherCharges->hang_tag_pieces > 0) ? "Hang Tag": "";
-        $extra_details["art_fee"]                   = ($order->OrderOtherCharges->art_fee > 0) ? "Art Fee": "";
-        $extra_details["art_discount"]              = ($order->OrderOtherCharges->art_discount > 0) ? "Art Fee": "";
-        $extra_details["art_time"]                  = ($order->OrderOtherCharges->art_time > 0) ? "Art Time": "";
-        $extra_details["tax"]                       = ($order->OrderOtherCharges->tax > 0) ? "Tax": "";
         $extra_details["transfers_pieces"]          = ($order->OrderTransfer->transfers_pieces > 0) ? "Transfers": "";
         $extra_details["ink_color_change_pieces"]   = ($order->OrderTransfer->ink_color_change_pieces > 0) ? "Ink Color Change": "";
         $extra_details["shipping_pieces"]           = ($order->OrderTransfer->shipping_pieces > 0) ? "Shipping Charges": "";
@@ -1116,7 +1116,52 @@ class OrderController extends Controller
         $order->DYellowInkColors()->delete();
         $order->DYellowInkColors()->saveMany($ink_colors_arr);
         return redirect()->back();
+    }
+    public function sendEmail(Request $request)
+    {
+        if ($files = $request->file('attachment')) {
+            $file =  $request->file('attachment');
+            if(is_file($file)){
+                $original_name = $file->getClientOriginalName();
+                $file_name = time().rand(100,999).$original_name;
+                $destinationPath = public_path('/uploads/order/email');
+                $file->move($destinationPath, $file_name);
+                $file_slug  = "/uploads/order/email/".$file_name;
+                $email                      = new EmailLog();
+                $email->time_id             = time();
+                $email->order_id            = $request->order_number;
+                $email->attachment          = $file_slug;
+                $email->client_id           = $request->client_id;
+                $email->send_to             = $request->email;
+                $email->subject             = $request->subject;
+                $email->description         = $request->description;
+                $email->description         = $request->description;
+                $email->created_by_id       = Auth::user()->id;
+                $data["email"] =$request->email ;
+                $data["title"] = $request->subject;
+                $data["description"] = $request->description;
+    
+                $files = [
+                    public_path('/uploads/order/email/'.$file_name)
+                
+                ];
+        
+                \Mail::send('admin.orders.email', $data, function($message)use($data, $files) {
+                        $message->to($data["email"])
+                        ->subject($data["title"]);
+                        foreach ($files as $file){
+                            $message->attach($file);
+                        }            
+                });
+                $email->save();
+                    
+                if(count(\Mail::failures()) > 0){
+                    return 'Something went wrong.';
+                }else{
 
-
+                    return "Mail send successfully !!";
+                }
+        }
+        }
     }
 }

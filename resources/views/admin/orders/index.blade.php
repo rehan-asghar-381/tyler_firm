@@ -64,6 +64,54 @@
 			</div>
 		</div>
 	</form>
+	<!-- The Modal -->
+	<div class="modal" id="send-email-modal">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header" style="background-color:#41a942">
+					<h6 class="modal-title text-white">Send Email</h6>
+					<button type="button" class="close close-modal" data-dismiss="modal">&times;</button>
+				</div>
+				<!-- Modal body -->
+				<div class="modal-body" style="max-height: calc(100vh - 210px);overflow-y: auto;">
+					<form  method="POST" id="sendEmail"  enctype="multipart/form-data">
+						@csrf
+						<input type="hidden" name="order_number" id="order_number" value="">
+						<input type="hidden" name="clientId" id="clientId" value="">
+
+						<div class="row">
+							<div class="col-md-6 mb-3">
+								<label class="form-label text-dark-gray" for="email">Sent to Email</label>
+								<input type="email" id="clientEmail" name="email" class="form-control font-12 form-control-lg" value="">
+							</div>
+							<div class="col-md-6 mb-3">
+								<label class="form-label text-dark-gray" for="subject">Subject</label>
+								<input type="text" name="subject" class="form-control font-12 form-control-lg require" value="">
+
+							</div>
+							<div class="col-md-6 mb-3">
+								<label class="form-label text-dark-gray" for="subject">Attachment</label>
+								<input type="file" name="attachment" id="attachment" class="form-control font-12 form-control-lg require" value="">
+
+							</div>
+							<div class="col-md-6 mb-3">
+								<label class="form-label text-dark-gray" for="description">Message</label>
+								<textarea name="description"  class="form-control font-12 form-control-lg require" ></textarea>
+							</div>
+						</div>
+
+
+						<button type="submit" class="btn btn-success" id="save-button">Submit</button>
+					</form>
+				</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<button class="btn btn-default close-modal" type="button">close</button>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="card mb-4">
@@ -312,7 +360,7 @@ table.ajax.reload();
 	
 		 let quote_approval_arr       = JSON.parse($("#quote_approval").html());
 		 console.log(quote_approval_arr);
-		var status 				= $(this).attr("data-status");
+		var status 				= $(this).attr("data-quote_approval");
 		var id 					= $(this).attr("data-id");
 		
 		$.confirm({
@@ -351,12 +399,12 @@ table.ajax.reload();
 		});
 		return false;
 	});
-			$(document).on("click", ".btn-change-blank", function(event){
+	$(document).on("click", ".btn-change-blank", function(event){
 		event.preventDefault();
 	
 		 let blank_arr       = JSON.parse($("#blank").html());
 		 console.log(blank_arr);
-		var status 				= $(this).attr("data-status");
+		var status 				= $(this).attr("data-blank");
 		var id 					= $(this).attr("data-id");
 		
 		$.confirm({
@@ -491,6 +539,59 @@ table.ajax.reload();
 		e.preventDefault();
 		table.ajax.reload();
 
+	});
+	$(document).on('click', '.send-email-modal', function(e){
+		e.preventDefault();
+		var order_id 		  = $(this).attr('data-id');
+		var client_id 		  = $(this).attr('data-client_id');
+		var email 		  = $(this).attr('data-email');
+
+		$('#order_number').val(order_id);
+		$('#clientId').val(client_id);
+		$('#clientEmail').val(email);
+
+	});
+	 
+	$(document).ready(function (e) {
+		$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			}
+		});
+		$('#sendEmail').submit(function(e) {
+			e.preventDefault();
+			var formData = new FormData(this);
+			$.ajax({
+				type:'POST',
+				url: "{{ route('admin.sendEmail')}}",
+				data: formData,
+				cache:false,
+				contentType: false,
+				processData: false,
+				success: (data) => {
+					$('#send-email-modal').modal('hide');
+					$('#sendEmail').trigger('reset');
+					console.log(data);
+					$.confirm({
+						title : "Alert",
+						content:function(){
+
+							return data;
+						},
+						buttons:{
+							ok:{
+								text:"Ok",
+								btnClass:"btn btn-success confirmed"
+							}
+
+						}
+					});
+				},
+				error: function(data){
+					console.log(data);
+				}
+			});
+		});
 	});
 </script>
 @endsection

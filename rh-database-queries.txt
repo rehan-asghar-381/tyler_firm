@@ -13,3 +13,72 @@ ADD COLUMN `palletizing_pieces` int NULL AFTER `foil_prices`,
 ADD COLUMN `palletizing_prices` float NULL AFTER `palletizing_pieces`,
 ADD COLUMN `remove_packaging_pieces` int NULL AFTER `palletizing_prices`,
 ADD COLUMN `remove_packaging_prices` float NULL AFTER `remove_packaging_pieces`;
+
+CREATE TABLE `email_logs` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `time_id` int DEFAULT NULL,
+  `client_id` int DEFAULT NULL,
+  `order_id` int DEFAULT NULL,
+  `send_to` varchar(50) DEFAULT NULL,
+  `subject` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `attachment` varchar(255) DEFAULT NULL,
+  `sent_at` int DEFAULT NULL,
+  `is_sent` enum('Y','N') DEFAULT 'N',
+  `created_by_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+
+
+location dropdown value replaced with Central----->Center
+
+
+
+navbar color background : #6aa4e6
+Active siderbar li : #041e42
+li>a color: #fff
+
+email: white
+
+.sidebar-nav ul li .nav-second-level li a {
+    color:white
+}
+
+.sidebar-nav ul li.mm-active a {
+    color: #fff;
+    background-color: #041e42;
+    box-shadow: 0 0 10px 1px rgb(255 255 255 / 70%);
+}
+
+.btn-success {
+    color: #fff;
+    background-color: #041e42;
+    border-color: #041e42;
+}
+
+.sidebar-toggle-icon span {
+    display: block;
+    position: absolute;
+    top: 13px;
+    height: 2px;
+    min-height: 1px;
+    width: 100%;
+    border-radius: 0;
+    background: #041e42;
+}
+
+.btn-success {
+    box-shadow: 0 2px 6px 0 rgb(255 255 255 / 50%);
+}
+
+a {
+    color: #041e42;
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: #041e42;
+}

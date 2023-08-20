@@ -1,4 +1,91 @@
 @extends("admin.template", ["pageTitle"=>$pageTitle])
+<style type="text/css">
+
+    .form-control {
+        height:calc(1.8em + 0.25rem + 0px) !important;
+        font-size:13px !important;
+        padding:0 0.75rem !important;
+    }
+    textarea {
+      width: auto !important; 
+    }
+    .img-rounded{
+        object-fit:cover;
+    }
+    table td, table th{
+        padding:2px 10px !important;
+        font-size: 13px !important;
+    }
+    table>thead>tr>th{
+       padding:2px 10px !important;
+    }
+    .imagess {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 30px;
+        padding: 20px;
+    }
+    
+    .photo {
+        max-width: 31.333%;
+        padding: 0 10px;
+        height: 200px;
+    }
+    
+    .photo img {
+        width: 100%;
+        height: 100%;
+    }
+    label{
+        margin-bottom:none !important;
+    }
+    .productionSample{
+        margin-left: 9%;
+    }
+    </style>
+    <style media="print">
+    @page {
+        size: auto ;
+        margin: 0 ;
+    }
+    @media print
+    {    
+        .no-print, .no-print *
+        {
+            display: none !important;
+        }
+        #DivIdToPrint{
+            margin-top: -60px !important;
+        }
+        .row{
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+        select {
+          -webkit-appearance: none !important;
+          -moz-appearance: none !important;
+          text-indent: 1px !important;
+          text-overflow: '' !important;
+      }
+      .form-control{
+        /border: 1px solid #fff !important;/
+    }
+    
+    input  select{
+      all: unset;
+    }
+    #toTop{
+     display: none !important; 
+    }
+    textarea {
+      resize: none !important;
+    }
+    .productionSample{
+        margin-left: 6% !important;
+    }
+    }
+    
+    </style>
 @section('content')
 <div class="body-content">
     <div class="card">
@@ -396,7 +483,7 @@
                         <div class="row imagess">
                             @foreach($order_images as $key=>$OrderImg)
                                 <div class="col-md-4 photo mt-1">
-                                    <img src="{{asset($OrderImg->image)}}" class="img-rounded" alt="{{$OrderImg->order_id}}" style="height: 150px;object-fit: fill;">
+                                    <img src="{{asset($OrderImg->image)}}" class="img-rounded" alt="{{$OrderImg->order_id}}" style="height: 150px;object-fit: cover;">
                                 </div>
                             @endforeach
                         </div>
@@ -406,8 +493,27 @@
             @endif
         </div>
         <div class="card-footer">
-            <a href="{{route("admin.order.generateInvoice", $extra_details["order_id"])}}?download_invoice=true" class="btn btn-info mr-2"><span class="fa fa-print"></span></a>
+            {{-- <a href="{{route("admin.order.generateInvoice", $extra_details["order_id"])}}?download_invoice=true" class="btn btn-info mr-2"><span class="fa fa-print"></span></a> --}}
+            <button type="button" class="btn btn-lg btn-success mb-3 no-print" onclick='printDiv();' id="submit-form">
+                <span class="fa fa-print">
+                </span>
+            </button>
         </div>
     </div>
 </div>
 @endsection 
+@section('footer-script')
+<script>
+   function printDiv() 
+    {
+        setTimeout(function(){
+            console.log('test');
+            window.print();
+
+        },200);
+        if (!$("#sidebarCollapse").hasClass("open")) {
+            $('#sidebarCollapse').click();
+        }
+    }     
+</script>
+@endsection

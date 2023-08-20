@@ -122,5 +122,9 @@ class Order extends Model
         
         return $this->hasOne(OrderOtherCharges::class, "order_id", "id");
     }
+    public function ClientSaleRep(){
+        
+        return $this->belongsTo(ClientSaleRep::class, "sales_rep", "id");
+    }
 
 }

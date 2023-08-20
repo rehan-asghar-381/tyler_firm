@@ -105,13 +105,16 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/order/delete-image', [OrderController::class, 'delete_image'])->name('order.delete-image');
     Route::get('/orders/d_yellow/{order_id}', [OrderController::class, 'DYellow'])->name('order.DYellow');
     Route::post('/orders/d_yellow/store_d_yellow', [OrderController::class, 'storeDYellow'])->name('order.storeDYellow');
-
+    Route::post('/send-email', [OrderController::class, 'sendEmail'])->name('sendEmail');
+    
     Route::get('/get_decoration_price', [OrderController::class, 'get_decoration_price'])->name('get_decoration_price');
     Route::get('/get_product_by_brand', [ProductController::class, 'get_product_by_brand'])->name('get_product_by_brand');
     // Start General Setting Routes 
     Route::get('/settings/decoration-prices', [PriceController::class, 'index'])->name('price.index');
     Route::get('/settings/decoration-prices/edit', [PriceController::class, 'edit'])->name('price.edit');
     Route::post('/settings/decoration-prices/update', [PriceController::class, 'update'])->name('price.update');
+
+    
 }); 
 /* End Admin Routes */
 
