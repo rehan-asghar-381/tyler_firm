@@ -99,6 +99,12 @@
 				@endcan
 
 				<li>
+					<a class="" href="{{ route('admin.changePassword') }}">
+						<i class="typcn typcn-user mr-2"></i>
+						Change Password
+					</a>
+				</li>
+				<li>
 					<a class="" href="{{ route('logout') }}">
 						<i class="typcn typcn-user-delete mr-2"></i>
 						Logout
