@@ -23,38 +23,32 @@
                 </div>
                 <div class="panel">
                     <div class="panel-header text-center mb-3">
-                        <h3 class="fs-24">Sign into your account!</h3>
-                        <p class="text-muted text-center mb-0">Nice to see you! Please log in with your account.</p>
+                        <h3 class="fs-24">Password Reset</h3>
+                        <p class="text-muted text-center mb-0">Fill with your mail to receive instructions on how to reset your password.</p>
                     </div>
-                    @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                    @endif
                     @if (session('error'))
                     <div class="alert alert-danger">
                         {{ session('error') }}
                     </div>
                     @endif
-                    <form class="login" action="{{ route('login.post') }}" method="POST">
-                       
-                     @csrf
-                     <div class="form-group">
-                        <input type="text" class="form-control" name="email" id="email" placeholder="Enter email">
-                        
+                    @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
                     </div>
-                    <div class="form-group">
-                        <input type="password" name="password" class="form-control" id="pass" placeholder="Password">
-                    </div>
-                    
-                    <button type="submit" class="btn btn-success btn-block">Sign in</button>
-                    <p class="text-muted text-center mt-3 mb-0">
-                        Forget Password? <a class="external" href="{{route('password.reset')}}"> Click Here.</a>
-                    </p>
-                </form>
+                    @endif
+                    <form  class="register-form" method="POST" action="{{ route('user.passwordReset') }}">
+                        @csrf
+
+                        <div class="form-group">
+                            <input type="email" name="email" class="form-control" id="emial" placeholder="Enter email">
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block">Reset password</button>
+                        <p class="text-muted text-center mt-3 mb-0">
+                            Remember your password? <a class="external" href="{{route('login')}}"> Log in.</a>
+                        </p>
+                    </form>
+                </div>
             </div>
-            
         </div>
     </div>
-</div>
-@include("admin.temp.footer-script")
+    @include("admin.temp.footer-script")
