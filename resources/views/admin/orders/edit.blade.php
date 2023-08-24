@@ -257,6 +257,12 @@ hr{
                                     <textarea type="text" value="" class="form-control" name="notes" id="notes" placeholder="" rows="2" >{{$order->notes}}</textarea>
                                 </div>
                             </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Internal Notes</label>
+                                    <textarea type="text" value="" class="form-control" name="internal_notes" id="internal_notes" placeholder="" rows="2" >{{$order->internal_notes}}</textarea>
+                                </div>
+                            </div>
                         </div>
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                             <li class="nav-item">

@@ -28,6 +28,7 @@ class ProductController extends Controller
 
     function __construct()
     {
+        ini_set('max_input_vars', 10000);
         $this->middleware('permission:product-list|product-create|product-edit|product-delete', ['only' => ['index','store']]);
         $this->middleware('permission:product-create', ['only' => ['create','store']]);
         $this->middleware('permission:product-edit', ['only' => ['edit','update']]);

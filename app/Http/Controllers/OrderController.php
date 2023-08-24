@@ -214,6 +214,9 @@ class OrderController extends Controller
             if(auth()->user()->can('orders-edit')){
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.edit', $data->id).'"><i class="far fa-edit"></i> Edit</a>';
             }
+            if(auth()->user()->can('orders-delete')){
+                $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.delete', $data->id).'"><i class="far fa-trash-alt"></i> Delete</a>';
+            }
             if(auth()->user()->can('orders-recreate')){
             
             $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.recreate', $data->id).'"><i class="far fa fa-retweet"></i> Re-Order</a>';
@@ -236,6 +239,7 @@ class OrderController extends Controller
             if(auth()->user()->can('orders-send-email')){
                 $action_list    .= '<a class="dropdown-item  send-email-modal" href="#" data-client_id="'.$data->client_id.'" data-id="'.$data->id.'" data-email="'.($data->ClientSaleRep->email ?? '').'"   data-toggle="modal" data-target="#send-email-modal"><i class="hvr-buzz-out far fa-envelope"></i> Send Email</a>';
             }
+            
             $action_list        .= '</div></div>';
             return  $action_list;
         })
@@ -279,6 +283,7 @@ class OrderController extends Controller
         $order->ship_date           = (isset($rData['ship_date']) && $rData['ship_date'] != "")?strtotime($rData['ship_date']):0;
         $order->shipping_address    = $rData['shipping_address'];
         $order->notes               = $rData['notes'];
+        $order->internal_notes      = $rData['internal_notes'];
         $order->job_name            = $rData['job_name'];
         $order->order_number        = $rData['order_number'];
         $order->projected_units     = $rData['projected_units'];
@@ -512,6 +517,7 @@ class OrderController extends Controller
         $order->event               = $rData['event'];
         $order->shipping_address    = $rData['shipping_address'];
         $order->notes               = $rData['notes'];
+        $order->internal_notes      = $rData['internal_notes'];
         $order->job_name            = $rData['job_name'];
         $order->order_number        = $rData['order_number'];
         $order->projected_units     = $rData['projected_units'];
@@ -625,16 +631,7 @@ class OrderController extends Controller
         return json_encode(array("status"=>true));
 
     }
-    public function destroy(Request $request, $id)
-    {
-        $order                  = Order::find($id);
-        $order->AdditionalFields()->delete();
-        $order->OrderImgs()->delete();
-        $order->OrderSupply()->delete();
-        $order->OrderJobs()->delete();
-        $order->delete();
-        return redirect()->route("admin.order.index")->withSuccess('Order data has been deleted successfully!');
-    }
+    
     public function product_form(Request $request)
     {
         $order_product_variants     = [];
@@ -858,10 +855,10 @@ class OrderController extends Controller
     public function recreate(Request $request, $id)
     {
         $order                  = Order::with([
+            'OrderImgs', 
             'OrderPrice', 
             'OrderColorPerLocation', 
-            'OrderProducts', 
-            'Orderstatus',
+            'OrderProducts',
             'OrderProductVariant',
             'OrderTransfer',
             'OrderOtherCharges',
@@ -884,7 +881,7 @@ class OrderController extends Controller
         $new_order->save();
         $order_id                       = $new_order->id;
         $order_price_arr                = [];
-        $order_product_variant_arr      =[];
+        $order_product_variant_arr      = [];
         $order_color_perlocation_arr    = [];
         $order_products_arr             = [];
         $order_products_arr             = [];
@@ -900,17 +897,15 @@ class OrderController extends Controller
         foreach($order->OrderPrice as $_OrderPrice)
         {   
             $or_price                   = new OrderPrice();
-            $or_price->product_id        = $_OrderPrice->product_id;
-            $or_price->product_size      = $_OrderPrice->product_size;
-            $or_price->wholesale_price   = $_OrderPrice->wholesale_price;
-            $or_price->print_price       = $_OrderPrice->print_price ;
-            $or_price->total_price       = $_OrderPrice->total_price ;
-            $or_price->profit_margin     = $_OrderPrice->profit_margin;
+            $or_price->product_id       = $_OrderPrice->product_id;
+            $or_price->product_size     = $_OrderPrice->product_size;
+            $or_price->wholesale_price  = $_OrderPrice->wholesale_price;
+            $or_price->print_price      = $_OrderPrice->print_price ;
+            $or_price->total_price      = $_OrderPrice->total_price ;
+            $or_price->profit_margin    = $_OrderPrice->profit_margin;
             $or_price->profit_margin_percentage     = $_OrderPrice->profit_margin_percentage;
-            $or_price->final_price       = $_OrderPrice->final_price;
-            $order_price_arr[]      = $or_price;
-           
-            
+            $or_price->final_price      = $_OrderPrice->final_price;
+            $order_price_arr[]          = $or_price; 
         }
         $new_order->OrderPrice()->saveMany($order_price_arr);
 
@@ -980,6 +975,44 @@ class OrderController extends Controller
         $order_transfer->ink_color_change_prices    = $or_transfer->ink_color_change_prices;
         $order_transfer->shipping_charges           = $or_transfer->shipping_charges;
         $order_transfer->save();
+
+        
+        $order_d_yellow                             = OrderDYellow::where("order_id", $id)->first();
+        if(isset($order_d_yellow->id) && $order_d_yellow->id > 0){
+            $order_d_yellow_new                         = new OrderDYellow();
+            $order_d_yellow_new->order_id               = $order_id;
+            $order_d_yellow_new->time_id                = date('U');
+            $order_d_yellow_new->print_crew             = $order_d_yellow->print_crew;
+            $order_d_yellow_new->goods_rec              = $order_d_yellow->goods_rec;
+            $order_d_yellow_new->boxes                  = $order_d_yellow->boxes;
+            $order_d_yellow_new->production_sample      = $order_d_yellow->production_sample;
+            $order_d_yellow_new->palletize              = $order_d_yellow->palletize;
+            $order_d_yellow_new->palletize_opt          = $order_d_yellow->palletize_opt;
+            $order_d_yellow_new->in_hands               = $order_d_yellow->in_hands;
+            $order_d_yellow_new->design                 = $order_d_yellow->design;
+            $order_d_yellow_new->ship                   = $order_d_yellow->ship;
+            $order_d_yellow_new->acct                   = $order_d_yellow->acct;
+            $order_d_yellow_new->alpha                  = $order_d_yellow->alpha;
+            $order_d_yellow_new->s_and_s                = $order_d_yellow->s_and_s;
+            $order_d_yellow_new->sanmar                 = $order_d_yellow->sanmar;
+            $order_d_yellow_new->is_rejected            = $order_d_yellow->is_rejected;
+            $order_d_yellow_new->notes                  = $order_d_yellow->notes;
+            $order_d_yellow_new->save();
+        }
+        $order_d_yellow_inks            = DYellowInkColor::where("order_id", $id)->get();
+        if(count($order_d_yellow_inks)>0){
+            foreach ($order_d_yellow_inks as $key => $d_yellow_ink) {
+                $d_yellow_inks_new                      = new DYellowInkColor();
+                $d_yellow_inks_new->order_id            = $order_id;
+                $d_yellow_inks_new->time_id             = date('U');
+                $d_yellow_inks_new->key                 = $d_yellow_ink->key;
+                $d_yellow_inks_new->location_number     = $d_yellow_ink->location_number;
+                $d_yellow_inks_new->color_per_location  = $d_yellow_ink->color_per_location;
+                $d_yellow_inks_new->ink_colors          = $d_yellow_ink->ink_colors;
+                $d_yellow_inks_new->save();
+            }
+        }
+
         return redirect()->route("admin.orders.index")->withSuccess('Order has been replicated successfully!');
         
     }
@@ -1140,12 +1173,9 @@ class OrderController extends Controller
                 $data["email"] =$request->email ;
                 $data["title"] = $request->subject;
                 $data["description"] = $request->description;
-    
                 $files = [
                     public_path('/uploads/order/email/'.$file_name)
-                
                 ];
-        
                 \Mail::send('admin.orders.email', $data, function($message)use($data, $files) {
                         $message->to($data["email"])
                         ->subject($data["title"]);
@@ -1154,14 +1184,28 @@ class OrderController extends Controller
                         }            
                 });
                 $email->save();
-                    
                 if(count(\Mail::failures()) > 0){
                     return 'Something went wrong.';
                 }else{
-
                     return "Mail send successfully !!";
                 }
+            }
         }
-        }
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $order      = Order::find($id);
+        $order->OrderImgs()->delete();
+        $order->OrderPrice()->delete();
+        $order->OrderColorPerLocation()->delete();
+        $order->OrderProducts()->delete();
+        $order->OrderProductVariant()->delete();
+        $order->OrderTransfer()->delete();
+        $order->OrderOtherCharges()->delete();
+        OrderDYellow::where("order_id", $id)->delete();
+        DYellowInkColor::where("order_id", $id)->delete();
+        $order->delete();
+        return redirect()->route("admin.orders.index")->withSuccess('Order data has been deleted successfully!');
     }
 }

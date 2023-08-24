@@ -147,6 +147,14 @@
                         <a href="#!" class="fs-13 font-weight-600">{{ $order->notes ?? "-" }}</a>
                     </div>
                 </div>
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h6 class="mb-0 font-weight-600">Notes</h6>
+                    </div>
+                    <div class="col-auto">
+                        <a href="#!" class="fs-13 font-weight-600">{{ $order->internal_notes ?? "-" }}</a>
+                    </div>
+                </div>
             </div>
         </div>
 

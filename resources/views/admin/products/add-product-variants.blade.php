@@ -9,7 +9,7 @@
 	<div class="modal-dialog modal-lg">
         <div class="modal-content">
             <!-- Modal Header -->
-            <div class="modal-header" style="background-color:#41a942">
+            <div class="modal-header" style="background-color:#041e42">
             <h6 class="modal-title text-white">Variants for {{ $product_code->name ." - ".$product_code->code}}</h6>
             <button type="button" class="close close-modal" data-dismiss="modal">&times;</button>
             </div>

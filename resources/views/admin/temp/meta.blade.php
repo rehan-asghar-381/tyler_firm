@@ -28,3 +28,50 @@ crossorigin="anonymous">
 	{{-- <link rel="stylesheet" type="text/css" href="{{ asset('b/plugins/select2/dist/css/dataTables.bootstrap4.min.css') }}"> --}}
 	<link rel="stylesheet" href="{{ asset('b/datatables.net-bs/css/fixedColumns.dataTables.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('b/datatables.net-bs/css/buttons.dataTables.min.css') }}">
+	<style>
+		.sidebar-bunker {
+			background-color: #6aa4e6 !important;
+		}
+		.sidebar-bunker .profile-element .profile-text span {
+			color: #fff;
+		}
+		.sidebar-nav ul li a {
+			color: #fff;
+		}
+		.sidebar-nav ul li .nav-second-level li a {
+			color: #fff;
+		}
+		.sidebar-nav ul li.mm-active a {
+			color: #fff;
+			background-color: #041e42;
+			box-shadow: 0 0 10px 1px rgb(255 255 255 / 70%);
+		}
+		.btn-success {
+			color: #fff;
+			background-color: #041e42;
+			border-color: #041e42;
+		}
+		.sidebar-toggle-icon span {
+			background: #041e42;
+		}
+		.btn-success {
+			box-shadow: 0 2px 6px 0 rgb(255 255 255 / 50%);
+		}
+		a {
+			color: #041e42;
+			text-decoration: none;
+		}
+		.breadcrumb-item.active {
+			color: #041e42;
+		}
+		.dataTables_wrapper .pagination .page-item.active>.page-link {
+			background: #041e42;
+			color: #fff;
+		}
+		.sidebar-toggle-icon span:after, .sidebar-toggle-icon span:before {
+			background: #041e42;
+		}
+		.spinner-layer.pl-green {
+			border-color: #041e42;
+		}
+	</style>

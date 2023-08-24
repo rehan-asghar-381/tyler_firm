@@ -14,6 +14,24 @@ ADD COLUMN `palletizing_prices` float NULL AFTER `palletizing_pieces`,
 ADD COLUMN `remove_packaging_pieces` int NULL AFTER `palletizing_prices`,
 ADD COLUMN `remove_packaging_prices` float NULL AFTER `remove_packaging_pieces`;
 
+CREATE TABLE `quote_approval` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `is_active` enum('Y','N') CHARACTER SET utf8mb4 DEFAULT 'Y',
+  PRIMARY KEY (`id`) USING BTREE
+);
+
+CREATE TABLE `blanks` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `is_active` enum('Y','N') CHARACTER SET utf8mb4 DEFAULT 'Y',
+  PRIMARY KEY (`id`) USING BTREE
+);
+
+ALTER TABLE `tyler_live`.`orders` 
+ADD COLUMN `quote_approval` int NULL AFTER `notes`,
+ADD COLUMN `blank` int NULL AFTER `quote_approval`;
+
 CREATE TABLE `email_logs` (
   `id` int NOT NULL AUTO_INCREMENT,
   `time_id` int DEFAULT NULL,
@@ -30,6 +48,9 @@ CREATE TABLE `email_logs` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
+
+ALTER TABLE `tyler_live`.`orders` 
+ADD COLUMN `internal_notes` text NULL AFTER `notes`;
 
 
 
