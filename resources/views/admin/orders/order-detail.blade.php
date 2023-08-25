@@ -117,7 +117,7 @@
                         <h6 class="mb-0 font-weight-600">Due Date</h6>
                     </div>
                     <div class="col-auto">
-                        <a href="#!" class="fs-13 font-weight-600">{{ date('m-d-Y',$order->due_date) ?? "-" }}</a>
+                        <a href="#!" class="fs-13 font-weight-600">{{ ($order->due_date > 0) ? date('m-d-Y',$order->due_date): "-" }}</a>
                     </div>
                 </div>
                 <hr>
@@ -126,7 +126,7 @@
                         <h6 class="mb-0 font-weight-600">Ship Date</h6>
                     </div>
                     <div class="col-auto">
-                        <a href="#!" class="fs-13 font-weight-600">{{ date('m-d-Y',$order->ship_date) ?? "-" }}</a>
+                        <a href="#!" class="fs-13 font-weight-600">{{ ($order->ship_date > 0) ? date('m-d-Y',$order->ship_date): "-" }}</a>
                     </div>
                 </div>
                 <hr>
@@ -135,7 +135,7 @@
                         <h6 class="mb-0 font-weight-600">Created Date</h6>
                     </div>
                     <div class="col-auto">
-                        <a href="#!" class="fs-13 font-weight-600">{{ date('m-d-Y',$order->time_id) ?? "-" }}</a>
+                        <a href="#!" class="fs-13 font-weight-600">{{ ($order->time_id > 0) ? date('m-d-Y',$order->time_id): "-" }}</a>
                     </div>
                 </div>
                 <hr>

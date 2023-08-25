@@ -39,7 +39,7 @@ class ClientController extends Controller
     public function ajaxtData(Request $request){
 
         $rData = Client::select('*');
-        $rData = $rData->orderBy('id', 'DESC');
+        $rData = $rData->orderBy('company_name', 'asc');
         
         return DataTables::of($rData->get())
         ->addIndexColumn()
@@ -137,13 +137,7 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'company_name' => 'required',
-            'office_phone_number' => 'required',
-            'website' => 'required',
-            'address' => 'required',
-            'notes' => 'required',
-            'tax' => 'required',
-            'resale_number' => 'required',
+            'company_name' => 'required'
         ]);
         $client = new Client();
 
@@ -252,13 +246,7 @@ class ClientController extends Controller
     public function update(Request $request, $id)
     {
       $this->validate($request, [
-        'company_name' => 'required',
-        'office_phone_number' => 'required',
-        'website' => 'required',
-        'address' => 'required',
-        'notes' => 'required',
-        'tax' => 'required',
-        'resale_number' => 'required',
+        'company_name' => 'required'
     ]);
 
 

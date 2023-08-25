@@ -98,7 +98,7 @@ class UserController extends Controller
                     $action_list    .= '<a class="dropdown-item" href="'.route('admin.users.edit',$data->id).'"><i class="far fa-edit"></i> Edit</a>';
                 }
                 if(auth()->user()->can('users-delete')){
-                    $action_list    .= '<a class="dropdown-item" href="'.route('admin.users.destroy',$data->id).'"><i class="far fa-trash-alt"></i> Delete</a>';
+                    $action_list    .= '<a class="dropdown-item" href="'.route('admin.users.delete',$data->id).'"><i class="far fa-trash-alt"></i> Delete</a>';
                 }
                 $action_list    .= '</div>
                 </div>';

@@ -46,6 +46,8 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::post('/change-password-save',  [AuthController::class, 'changePasswordSave'])->name('changePasswordSave');
 
     Route::get('users/ajax', [UserController::class, 'ajaxtData'])->name("users.ajax_data");
+    Route::post('users/update-user/{user_id}', [UserController::class, 'update'])->name("users.update-user");
+    Route::get('users/delete/{user_id}', [UserController::class, 'destroy'])->name("users.delete");
     Route::resource('users', UserController::class);
     /* Start Roles Routes */
     Route::get('roles/ajax',  [RoleController::class, 'ajaxtData'])->name("roles.ajax_data");

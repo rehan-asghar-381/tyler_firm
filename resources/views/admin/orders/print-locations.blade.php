@@ -7,7 +7,7 @@
                 <div class="card-header collapsed" data-toggle="collapse" href="#collapse-{{$product_detail->id}}" style="background-color: #eee;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <p class="mb-0">{{$product_detail->name}} {{ " [".$product_detail->code."]" }}</p>
+                            <p class="mb-0">{{$product_detail->name}}</p>
                         </div>
                         <div class="text-right">
                             <div class="actions">

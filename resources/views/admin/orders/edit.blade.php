@@ -211,7 +211,7 @@ hr{
                                 <div class="form-group">
                                     <label>Due Date: </label>&nbsp;&nbsp;&nbsp;
                                     <div class="input-group date">
-                                        <input type="text" name="due_date" class="form-control bg-light flatpickr" value="{{date("m-d-Y h:i", $order->due_date)}}" required="" id="due_date">
+                                        <input type="text" name="due_date" class="form-control bg-light flatpickr" value="@if($order->due_date>0) {{date("m-d-Y h:i", $order->due_date)}} @endif" required="" id="due_date">
                                         <div class="input-group-addon input-group-append">
                                             <div class="input-group-text">
                                                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
@@ -224,7 +224,7 @@ hr{
                                 <div class="form-group">
                                     <label>Ship Date: </label>&nbsp;&nbsp;&nbsp;
                                     <div class="input-group date">
-                                        <input type="text" name="ship_date" class="form-control bg-light flatpickr" value="{{date("m-d-Y h:i",$order->ship_date)}}" required="" id="ship_date">
+                                        <input type="text" name="ship_date" class="form-control bg-light flatpickr" value="@if($order->ship_date>0){{date("m-d-Y h:i",$order->ship_date)}} @endif" required="" id="ship_date">
                                         <div class="input-group-addon input-group-append">
                                             <div class="input-group-text">
                                                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
@@ -284,7 +284,7 @@ hr{
                                         <select name="product_ids[]" id="product_ids" class="form-control basic-multiple" multiple="multiple">
                                             @if (count($products) > 0)
                                             @foreach ($products as $product)
-                                            <option value="{{$product->id}}" @if(in_array($product->id, $order_product_ids_arr)) {{"selected"}} @endif>{{$product->name}} [ {{$product->code}}]</option>
+                                            <option value="{{$product->id}}" @if(in_array($product->id, $order_product_ids_arr)) {{"selected"}} @endif>{{$product->name}}</option>
                                             @endforeach
                                             @endif
                                         </select>

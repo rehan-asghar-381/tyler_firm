@@ -184,13 +184,13 @@
                                 <tr>
                                     <td style="width: 45%;">
                                         <div><strong>{{ $product_name }}</strong></div>
-                                        <small>{{$color}} </small>
+                                        <small style="font-weight: bold;">{{$color}} </small>
                                     
-                                        <small>{{$fixed_sizes}}</small>
+                                        <small style="font-weight: bold;">{{$fixed_sizes}}</small>
                                     </td>
                                     <td>
                                         <div>{{($fixed_sizes_qty>0)?$fixed_sizes_qty:""}}</div>
-                                        <div>{{($fixed_size_price>0)? "$".$fixed_size_price: ""}}</div>
+                                        <div>{{($fixed_size_price>0)? "$".number_format($fixed_size_price, 2): ""}}</div>
                                     </td>
                                     <td>
                                         <div>
@@ -468,11 +468,11 @@
                 <div class="col-sm-4">
                     <ul class="list-unstyled text-right">
                         <li><strong>Total Quantity: </strong> {{$client_details["projected_units"]}} </li>
-                        <li><strong>Art:</strong> {{"$".$art_fee}} </li>
-                        <li><strong>Discount:</strong> {{"$".$art_discount}} </li>
-                        <li><strong>Sub Total:</strong>{{"$".$sub_total}}</li>
+                        <li><strong>Art:</strong> {{ "$".$art_fee}} </li>
+                        <li><strong>Discount: </strong> {{ "$".$art_discount}} </li>
+                        <li><strong>Sub Total:&nbsp;</strong>{{ "$".number_format($sub_total)}}</li>
                         <li><strong>Sales Tax:</strong> {{ $extra_details["tax"]."%" }} </li>
-                        <li><strong>Total:</strong>{{ "$".number_format((float)$grand_total, 2, '.', '') }}</li>
+                        <li><strong>Total:&nbsp;</strong>{{ "$".number_format((float)$grand_total, 2, '.', ',') }}</li>
                     </ul>
                 </div>
             </div>
@@ -482,8 +482,8 @@
                     <div class="form-row">
                         <div class="row imagess">
                             @foreach($order_images as $key=>$OrderImg)
-                                <div class="col-md-4 photo mt-1">
-                                    <img src="{{asset($OrderImg->image)}}" class="img-rounded" alt="{{$OrderImg->order_id}}" style="height: 150px;object-fit: cover;">
+                                <div class="col-md-8 photo mt-1">
+                                    <img src="{{asset($OrderImg->image)}}" class="img-rounded" alt="{{$OrderImg->order_id}}" style="object-fit: fill;">
                                 </div>
                             @endforeach
                         </div>

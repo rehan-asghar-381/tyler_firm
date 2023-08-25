@@ -94,7 +94,7 @@
     var table = $('table').DataTable({
       processing: false,
       serverSide: true,
-      searching: false,
+      searching: true,
       stateSave: false,
       pagingType: "full_numbers",
       pageLength: 10,

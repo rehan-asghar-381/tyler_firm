@@ -646,12 +646,12 @@ class OrderController extends Controller
         
     }
     public function print_nd_loations(Request $request)
-    {
+    {F
         $type                           = "";  
         $order_price                    = []; 
         $order_color_location           = []; 
         $order_color_location_number    = []; 
-        $print_locations                = PrintLocation::where("is_active", "Y")->get();
+        $print_locations                = PrintLocation::where("is_active", "Y")->orderBy('priority', 'asc')->get();
         
         $product_id         = $request->product_id;
         $order_id           = (isset($request->order_id) && $request->order_id != "")?$request->order_id:0;
@@ -1035,7 +1035,7 @@ class OrderController extends Controller
             'OrderOtherCharges'
         ])->find($id);
        
-        $print_locations        = PrintLocation::where("is_active", "Y")->get();
+        $print_locations        = PrintLocation::where("is_active", "Y")->orderBy('priority', 'asc')->get();
         $extra_details          = [];
         $client_details         = [];
         $order_prices           = [];

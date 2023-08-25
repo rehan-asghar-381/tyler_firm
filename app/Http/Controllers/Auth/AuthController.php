@@ -167,13 +167,14 @@ public function changePasswordSave(Request $request)
 {
       $validator = Validator::make($request->all(), [
         'currentPassword' => ['required'],
-        'newPassword' => ['required',
-            'regex:/[a-z]/',      // must contain at least one lowercase letter
-            'regex:/[A-Z]/',      // must contain at least one uppercase letter
-            'regex:/[0-9]/',      // must contain at least one digit
-            'regex:/[@$!%*#?&]/', // must contain a special character
+        // 'newPassword' => ['required',
+        //     'regex:/[a-z]/',      // must contain at least one lowercase letter
+        //     'regex:/[A-Z]/',      // must contain at least one uppercase letter
+        //     'regex:/[0-9]/',      // must contain at least one digit
+        //     'regex:/[@$!%*#?&]/', // must contain a special character
 
-        ],
+        // ],
+        'newPassword' => 'required',
         'newPasswordConfirm' => ['same:newPassword'],
 
     ],[

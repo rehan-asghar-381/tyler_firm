@@ -104,16 +104,16 @@
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label class="form-label text-dark-gray" for="">Company Name</label>
-                        <input type="text" name="company_name" class="form-control font-12 form-control-lg" value="{{old('company_name')}}">
+                        <input type="text" name="company_name" class="form-control font-12 form-control-lg require" value="{{old('company_name')}}">
                     </div>
                     <div class="col-md-3 mb-3">
                         <label class="form-label text-dark-gray" for="office_phone_number">Company Office Phone Number</label>
-                        <input type="text" name="office_phone_number" class="form-control font-12 form-control-lg require" value="{{old('office_phone_number')}}">
+                        <input type="text" name="office_phone_number" class="form-control font-12 form-control-lg" value="{{old('office_phone_number')}}">
                         
                     </div>
                     <div class="col-md-3 mb-3">
                         <label class="form-label text-dark-gray" for="">Company Website</label>
-                        <input type="text" name="website" class="form-control font-12 form-control-lg require" value="{{old('website')}}">
+                        <input type="text" name="website" class="form-control font-12 form-control-lg" value="{{old('website')}}">
                         
                     </div>
                     <div class="col-md-3 mb-3">
@@ -134,7 +134,7 @@
                     </div>
                      <div class="col-md-6 mb-3">
                         <label class="form-label text-dark-gray" for="">Notes</label>
-                        <textarea name="notes"  class="form-control font-12 form-control-lg require" >{{old('notes')}}</textarea>
+                        <textarea name="notes"  class="form-control font-12 form-control-lg" >{{old('notes')}}</textarea>
                     </div>
                 </div>
           
@@ -151,19 +151,19 @@
              <div class="col-md-1 mb-3"></div>                
              <div class="col-md-2 mb-3">
                 <label class="form-label text-dark-gray" for="">First name</label>
-                <input type="text" name="first_name[]" class="form-control font-12 form-control-lg" value="{{old('first_name')}}">
+                <input type="text" name="first_name[]" class="form-control font-12 form-control-lg" value="">
             </div>
             <div class="col-md-2 mb-3">
                 <label class="form-label text-dark-gray" for="">Last Name</label>
-                <input type="text" name="last_name[]" class="form-control font-12 form-control-lg" value="{{old('last_name')}}">
+                <input type="text" name="last_name[]" class="form-control font-12 form-control-lg" value="">
             </div>
             <div class="col-md-2 mb-3">
                 <label class="form-label text-dark-gray" for="">Email </label>
-                <input type="email" name="email[]" class="form-control font-12 form-control-lg" value="{{old('email')}}">
+                <input type="email" name="email[]" class="form-control font-12 form-control-lg" value="">
             </div>
             <div class="col-md-2 mb-3">
                 <label class="form-label text-dark-gray" for="">Phone Number </label>
-                <input type="phone" name="phone_number[]" class="form-control font-12 form-control-lg" value="{{old('phone_number')}}">
+                <input type="phone" name="phone_number[]" class="form-control font-12 form-control-lg" value="">
             </div>
             <div class="col-md-2 float-right mt-4 " >
                 <i type="submit" class="fas fa-plus add_row" style="color:green;cursor:pointer;"  style="max-width: 114px;max-height: 47px;margin-top: 25px;

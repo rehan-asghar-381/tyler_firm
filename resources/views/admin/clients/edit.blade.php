@@ -124,16 +124,16 @@
   <div class="row">
     <div class="col-md-3 mb-3">
         <label class="form-label text-dark-gray" for="">Company Name</label>
-        <input type="text" name="company_name" class="form-control font-12 form-control-lg" value="{{$client->company_name}}">
+        <input type="text" name="company_name" class="form-control font-12 form-control-lg require" value="{{$client->company_name}}">
     </div>
     <div class="col-md-3 mb-3">
         <label class="form-label text-dark-gray" for="office_phone_number">Company Office Phone Number</label>
-        <input type="text" name="office_phone_number" class="form-control font-12 form-control-lg require" value="{{$client->office_phone_number}}">
+        <input type="text" name="office_phone_number" class="form-control font-12 form-control-lg" value="{{$client->office_phone_number}}">
 
     </div>
     <div class="col-md-3 mb-3">
         <label class="form-label text-dark-gray" for="">Company Website</label>
-        <input type="text" name="website" class="form-control font-12 form-control-lg require" value="{{$client->website}}">
+        <input type="text" name="website" class="form-control font-12 form-control-lg" value="{{$client->website}}">
 
     </div>
     <div class="col-md-3 mb-3">
@@ -154,7 +154,7 @@
     </div>
     <div class="col-md-6 mb-3">
         <label class="form-label text-dark-gray" for="">Notes</label>
-        <textarea name="notes"  class="form-control font-12 form-control-lg require" >{{$client->notes}}</textarea>
+        <textarea name="notes"  class="form-control font-12 form-control-lg" >{{$client->notes}}</textarea>
     </div>
 </div>
 

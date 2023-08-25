@@ -267,7 +267,7 @@ hr{
                                         <select name="product_ids[]" id="product_ids" class="form-control basic-multiple" multiple="multiple">
                                             @if (count($products) > 0)
                                             @foreach ($products as $product)
-                                            <option value="{{$product->id}}">{{$product->name}} [ {{$product->code}}]</option>
+                                            <option value="{{$product->id}}">{{$product->name}}</option>
                                             @endforeach
                                             @endif
                                         </select>

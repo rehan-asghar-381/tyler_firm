@@ -4,11 +4,14 @@
 .dropdown-toggle::after {
   border: none !important;
 }
+.d-none{
+  display: none;
+}
 </style>
 <div class="body-content">
   <form action="" id="reportForm">
     <div class="row mb-4">
-     <div class="col-md-3 mb-3">
+     <div class="col-md-3 mb-3 d-none">
        <div class="form-group">
         <label>Date From: </label>&nbsp;&nbsp;&nbsp;
         <div class="input-group date">
@@ -22,7 +25,7 @@
      </div>
    </div>
 
-   <div class="col-md-3 mb-3">
+   <div class="col-md-3 mb-3 d-none">
      <div class="form-group">
       <label>Date To: </label>&nbsp;&nbsp;&nbsp;
       <div class="input-group date">
@@ -140,7 +143,7 @@
   var table = $('table').DataTable({
     processing: false,
     serverSide: true,
-    searching: false,
+    searching: true,
     stateSave: false,
     pagingType: "full_numbers",
     pageLength: 10,

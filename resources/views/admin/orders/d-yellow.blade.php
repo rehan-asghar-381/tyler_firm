@@ -10,7 +10,7 @@ textarea {
   width: auto !important; 
 }
 .img-rounded{
-    object-fit:cover;
+    object-fit:fill;
 }
 table td, table th{
     padding:2px 10px !important;
@@ -179,17 +179,17 @@ textarea {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>
+                                                        {{-- <tr>
                                                             <th scope="row">Name</th>
                                                             <td>{{$client_details["company_name"]}}</td>
                                                         </tr>
                                                         <tr>
                                                             <th scope="row">Company</th>
                                                             <td>{{$client_details["company_name"]}}</td>
-                                                        </tr>
+                                                        </tr> --}}
                                                         <tr>
-                                                            <th scope="row">Address</th>
-                                                            <td>{{$client_details["address"]}}</td>
+                                                            {{-- <th scope="row">Address</th> --}}
+                                                            <td colspan="2" rowspan="3">{{$order->shipping_address ?? ""}}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -206,8 +206,8 @@ textarea {
                                                 <input type="text" name="company_name" class="form-control input-sm" id="company_name" value="{{$client_details["company_name"]}}" disabled>
                                             </div>
                                             <div class="col-md-2 mb-3">
-                                                <label for="design" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">DESIGN</label>
-                                                <input type="text" name="design" class="form-control" id="design" value="{{$order_d_yellow->design ?? ""}}">
+                                                <label for="design" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">Job Name</label>
+                                                <input type="text" name="design" class="form-control" id="design" value="{{$order->job_name ?? ""}}" disabled>
                                             </div>
                                             <div class="col-md-2 mb-3">
                                                 <label for="order_number" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">P.O #</label>
@@ -226,12 +226,12 @@ textarea {
                                                 </select>
                                             </div>
                                             <div class="col-md-2 mb-3">
-                                                <label for="in_hands" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">IN HANDS</label>
-                                                <input type="text" name="in_hands" class="form-control" id="in_hands" value="{{$order_d_yellow->in_hands ?? ""}}">
+                                                <label for="in_hands" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">Due Date</label>
+                                                <input type="text" name="in_hands" class="form-control" id="in_hands" value="@if($order->due_date>0){{date("m-d-Y", $order->due_date)}} @endif" disabled>
                                             </div>
                                             <div class="col-md-2 mb-3">
                                                 <label for="ship_date" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">SHIP DATE</label>
-                                                <input type="text" name="ship_date" class="form-control" id="ship_date" value="{{date("m-d-Y", $order->ship_date)}}" disabled>
+                                                <input type="text" name="ship_date" class="form-control" id="ship_date" value="@if($order->ship_date>0){{date("m-d-Y", $order->ship_date)}}@end" disabled>
                                             </div>
                                             <div class="col-md-2 mb-3">
                                                 <label for="ship" class="font-weight-600" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">SHIP</label>
@@ -677,7 +677,7 @@ textarea {
                                 {{-- {{dd($order->OrderImgs)}} --}}
                                 @if(count($order->OrderImgs) > 0)
                                 @foreach($order->OrderImgs as $key=>$OrderImg)
-                                <div class="col-md-4 photo mt-1">
+                                <div class="col-md-8 photo mt-1">
 
                                  <img src="{{asset($OrderImg->image)}}" class="img-rounded" alt="{{$OrderImg->order_id}}" >
                              </div>

@@ -4,7 +4,7 @@
             <div class="card card_product_order mb-4 mt-4">
                 <div class="card-header collapsed" data-toggle="collapse" href="#collapse-{{$product_detail->id}}" style="background-color: #eee;">
                     <a class="card-title">
-                        {{$product_detail->name}} {{ " [".$product_detail->code."]" }}
+                        {{$product_detail->name}}
                     </a>
                 </div>
                 <div id="collapse-{{$product_detail->id}}" class="card-body collapse" data-parent="#accordion" >
