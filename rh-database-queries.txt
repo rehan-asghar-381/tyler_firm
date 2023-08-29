@@ -1,13 +1,43 @@
+ALTER TABLE `tyler_live`.`order_d_yellow` 
+ADD COLUMN `film_number` varchar(255) NULL AFTER `s_and_s`;
+INSERT INTO `permissions` VALUES (33, 'orders-edit', 'Order', 'User can edit Orders.', 'web', '2023-04-12 05:15:51', '2023-04-12 05:15:51');
+INSERT INTO `permissions` VALUES (34, 'orders-delete', 'Order', 'User can delete Orders.', 'web', '2023-04-12 05:15:51', '2023-04-12 05:15:51');
+INSERT INTO `permissions` VALUES (36, 'orders-replicate', 'Order', 'User can replicate Orders.', 'web', '2023-04-12 05:15:51', '2023-04-12 05:15:51');
+INSERT INTO `permissions` VALUES (37, 'orders-change-status', 'Order', 'User can change Orders status', 'web', '2023-04-12 05:15:51', '2023-04-12 05:15:51');
+INSERT INTO `permissions` VALUES (38, 'orders-approve-quote', 'Order', 'User can approve quote', 'web', '2023-04-12 05:15:51', '2023-04-12 05:15:51');
+INSERT INTO `permissions` VALUES (39, 'orders-blank', 'Order', 'User can set order blank.', 'web', '2023-04-12 05:15:51', '2023-04-12 05:15:51');
+INSERT INTO `permissions` VALUES (40, 'orders-send-email', 'Order', 'User can send quote email.', 'web', '2023-04-12 05:15:51', '2023-04-12 05:15:51');
+INSERT INTO `permissions` VALUES (41, 'clients-list', 'Client', 'User can view client list.', 'web', '2023-04-12 05:15:51', '2023-04-12 05:15:51');
+INSERT INTO `permissions` VALUES (42, 'clients-create', 'Client', 'User can view add client.', 'web', '2023-04-12 05:15:51', '2023-04-12 05:15:51');
+INSERT INTO `permissions` VALUES (43, 'clients-edit', 'Client', 'User can edit client', 'web', '2023-04-12 05:15:51', '2023-04-12 05:15:51');
+INSERT INTO `permissions` VALUES (44, 'clients-order-history', 'Client', 'User can view client order history.', 'web', '2023-04-12 05:15:51', '2023-04-12 05:15:51');
 
-2) Remove mendatory checks from clients exept company name
-3) Roles and Permissions
-4) On product size for edit from baby to adult it's related sizes should be there.
-5) In product Add price can be changed at any time and it should reflect on all size combinations.
-6) Image preview
+
+
+
+
+
+
+
+
+
+
+
+
+4) On product size for edit from baby to adult it's related sizes should be there. (Delete product untill it is not used in any order other wise leave it as it is....)
 7) Print detail order
 8) Three buttons should be there in generate invoice i) print ii) save iii) Email
+
+
+
+
+
+------------------Fixed----------------------
+2) Remove mendatory checks from clients exept company name
+3) Roles and Permissions
+5) In product Add price can be changed at any time and it should reflect on all size combinations.
+6) Image preview
 9) In genrate invoice additional service 
-10) In D-Yellow In Hand <---> Due Date ... Relect due date from add order
 11) Need to make Film Number editable in D-Yellow
 12) Need to make bold all of the D-yellow text
-13) Need to make cloc for standard 12 hours
+13) Need to make clock for standard 12 hours

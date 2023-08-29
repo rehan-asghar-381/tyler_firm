@@ -43,7 +43,7 @@
         margin-left: 9%;
     }
     </style>
-    <style media="print">
+<style media="print">
     @page {
         size: auto ;
         margin: 0 ;
@@ -66,26 +66,26 @@
           -moz-appearance: none !important;
           text-indent: 1px !important;
           text-overflow: '' !important;
-      }
-      .form-control{
-        /border: 1px solid #fff !important;/
+        }
+        .form-control{
+            /border: 1px solid #fff !important;/
+        }
+    
+        input  select{
+        all: unset;
+        }
+        #toTop{
+            display: none !important; 
+        }
+        textarea {
+        resize: none !important;
+        }
+        .productionSample{
+            margin-left: 6% !important;
+        }
     }
     
-    input  select{
-      all: unset;
-    }
-    #toTop{
-     display: none !important; 
-    }
-    textarea {
-      resize: none !important;
-    }
-    .productionSample{
-        margin-left: 6% !important;
-    }
-    }
-    
-    </style>
+</style>
 @section('content')
 <div class="body-content">
     <div class="card">
@@ -121,6 +121,7 @@
                     $sub_total                  = 0;
                     $grand_total                = 0; 
                     $tax_percent                = 0;
+                    $additional_services_flag   = 0;
                     $flag   = (isset($invoice_details["adult_sizes"]))?1:0;
                     $flag   += (isset($invoice_details["baby_sizes"]))?1:0;
                     $initializer    = 0;
@@ -251,187 +252,208 @@
                                 </tr>
                             @endforeach
                         @endforeach
-                        @if ($initializer == $flag)
-                            <tr><td colspan="10" style="background-color: #dfdada;padding:5px;font-weight:bold;text-align:center;">Additional Services</td></tr>
-                        @endif
+                        @foreach ($extra_details as $coulmn_name=>$extra_detail)
+                            @php
+                                $except_end = "";
+                                $prc        = explode("_", $coulmn_name);
+                                $end_value  = end($prc);
+                                for ($i=0; $i < count($prc)-1; $i++) { 
+                                    $except_end     .= $prc[$i]."_";
+                                }
+                                if($end_value == "pieces"){
+                                    $prices     = $extra_details[$except_end."prices"] ?? "";
+                                    $charges    = $extra_details[$except_end."charges"] ?? "";
+                                    if($extra_details[$coulmn_name] > 0 && ($prices>0 || $charges>0)){
+                                        $additional_services_flag = 1;
+                                        break;
+                                    }
+                                }elseif($end_value == "prices" OR $end_value == "charges"){
+                                    $pieces     = $extra_details[$except_end."pieces"] ?? "";
+                                    if($extra_details[$coulmn_name] > 0 && $pieces>0){
+                                        $additional_services_flag = 1;
+                                        break;
+                                    }
+                                }
+                            @endphp 
+                        @endforeach
                     </tbody>
                 </table>
                 @endforeach
-                <table class="table table-nowrap" border="0">
-                    <tbody>
-                    @if ($initializer == $flag)
-
-                        @if($extra_details["ink_color_change_pieces"] > 0 && $extra_details["ink_color_change_prices"] > 0)
-                            <tr>
-                                <td style="width: 80%;">
-                                    <div><strong>Ink Color Change</strong></div>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Quantity</strong></div> --}}
-                                    <strong>{{ $extra_details["ink_color_change_pieces"] }}</strong>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Price Per Piece</strong></div> --}}
-                                    <strong>{{ "$".$extra_details["ink_color_change_pieces"]*$extra_details["ink_color_change_prices"] }}</strong>
-                                </td>
-                            </tr>
-                        @endif
-                        @if($extra_details["shipping_pieces"] > 0 && $extra_details["shipping_charges"] > 0)
-                            <tr>
-                                <td style="width: 80%;">
-                                    <div><strong>Shipping</strong></div>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Quantity</strong></div> --}}
-                                    <strong>{{ $extra_details["shipping_pieces"] }}</strong>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Price Per Piece</strong></div> --}}
-                                    <strong>{{ "$".$extra_details["shipping_pieces"]*$extra_details["shipping_charges"] }}</strong>
-                                </td>
-                            </tr>
-                        @endif
-                        @if($extra_details["label_pieces"] > 0 && $extra_details["label_prices"] > 0)
-                            <tr>
-                                <td style="width: 80%;">
-                                    <div><strong>Inside Labels</strong></div>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Quantity</strong></div> --}}
-                                    <strong>{{ $extra_details["label_pieces"] }}</strong>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Price Per Piece</strong></div> --}}
-                                    <strong>{{ "$".$extra_details["label_pieces"]*$extra_details["label_prices"] }}</strong>
-                                </td>
-                            </tr>
-                        @endif
-                        @if($extra_details["fold_pieces"] > 0 && $extra_details["fold_prices"] > 0)
-                            <tr>
-                                <td style="width: 80%;">
-                                    <div><strong>Fold Only</strong></div>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Quantity</strong></div> --}}
-                                    <strong>{{ $extra_details["fold_pieces"] }}</strong>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Price Per Piece</strong></div> --}}
-                                    <strong>{{ "$".$extra_details["fold_pieces"]*$extra_details["fold_prices"] }}</strong>
-                                </td>
-                            </tr>
-                        @endif
-                        @if($extra_details["fold_bag_pieces"] > 0 && $extra_details["fold_bag_prices"] > 0)
-                            <tr>
-                                <td style="width: 80%;">
-                                    <div><strong>Fold Bag Only</strong></div>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Quantity</strong></div> --}}
-                                    <strong>{{ $extra_details["fold_bag_pieces"] }}</strong>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Price Per Piece</strong></div> --}}
-                                    <strong>{{ "$".$extra_details["fold_bag_pieces"]*$extra_details["fold_bag_prices"] }}</strong>
-                                </td>
-                            </tr>
-                        @endif
-                        @if($extra_details["fold_bag_tag_pieces"] > 0 && $extra_details["fold_bag_tag_prices"] > 0)
-                            <tr>
-                                <td style="width: 80%;">
-                                    <div><strong>Fold/Bag/Tag</strong></div>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Quantity</strong></div> --}}
-                                    <strong>{{ $extra_details["fold_bag_tag_pieces"] }}</strong>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Price Per Piece</strong></div> --}}
-                                    <strong>{{ "$".$extra_details["fold_bag_tag_pieces"]*$extra_details["fold_bag_tag_prices"] }}</strong>
-                                </td>
-                            </tr>
-                        @endif
-                        
-                        @if($extra_details["hang_tag_pieces"] > 0 && $extra_details["hang_tag_prices"] > 0)
-                            <tr>
-                                <td style="width: 80%;">
-                                    <div><strong>Hang Tags</strong></div>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Quantity</strong></div> --}}
-                                    <strong>{{ $extra_details["hang_tag_pieces"] }}</strong>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Price Per Piece</strong></div> --}}
-                                    <strong>{{ "$".$extra_details["hang_tag_pieces"]*$extra_details["hang_tag_prices"] }}</strong>
-                                </td>
-                                
-                            </tr>
-                        @endif
-                        @if($extra_details["foil_pieces"] > 0 && $extra_details["foil_prices"] > 0)
-                            <tr>
-                                <td style="width: 80%;">
-                                    <div><strong>Foil</strong></div>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Quantity</strong></div> --}}
-                                    <strong>{{ $extra_details["foil_pieces"] }}</strong>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Price Per Piece</strong></div> --}}
-                                    <strong>{{ "$".$extra_details["foil_pieces"]*$extra_details["foil_prices"] }}</strong>
-                                </td>
-                            </tr>
-                        @endif
-                        
-                        @if($extra_details["transfers_pieces"] > 0 && $extra_details["transfers_prices"] > 0)
-                            <tr>
-                                <td style="width: 80%;">
-                                    <div><strong>Transfers</strong></div>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Quantity</strong></div> --}}
-                                    <strong>{{ $extra_details["transfers_pieces"] }}</small>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Price Per Piece</strong></div> --}}
-                                    <strong>{{ "$".$extra_details["transfers_pieces"]*$extra_details["transfers_prices"] }}</strong>
-                                </td>
-                            </tr>
-                        @endif
-                        @if($extra_details["palletizing_pieces"] > 0 && $extra_details["palletizing_prices"] > 0)
-                            <tr>
-                                <td style="width: 80%;">
-                                    <div><strong>Palletizing</strong></div>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Quantity</strong></div> --}}
-                                    <strong>{{ $extra_details["palletizing_pieces"] }}</strong>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Price Per Piece</strong></div> --}}
-                                    <strong>{{ "$".$extra_details["palletizing_pieces"]*$extra_details["palletizing_prices"] }}</strong>
-                                </td>
-                            </tr>
-                        @endif
-                        @if($extra_details["remove_packaging_pieces"] > 0 && $extra_details["remove_packaging_prices"] > 0)
-                            <tr>
-                                <td style="width: 80%;">
-                                    <div><strong>Remove Packaging</strong></div>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Quantity</strong></div> --}}
-                                    <strong>{{ $extra_details["remove_packaging_pieces"] }}</strong>
-                                </td>
-                                <td>
-                                    {{-- <div><strong>Price Per Piece</strong></div> --}}
-                                    <strong>{{ "$".$extra_details["remove_packaging_pieces"]*$extra_details["remove_packaging_prices"] }}</strong>
-                                </td>
-                            </tr>
-                        @endif
-                    @endif
-                    </tbody>
-                </table>
+                @if ($additional_services_flag == 1)
+                    <table class="table table-nowrap" border="0">
+                        <tbody>
+                            <tr><td colspan="10" style="background-color: #dfdada;padding:5px;font-weight:bold;text-align:center;">Additional Services</td></tr>
+                            @if($extra_details["ink_color_change_pieces"] > 0 && $extra_details["ink_color_change_prices"] > 0)
+                                <tr>
+                                    <td style="width: 80%;">
+                                        <div><strong>Ink Color Change</strong></div>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["ink_color_change_pieces"] }}</strong>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ "$".$extra_details["ink_color_change_pieces"]*$extra_details["ink_color_change_prices"] }}</strong>
+                                    </td>
+                                </tr>
+                            @endif
+                            @if($extra_details["shipping_pieces"] > 0 && $extra_details["shipping_charges"] > 0)
+                                <tr>
+                                    <td style="width: 80%;">
+                                        <div><strong>Shipping</strong></div>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["shipping_pieces"] }}</strong>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ "$".$extra_details["shipping_pieces"]*$extra_details["shipping_charges"] }}</strong>
+                                    </td>
+                                </tr>
+                            @endif
+                            @if($extra_details["label_pieces"] > 0 && $extra_details["label_prices"] > 0)
+                                <tr>
+                                    <td style="width: 80%;">
+                                        <div><strong>Inside Labels</strong></div>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["label_pieces"] }}</strong>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ "$".$extra_details["label_pieces"]*$extra_details["label_prices"] }}</strong>
+                                    </td>
+                                </tr>
+                            @endif
+                            @if($extra_details["fold_pieces"] > 0 && $extra_details["fold_prices"] > 0)
+                                <tr>
+                                    <td style="width: 80%;">
+                                        <div><strong>Fold Only</strong></div>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["fold_pieces"] }}</strong>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ "$".$extra_details["fold_pieces"]*$extra_details["fold_prices"] }}</strong>
+                                    </td>
+                                </tr>
+                            @endif
+                            @if($extra_details["fold_bag_pieces"] > 0 && $extra_details["fold_bag_prices"] > 0)
+                                <tr>
+                                    <td style="width: 80%;">
+                                        <div><strong>Fold Bag Only</strong></div>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["fold_bag_pieces"] }}</strong>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ "$".$extra_details["fold_bag_pieces"]*$extra_details["fold_bag_prices"] }}</strong>
+                                    </td>
+                                </tr>
+                            @endif
+                            @if($extra_details["fold_bag_tag_pieces"] > 0 && $extra_details["fold_bag_tag_prices"] > 0)
+                                <tr>
+                                    <td style="width: 80%;">
+                                        <div><strong>Fold/Bag/Tag</strong></div>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["fold_bag_tag_pieces"] }}</strong>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ "$".$extra_details["fold_bag_tag_pieces"]*$extra_details["fold_bag_tag_prices"] }}</strong>
+                                    </td>
+                                </tr>
+                            @endif
+                            
+                            @if($extra_details["hang_tag_pieces"] > 0 && $extra_details["hang_tag_prices"] > 0)
+                                <tr>
+                                    <td style="width: 80%;">
+                                        <div><strong>Hang Tags</strong></div>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["hang_tag_pieces"] }}</strong>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ "$".$extra_details["hang_tag_pieces"]*$extra_details["hang_tag_prices"] }}</strong>
+                                    </td>
+                                    
+                                </tr>
+                            @endif
+                            @if($extra_details["foil_pieces"] > 0 && $extra_details["foil_prices"] > 0)
+                                <tr>
+                                    <td style="width: 80%;">
+                                        <div><strong>Foil</strong></div>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["foil_pieces"] }}</strong>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ "$".$extra_details["foil_pieces"]*$extra_details["foil_prices"] }}</strong>
+                                    </td>
+                                </tr>
+                            @endif
+                            
+                            @if($extra_details["transfers_pieces"] > 0 && $extra_details["transfers_prices"] > 0)
+                                <tr>
+                                    <td style="width: 80%;">
+                                        <div><strong>Transfers</strong></div>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["transfers_pieces"] }}</small>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ "$".$extra_details["transfers_pieces"]*$extra_details["transfers_prices"] }}</strong>
+                                    </td>
+                                </tr>
+                            @endif
+                            @if($extra_details["palletizing_pieces"] > 0 && $extra_details["palletizing_prices"] > 0)
+                                <tr>
+                                    <td style="width: 80%;">
+                                        <div><strong>Palletizing</strong></div>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["palletizing_pieces"] }}</strong>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ "$".$extra_details["palletizing_pieces"]*$extra_details["palletizing_prices"] }}</strong>
+                                    </td>
+                                </tr>
+                            @endif
+                            @if($extra_details["remove_packaging_pieces"] > 0 && $extra_details["remove_packaging_prices"] > 0)
+                                <tr>
+                                    <td style="width: 80%;">
+                                        <div><strong>Remove Packaging</strong></div>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Quantity</strong></div> --}}
+                                        <strong>{{ $extra_details["remove_packaging_pieces"] }}</strong>
+                                    </td>
+                                    <td>
+                                        {{-- <div><strong>Price Per Piece</strong></div> --}}
+                                        <strong>{{ "$".$extra_details["remove_packaging_pieces"]*$extra_details["remove_packaging_prices"] }}</strong>
+                                    </td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                @endif
                 @php
                     $art_fee            = ($extra_details["art_fee"]>0)?$extra_details["art_fee"]:0;
                     $art_discount       = ($extra_details["art_discount"]>0)?(int)$extra_details["art_discount"]:0;
@@ -468,10 +490,10 @@
                 <div class="col-sm-4">
                     <ul class="list-unstyled text-right">
                         <li><strong>Total Quantity: </strong> {{$client_details["projected_units"]}} </li>
-                        <li><strong>Art:</strong> {{ "$".$art_fee}} </li>
+                        <li><strong>Art: </strong> {{ "$".$art_fee}} </li>
                         <li><strong>Discount: </strong> {{ "$".$art_discount}} </li>
-                        <li><strong>Sub Total:&nbsp;</strong>{{ "$".number_format($sub_total)}}</li>
-                        <li><strong>Sales Tax:</strong> {{ $extra_details["tax"]."%" }} </li>
+                        <li><strong>Sub Total:&nbsp;</strong>{{"$".number_format($sub_total)}}</li>
+                        <li><strong>Sales Tax: </strong> {{ $extra_details["tax"]."%" }} </li>
                         <li><strong>Total:&nbsp;</strong>{{ "$".number_format((float)$grand_total, 2, '.', ',') }}</li>
                     </ul>
                 </div>
@@ -482,8 +504,11 @@
                     <div class="form-row">
                         <div class="row imagess">
                             @foreach($order_images as $key=>$OrderImg)
-                                <div class="col-md-8 photo mt-1">
-                                    <img src="{{asset($OrderImg->image)}}" class="img-rounded" alt="{{$OrderImg->order_id}}" style="object-fit: fill;">
+                                <div class="col-md-6 photo mt-1">
+                                    
+                                    <a class="example-image-link" href="{{asset($OrderImg->image)}}" data-lightbox="example-1">
+                                        <img src="{{asset($OrderImg->image)}}" class="img-rounded" alt="{{$OrderImg->order_id}}" style="object-fit: fill;">
+                                    </a>
                                 </div>
                             @endforeach
                         </div>
@@ -493,11 +518,11 @@
             @endif
         </div>
         <div class="card-footer">
-            {{-- <a href="{{route("admin.order.generateInvoice", $extra_details["order_id"])}}?download_invoice=true" class="btn btn-info mr-2"><span class="fa fa-print"></span></a> --}}
             <button type="button" class="btn btn-lg btn-success mb-3 no-print" onclick='printDiv();' id="submit-form">
                 <span class="fa fa-print">
                 </span>
             </button>
+            <a href="{{route("admin.order.generateInvoice", $extra_details["order_id"])}}?download_invoice=true" class="btn btn-md btn-info mb-3 no-print">Save</a>
         </div>
     </div>
 </div>

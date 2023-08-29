@@ -13,6 +13,28 @@
     <link href="{{asset('b/plugins/bootstrap/css/typicons.min.css')}}" rel="stylesheet">
     <link href="{{asset('b/plugins/bootstrap/css/themify-icons.min.css')}}" rel="stylesheet">
     <link href="{{asset('b/dist/css/style.css')}}" rel="stylesheet">
+    <style>
+        .btn-success {
+			color: #fff;
+			background-color: #041e42;
+			border-color: #041e42;
+		}
+        .btn-success {
+			box-shadow: 0 2px 6px 0 rgb(255 255 255 / 50%);
+		}
+        .btn-success.focus, .btn-success:focus {
+            box-shadow: 0 0 0 0.2rem rgba(72,180,97,.5);
+        }
+        .btn-success:hover {
+            color: #fff;
+            background-color: #041e42;
+            border-color: #041e42;
+        }
+        a {
+			color: #041e42;
+			text-decoration: none;
+		}
+    </style>
 </head>
 <body class="bg-white">
     <div class="d-flex align-items-center justify-content-center text-center h-100vh">

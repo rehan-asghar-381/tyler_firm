@@ -417,9 +417,9 @@ $(document).on("change", "._price", function(){
   var price         = $(this).val();
   var selector      = $(this).attr("data-selector");
   $("."+selector).each(function(index, element){
-    if($(this).val() == ""){
+    // if($(this).val() == ""){
       $(this).val(price);
-    }
+    // }
   });
 });
 

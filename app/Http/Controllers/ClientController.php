@@ -102,7 +102,7 @@ class ClientController extends Controller
 
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.client.detail',$data->id).'"><i class="far fa-eye"></i> View</a>';
             }
-            if(auth()->user()->can('clients-Previous-Order')){
+            if(auth()->user()->can('clients-order-history')){
 
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.client.previousOrder',$data->id).'"><i class="fa fa-arrow-left"></i> Orders History</a>';
             }

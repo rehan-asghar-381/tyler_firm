@@ -16,13 +16,18 @@
             if ($(".nav-clock")[0]) {
                 var a = new Date;
                 a.setDate(a.getDate()), setInterval(function () {
+                    var am_pm   = "";
+                    var hours   = (new Date).getHours();
+                    am_pm       = (hours >=12) ? " pm" : " am";
                     var a = (new Date).getSeconds();
-                    $(".time-sec").html((a < 10 ? "0" : "") + a);
+                    $(".time-sec").html((a < 10 ? "0" : "") + a + am_pm);
                 }, 1e3), setInterval(function () {
                     var a = (new Date).getMinutes();
                     $(".time-min").html((a < 10 ? "0" : "") + a);
-                }, 1e3), setInterval(function () {
+                }, 1e3), setInterval(function () {  
                     var a = (new Date).getHours();
+                    a = a % 12;
+                    a = a ? a : 12;
                     $(".time-hours").html((a < 10 ? "0" : "") + a);
                 }, 1e3);
             }

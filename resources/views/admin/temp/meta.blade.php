@@ -10,6 +10,7 @@
 	<link href="{{asset('b/plugins/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
 	<meta name="csrf-token" content="{{ csrf_token() }}" />
 	<link href="{{asset('b/plugins/metisMenu/metisMenu.min.css')}}" rel="stylesheet">
+	<link href="{{asset('b/plugins/lightbox/css/lightbox.css')}}" rel="stylesheet">
 	{{-- <link type="text/css" href="{{asset('b/plugins/fontawesome/css/all.min.css')}}" rel="stylesheet"> --}}
 	{{-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"> --}}
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" 
@@ -73,5 +74,9 @@ crossorigin="anonymous">
 		}
 		.spinner-layer.pl-green {
 			border-color: #041e42;
+		}
+		.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+			background-color: #041e42;
+			box-shadow: 0 2px 6px 0 rgb(255 255 255 / 50%);
 		}
 	</style>

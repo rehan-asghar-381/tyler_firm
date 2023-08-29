@@ -1,4 +1,47 @@
 @extends("admin.template", ["pageTitle"=>$pageTitle])
+<style media="print">
+    @page {
+        size: auto ;
+        margin: 0 ;
+    }
+    @media print
+    {    
+        .no-print, .no-print *
+        {
+            display: none !important;
+        }
+        #DivIdToPrint{
+            margin-top: -60px !important;
+        }
+        .row{
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+        select {
+          -webkit-appearance: none !important;
+          -moz-appearance: none !important;
+          text-indent: 1px !important;
+          text-overflow: '' !important;
+        }
+        .form-control{
+            /border: 1px solid #fff !important;/
+        }
+    
+        input  select{
+        all: unset;
+        }
+        #toTop{
+            display: none !important; 
+        }
+        textarea {
+        resize: none !important;
+        }
+        .productionSample{
+            margin-left: 6% !important;
+        }
+    }
+    
+</style>
 @section('content')
 <div class="body-content">
     <div class="row">
@@ -19,8 +62,9 @@
                 @foreach($order->OrderImgs as $key=>$OrderImg)
                     <div class="align-left p-1">
                         <div class="zoom-box">
-                            <img src="{{asset($OrderImg->image)}}" style="object-fit: cover;" width="200" height="150" data-zoom-image="{{asset($OrderImg->image)}}" class="img-zoom-m"/>
-                            
+                            <a class="example-image-link" href="{{asset($OrderImg->image)}}" data-lightbox="example-1">
+                                <img src="{{asset($OrderImg->image)}}" style="object-fit: cover;" width="200" height="150"/>
+                            </a>
                         </div>
                     </div>
                 @endforeach
@@ -90,7 +134,7 @@
                         <h6 class="mb-0 font-weight-600">Sales Rep</h6>
                     </div>
                     <div class="col-auto">
-                        <a href="#!" class="fs-13 font-weight-600">{{ $order->sales_rep !='' ?  $sales_rep->first_name .' ' . $sales_rep->last_name : "-" }}</a>
+                        <a href="#!" class="fs-13 font-weight-600">{{ $sales_rep_name }}</a>
                     </div>
                 </div>
                 <hr>
@@ -317,6 +361,12 @@
                     </tr>
                 </table>
             </div>
+            {{-- <div class="card-footer">
+                <button type="button" class="btn btn-lg btn-success mb-3 no-print" onclick='printDiv();' id="submit-form">
+                    <span class="fa fa-print">
+                    </span>
+                </button>
+            </div> --}}
         </div>
     </div>
 </div>
@@ -324,6 +374,17 @@
 @endsection
 @section('footer-script')
 <script>
+    function printDiv() 
+    {
+        setTimeout(function(){
+            console.log('test');
+            window.print();
+
+        },200);
+        if (!$("#sidebarCollapse").hasClass("open")) {
+            $('#sidebarCollapse').click();
+        }
+    } 
     $(document).ready(function(){
         var _order_id       = '{{$order->id}}';
         $('#product_ids').on('select2:unselect', function (e) {

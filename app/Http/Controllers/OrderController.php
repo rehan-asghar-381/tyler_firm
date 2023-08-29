@@ -31,6 +31,7 @@ use Yajra\DataTables\DataTables;
 use App\Traits\NotificationTrait;
 use App\Models\EmailLog;
 use PDF;
+use Illuminate\Support\Facades\Storage;
 class OrderController extends Controller
 {
     use NotificationTrait;
@@ -217,7 +218,7 @@ class OrderController extends Controller
             if(auth()->user()->can('orders-delete')){
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.delete', $data->id).'"><i class="far fa-trash-alt"></i> Delete</a>';
             }
-            if(auth()->user()->can('orders-recreate')){
+            if(auth()->user()->can('orders-replicate')){
             
             $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.recreate', $data->id).'"><i class="far fa fa-retweet"></i> Re-Order</a>';
             }
@@ -230,10 +231,10 @@ class OrderController extends Controller
             if(auth()->user()->can('orders-change-status')){
                 $action_list    .= '<a class="dropdown-item btn-change-status" href="#" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-life-ring"></i> Change Status</a>';
             }
-             if(auth()->user()->can('orders-quote-approval')){
+             if(auth()->user()->can('orders-approve-quote')){
                 $action_list    .= '<a class="dropdown-item btn-change-quote_approval" href="#" data-quote_approval="'.$data->quote_approval.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-galactic-republic"></i> Quote Approval</a>';
             }
-             if(auth()->user()->can('orders-blanks')){
+             if(auth()->user()->can('orders-blank')){
                 $action_list    .= '<a class="dropdown-item btn-change-blank" href="#" data-blank="'.$data->blank.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-hornbill"></i> Blanks</a>';
             }
             if(auth()->user()->can('orders-send-email')){
@@ -567,7 +568,10 @@ class OrderController extends Controller
             'OrderOtherCharges'
         ])->find($id);
         $order_product_ids_arr      = [];
-        $sales_rep                    = ClientSaleRep::find($order->sales_rep);
+        $sales_rep                  = ClientSaleRep::find($order->sales_rep);
+        $sales_rep_first            = $sales_rep->first_name ?? "";
+        $sales_rep_last             = $sales_rep->last_name ?? "";
+        $sales_rep_name             = $sales_rep_first . " " .$sales_rep_last;
         $products                   = Product::get();
         $fixed_sizes                = $this->fixedAdultSize;
         $all_adult_sizes            = $this->allAdultSizes;
@@ -579,7 +583,7 @@ class OrderController extends Controller
                 $order_product_ids_arr[]    = $orderProduct->product_id;
             }
         }
-        return view('admin.orders.order-detail',compact('pageTitle', 'order', 'sales_rep', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr'));
+        return view('admin.orders.order-detail',compact('pageTitle', 'order', 'sales_rep', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr', 'sales_rep_name'));
     }
 
     public function status_update(Request $request)
@@ -646,7 +650,7 @@ class OrderController extends Controller
         
     }
     public function print_nd_loations(Request $request)
-    {F
+    {
         $type                           = "";  
         $order_price                    = []; 
         $order_color_location           = []; 
@@ -844,10 +848,14 @@ class OrderController extends Controller
         $fixed_baby_sizes                           = $this->fixedBabySize;
         // dd($extra_details);
         if($request->has('download_invoice') && $request->download_invoice==true){
-            // return view('admin.orders.download-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations'));
-            $customPaper = array(0,0,700,700);
-            $pdf = PDF::loadView('admin.orders.download-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations'))->setOptions(['defaultFont' => 'sans-serif'])->setPaper($customPaper, 'landscape');
-            return $pdf->download('invoice.pdf');
+            // return view('admin.orders.download-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images'));
+            
+            $customPaper = array(0,0,1000,1000);
+            $pdf    = PDF::loadView('admin.orders.download-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images'))->setOptions(['isRemoteEnabled' => true])->setPaper($customPaper, 'portrait');
+            
+            // $content    = $pdf->download('invoice.pdf')->getOriginalContent();
+            $path = public_path('/uploads/order/email/');
+            $pdf->save($path.'invoice.pdf');
         }   
     
         return view('admin.orders.generate-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images'));
@@ -983,13 +991,14 @@ class OrderController extends Controller
             $order_d_yellow_new->order_id               = $order_id;
             $order_d_yellow_new->time_id                = date('U');
             $order_d_yellow_new->print_crew             = $order_d_yellow->print_crew;
+            $order_d_yellow_new->film_number            = $order_d_yellow->film_number;
             $order_d_yellow_new->goods_rec              = $order_d_yellow->goods_rec;
             $order_d_yellow_new->boxes                  = $order_d_yellow->boxes;
             $order_d_yellow_new->production_sample      = $order_d_yellow->production_sample;
             $order_d_yellow_new->palletize              = $order_d_yellow->palletize;
             $order_d_yellow_new->palletize_opt          = $order_d_yellow->palletize_opt;
-            $order_d_yellow_new->in_hands               = $order_d_yellow->in_hands;
-            $order_d_yellow_new->design                 = $order_d_yellow->design;
+            // $order_d_yellow_new->in_hands               = $order_d_yellow->in_hands;
+            // $order_d_yellow_new->design                 = $order_d_yellow->design;
             $order_d_yellow_new->ship                   = $order_d_yellow->ship;
             $order_d_yellow_new->acct                   = $order_d_yellow->acct;
             $order_d_yellow_new->alpha                  = $order_d_yellow->alpha;
@@ -1018,6 +1027,7 @@ class OrderController extends Controller
     }
     public function DYellow(Request $request, $id)
     {
+       
         $pageTitle  = "D Yellow";
         $order      = Order::with([
             'client', 
@@ -1113,12 +1123,13 @@ class OrderController extends Controller
         $order_d_yellow->order_id               = $order_id;
         $order_d_yellow->time_id                = date("U");
         $order_d_yellow->print_crew             = $rData["print_crew"];
+        $order_d_yellow->film_number            = $rData["film_number"];
         $order_d_yellow->goods_rec              = $rData["goods_rec"];
         $order_d_yellow->boxes                  = $rData["boxes"];
         $order_d_yellow->production_sample      = $rData["production_sample"];
         $order_d_yellow->palletize_opt          = $rData["palletize_opt"];
-        $order_d_yellow->in_hands               = $rData["in_hands"];
-        $order_d_yellow->design                 = $rData["design"];
+        // $order_d_yellow->in_hands               = $rData["in_hands"];
+        // $order_d_yellow->design                 = $rData["design"];
         $order_d_yellow->ship                   = $rData["ship"];
         $order_d_yellow->acct                   = $rData["acct"];
         $order_d_yellow->alpha                  = $rData["alpha"];
