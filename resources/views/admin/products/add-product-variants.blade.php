@@ -19,7 +19,7 @@
                     @foreach ($variants as $variant)
                     @php
                         if($variant->name     == "Adult_sizes Size"){
-                            $variant->name    = "Adult Size";
+                            $variant->name    = "Youth-Adult Size";
                         }
                         if($variant->name     == "Baby_sizes Size"){
                             $variant->name    = "Baby Size";

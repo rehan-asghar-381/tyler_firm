@@ -81,7 +81,7 @@
                                                     
                                             @endphp
                                             <div class="form-group col-md-3">
-                                                <label>{{$ProductVariant->name}}</label>
+                                                <label>@if($ProductVariant->name != "Color") {{ "Youth-Adult Size" }} @else {{ $ProductVariant->name }} @endif</label>
                                                 <select type="text" data-product_id="{{$product_detail->id}}" name="{{$name}}"
                                                 class="form-control select-one attribute {{ ($ProductVariant->name == "Color") ? "v1_attr_id" : "v2_attr_id" }}" >
                                                     <option value="">Select</option>

@@ -131,7 +131,7 @@
                     <input type="text" name="code" class="form-control font-12 form-control-lg" value="{{ $product->code }}">
                     {!! $errors->default->first('code', '<p class="text-danger">:message</p>') !!}
                   </div>
-                  <div class="col-md-3 mb-3">
+                  {{-- <div class="col-md-3 mb-3">
                     <label class="form-label text-dark-gray" for="">Size for</label>
                     <select name="size_for" id="size_for" class="form-control require select-one >
                       <option value="">--select--</option>
@@ -139,7 +139,7 @@
                           <option value="{{ $type->type }}" @if($product->size_for == $type->type) {{"selected"}} @endif>{{ ucfirst(str_replace("_", " ",$type->type))}}</option>
                       @endforeach
                   </select>
-                </div>
+                </div> --}}
                 <div class="col-md-3 mb-3">
                     <label class="form-label text-dark-gray" for="">Brand</label>
                     <select type="text" name="brand_id" id="brand_id" class="form-control select-one" value="" >

@@ -32,6 +32,7 @@ use App\Traits\NotificationTrait;
 use App\Models\EmailLog;
 use PDF;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 class OrderController extends Controller
 {
     use NotificationTrait;
@@ -177,10 +178,29 @@ class OrderController extends Controller
         })
         ->editColumn('status', function ($data) {
 
-            if (isset($data->Orderstatus->name) && $data->Orderstatus->name != "")
-                return $data->Orderstatus->name;
-            else
+            if (isset($data->Orderstatus->name) && $data->Orderstatus->name != ""){
+                if($data->status == 1){
+                    return '<span class="badge badge-secondary">'.$data->Orderstatus->name.'</span>';
+                }
+                if($data->status == 2){
+                    return '<span class="badge badge-primary">'.$data->Orderstatus->name.'</span>';
+                }
+                if($data->status == 3){
+                    return '<span class="badge badge-info">'.$data->Orderstatus->name.'</span>';
+                }
+                if($data->status == 4){
+                    return '<span class="badge badge-light">'.$data->Orderstatus->name.'</span>';
+                }
+                if($data->status == 5){
+                    return '<span class="badge badge-success">'.$data->Orderstatus->name.'</span>';
+                }
+            
+            }else{
+
                 return '-';
+            }
+                
+            
         })
         ->editColumn('quote_approval', function ($data) {
 
@@ -244,7 +264,7 @@ class OrderController extends Controller
             $action_list        .= '</div></div>';
             return  $action_list;
         })
-        ->rawColumns(['actions'])
+        ->rawColumns(['actions', 'status'])
         ->make(TRUE);
     }
   
@@ -256,9 +276,8 @@ class OrderController extends Controller
     public function create()
     {
         $pageTitle          = "Orders";
-        $clients            = Client::get();
-        $clients            = Client::get();
-        $products           = Product::get();
+        $clients            = Client::orderBy("company_name", "asc")->get();
+        $products           = Product::orderBy("name", "asc")->get();
         $brands             = Brand::get();
         $errors             = [];
         $fixed_sizes        = $this->fixedAdultSize;
@@ -316,7 +335,8 @@ class OrderController extends Controller
         }
         $this->save_order_other_charges($rData, $orderID);
         $this->order_transfer($rData, $orderID);
-        return redirect()->route("admin.order.create")->withSuccess('Order data has been saved successfully!');
+
+        return redirect()->route('admin.order.edit', $orderID)->withSuccess('Order data has been saved successfully!');
     }
    public function save_order_imgs($files_arr=[], $order_id){
         $order                  = Order::find($order_id);
@@ -510,6 +530,7 @@ class OrderController extends Controller
         $user_id                    = Auth::user()->id;
         $user_name                  = Auth::user()->name;     
         $rData                      = $request->all();
+        
         $order                      = Order::find($id);
         $order->client_id           = $rData['client_id'];
         $order->sales_rep           = $rData['sales_rep'];
@@ -853,9 +874,9 @@ class OrderController extends Controller
             $customPaper = array(0,0,1000,1000);
             $pdf    = PDF::loadView('admin.orders.download-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images'))->setOptions(['isRemoteEnabled' => true])->setPaper($customPaper, 'portrait');
             
-            // $content    = $pdf->download('invoice.pdf')->getOriginalContent();
-            $path = public_path('/uploads/order/email/');
-            $pdf->save($path.'invoice.pdf');
+            return $pdf->download('invoice.pdf');
+            // $path = public_path('/uploads/order/email/');
+            // $pdf->save($path.'invoice.pdf');
         }   
     
         return view('admin.orders.generate-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images'));

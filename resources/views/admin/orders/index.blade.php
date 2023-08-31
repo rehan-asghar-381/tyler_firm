@@ -147,15 +147,15 @@
 					</div>
 					@endif
 					<div class="table-responsive">
-						<table class="table table-borderless">
-							<thead>
+						<table class="table table-borderless table-striped">
+							<thead style="background-color: #6aa4e6;color: #ffffff;">
 								<tr>
 									<th width="250px">Sr.</th>
 									<th width="250px">PO #</th>
 									<th width="250px">Assignee</th>
 									<th width="250px">Job Name</th>
-									<th width="250px">Company Name</th>
-									<th width="250px">Quantity of Pieces</th>
+									<th width="250px">Company</th>
+									<th width="250px">Quantity</th>
 									<th width="250px">Due Date</th>
 									<th width="250px">Event</th>
 									<th width="250px">Status</th>

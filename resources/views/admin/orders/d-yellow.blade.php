@@ -678,7 +678,7 @@ textarea {
                     <div class="row">
                         <div class="col-md-7">
                             <div class="form-row">
-                              <div class="row imagess">
+                              <div class="row imagess" style="width: 100%;">
                                 {{-- {{dd($order->OrderImgs)}} --}}
                                 @if(count($order->OrderImgs) > 0)
                                 @foreach($order->OrderImgs as $key=>$OrderImg)

@@ -119,7 +119,7 @@
                         <select name="size_for" id="size_for" class="form-control require select-one >
                           <option value="">--select--</option>
                           @foreach ($product_size_type as $type)
-                              <option value="{{ $type->type }}">{{ ucfirst(str_replace("_", " ",$type->type))}}</option>
+                              <option value="{{ $type->type }}">@if($type->type == "adult_sizes") {{ "Youth-Adult Size" }} @else {{ ucfirst(str_replace("_", " ",$type->type)) }} @endif</option>
                           @endforeach
                       </select>
                     </div>

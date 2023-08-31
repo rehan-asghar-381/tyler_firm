@@ -1,6 +1,5 @@
 @extends("admin.template", ["pageTitle"=>$pageTitle])
 <style type="text/css">
-
     .form-control {
         height:calc(1.8em + 0.25rem + 0px) !important;
         font-size:13px !important;
@@ -50,6 +49,11 @@
     }
     @media print
     {    
+        .footer-print {
+            position: fixed;
+            bottom: 0;
+            text-align: center;
+        }
         .no-print, .no-print *
         {
             display: none !important;
@@ -523,6 +527,7 @@
                 </span>
             </button>
             <a href="{{route("admin.order.generateInvoice", $extra_details["order_id"])}}?download_invoice=true" class="btn btn-md btn-info mb-3 no-print">Save</a>
+            <p class="footer-print">Art Charge $60 per hour (1 Hour Min.) Production time is 7-12 business days from receipt of all necessary components. 50% deposit required. NWG not responsible for damages to customer provided goods. Approval must be received before order goes into production.</p>
         </div>
     </div>
 </div>
