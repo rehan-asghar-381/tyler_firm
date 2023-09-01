@@ -30,6 +30,7 @@ use App\Models\DYellowInkColor;
 use Yajra\DataTables\DataTables;
 use App\Traits\NotificationTrait;
 use App\Models\EmailLog;
+use App\Models\EmailTemplate;
 use PDF;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -258,7 +259,7 @@ class OrderController extends Controller
                 $action_list    .= '<a class="dropdown-item btn-change-blank" href="#" data-blank="'.$data->blank.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-hornbill"></i> Blanks</a>';
             }
             if(auth()->user()->can('orders-send-email')){
-                $action_list    .= '<a class="dropdown-item  send-email-modal" href="#" data-client_id="'.$data->client_id.'" data-id="'.$data->id.'" data-email="'.($data->ClientSaleRep->email ?? '').'"   data-toggle="modal" data-target="#send-email-modal"><i class="hvr-buzz-out far fa-envelope"></i> Send Email</a>';
+                $action_list    .= '<a class="dropdown-item  send-email-modal" href="#" data-client_id="'.$data->client_id.'" data-id="'.$data->id.'" data-email="'.($data->ClientSaleRep->email ?? '').'"  data-sale_rep_name="'.($data->ClientSaleRep->first_name ?? '')." ".($data->ClientSaleRep->last_name ?? '').'" data-company_name="'.($data->client->company_name ?? '').'"><i class="hvr-buzz-out far fa-envelope"></i> Send Email</a>';
             }
             
             $action_list        .= '</div></div>';
@@ -1184,47 +1185,28 @@ class OrderController extends Controller
     }
     public function sendEmail(Request $request)
     {
-        if ($files = $request->file('attachment')) {
-            $file =  $request->file('attachment');
-            if(is_file($file)){
-                $original_name = $file->getClientOriginalName();
-                $file_name = time().rand(100,999).$original_name;
-                $destinationPath = public_path('/uploads/order/email');
-                $file->move($destinationPath, $file_name);
-                $file_slug  = "/uploads/order/email/".$file_name;
-                $email                      = new EmailLog();
-                $email->time_id             = time();
-                $email->order_id            = $request->order_number;
-                $email->attachment          = $file_slug;
-                $email->client_id           = $request->client_id;
-                $email->send_to             = $request->email;
-                $email->subject             = $request->subject;
-                $email->description         = $request->description;
-                $email->description         = $request->description;
-                $email->created_by_id       = Auth::user()->id;
-                $data["email"] =$request->email ;
-                $data["title"] = $request->subject;
-                $data["description"] = $request->description;
-                $files = [
-                    public_path('/uploads/order/email/'.$file_name)
-                ];
-                \Mail::send('admin.orders.email', $data, function($message)use($data, $files) {
-                        $message->to($data["email"])
-                        ->subject($data["title"]);
-                        foreach ($files as $file){
-                            $message->attach($file);
-                        }            
-                });
-                $email->save();
-                if(count(\Mail::failures()) > 0){
-                    return 'Something went wrong.';
-                }else{
-                    return "Mail send successfully !!";
-                }
-            }
+        $email                      = new EmailLog();
+        $email->time_id             = time();
+        $email->order_id            = $request->order_number;
+        $email->client_id           = $request->client_id;
+        $email->send_to             = $request->email;
+        $email->subject             = $request->subject;
+        $email->description         = $request->description;
+        $email->created_by_id       = Auth::user()->id;
+        $data["email"] =$request->email ;
+        $data["title"] = $request->subject;
+        $data["description"] = $request->description;
+        \Mail::send('admin.orders.email', $data, function($message)use($data) {
+                $message->to($data["email"])
+                ->subject($data["title"]);         
+        });
+        $email->save();
+        if(count(\Mail::failures()) > 0){
+            return 'Something went wrong.';
+        }else{
+            return "Mail send successfully !!";
         }
     }
-
     public function destroy(Request $request, $id)
     {
         $order      = Order::find($id);
@@ -1239,5 +1221,19 @@ class OrderController extends Controller
         DYellowInkColor::where("order_id", $id)->delete();
         $order->delete();
         return redirect()->route("admin.orders.index")->withSuccess('Order data has been deleted successfully!');
+    }
+    public function email_popup(Request $request){
+        $selected_template  = "";
+        $order_id           = $request->order_id;
+        $client_id          = $request->client_id;
+        $email              = $request->email;
+        $sale_rep_name      = $request->sale_rep_name;
+        $company_name       = $request->company_name;
+        $template_id        = $request->has('template_id') ? $request->template_id: "";
+        if($template_id != ""){
+            $selected_template      = EmailTemplate::find($template_id);
+        }
+        $email_templates            = EmailTemplate::get();
+        return view('admin.orders.popup.send-email', compact('order_id', 'client_id', 'email', 'email_templates', 'selected_template', 'template_id', 'sale_rep_name', 'company_name'));
     }
 }

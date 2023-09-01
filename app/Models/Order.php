@@ -12,6 +12,7 @@ use App\Models\OrderPrice;
 use App\Models\OrderColorPerLocation;
 use App\Models\OrderTransfer;
 use App\Models\DYellowInkColor;
+use App\Models\OrderHistory;
 
 class Order extends Model
 {
@@ -58,6 +59,10 @@ class Order extends Model
     public function OrderImgs(){
         
         return $this->hasMany(OrderImgs::class, "order_id", "id");
+    }
+    public function OrderHistory(){
+        
+        return $this->hasMany(OrderHistory::class, "order_id", "id");
     }
 
     public function OrderProducts(){

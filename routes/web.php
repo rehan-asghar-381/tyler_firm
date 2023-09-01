@@ -10,6 +10,8 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PriceController;
+use App\Http\Controllers\EmailTemplateController;
+use App\Http\Controllers\PublicController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -117,6 +119,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/order/delete-image', [OrderController::class, 'delete_image'])->name('order.delete-image');
     Route::get('/orders/d_yellow/{order_id}', [OrderController::class, 'DYellow'])->name('order.DYellow');
     Route::post('/orders/d_yellow/store_d_yellow', [OrderController::class, 'storeDYellow'])->name('order.storeDYellow');
+    Route::get('/email-template/email-popup', [OrderController::class, 'email_popup'])->name('email-template.email_popup');
     Route::post('/send-email', [OrderController::class, 'sendEmail'])->name('sendEmail');
     
     Route::get('/get_decoration_price', [OrderController::class, 'get_decoration_price'])->name('get_decoration_price');
@@ -125,8 +128,20 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/settings/decoration-prices', [PriceController::class, 'index'])->name('price.index');
     Route::get('/settings/decoration-prices/edit', [PriceController::class, 'edit'])->name('price.edit');
     Route::post('/settings/decoration-prices/update', [PriceController::class, 'update'])->name('price.update');
-
+    /* Start Email Templates Routes */
+    Route::get('/email-template', [EmailTemplateController::class, 'index'])->name('email-template.index');
+    Route::get('/email-template/ajaxData', [EmailTemplateController::class, 'ajaxtData'])->name('email-template.ajax_data');
+    Route::get('/email-template/create', [EmailTemplateController::class, 'create'])->name('email-template.create');
+    Route::post('/email-template/store', [EmailTemplateController::class, 'store'])->name('email-template.store');
+    Route::get('/email-template/edit/{temp_id}', [EmailTemplateController::class, 'edit'])->name('email-template.edit');
+    Route::post('/email-template/update/{temp_id}', [EmailTemplateController::class, 'update'])->name('email-template.update');
+    Route::post('/email-template/show/{temp_id}', [EmailTemplateController::class, 'show'])->name('email-template.show');
     
 }); 
 /* End Admin Routes */
+/* Start Public Routes */
+Route::get('/clients/quote/{order_id}', [PublicController::class, 'get_quote'])->name('order.quote');
+Route::post('/clients/quote/store-response', [PublicController::class, 'store'])->name('quote.store');
+/* End Public Routes */
+
 

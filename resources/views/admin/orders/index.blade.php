@@ -64,54 +64,6 @@
 			</div>
 		</div>
 	</form>
-	<!-- The Modal -->
-	<div class="modal" id="send-email-modal">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<!-- Modal Header -->
-				<div class="modal-header" style="background-color:#41a942">
-					<h6 class="modal-title text-white">Send Email</h6>
-					<button type="button" class="close close-modal" data-dismiss="modal">&times;</button>
-				</div>
-				<!-- Modal body -->
-				<div class="modal-body" style="max-height: calc(100vh - 210px);overflow-y: auto;">
-					<form  method="POST" id="sendEmail"  enctype="multipart/form-data">
-						@csrf
-						<input type="hidden" name="order_number" id="order_number" value="">
-						<input type="hidden" name="clientId" id="clientId" value="">
-
-						<div class="row">
-							<div class="col-md-6 mb-3">
-								<label class="form-label text-dark-gray" for="email">Sent to Email</label>
-								<input type="email" id="clientEmail" name="email" class="form-control font-12 form-control-lg" value="">
-							</div>
-							<div class="col-md-6 mb-3">
-								<label class="form-label text-dark-gray" for="subject">Subject</label>
-								<input type="text" name="subject" class="form-control font-12 form-control-lg require" value="">
-
-							</div>
-							<div class="col-md-6 mb-3">
-								<label class="form-label text-dark-gray" for="subject">Attachment</label>
-								<input type="file" name="attachment" id="attachment" class="form-control font-12 form-control-lg require" value="">
-
-							</div>
-							<div class="col-md-6 mb-3">
-								<label class="form-label text-dark-gray" for="description">Message</label>
-								<textarea name="description"  class="form-control font-12 form-control-lg require" ></textarea>
-							</div>
-						</div>
-
-
-						<button type="submit" class="btn btn-success" id="save-button">Submit</button>
-					</form>
-				</div>
-				<!-- Modal footer -->
-				<div class="modal-footer">
-					<button class="btn btn-default close-modal" type="button">close</button>
-				</div>
-			</div>
-		</div>
-	</div>
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="card mb-4">
@@ -179,6 +131,9 @@
              <template id="blank">{{json_encode($blank_arr)}}</template>
 
 		<div class="job-template">
+
+		</div>
+		<div class="email-popup">
 
 		</div>
 	</div>
@@ -510,60 +465,107 @@ table.ajax.reload();
 		
 		
 	});
-	$(document).on('click', '.get-job-popup', function(e){
-
+	$(document).on('click', '.send-email-modal', function(e){
 		e.preventDefault();
-		$('.job-template').empty();
-		var order_id 				= $(this).attr('data-order-id');
+		$('.email-popup').empty();
+		var order_id 		  	= $(this).attr('data-id');
+		var client_id 		  	= $(this).attr('data-client_id');
+		var email 		  		= $(this).attr('data-email');
+		var sale_rep_name 		= $(this).attr('data-sale_rep_name');
+		var company_name 		= $(this).attr('data-company_name');
+		
 		$.ajax({
-			{{-- url: '{{ route("admin.order.job_template") }}', --}}
+			url: '{{ route("admin.email-template.email_popup") }}',
 			type: "GET",
 			data: {
-				order_id: order_id
+				order_id: order_id,
+				client_id: client_id,
+				sale_rep_name: sale_rep_name,
+				company_name: company_name,
+				email: email
 			},
 			success: function(data) {
-				
-				$('.job-template').html(data);
-				$('.select-tailor').select2();
-				$('#job-modal').show();
-
-				$('.flatpickr-jobs').flatpickr({
-					enableTime: true,
-					minDate: 'today',
-					dateFormat: "m-d-Y H:i",
+				$('.email-popup').html(data);
+				"use strict"; // Start of use strict
+				//summernote
+				$('#summernote').summernote({
+					height: 200, // set editor height
+					minHeight: null, // set minimum height of editor
+					maxHeight: null, // set maximum height of editor
+					focus: true                  // set focus to editable area after initializing summernote
 				});
+				$('#send-email-modal').show();
 			}
 		});
+	});
+	$(document).on('change', '.template', function(e){
+		e.preventDefault();
+		$('.email-popup').empty();
+		var order_id 		  	= $(this).closest("#sendEmail").find("#order_number").val();
+		var client_id 		  	= $(this).closest("#sendEmail").find("#clientId").val();
+		var email 		  		= $(this).closest("#sendEmail").find("#clientEmail").val();
+		var sale_rep_name 		= $(this).closest("#sendEmail").find("#saleRepName").val();
+		var company_name 		= $(this).closest("#sendEmail").find("#compantName").val();
+		var template_id 		= $(this).val();
+		console.log(order_id);
+		console.log(client_id);
+		console.log(email);
+		console.log(template_id);
+		$.ajax({
+			url: '{{ route("admin.email-template.email_popup") }}',
+			type: "GET",
+			data: {
+				order_id: order_id,
+				client_id: client_id,
+				sale_rep_name: sale_rep_name,
+				company_name: company_name,
+				template_id: template_id,
+				email: email
+			},
+			success: function(data) {
+				$('.email-popup').html(data);
+				"use strict"; // Start of use strict
+				//summernote
+				$('#summernote').summernote({
+					height: 200, // set editor height
+					minHeight: null, // set minimum height of editor
+					maxHeight: null, // set maximum height of editor
+					focus: true                  // set focus to editable area after initializing summernote
+				});
+				$('#send-email-modal').show();
+			}
+		});
+	});
+	$(document).on('click', '.copy-to-clipboard', function(e){
+		e.preventDefault();
+		var link = $(this).attr('data-link');
+		var temp = $("<input>");
+		$("body").append(temp);
+		temp.val(link).select();
+		document.execCommand("copy");
+		temp.remove();
+	});
+	$(document).on('click', '.close-modal', function(e){
+  		$(this).closest('.modal').hide();
 	});
 	$("#search-button").click(function (e) {
 		e.preventDefault();
 		table.ajax.reload();
 
-	});
-	$(document).on('click', '.send-email-modal', function(e){
-		e.preventDefault();
-		var order_id 		  = $(this).attr('data-id');
-		var client_id 		  = $(this).attr('data-client_id');
-		var email 		  = $(this).attr('data-email');
-
-		$('#order_number').val(order_id);
-		$('#clientId').val(client_id);
-		$('#clientEmail').val(email);
-
-	});
-	 
+	});	 
 	$(document).ready(function (e) {
 		$.ajaxSetup({
 			headers: {
 				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			}
 		});
-		$('#sendEmail').submit(function(e) {
+		$(document).submit("form#sendEmail", function(e) {
 			e.preventDefault();
-			var formData = new FormData(this);
+			var form 		= $("form#sendEmail");
+			var formData = new FormData(form[0]);
 			$.ajax({
-				type:'POST',
 				url: "{{ route('admin.sendEmail')}}",
+				type:'POST',
 				data: formData,
 				cache:false,
 				contentType: false,
@@ -575,7 +577,6 @@ table.ajax.reload();
 					$.confirm({
 						title : "Alert",
 						content:function(){
-
 							return data;
 						},
 						buttons:{
@@ -583,9 +584,15 @@ table.ajax.reload();
 								text:"Ok",
 								btnClass:"btn btn-success confirmed"
 							}
-
 						}
 					});
+				},
+				beforeSend: function() {
+					$('.page-loader-wrapper').show();
+				},
+				complete: function(){
+					$('.page-loader-wrapper').hide();
+					$('.Order-form').show();
 				},
 				error: function(data){
 					console.log(data);

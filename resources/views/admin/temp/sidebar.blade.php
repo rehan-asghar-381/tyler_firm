@@ -93,6 +93,14 @@
 								</a>
 							</li>
 						@endcan
+						@can('users-list')
+							<li class="@if(Request::segment(2) == "email-template")) {{ "mm-active" }}  @endif">
+								<a class="" href="{{ route('admin.email-template.index') }}">
+									<i class="typcn typcn-message mr-2"></i>
+									Email Template
+								</a>
+							</li>
+						@endcan
 						<li>
 							<a class="" href="{{ route('admin.changePassword') }}">
 								<i class="typcn typcn-user mr-2"></i>
