@@ -154,7 +154,7 @@ class PublicController extends Controller
         $history->is_approved   = $request->action;
         $history->save();
 
-        return redirect()->route("order.quote", $request->order_number)->withSuccess('You remarks has been saved successfully!');
+        return redirect()->route("order.quote", $request->order_number)->withSuccess('Thank you for your response.');
 
     }
 }

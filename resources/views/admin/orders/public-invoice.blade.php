@@ -359,7 +359,7 @@
                 $(".label-desc").empty();
                 if(action == 1){
                     $(".label-desc").text('Comments');
-                    $(".modal-title").text('Quote Approvel');
+                    $(".modal-title").text('Quote Approval');
                 }else{
                     $(".label-desc").text('Rejection Reason');
                     $(".modal-title").text('Quote Rejection');

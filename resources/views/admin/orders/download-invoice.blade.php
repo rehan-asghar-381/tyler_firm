@@ -260,9 +260,9 @@
             <tr>
                 @if (count($color_per_locations) > 0)
                     @foreach ($color_per_locations as $p_name=>$color_per_location)
-                        <span style="font-weight: 600;">{{$p_name}}</span> <br>
+                        <span style="font-weight: 300;font-family: 'Poppins';">{{$p_name}}</span> <br>
                         @foreach ($color_per_location["color_per_location"] as $key=>$location)
-                        <span style="font-weight: 600;margin-left: 20px;">{{$color_per_location["location_number"][$key]}}</span> {{$location." colors"}} <br>
+                        <span style="font-weight: 300;margin-left: 20px;font-family: 'Poppins';">{{$color_per_location["location_number"][$key]}} <small style="font-weight: normal !important;margin-left: 20px;font-family: 'Poppins';">{{$location." colors"}}</small></span><br>
                         @endforeach
                     @endforeach
                 @endif
@@ -280,7 +280,7 @@
         @if(count($order_images) > 0)
         <div>
             @foreach($order_images as $key=>$OrderImg)
-                <img src="{{asset($OrderImg->image)}}" style="display: inline-block;width: 120px;">
+                <img src="{{asset($OrderImg->image)}}" style="display: inline-block;width: 250px;">
             @endforeach
         </div>
         @endif

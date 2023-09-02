@@ -161,7 +161,7 @@ class OrderController extends Controller
         })
         ->editColumn('due_date', function ($data) {
             if ($data->due_date != "")
-                return date("m-d-Y h:i", $data->due_date);
+                return date("m-d-Y", $data->due_date);
             else
                 return '-';
         })
@@ -294,14 +294,20 @@ class OrderController extends Controller
         $user_id                    = Auth::user()->id;
         $user_name                  = Auth::user()->name;     
         $rData                      = $request->all();
+
+        $due_date                   = explode("-", $rData['due_date']);
+        $due_date                   = (count($due_date)>0  && $due_date[0])? $due_date[2]."-".$due_date[0]."-".$due_date[1]:"";
+        $ship_date                   = explode("-", $rData['ship_date']);
+        $ship_date                   = (count($ship_date)>0 && $ship_date[0])? $ship_date[2]."-".$ship_date[0]."-".$ship_date[1]:"";
+
         $order                      = new Order();
         $order->time_id             = date('U');
         $order->client_id           = $rData['client_id'];
         $order->sales_rep           = $rData['sales_rep'];
-        $order->due_date            = (isset($rData['due_date']) && $rData['due_date'] != "")?strtotime($rData['due_date']):0;
+        $order->due_date            = (isset($due_date) && $due_date != "")?strtotime($due_date):0;
         $order->event               = $rData['event'];
         $order->shipping_address    = $rData['shipping_address'];
-        $order->ship_date           = (isset($rData['ship_date']) && $rData['ship_date'] != "")?strtotime($rData['ship_date']):0;
+        $order->ship_date           = (isset($ship_date) && $ship_date != "")?strtotime($ship_date):0;
         $order->shipping_address    = $rData['shipping_address'];
         $order->notes               = $rData['notes'];
         $order->internal_notes      = $rData['internal_notes'];
@@ -531,12 +537,16 @@ class OrderController extends Controller
         $user_id                    = Auth::user()->id;
         $user_name                  = Auth::user()->name;     
         $rData                      = $request->all();
-        
+        $due_date                   = explode("-", $rData['due_date']);
+        $due_date                   = (count($due_date)>0  && $due_date[0])? $due_date[2]."-".$due_date[0]."-".$due_date[1]:"";
+        $ship_date                   = explode("-", $rData['ship_date']);
+        $ship_date                   = (count($ship_date)>0 && $ship_date[0])? $ship_date[2]."-".$ship_date[0]."-".$ship_date[1]:"";
+       
         $order                      = Order::find($id);
         $order->client_id           = $rData['client_id'];
         $order->sales_rep           = $rData['sales_rep'];
-        $order->due_date            = (isset($rData['due_date']) && $rData['due_date'] != "")?strtotime($rData['due_date']):0;
-        $order->ship_date           = (isset($rData['ship_date']) && $rData['ship_date'] != "")?strtotime($rData['ship_date']):0;
+        $order->due_date            = (isset($due_date) && $due_date != "")?strtotime($due_date):0;
+        $order->ship_date           = (isset($ship_date) && $ship_date != "")?strtotime($ship_date):0;
         $order->event               = $rData['event'];
         $order->shipping_address    = $rData['shipping_address'];
         $order->notes               = $rData['notes'];
@@ -875,7 +885,7 @@ class OrderController extends Controller
             $customPaper = array(0,0,1000,1000);
             $pdf    = PDF::loadView('admin.orders.download-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images'))->setOptions(['isRemoteEnabled' => true])->setPaper($customPaper, 'portrait');
             
-            return $pdf->download('invoice.pdf');
+            return $pdf->download('Quote.pdf');
             // $path = public_path('/uploads/order/email/');
             // $pdf->save($path.'invoice.pdf');
         }   
