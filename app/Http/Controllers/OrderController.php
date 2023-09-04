@@ -34,6 +34,7 @@ use App\Models\EmailTemplate;
 use PDF;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 class OrderController extends Controller
 {
     use NotificationTrait;
@@ -255,11 +256,14 @@ class OrderController extends Controller
              if(auth()->user()->can('orders-approve-quote')){
                 $action_list    .= '<a class="dropdown-item btn-change-quote_approval" href="#" data-quote_approval="'.$data->quote_approval.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-galactic-republic"></i> Quote Approval</a>';
             }
-             if(auth()->user()->can('orders-blank')){
+            if(auth()->user()->can('orders-blank')){
                 $action_list    .= '<a class="dropdown-item btn-change-blank" href="#" data-blank="'.$data->blank.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-hornbill"></i> Blanks</a>';
             }
+            // if(auth()->user()->can('orders-action-log')){
+            //     $action_list    .= '<a class="dropdown-item action-logs" href="#" data-id="'.$data->id.'"><i class="hvr-buzz-out far fa fa-history"></i> Action Log</a>';
+            // }
             if(auth()->user()->can('orders-send-email')){
-                $action_list    .= '<a class="dropdown-item  send-email-modal" href="#" data-client_id="'.$data->client_id.'" data-id="'.$data->id.'" data-email="'.($data->ClientSaleRep->email ?? '').'"  data-sale_rep_name="'.($data->ClientSaleRep->first_name ?? '')." ".($data->ClientSaleRep->last_name ?? '').'" data-company_name="'.($data->client->company_name ?? '').'"><i class="hvr-buzz-out far fa-envelope"></i> Send Email</a>';
+                $action_list    .= '<a class="dropdown-item  send-email-modal" href="#" data-client_id="'.$data->client_id.'" data-id="'.$data->id.'" data-email="'.($data->ClientSaleRep->email ?? '').'"  data-sale_rep_name="'.($data->ClientSaleRep->first_name ?? '')." ".($data->ClientSaleRep->last_name ?? '').'" data-company_name="'.($data->client->company_name ?? '').'" data-job_name="'.($data->job_name ?? '').'" data-order_number="'.($data->order_number ?? '').'"><i class="hvr-buzz-out far fa-envelope"></i> Send Email</a>';
             }
             
             $action_list        .= '</div></div>';
@@ -794,6 +798,8 @@ class OrderController extends Controller
     {
         $pageTitle  = "Invoice";
         $order      = Order::with([
+            'client', 
+            'ClientSaleRep', 
             'OrderPrice', 
             'OrderImgs', 
             'OrderColorPerLocation', 
@@ -820,10 +826,12 @@ class OrderController extends Controller
         }
       
         foreach($order->OrderPrice as $OrderPrice){
-            $order_prices[$OrderPrice->product_size]    = $OrderPrice->final_price;
+            $rh_product_id      = $OrderPrice->product_id;
+            $order_prices[$rh_product_id][$OrderPrice->product_size]    = $OrderPrice->final_price;
         }
         foreach($order->OrderProducts as $OrderProduct){
             foreach($OrderProduct->OrderProductVariant as $order_product_variant){
+                $rh_product_id  = $order_product_variant->product_id;
                 $size_for       = $OrderProduct->Product->size_for;
                 $product_n      = $OrderProduct->product_name;
                 $attr1_name     = $order_product_variant->attribute1_name;
@@ -831,14 +839,14 @@ class OrderController extends Controller
                 $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["pieces"]  = $order_product_variant->pieces;
                 if($size_for == "adult_sizes"){
                     $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedAdultSize))
-                                                                                        ?$order_prices["XS-XL"]
-                                                                                        :$order_prices[$attr2_name];
+                                                                                        ?$order_prices[$rh_product_id]["XS-XL"]
+                                                                                        :$order_prices[$rh_product_id][$attr2_name];
                 }
                 if($size_for == "baby_sizes"){
                     
                     $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedBabySize))
-                                                                                        ?$order_prices["OSFA-18M"]
-                                                                                        :$order_prices[$attr2_name];
+                                                                                        ?$order_prices[$rh_product_id]["OSFA-18M"]
+                                                                                        :$order_prices[$rh_product_id][$attr2_name];
                 }
             }
         }
@@ -890,7 +898,7 @@ class OrderController extends Controller
             // $pdf->save($path.'invoice.pdf');
         }   
     
-        return view('admin.orders.generate-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images'));
+        return view('admin.orders.generate-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images', 'order'));
     }
     public function recreate(Request $request, $id)
     {
@@ -1202,10 +1210,11 @@ class OrderController extends Controller
         $email->send_to             = $request->email;
         $email->subject             = $request->subject;
         $email->description         = $request->description;
+        $email->is_sent             = "Y";
         $email->created_by_id       = Auth::user()->id;
-        $data["email"] =$request->email ;
-        $data["title"] = $request->subject;
-        $data["description"] = $request->description;
+        $data["email"]              = $request->email ;
+        $data["title"]              = $request->subject;
+        $data["description"]        = $request->description;
         \Mail::send('admin.orders.email', $data, function($message)use($data) {
                 $message->to($data["email"])
                 ->subject($data["title"]);         
@@ -1239,11 +1248,49 @@ class OrderController extends Controller
         $email              = $request->email;
         $sale_rep_name      = $request->sale_rep_name;
         $company_name       = $request->company_name;
+        $job_name           = $request->job_name;
+        $order_number       = $request->order_number;
         $template_id        = $request->has('template_id') ? $request->template_id: "";
         if($template_id != ""){
             $selected_template      = EmailTemplate::find($template_id);
         }
         $email_templates            = EmailTemplate::get();
-        return view('admin.orders.popup.send-email', compact('order_id', 'client_id', 'email', 'email_templates', 'selected_template', 'template_id', 'sale_rep_name', 'company_name'));
+        return view('admin.orders.popup.send-email', compact('order_id', 'client_id', 'email', 'email_templates', 'selected_template', 'template_id', 'sale_rep_name', 'company_name', 'job_name', 'order_number'));
+    }
+    public function action_log_popup(Request $request){
+ 
+//         $order_id           = $request->order_id;
+//         $resultData                 = DB::select("SELECT
+//         M.sender,
+//         M.responder,
+//         M.SUBJECT,
+//         M.remarks,
+//         M.order_id,
+//         M.is_approved,
+//         M.created_at,
+//         U.assignee_email 
+    
+//     FROM
+//         (
+//         SELECT
+//             O.email AS sender,
+//             O.remarks AS remarks,
+//             O.is_approved AS is_approved,
+//             E.send_to AS responder,
+//             E.SUBJECT AS SUBJECT,
+//             E.order_id AS order_id,
+//             E.created_by_id AS user_id,
+//             E.time_id AS created_at 
+//         FROM
+//             email_logs AS E
+//             Left JOIN `order_history` AS O ON O.order_id = E.order_id 
+//         WHERE
+//             O.order_id = ?
+//         ) AS M
+//         LEFT JOIN ( SELECT id, email AS assignee_email FROM users ) AS U ON U.id = M.user_id 
+//     ORDER BY
+//         created_at ASC ",[$order_id]);
+// dd($resultData);
+        return view('admin.orders.popup.action-log');
     }
 }

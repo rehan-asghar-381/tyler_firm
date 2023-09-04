@@ -32,9 +32,21 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label text-dark-gray" for="">Email Subject</label>
+                        <input type="text" name="email_subject" class="form-control font-12 form-control-lg require" value="{{$template->email_subject}}">     
+                    </div>
+                </div>
+                <div class="row">
                   <div class="col-md-8 mb-3">
                     <label class="form-label text-dark-gray" for="">Description</label>
                     <textarea class="form-control" name="description" id="summernote" >{!! $template->description !!}</textarea>
+                    <ul>
+                        <li>Use <strong class="text-danger">{company_name}</strong> to autofill Company name</li>
+                        <li>Use <strong class="text-danger">{sales_rep}</strong> to autofill Sales Rep Name</li>
+                        <li>Use <strong class="text-danger">{job_name}</strong> to autofill Job name</li>
+                        <li>Use <strong class="text-danger">{order_number}</strong> to autofill Purchase Order #</li>
+                    </ul>
                   </div>
                 </div> 
                 <div class="col-md-3 mb-3">

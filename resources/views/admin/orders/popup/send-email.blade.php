@@ -16,6 +16,8 @@
 						<input type="hidden" name="clientId" id="clientId" value="{{$client_id}}">
 						<input type="hidden" name="saleRepName" id="saleRepName" value="{{$sale_rep_name}}">
 						<input type="hidden" name="compantName" id="compantName" value="{{$company_name}}">
+						<input type="hidden" name="jobName" id="jobName" value="{{$job_name}}">
+						<input type="hidden" name="orderNumber" id="orderNumber" value="{{$order_number}}">
 
 						<div class="row">
 							<div class="col-md-12 mb-3">
@@ -27,7 +29,7 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label class="form-label text-dark-gray" for="subject">Subject</label>
-								<input type="text" name="subject" class="form-control font-12 form-control-lg require" value="">
+								<input type="text" name="subject" class="form-control font-12 form-control-lg require" value="{{$selected_template->email_subject??""}}">
 							</div>
                             <div class="col-md-12">
                                 <div class="form-group">
@@ -47,7 +49,7 @@
 							</div> --}}
 							<div class="col-md-12 mb-3">
 								<label class="form-label text-dark-gray" for="description">Message</label>
-                                <textarea class="form-control require" name="description" id="summernote" > {!! isset($selected_template->description) ? str_replace(array("{company_name}", "{sales_rep}"), array($company_name, $sale_rep_name) , $selected_template->description): "" !!}</textarea>
+                                <textarea class="form-control require" name="description" id="summernote" > {!! isset($selected_template->description) ? str_replace(array("{company_name}", "{sales_rep}", "{job_name}", "order_number"), array($company_name, $sale_rep_name, $job_name, $order_number) , $selected_template->description): "" !!}</textarea>
 							</div>
 						</div>
 						<button type="submit" class="btn btn-success" id="save-button">Submit</button>

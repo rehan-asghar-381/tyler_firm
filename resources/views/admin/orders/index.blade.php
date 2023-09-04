@@ -136,6 +136,9 @@
 		<div class="email-popup">
 
 		</div>
+		<div class="action-log-popup">
+
+		</div>
 	</div>
 </div>
 @endsection
@@ -473,6 +476,8 @@ table.ajax.reload();
 		var email 		  		= $(this).attr('data-email');
 		var sale_rep_name 		= $(this).attr('data-sale_rep_name');
 		var company_name 		= $(this).attr('data-company_name');
+		var job_name 			= $(this).attr('data-job_name');
+		var order_number 		= $(this).attr('data-order_number');
 		
 		$.ajax({
 			url: '{{ route("admin.email-template.email_popup") }}',
@@ -482,6 +487,8 @@ table.ajax.reload();
 				client_id: client_id,
 				sale_rep_name: sale_rep_name,
 				company_name: company_name,
+				job_name: job_name,
+				order_number: order_number,
 				email: email
 			},
 			success: function(data) {
@@ -506,11 +513,9 @@ table.ajax.reload();
 		var email 		  		= $(this).closest("#sendEmail").find("#clientEmail").val();
 		var sale_rep_name 		= $(this).closest("#sendEmail").find("#saleRepName").val();
 		var company_name 		= $(this).closest("#sendEmail").find("#compantName").val();
+		var job_name 			= $(this).closest("#sendEmail").find("#jobName").val();
+		var order_number 		= $(this).closest("#sendEmail").find("#orderNumber").val();
 		var template_id 		= $(this).val();
-		console.log(order_id);
-		console.log(client_id);
-		console.log(email);
-		console.log(template_id);
 		$.ajax({
 			url: '{{ route("admin.email-template.email_popup") }}',
 			type: "GET",
@@ -520,6 +525,8 @@ table.ajax.reload();
 				sale_rep_name: sale_rep_name,
 				company_name: company_name,
 				template_id: template_id,
+				job_name: job_name,
+				order_number: order_number,
 				email: email
 			},
 			success: function(data) {
@@ -596,6 +603,23 @@ table.ajax.reload();
 				},
 				error: function(data){
 					console.log(data);
+				}
+			});
+		});
+		$(document).on('click', '.action-logs', function(e){
+			e.preventDefault();
+			$('.action-log-popup').empty();
+			var order_id 		  	= $(this).attr('data-id');
+			
+			$.ajax({
+				url: '{{ route("admin.email-template.action_log") }}',
+				type: "GET",
+				data: {
+					order_id: order_id
+				},
+				success: function(data) {
+					$('.action-log-popup').html(data);
+					$('#action-log-modal').show();
 				}
 			});
 		});

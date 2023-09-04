@@ -44,6 +44,12 @@ class EmailTemplateController extends Controller
                 else
                     return '-';
             })
+            ->editColumn('email_subject', function ($data) {
+                if ($data->email_subject != "")
+                    return $data->email_subject;
+                else
+                    return '-';
+            })
             ->editColumn('description', function ($data) {
                 if ($data->description != "")
                     return $data->description;
@@ -106,21 +112,14 @@ class EmailTemplateController extends Controller
         $rData                      = $request->all();
         $user_id                    = Auth::user()->id;
         $user_name                  = Auth::user()->name;
-        // $rules = [
-        //     'code' => 'unique:brands,name'
-        // ];
-        // $validator = Validator::make($request->all(), $rules);
-        // if ($validator->fails())
-        // {
-        //     return redirect()->back()->withInput($request->input())->withErrors($validator);
-        // }
-        $brand                    = new EmailTemplate();
-        $brand->time_id           = date('U');
-        $brand->name              = $rData['name'];
-        $brand->description       = $rData['description'];
-        $brand->created_by_id                     = $user_id;
-        $brand->created_by_name                   = $user_name;
-        $brand->save();
+        $template                      = new EmailTemplate();
+        $template->time_id             = date('U');
+        $template->name                = $rData['name'];
+        $template->email_subject       = $rData['email_subject'];
+        $template->description         = $rData['description'];
+        $template->created_by_id       = $user_id;
+        $template->created_by_name     = $user_name;
+        $template->save();
         return redirect()->route('admin.email-template.index')
                         ->with('success','Template added successfully');
     }
@@ -164,6 +163,7 @@ class EmailTemplateController extends Controller
         $brand->time_id           = date('U');
         $brand->name              = $rData['name'];
         $brand->description       = $rData['description'];
+        $brand->email_subject     = $rData['email_subject'];
         $brand->updated_by_id     = $user_id;
         $brand->updated_by_name   = $user_name;
         $brand->save();

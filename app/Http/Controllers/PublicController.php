@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\User;
 use App\Traits\NotificationTrait;
 use App\Models\OrderHistory;
+use App\Models\EmailLog;
 class PublicController extends Controller
 {
     use NotificationTrait;
@@ -78,10 +80,12 @@ class PublicController extends Controller
         }
       
         foreach($order->OrderPrice as $OrderPrice){
-            $order_prices[$OrderPrice->product_size]    = $OrderPrice->final_price;
+            $rh_product_id      = $OrderPrice->product_id;
+            $order_prices[$rh_product_id][$OrderPrice->product_size]    = $OrderPrice->final_price;
         }
         foreach($order->OrderProducts as $OrderProduct){
             foreach($OrderProduct->OrderProductVariant as $order_product_variant){
+                $rh_product_id  = $order_product_variant->product_id;
                 $size_for       = $OrderProduct->Product->size_for;
                 $product_n      = $OrderProduct->product_name;
                 $attr1_name     = $order_product_variant->attribute1_name;
@@ -89,14 +93,14 @@ class PublicController extends Controller
                 $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["pieces"]  = $order_product_variant->pieces;
                 if($size_for == "adult_sizes"){
                     $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedAdultSize))
-                                                                                        ?$order_prices["XS-XL"]
-                                                                                        :$order_prices[$attr2_name];
+                                                                                        ?$order_prices[$rh_product_id]["XS-XL"]
+                                                                                        :$order_prices[$rh_product_id][$attr2_name];
                 }
                 if($size_for == "baby_sizes"){
                     
                     $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedBabySize))
-                                                                                        ?$order_prices["OSFA-18M"]
-                                                                                        :$order_prices[$attr2_name];
+                                                                                        ?$order_prices[$rh_product_id]["OSFA-18M"]
+                                                                                        :$order_prices[$rh_product_id][$attr2_name];
                 }
             }
         }
@@ -136,16 +140,12 @@ class PublicController extends Controller
         $extra_details["order_id"]                  = $order->id;
         $fixed_adult_sizes                          = $this->fixedAdultSize;
         $fixed_baby_sizes                           = $this->fixedBabySize;
-        
-
-        $history            = OrderHistory::where(["is_approved"=>1, "order_id"=>$id])->first();
-        $is_approved        = (isset($history->id) && $history->id > 0) ? 1: 0;
-       
+        $history                                    = OrderHistory::where(["is_approved"=>1, "order_id"=>$id])->first();
+        $is_approved                                = (isset($history->id) && $history->id > 0) ? 1: 0;
         return view('admin.orders.public-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images', 'is_approved'));
     }
 
     public function store(Request $request){
-
         $history                = new OrderHistory();
         $history->time_id       = date('U');
         $history->order_id      = $request->order_number;
@@ -153,8 +153,36 @@ class PublicController extends Controller
         $history->remarks       = $request->description;
         $history->is_approved   = $request->action;
         $history->save();
-
+        // Sending Email
+        $order_id                   = $request->order_number;
+        $order                      = Order::find($order_id);
+        $user_id                    = $order->created_by_id;
+        $user                       = User::find($user_id);
+        // $assignee_email             = $user->email;
+        $assignee_email             = "rehan.asghar92@gmail.com";
+        $email                      = new EmailLog();
+        $email->time_id             = time();
+        $email->order_id            = $order->id;
+        $email->client_id           = $order->client_id;
+        $email->send_to             = $assignee_email;
+        $email->subject             = "Quote Response".$order->id;
+        $email->description         = $request->description;
+        $email->is_sent             = "Y";
+        $email->created_by_id       = 0;
+        $email->is_response         = "Y";
+        $data["email"] =$assignee_email ;
+        $data["title"] = "Response for Quote-".$order->id;
+        $data["description"] = $request->description;
+        \Mail::send('admin.orders.email', $data, function($message)use($data) {
+                $message->to($data["email"])
+                ->subject($data["title"]);         
+        });
+        $email->save();
+        if(count(\Mail::failures()) > 0){
+            // return 'Something went wrong.';
+        }else{
+            // return "Mail send successfully !!";
+        }
         return redirect()->route("order.quote", $request->order_number)->withSuccess('Thank you for your response.');
-
     }
 }

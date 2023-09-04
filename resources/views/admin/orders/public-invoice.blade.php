@@ -8,6 +8,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="{{asset('b/plugins/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+    <style>
+        .has-error{
+            border: 1px solid red;
+        }
+    </style>
 </head>
 <body style="padding: 0;margin: 0;">
     <div style="width: 1200px;margin: 0 auto; padding: 10px; background-color: #fff;">
@@ -324,11 +329,11 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label class="form-label text-dark-gray" for="email">Your Email</label>
-								<input type="email" id="clientEmail" name="email" class="form-control font-12 form-control" value="">
+								<input type="email" id="clientEmail" name="email" class="form-control font-12 form-control require" value="">
 							</div>
 							<div class="col-md-6 mb-3">
 								<label class="form-label text-dark-gray label-desc" for="description">Comments</label>
-                                <textarea class="form-control require" name="description" ></textarea>
+                                <textarea class="form-control comments" name="description" ></textarea>
 							</div>
 						</div>
 						<button type="submit" class="btn btn-success" id="save-button">Submit</button>
@@ -349,12 +354,53 @@
 
     <script>
         $(document).ready(function(){
+            function required(){
+
+                let validated       = true;
+                var alertMessages       = "";
+                var alertValidated      = false;
+
+                $(".error-details").empty();
+
+                $(".require").each(function(key, value){
+                    
+                    var value       = $(this).val();
+                    
+                    if(value == "" || value == null){
+                            
+                        $(this).addClass('has-error');
+                        validated   = false;
+                    }else{
+                        $(this).removeClass('has-error');   
+                    }
+                });
+                if(alertValidated){
+                    alert(alertMessages);
+                }
+                return validated;
+            }
+            $(document).on("click", "#save-button", function(event) {
+
+                var validate = required();
+
+                if (validate) {
+                    return true;
+                }else{
+                    event.preventDefault();
+                }
+
+            });
+
+
             $(document).on('click', '.close-modal', function(e){
                 $(this).closest('.modal').hide();
             });
 
             $(document).on('click', '.action-btn', function(e){
                 e.preventDefault();
+                $(".comments").removeClass('require');
+                $(".comments").empty();
+                $(".comments").removeClass('has-error');
                 let action  = $(this).attr("data-action");
                 $(".label-desc").empty();
                 if(action == 1){
@@ -363,6 +409,7 @@
                 }else{
                     $(".label-desc").text('Rejection Reason');
                     $(".modal-title").text('Quote Rejection');
+                    $(".comments").addClass('require');
                 }
                 $("#action").val(action);
                 $('#response-modal').show();

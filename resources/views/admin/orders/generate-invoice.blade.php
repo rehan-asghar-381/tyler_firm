@@ -527,9 +527,14 @@
                 </span>
             </button>
             <a href="{{route("admin.order.generateInvoice", $extra_details["order_id"])}}?download_invoice=true" class="btn btn-md btn-info mb-3 no-print">Save</a>
+            {{-- <a href="{{route("admin.order.generateInvoice", $extra_details["order_id"])}}?download_invoice=true" class="btn btn-md btn-info mb-3 no-print">Save</a> --}}
+            <a class="btn btn-md btn-warning mb-3 no-print send-email-modal" href="#" data-client_id="{{$order->client_id}}" data-id="{{$order->id}}" data-email="{{$order->ClientSaleRep->email ?? ''}}"  data-sale_rep_name="{{$order->ClientSaleRep->first_name ?? ''}} {{$order->ClientSaleRep->last_name ?? ''}}" data-company_name="{{$order->client->company_name ?? ''}}" data-job_name="{{$order->job_name ?? ''}}" data-order_number="{{$order->order_number ?? ''}}"><i class="hvr-buzz-out far fa-envelope"></i> Send Email</a>
             <p class="footer-print">Art Charge $60 per hour (1 Hour Min.) Production time is 7-12 business days from receipt of all necessary components. 50% deposit required. NWG not responsible for damages to customer provided goods. Approval must be received before order goes into production.</p>
         </div>
     </div>
+</div>
+<div class="email-popup no-print">
+
 </div>
 @endsection 
 @section('footer-script')
@@ -544,6 +549,141 @@
         if (!$("#sidebarCollapse").hasClass("open")) {
             $('#sidebarCollapse').click();
         }
-    }     
+    }    
+
+    $(document).on('click', '.send-email-modal', function(e){
+		e.preventDefault();
+		$('.email-popup').empty();
+		var order_id 		  	= $(this).attr('data-id');
+		var client_id 		  	= $(this).attr('data-client_id');
+		var email 		  		= $(this).attr('data-email');
+		var sale_rep_name 		= $(this).attr('data-sale_rep_name');
+		var company_name 		= $(this).attr('data-company_name');
+		var job_name 			= $(this).attr('data-job_name');
+		var order_number 		= $(this).attr('data-order_number');
+		
+		$.ajax({
+			url: '{{ route("admin.email-template.email_popup") }}',
+			type: "GET",
+			data: {
+				order_id: order_id,
+				client_id: client_id,
+				sale_rep_name: sale_rep_name,
+				company_name: company_name,
+				job_name: job_name,
+				order_number: order_number,
+				email: email
+			},
+			success: function(data) {
+				$('.email-popup').html(data);
+				"use strict"; // Start of use strict
+				//summernote
+				$('#summernote').summernote({
+					height: 200, // set editor height
+					minHeight: null, // set minimum height of editor
+					maxHeight: null, // set maximum height of editor
+					focus: true                  // set focus to editable area after initializing summernote
+				});
+				$('#send-email-modal').show();
+			}
+		});
+	});
+	$(document).on('change', '.template', function(e){
+		e.preventDefault();
+		$('.email-popup').empty();
+		var order_id 		  	= $(this).closest("#sendEmail").find("#order_number").val();
+		var client_id 		  	= $(this).closest("#sendEmail").find("#clientId").val();
+		var email 		  		= $(this).closest("#sendEmail").find("#clientEmail").val();
+		var sale_rep_name 		= $(this).closest("#sendEmail").find("#saleRepName").val();
+		var company_name 		= $(this).closest("#sendEmail").find("#compantName").val();
+		var job_name 			= $(this).closest("#sendEmail").find("#jobName").val();
+		var order_number 		= $(this).closest("#sendEmail").find("#orderNumber").val();
+		var template_id 		= $(this).val();
+		$.ajax({
+			url: '{{ route("admin.email-template.email_popup") }}',
+			type: "GET",
+			data: {
+				order_id: order_id,
+				client_id: client_id,
+				sale_rep_name: sale_rep_name,
+				company_name: company_name,
+				template_id: template_id,
+				job_name: job_name,
+				order_number: order_number,
+				email: email
+			},
+			success: function(data) {
+				$('.email-popup').html(data);
+				"use strict"; // Start of use strict
+				//summernote
+				$('#summernote').summernote({
+					height: 200, // set editor height
+					minHeight: null, // set minimum height of editor
+					maxHeight: null, // set maximum height of editor
+					focus: true                  // set focus to editable area after initializing summernote
+				});
+				$('#send-email-modal').show();
+			}
+		});
+	});
+	$(document).on('click', '.copy-to-clipboard', function(e){
+		e.preventDefault();
+		var link = $(this).attr('data-link');
+		var temp = $("<input>");
+		$("body").append(temp);
+		temp.val(link).select();
+		document.execCommand("copy");
+		temp.remove();
+	});
+	$(document).on('click', '.close-modal', function(e){
+  		$(this).closest('.modal').hide();
+	});
+    $(document).ready(function (e) {
+		$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			}
+		});
+		$(document).submit("form#sendEmail", function(e) {
+			e.preventDefault();
+			var form 		= $("form#sendEmail");
+			var formData = new FormData(form[0]);
+			$.ajax({
+				url: "{{ route('admin.sendEmail')}}",
+				type:'POST',
+				data: formData,
+				cache:false,
+				contentType: false,
+				processData: false,
+				success: (data) => {
+					$('#send-email-modal').modal('hide');
+					$('#sendEmail').trigger('reset');
+					console.log(data);
+					$.confirm({
+						title : "Alert",
+						content:function(){
+							return data;
+						},
+						buttons:{
+							ok:{
+								text:"Ok",
+								btnClass:"btn btn-success confirmed"
+							}
+						}
+					});
+				},
+				beforeSend: function() {
+					$('.page-loader-wrapper').show();
+				},
+				complete: function(){
+					$('.page-loader-wrapper').hide();
+					$('.Order-form').show();
+				},
+				error: function(data){
+					console.log(data);
+				}
+			});
+		});
+	});
 </script>
 @endsection

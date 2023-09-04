@@ -35,6 +35,7 @@
 								<tr>
                   <th>Sr.</th>
                   <th>Name</th>
+                  <th>Subject</th>
                   <th>Added By</th>
                   <th>Added At</th>
                   <th>Action</th>
@@ -133,6 +134,7 @@
       columns: [
       {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center'},
       {data: 'name', name: 'name'},
+      {data: 'email_subject', name: 'email_subject'},
       {data: 'created_by_name', name: 'created_by_name'},
       {data: 'time_id', name: 'time_id'},
       {data: 'actions', name: 'actions'}
