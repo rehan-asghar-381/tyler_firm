@@ -158,20 +158,22 @@ class PublicController extends Controller
         $order                      = Order::find($order_id);
         $user_id                    = $order->created_by_id;
         $user                       = User::find($user_id);
-        // $assignee_email             = $user->email;
-        $assignee_email             = "rehan.asghar92@gmail.com";
+        $assignee_email             = $user->email;
+        $assignee_name              = $user->name;
         $email                      = new EmailLog();
         $email->time_id             = time();
         $email->order_id            = $order->id;
         $email->client_id           = $order->client_id;
         $email->send_to             = $assignee_email;
+        $email->from                = $request->email;
+        $email->assignee_name       = $assignee_name;
         $email->subject             = "Quote Response".$order->id;
         $email->description         = $request->description;
         $email->is_sent             = "Y";
         $email->created_by_id       = 0;
         $email->is_response         = "Y";
-        $data["email"] =$assignee_email ;
-        $data["title"] = "Response for Quote-".$order->id;
+        $data["email"]              = $assignee_email ;
+        $data["title"]              = "Response for Quote-".$order->id;
         $data["description"] = $request->description;
         \Mail::send('admin.orders.email', $data, function($message)use($data) {
                 $message->to($data["email"])

@@ -35,6 +35,7 @@ use PDF;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 class OrderController extends Controller
 {
     use NotificationTrait;
@@ -259,9 +260,9 @@ class OrderController extends Controller
             if(auth()->user()->can('orders-blank')){
                 $action_list    .= '<a class="dropdown-item btn-change-blank" href="#" data-blank="'.$data->blank.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-hornbill"></i> Blanks</a>';
             }
-            // if(auth()->user()->can('orders-action-log')){
-            //     $action_list    .= '<a class="dropdown-item action-logs" href="#" data-id="'.$data->id.'"><i class="hvr-buzz-out far fa fa-history"></i> Action Log</a>';
-            // }
+            if(auth()->user()->can('orders-action-log')){
+                $action_list    .= '<a class="dropdown-item action-logs" href="#" data-id="'.$data->id.'"><i class="hvr-buzz-out far fa fa-history"></i> Action Log</a>';
+            }
             if(auth()->user()->can('orders-send-email')){
                 $action_list    .= '<a class="dropdown-item  send-email-modal" href="#" data-client_id="'.$data->client_id.'" data-id="'.$data->id.'" data-email="'.($data->ClientSaleRep->email ?? '').'"  data-sale_rep_name="'.($data->ClientSaleRep->first_name ?? '')." ".($data->ClientSaleRep->last_name ?? '').'" data-company_name="'.($data->client->company_name ?? '').'" data-job_name="'.($data->job_name ?? '').'" data-order_number="'.($data->order_number ?? '').'"><i class="hvr-buzz-out far fa-envelope"></i> Send Email</a>';
             }
@@ -1203,10 +1204,18 @@ class OrderController extends Controller
     }
     public function sendEmail(Request $request)
     {
+        $order                      = Order::find($request->order_number);
+        $user_id                    = $order->created_by_id;
+        $user                       = User::find($user_id);
+        $assignee_email             = $user->email;
+        $assignee_name              = $user->name;
+
         $email                      = new EmailLog();
         $email->time_id             = time();
         $email->order_id            = $request->order_number;
         $email->client_id           = $request->client_id;
+        $email->from                = $assignee_email;
+        $email->assignee_name       = $assignee_name;
         $email->send_to             = $request->email;
         $email->subject             = $request->subject;
         $email->description         = $request->description;
@@ -1259,38 +1268,8 @@ class OrderController extends Controller
     }
     public function action_log_popup(Request $request){
  
-//         $order_id           = $request->order_id;
-//         $resultData                 = DB::select("SELECT
-//         M.sender,
-//         M.responder,
-//         M.SUBJECT,
-//         M.remarks,
-//         M.order_id,
-//         M.is_approved,
-//         M.created_at,
-//         U.assignee_email 
-    
-//     FROM
-//         (
-//         SELECT
-//             O.email AS sender,
-//             O.remarks AS remarks,
-//             O.is_approved AS is_approved,
-//             E.send_to AS responder,
-//             E.SUBJECT AS SUBJECT,
-//             E.order_id AS order_id,
-//             E.created_by_id AS user_id,
-//             E.time_id AS created_at 
-//         FROM
-//             email_logs AS E
-//             Left JOIN `order_history` AS O ON O.order_id = E.order_id 
-//         WHERE
-//             O.order_id = ?
-//         ) AS M
-//         LEFT JOIN ( SELECT id, email AS assignee_email FROM users ) AS U ON U.id = M.user_id 
-//     ORDER BY
-//         created_at ASC ",[$order_id]);
-// dd($resultData);
-        return view('admin.orders.popup.action-log');
+        $order_id           = $request->order_id;
+        $action_logs        = EmailLog::where("order_id", $order_id)->get();
+        return view('admin.orders.popup.action-log', compact('action_logs'));
     }
 }
