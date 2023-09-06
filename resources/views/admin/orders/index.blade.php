@@ -4,7 +4,16 @@
 .dropdown-toggle::after {
 	border: none !important;
 }
+@keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 0; }
+	100% { opacity: 1; }
+}
 
+.blinking {
+	cursor: pointer;
+	animation: blink 1s infinite;
+}
 </style>
 <div class="body-content">
 	<form action="" id="reportForm">
@@ -103,6 +112,7 @@
 							<thead style="background-color: #6aa4e6;color: #ffffff;">
 								<tr>
 									<th width="250px">Sr.</th>
+									<th width="250px">Notification</th>
 									<th width="250px">PO #</th>
 									<th width="250px">Assignee</th>
 									<th width="250px">Job Name</th>
@@ -198,6 +208,7 @@
 		},
 		columns: [
 		{data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center'},
+		{data: 'notification', name: 'notification', width:"250px"},
 		{data: 'order_number', name: 'order_number', width:"250px"},
 		{data: 'created_by_name', name: 'created_by_name', width:"250px"},
 		{data: 'job_name', name: 'job_name', width:"250px"},
@@ -600,6 +611,8 @@ table.ajax.reload();
 				complete: function(){
 					$('.page-loader-wrapper').hide();
 					$('.Order-form').show();
+					$('#send-email-modal').show();
+					$('.email-popup').empty();
 				},
 				error: function(data){
 					console.log(data);
@@ -616,6 +629,24 @@ table.ajax.reload();
 				type: "GET",
 				data: {
 					order_id: order_id
+				},
+				success: function(data) {
+					$('.action-log-popup').html(data);
+					$('#action-log-modal').show();
+				}
+			});
+		});
+		$(document).on('click', '.blinking', function(e){
+			e.preventDefault();
+			$('.action-log-popup').empty();
+			var order_id 		  	= $(this).attr('data-id');
+			var user_id 		  	= $(this).attr('data-user-id');
+			$.ajax({
+				url: '{{ route("admin.email-template.action_log_seen") }}',
+				type: "GET",
+				data: {
+					order_id: order_id,
+					user_id: user_id
 				},
 				success: function(data) {
 					$('.action-log-popup').html(data);

@@ -121,6 +121,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::post('/orders/d_yellow/store_d_yellow', [OrderController::class, 'storeDYellow'])->name('order.storeDYellow');
     Route::get('/email-template/email-popup', [OrderController::class, 'email_popup'])->name('email-template.email_popup');
     Route::get('/email-template/action-log', [OrderController::class, 'action_log_popup'])->name('email-template.action_log');
+    Route::get('/email-template/action-log-seen', [OrderController::class, 'action_log_seen'])->name('email-template.action_log_seen');
     Route::post('/send-email', [OrderController::class, 'sendEmail'])->name('sendEmail');
     
     Route::get('/get_decoration_price', [OrderController::class, 'get_decoration_price'])->name('get_decoration_price');

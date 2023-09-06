@@ -13,6 +13,7 @@ use App\Models\OrderColorPerLocation;
 use App\Models\OrderTransfer;
 use App\Models\DYellowInkColor;
 use App\Models\OrderHistory;
+use App\Models\EmailLog;
 
 class Order extends Model
 {
@@ -82,8 +83,15 @@ class Order extends Model
         
         return $this->hasMany(OrderFinalPriceProductVariants::class, "order_id", "id");
     }
-    
-     public function OrderPrintLocationColor(){
+    public function EmailLog(){
+        
+        return $this->hasMany(EmailLog::class, "order_id", "id");
+    }
+    public function ActionSeen(){
+        
+        return $this->hasMany(ActionSeen::class, "order_id", "id");
+    }
+    public function OrderPrintLocationColor(){
         
         return $this->hasMany(OrderPrintLocationColor::class, "order_id", "id");
     }

@@ -22,6 +22,7 @@
 									<th scope="col">From</th>
 									<th scope="col">Action</th>
 									<th scope="col">Remarks</th>
+									<th scope="col">Created At</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -34,6 +35,7 @@
 									<td>{{$action_log->from}}</td>
 									<td>{{($action_log->is_response == "Y")? "Received":"Sent"}}</td>
 									<td>{!! $action_log->description !!}</td>
+									<td>{{ date("d-m-Y h:i:s", $action_log->time_id) }}</td>
 								</tr>
 								@endforeach
 							</tbody>

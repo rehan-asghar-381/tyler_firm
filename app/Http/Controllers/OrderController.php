@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\ActionSeen;
 class OrderController extends Controller
 {
     use NotificationTrait;
@@ -121,8 +122,12 @@ class OrderController extends Controller
     } 
 
     public function ajaxtData(Request $request){
-
-        $rData              = Order::with(["client", "ClientSaleRep"])->where('status','<>',5);
+        $user_id            = Auth::user()->id;
+        $rData              = Order::withCount("EmailLog")->with(["client", "ClientSaleRep","ActionSeen"=>function($q) use($user_id){
+            $q->where('seen_by', '=', $user_id);
+        
+        }])->where('status','<>',5);
+        
         if($request->client_id != ""){
             $rData              = $rData->where('client_id', $request->client_id);
         }
@@ -225,6 +230,12 @@ class OrderController extends Controller
             else
                 return '-';
         })
+        ->addColumn('notification', function ($data) use($user_id){
+            if (count($data->ActionSeen) == $data->email_log_count )
+                return '<span class="badge badge-success">Activity Seen</span>';
+            else
+                return '<span class="badge badge-info blinking" data-id="'.$data->id.'" data-user-id="'.$user_id.'">View Activity</span>';
+        })
         ->addColumn('actions', function ($data){
 
             $action_list    = '<div class="dropdown">
@@ -270,7 +281,7 @@ class OrderController extends Controller
             $action_list        .= '</div></div>';
             return  $action_list;
         })
-        ->rawColumns(['actions', 'status'])
+        ->rawColumns(['actions', 'status', 'notification'])
         ->make(TRUE);
     }
   
@@ -1269,7 +1280,25 @@ class OrderController extends Controller
     public function action_log_popup(Request $request){
  
         $order_id           = $request->order_id;
-        $action_logs        = EmailLog::where("order_id", $order_id)->get();
+        $action_logs        = EmailLog::where("order_id", $order_id)->orderBy("id", "desc")->get();
         return view('admin.orders.popup.action-log', compact('action_logs'));
     }
+    public function action_log_seen(Request $request){
+        $order_id               = $request->order_id;
+        $seen_by                = $request->user_id;
+        $action_logs            = EmailLog::where("order_id", $order_id)->orderBy("id", "desc")->get();
+        if(count($action_logs)>0){
+            foreach($action_logs as $k=>$action_log){
+         
+                $action_seen            = ActionSeen::firstOrNew(["email_log_id"=>$action_log->id, "order_id"=>$order_id, "seen_by"=>$seen_by]);
+                $action_seen->email_log_id      = $action_log->id;
+                $action_seen->order_id          = $order_id;
+                $action_seen->seen_by           = $seen_by;
+                $action_seen->save();
+            }
+        }
+        return view('admin.orders.popup.action-log', compact('action_logs'));
+    }
+
+    
 }

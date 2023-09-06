@@ -154,6 +154,8 @@ class PublicController extends Controller
         $history->is_approved   = $request->action;
         $history->save();
         // Sending Email
+
+        $message_body               = "<strong>From: </strong>".$request->email."\n <strong>message: </strong>".$request->description;
         $order_id                   = $request->order_number;
         $order                      = Order::find($order_id);
         $user_id                    = $order->created_by_id;
@@ -167,14 +169,14 @@ class PublicController extends Controller
         $email->send_to             = $assignee_email;
         $email->from                = $request->email;
         $email->assignee_name       = $assignee_name;
-        $email->subject             = "Quote Response".$order->id;
-        $email->description         = $request->description;
+        $email->subject             = "Response for ".$order->job_name." Quote";
+        $email->description         = $message_body.$request->description;
         $email->is_sent             = "Y";
         $email->created_by_id       = 0;
         $email->is_response         = "Y";
         $data["email"]              = $assignee_email ;
-        $data["title"]              = "Response for Quote-".$order->id;
-        $data["description"] = $request->description;
+        $data["title"]              = "Response for ".$order->job_name." Quote";
+        $data["description"]        = $message_body;
         \Mail::send('admin.orders.email', $data, function($message)use($data) {
                 $message->to($data["email"])
                 ->subject($data["title"]);         

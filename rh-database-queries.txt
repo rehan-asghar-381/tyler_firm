@@ -1,28 +1,37 @@
-ALTER TABLE 
-`email_logs` 
-MODIFY COLUMN `description` longtext CHARACTER SET utf8mb4 NULL AFTER `subject`;
-CREATE TABLE `order_history` (
+
+
+CREATE TABLE `action_logs_seen` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `time_id` int DEFAULT NULL,
+  `email_log_id` int DEFAULT NULL,
   `order_id` int DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `remarks` varchar(255) DEFAULT NULL,
-  `is_approved` int DEFAULT '0',
+  `seen_by` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `email_templates` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `time_id` int DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
-  `description` text CHARACTER SET utf8mb4 DEFAULT NULL,
-  `created_by_id` int DEFAULT NULL,
-  `created_by_name` varchar(50) CHARACTER SET utf8mb4 DEFAULT NULL,
-  `updated_by_id` int DEFAULT NULL,
-  `updated_by_name` varchar(50) CHARACTER SET utf8mb4 DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-);
+
+
+
+Meeting 9.5.23
+
+- After customer approves/not approves quote, have email sent to assignee with following:
+           + Subject: Response for "Job Name" Quote
+           + Body of email: 
+                         From: "Customer's Email" 
+                         Message: "Customers comments"
+- Rearrange "Action Log" to show most recent action on top.
+- Add "Notification" column to the left of PO# column in Orders tab. Anytime something changes in Action Log, an icon will appear under Notifications to alert us of any new activity. Then we can click on the icon under Notifications and it'll redirect us to the Action Log page. Once icon is clicked, make it disappear from under Notifications until a new action is performed
+- Once email is sent from program, close out email pop up window. 
+- In action log window, add column to the left of Remarks called "Approval" that shows which button customer clicked "Approved or Not Approved"
+- In Action Log window, can you also include a column for Time/Date of when action was executed?
+
+- In a new Order, when adding a second item, please have Color of garment duplicated from above row and have the size change to the next biggest size from previous item.
+
+
+Priority List
+- Action log tweaks, Notification Column, email to assignee changes.
+
+- Duplicated garments
+
+- Art room function

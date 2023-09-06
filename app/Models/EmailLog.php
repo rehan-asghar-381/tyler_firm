@@ -2,7 +2,7 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\BrandImg;
+use App\Models\ActionSeen;
 
 class EmailLog extends Model
 {
@@ -12,4 +12,9 @@ class EmailLog extends Model
      *
      * @var array
      */
+
+     public function ActionSeen(){
+        
+        return $this->hasMany(ActionSeen::class, "email_log_id", "id");
+    }
 }
