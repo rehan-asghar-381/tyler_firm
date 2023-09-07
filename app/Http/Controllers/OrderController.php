@@ -32,6 +32,7 @@ use App\Traits\NotificationTrait;
 use App\Models\EmailLog;
 use App\Models\EmailTemplate;
 use PDF;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -1272,6 +1273,7 @@ class OrderController extends Controller
         $order_id           = $request->order_id;
         $client_id          = $request->client_id;
         $email              = $request->email;
+        $encrypted_email    = Crypt::encrypt($request->email);
         $sale_rep_name      = $request->sale_rep_name;
         $company_name       = $request->company_name;
         $job_name           = $request->job_name;
@@ -1281,7 +1283,7 @@ class OrderController extends Controller
             $selected_template      = EmailTemplate::find($template_id);
         }
         $email_templates            = EmailTemplate::get();
-        return view('admin.orders.popup.send-email', compact('order_id', 'client_id', 'email', 'email_templates', 'selected_template', 'template_id', 'sale_rep_name', 'company_name', 'job_name', 'order_number'));
+        return view('admin.orders.popup.send-email', compact('order_id', 'client_id', 'email', 'email_templates', 'selected_template', 'template_id', 'sale_rep_name', 'company_name', 'job_name', 'order_number', 'encrypted_email'));
     }
     public function action_log_popup(Request $request){
  

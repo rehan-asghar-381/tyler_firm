@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Traits\NotificationTrait;
 use App\Models\OrderHistory;
 use App\Models\EmailLog;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 class PublicController extends Controller
 {
     use NotificationTrait;
@@ -49,10 +51,19 @@ class PublicController extends Controller
                                         "6T"
                                     ];
    }
-    public function get_quote(Request $request, $id)
+    public function get_quote(Request $request, $id, $email)
     {
+        try {
+            $email      = Crypt::decrypt($email);
+        } catch (DecryptException $e) {
+            return abort(404);
+        }
+        
         $pageTitle  = "Invoice";
         $order      = Order::with([
+            'ClientSaleRep'=>function($query) use($email){
+                $query->where("email", "=", $email);
+            }, 
             'OrderHistory', 
             'OrderPrice', 
             'OrderImgs', 
@@ -169,6 +180,7 @@ class PublicController extends Controller
         $email->send_to             = $assignee_email;
         $email->from                = $request->email;
         $email->assignee_name       = $assignee_name;
+        $email->is_approved         = $request->action;
         $email->subject             = "Response for ".$order->job_name." Quote";
         $email->description         = $message_body;
         $email->is_sent             = "Y";

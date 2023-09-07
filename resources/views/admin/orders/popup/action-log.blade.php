@@ -21,6 +21,7 @@
 									<th scope="col">Send To</th>
 									<th scope="col">From</th>
 									<th scope="col">Action</th>
+									<th scope="col">Is Approved</th>
 									<th scope="col">Remarks</th>
 									<th scope="col">Created At</th>
 								</tr>
@@ -34,6 +35,7 @@
 									<td>{{$action_log->send_to}}</td>
 									<td>{{$action_log->from}}</td>
 									<td>{{($action_log->is_response == "Y")? "Received":"Sent"}}</td>
+									<td>{{($action_log->is_response == "Y")? ($action_log->is_approved == 1 && $action_log->is_response == "Y")? "Yes":"No":"-"}}</td>
 									<td>{!! $action_log->description !!}</td>
 									<td>{{ date("m-d-Y h:i:s a", $action_log->time_id) }}</td>
 								</tr>

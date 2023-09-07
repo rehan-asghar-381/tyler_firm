@@ -142,7 +142,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
 }); 
 /* End Admin Routes */
 /* Start Public Routes */
-Route::get('/clients/quote/{order_id}', [PublicController::class, 'get_quote'])->name('order.quote');
+Route::get('/clients/quote/{order_id}/{email}', [PublicController::class, 'get_quote'])->name('order.quote');
 Route::post('/clients/quote/store-response', [PublicController::class, 'store'])->name('quote.store');
 /* End Public Routes */
 

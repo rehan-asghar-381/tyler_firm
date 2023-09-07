@@ -1,32 +1,7 @@
 
+ALTER TABLE `tyler_live`.`email_logs` 
+ADD COLUMN `is_approved` int NULL AFTER `from`;
 
-CREATE TABLE `action_logs_seen` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `email_log_id` int DEFAULT NULL,
-  `order_id` int DEFAULT NULL,
-  `seen_by` int DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-);
-
-
-
-
-Meeting 9.5.23
-
-- After customer approves/not approves quote, have email sent to assignee with following:
-           + Subject: Response for "Job Name" Quote
-           + Body of email: 
-                         From: "Customer's Email" 
-                         Message: "Customers comments"
-- Rearrange "Action Log" to show most recent action on top.
-- Add "Notification" column to the left of PO# column in Orders tab. Anytime something changes in Action Log, an icon will appear under Notifications to alert us of any new activity. Then we can click on the icon under Notifications and it'll redirect us to the Action Log page. Once icon is clicked, make it disappear from under Notifications until a new action is performed
-- Once email is sent from program, close out email pop up window. 
-- In action log window, add column to the left of Remarks called "Approval" that shows which button customer clicked "Approved or Not Approved"
-- In Action Log window, can you also include a column for Time/Date of when action was executed?
-
-- In a new Order, when adding a second item, please have Color of garment duplicated from above row and have the size change to the next biggest size from previous item.
 
 
 Priority List
