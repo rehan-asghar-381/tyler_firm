@@ -1,6 +1,9 @@
 @extends("admin.template", ["pageTitle"=>$pageTitle])
 @section('content')
 <style>
+.text-smaller{
+	font-size: 12px !important;
+}
 .dropdown-toggle::after {
 	border: none !important;
 }
@@ -207,18 +210,18 @@
 			}
 		},
 		columns: [
-		{data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center'},
-		{data: 'notification', name: 'notification', width:"250px"},
-		{data: 'order_number', name: 'order_number', width:"250px"},
-		{data: 'created_by_name', name: 'created_by_name', width:"250px"},
-		{data: 'job_name', name: 'job_name', width:"250px"},
-		{data: 'company_name', name: 'company_name', width:"250px"},
-		{data: 'projected_units', name: 'projected_units', width:"250px"},
-		{data: 'due_date', name: 'due_date', width:"250px"},
-		{data: 'event', name: 'event', width:"250px"},
-		{data: 'status', name: 'status', width:"250px"},
-		{data: 'quote_approval', name: 'quote_approval', width:"250px"},
-		{data: 'blank', name: 'blank', width:"250px"},
+		{data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center text-smaller'},
+		{data: 'notification', name: 'notification', width:"250px", className: 'text-smaller'},
+		{data: 'order_number', name: 'order_number', width:"250px", className: 'text-smaller'},
+		{data: 'created_by_name', name: 'created_by_name', width:"250px", className: 'text-smaller'},
+		{data: 'job_name', name: 'job_name', width:"250px", className: 'text-smaller'},
+		{data: 'company_name', name: 'company_name', width:"250px", className: 'text-smaller'},
+		{data: 'projected_units', name: 'projected_units', width:"250px", className: 'text-smaller'},
+		{data: 'due_date', name: 'due_date', width:"250px", className: 'text-smaller'},
+		{data: 'event', name: 'event', width:"250px", className: 'text-smaller'},
+		{data: 'status', name: 'status', width:"250px", className: 'text-smaller'},
+		{data: 'quote_approval', name: 'quote_approval', width:"250px", className: 'text-smaller'},
+		{data: 'blank', name: 'blank', width:"250px", className: 'text-smaller', className: 'text-smaller'},
 		{data: 'actions', name: 'actions'}
 		]
 	});

@@ -7,6 +7,7 @@
     padding:0 0.75rem !important;
     font-weight: 700 !important;
     color: #000000 !important;
+    border: 2px solid #000000 !important;
 }
 textarea {
   width: auto !important; 

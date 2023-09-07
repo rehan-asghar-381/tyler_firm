@@ -170,7 +170,7 @@ class PublicController extends Controller
         $email->from                = $request->email;
         $email->assignee_name       = $assignee_name;
         $email->subject             = "Response for ".$order->job_name." Quote";
-        $email->description         = $message_body.$request->description;
+        $email->description         = $message_body;
         $email->is_sent             = "Y";
         $email->created_by_id       = 0;
         $email->is_response         = "Y";

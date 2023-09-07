@@ -35,7 +35,7 @@
 									<td>{{$action_log->from}}</td>
 									<td>{{($action_log->is_response == "Y")? "Received":"Sent"}}</td>
 									<td>{!! $action_log->description !!}</td>
-									<td>{{ date("d-m-Y h:i:s", $action_log->time_id) }}</td>
+									<td>{{ date("m-d-Y h:i:s a", $action_log->time_id) }}</td>
 								</tr>
 								@endforeach
 							</tbody>
