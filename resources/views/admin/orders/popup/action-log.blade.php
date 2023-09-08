@@ -21,7 +21,7 @@
 									<th scope="col">Send To</th>
 									<th scope="col">From</th>
 									<th scope="col">Action</th>
-									<th scope="col">Is Approved</th>
+									<th scope="col">Approval</th>
 									<th scope="col">Remarks</th>
 									<th scope="col">Created At</th>
 								</tr>

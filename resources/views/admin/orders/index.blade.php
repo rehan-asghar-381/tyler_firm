@@ -115,7 +115,7 @@
 							<thead style="background-color: #6aa4e6;color: #ffffff;">
 								<tr>
 									<th width="250px">Sr.</th>
-									<th width="250px">Notification</th>
+									<th width="250px">Action Log</th>
 									<th width="250px">PO #</th>
 									<th width="250px">Assignee</th>
 									<th width="250px">Job Name</th>

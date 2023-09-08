@@ -496,7 +496,7 @@
                         <li><strong>Total Quantity: </strong> {{$client_details["projected_units"]}} </li>
                         <li><strong>Art: </strong> {{ "$".$art_fee}} </li>
                         <li><strong>Discount: </strong> {{ "$".$art_discount}} </li>
-                        <li><strong>Sub Total:&nbsp;</strong>{{"$".number_format($sub_total)}}</li>
+                        <li><strong>Sub Total:&nbsp;</strong>{{"$".number_format((float)$sub_total, 2, '.', ',')}}</li>
                         <li><strong>Sales Tax: </strong> {{ $extra_details["tax"]."%" }} </li>
                         <li><strong>Total:&nbsp;</strong>{{ "$".number_format((float)$grand_total, 2, '.', ',') }}</li>
                     </ul>

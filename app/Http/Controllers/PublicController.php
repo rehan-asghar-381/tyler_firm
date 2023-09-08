@@ -165,10 +165,10 @@ class PublicController extends Controller
         $history->is_approved   = $request->action;
         $history->save();
         // Sending Email
-
-        $message_body               = "<strong>From: </strong>".$request->email."\n <strong>message: </strong>".$request->description;
+        $logs_action            = ( $request->action == 1)?"Approved":"Not Approved";
+        $message_body               = "<strong>From: </strong>".$request->email."\n <strong>Action: </strong>".$logs_action."\n <strong>message: </strong>".$request->description;
         $order_id                   = $request->order_number;
-        $order                      = Order::find($order_id);
+        $order                      = Order::with(['ClientSaleRep'])->find($order_id);
         $user_id                    = $order->created_by_id;
         $user                       = User::find($user_id);
         $assignee_email             = $user->email;
@@ -182,7 +182,7 @@ class PublicController extends Controller
         $email->assignee_name       = $assignee_name;
         $email->is_approved         = $request->action;
         $email->subject             = "Response for ".$order->job_name." Quote";
-        $email->description         = $message_body;
+        $email->description         = $request->description;
         $email->is_sent             = "Y";
         $email->created_by_id       = 0;
         $email->is_response         = "Y";
@@ -199,6 +199,7 @@ class PublicController extends Controller
         }else{
             // return "Mail send successfully !!";
         }
-        return redirect()->route("order.quote", $request->order_number)->withSuccess('Thank you for your response.');
+        $email      = Crypt::encrypt($order->ClientSaleRep->email);
+        return redirect()->route("order.quote", ['order_id' => $request->order_number, 'email' =>  $email])->withSuccess('Thank you for your response.');
     }
 }

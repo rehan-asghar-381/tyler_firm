@@ -234,10 +234,10 @@ class OrderController extends Controller
         ->addColumn('notification', function ($data) use($user_id){
             if($data->email_log_count == 1){
 
-                return '<span class="badge badge-success action-logs" style="cursor:pointer;">Email Sent</span>';
+                return '<span class="badge badge-light action-logs" data-id="'.$data->id.'" style="cursor:pointer;">Email Sent</span>';
             }elseif (count($data->ActionSeen) == $data->email_log_count ){
 
-                return '<span class="badge badge-success action-logs" style="cursor:pointer;">Activity Seen</span>';
+                return '<span class="badge badge-primary action-logs" data-id="'.$data->id.'" style="cursor:pointer;">Activity Seen</span>';
             }else{
 
                 return '<span class="badge badge-info blinking" data-id="'.$data->id.'" data-user-id="'.$user_id.'">View Activity</span>';

@@ -271,7 +271,7 @@
                    <span style="font-weight: 600;">Total Quantity:</span>  {{$client_details["projected_units"]}} <br>
                    <span style="font-weight: 600;">Art:</span>  {{ "$".$art_fee}}    <br>
                    <span style="font-weight: 600;">Discount:</span>  {{ "$".$art_discount}} <br>
-                   <span style="font-weight: 600;">Sub Total:</span> {{"$".number_format($sub_total)}} <br>
+                   <span style="font-weight: 600;">Sub Total:</span> {{"$".number_format((float)$sub_total, 2, '.', ',')}} <br>
                    <span style="font-weight: 600;"> Sales Tax:</span> {{ $extra_details["tax"]."%" }} <br>
                    <span style="font-weight: 600;">Total:</span> {{ "$".number_format((float)$grand_total, 2, '.', ',') }} <br>
                 </td>
