@@ -695,13 +695,14 @@ class OrderController extends Controller
     {
         $order_product_variants     = [];
         $product_id         = $request->product_id;
+        $selector_number    = $request->selector_number;
         $order_id           = (isset($request->order_id) && $request->order_id != "")? $request->order_id: 0;
 
         if($order_id  > 0){
             $order_product_variants         = OrderProductVariant::where(['order_id'=> $order_id, 'product_id'=> $product_id])->get();
         }
         $product_detail     = Product::with( 'ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
-        return view('admin.orders.product', compact('product_detail', 'order_product_variants'));
+        return view('admin.orders.product', compact('product_detail', 'order_product_variants', 'selector_number'));
         
     }
     public function print_nd_loations(Request $request)
@@ -713,6 +714,7 @@ class OrderController extends Controller
         $print_locations                = PrintLocation::where("is_active", "Y")->orderBy('priority', 'asc')->get();
         
         $product_id         = $request->product_id;
+        $selector_number    = $request->selector_number;
         $order_id           = (isset($request->order_id) && $request->order_id != "")?$request->order_id:0;
         $product_detail     = Product::with('ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
         if($order_id > 0){
@@ -741,7 +743,7 @@ class OrderController extends Controller
             }
         }
     
-        return view('admin.orders.print-locations', compact('product_detail', 'type', 'order_price', 'order_color_location', 'print_locations', 'order_color_location_number'));
+        return view('admin.orders.print-locations', compact('product_detail', 'type', 'order_price', 'order_color_location', 'print_locations', 'order_color_location_number', 'selector_number'));
     }
     public function print_nd_loations_view(Request $request)
     {

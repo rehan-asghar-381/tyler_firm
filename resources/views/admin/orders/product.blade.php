@@ -1,13 +1,13 @@
 <div class="container-fluid mt-3" >
     <div class="row">
-        <div class="col-md-9  product-detail product-detail-{{$product_detail->id}}" id="product-detail-{{$product_detail->id}}">
+        <div class="col-md-9 product-detail product-detail-{{$product_detail->id}} slector-number-{{$selector_number}}" id="product-detail-{{$product_detail->id}}">
             <div class="card card_product_order mb-4 mt-4">
-                <div class="card-header collapsed" data-toggle="collapse" href="#collapse-{{$product_detail->id}}" style="background-color: #eee;">
+                <div class="card-header collapsed" data-toggle="collapse" href="#collapse-{{$selector_number}}" style="background-color: #eee;">
                     <a class="card-title">
                         {{$product_detail->name}}
                     </a>
                 </div>
-                <div id="collapse-{{$product_detail->id}}" class="card-body collapse" data-parent="#accordion" >
+                <div id="collapse-{{$selector_number}}" class="card-body collapse" data-parent="#accordion" >
                     <input type="hidden" name="product_code[{{$product_detail->id}}][]" class="form-control mb-2 mr-sm-2" id="product_code" placeholder=""value="{{$product_detail->code}}">
                     <input type="hidden" name="products_name[{{$product_detail->id}}]" class="form-control mb-2 mr-sm-2" id="products_name" placeholder=""value="{{$product_detail->name}}">
 

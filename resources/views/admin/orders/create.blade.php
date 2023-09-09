@@ -267,7 +267,9 @@ hr{
                                         <select name="product_ids[]" id="product_ids" class="form-control basic-multiple" multiple="multiple">
                                             @if (count($products) > 0)
                                             @foreach ($products as $product)
-                                            <option value="{{$product->id}}">{{$product->name}}</option>
+                                            <option value="{{$product->id}}" data-custom-selector="{{$product->id.'1'}}">{{$product->name}}</option>
+                                            <option value="{{$product->id}}" data-custom-selector="{{$product->id.'2'}}">{{$product->name}}</option>
+                                            <option value="{{$product->id}}" data-custom-selector="{{$product->id.'3'}}">{{$product->name}}</option>
                                             @endforeach
                                             @endif
                                         </select>
@@ -505,7 +507,8 @@ hr{
     <script>
     $(document).ready(function(){
         $('#product_ids').on('select2:unselect', function (e) {
-            var p_id        = ".product-detail-"+e.params.data.id;
+            var elm         = e.params.data.element;
+            var p_id        = ".slector-number-"+$(elm).attr('data-custom-selector');
             $(p_id).remove();
         });
 
@@ -568,12 +571,15 @@ hr{
         });
         $("#product_ids").on("select2:select", function (e){
             var product_id      = e.params.data.id;
+            var elm             = e.params.data.element;
+            var selector_number = $(elm).attr('data-custom-selector');
             if(product_id != ""){
                 $.ajax({
                     url: "{{ route('admin.order.product') }}",
                     type: "GET",
                     data: {
-                        product_id      : product_id
+                        product_id      : product_id,
+                        selector_number : selector_number
                     },
                     success: function(data) {
                         $('.accordion').append(data);   
@@ -590,12 +596,15 @@ hr{
         });
         $("#product_ids").on("select2:select", function (e){
             var product_id      = e.params.data.id;
+            var elm             = e.params.data.element;
+            var selector_number = $(elm).attr('data-custom-selector');
             if(product_id != ""){
                 $.ajax({
                     url: "{{ route('admin.order.print_nd_loations') }}",
                     type: "GET",
                     data: {
-                        product_id      : product_id
+                        product_id      : product_id,
+                        selector_number : selector_number
                     },
                     success: function(data) {
                         $('#accordion2').append(data);   
@@ -864,12 +873,13 @@ hr{
 
     $(document).on("change", ".profit-margin", function(){
         let product_id          = $(this).attr('data-product-id');
-        calcMargin(product_id);
-    });
+        let selector            = $(this).attr('data-selector');
+        calcMargin(product_id, selector);
+    }); 
 
-    function calcMargin(product_id= 0){
+    function calcMargin(product_id= 0, selector=""){
 
-        let profit_margin               = $('.product-detail-'+product_id).find('.profit-margin').val();
+        let profit_margin               = $('.slector-number-'+selector).find('.profit-margin').val();
         let total_selector              = ".total-";
         let profit_margin_selector      = ".margin-";
         let final_price_selector        = ".final-price-";
@@ -879,7 +889,7 @@ hr{
             
             for(var i=1; i <=6; i++){
 
-                let total           = $('.product-detail-'+product_id).find(total_selector+i).val();
+                let total           = $('.slector-number-'+selector).find(total_selector+i).val();
                 let value           =  total / diff2; 
                 $('.product-detail-'+product_id).find(profit_margin_selector+i).val(value.toFixed(2));   
                 $('.product-detail-'+product_id).find(final_price_selector+i).val(value.toFixed(2));   

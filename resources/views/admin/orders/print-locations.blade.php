@@ -1,10 +1,10 @@
 <div class="container-fluid mt-3" >
     <div class="row">
-        <div class="col-md-12  product-detail rh-product-detail-{{$product_detail->id}} product-detail-{{$product_detail->id}}" id="product-detail-{{$product_detail->id}}">
+        <div class="col-md-12  product-detail rh-product-detail-{{$product_detail->id}} product-detail-{{$product_detail->id}} slector-number-{{$selector_number}}" id="product-detail-{{$product_detail->id}}">
             <div class="card card_product_order mb-4 mt-4">
                 <input type="hidden" class="product-type" value="{{$type}}">
                 <input type="hidden" class="location-count" value="1">
-                <div class="card-header collapsed" data-toggle="collapse" href="#collapse-{{$product_detail->id}}" style="background-color: #eee;">
+                <div class="card-header collapsed" data-toggle="collapse" href="#collapse-{{$selector_number}}" style="background-color: #eee;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <p class="mb-0">{{$product_detail->name}}</p>
@@ -17,11 +17,11 @@
                         </div>
                     </div>
                 </div>
-                <div id="collapse-{{$product_detail->id}}" class="card-body collapse" data-parent="#accordion" >
+                <div id="collapse-{{$selector_number}}" class="card-body collapse" data-parent="#accordion" >
                     <div class="row" style="margin-bottom:40px;">
                         <div class="col-md-4">
                             <label class="font-weight-600">Profit Margin</label>
-                            <select name="profit_margin_percentage[{{$product_detail->id}}][]" class="my-form-control profit-margin" data-product-id="{{$product_detail->id}}">
+                            <select name="profit_margin_percentage[{{$product_detail->id}}][]" class="my-form-control profit-margin" data-product-id="{{$product_detail->id}}" data-selector="{{$product_detail->id}}{{$selector_number}}">
                                 <option value="0">No Markup</option>
                                 @for ($i = 18; $i <=100; $i++)
                                 <option value="{{$i}}" @if(isset($order_price['profit_margin_percentage'][0]) && $order_price['profit_margin_percentage'][0] ==$i ) {{"selected"}} @endif>{{$i}} %</option>
