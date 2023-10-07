@@ -122,6 +122,7 @@
             </div> 
             <div class="table-responsive">
                 @php
+                    // dd($invoice_details);
                     $sub_total                  = 0;
                     $grand_total                = 0; 
                     $tax_percent                = 0;
@@ -134,7 +135,7 @@
                 @php
                     $initializer++;
                 @endphp
-                <table class="table table-nowrap" border="0">
+                <table class="table-nowrap" border="0">
                     <thead>
                         <tr>
                             @if($size == "adult_sizes")
@@ -162,98 +163,125 @@
                     </thead>
                     <tbody>
                         @foreach ($invoice as $product_name=>$invoice_detail)
-                            @foreach ($invoice_detail as $color=>$detail)
-                                @php
-                                    $r_total            = 0;
-                                    $total_qty          = 0;
-                                    $fixed_sizes_qty    = 0;
-                                    $fixed_size_price   = 0;
-                                    $fixed_sizes        = "";
-                                    
-                                    foreach ($detail as $size=>$value){
-                                        if(in_array($size, $fixed_adult_sizes) || in_array($size, $fixed_baby_sizes)){
-                                            $fixed_sizes_qty    = $fixed_sizes_qty+$value["pieces"];
-                                            $fixed_size_price   = $value["price"]??0; 
-                                            $fixed_sizes        .= $size."(".$value["pieces"].") ";
-                                        }else{
-                                            $qty                = $value["pieces"]??0;
-                                            $price              = $value["price"]??0;
-                                            $r_total            += ($qty*$price);
-                                            $total_qty          += $qty;
+                            @foreach ($invoice_detail as $selector_ref=>$_detail)
+                            @php
+                                $__flag     = count($_detail);
+                                $__start    = 0;
+                            @endphp
+                                @foreach ($_detail as $color=>$detail)
+                                    @php
+                                        $__start++;
+                                        $r_total            = 0;
+                                        $total_qty          = 0;
+                                        $fixed_sizes_qty    = 0;
+                                        $fixed_size_price   = 0;
+                                        $fixed_sizes        = "";
+                                        
+                                        foreach ($detail as $size=>$value){
+                                            if(in_array($size, $fixed_adult_sizes) || in_array($size, $fixed_baby_sizes)){
+                                                $fixed_sizes_qty    = $fixed_sizes_qty+$value["pieces"];
+                                                $fixed_size_price   = $value["price"]??0; 
+                                                $fixed_sizes        .= $size."(".$value["pieces"].") ";
+                                            }else{
+                                                $qty                = $value["pieces"]??0;
+                                                $price              = $value["price"]??0;
+                                                $r_total            += ($qty*$price);
+                                                $total_qty          += $qty;
+                                            }
                                         }
-                                    }
-                                    $total_qty          += $fixed_sizes_qty;
-                                    $r_total            +=($fixed_sizes_qty*$fixed_size_price);
-                                    $sub_total          += $r_total;
-                                @endphp
-                                <tr>
-                                    <td style="width: 45%;">
-                                        <div><strong>{{ $product_name }}</strong></div>
-                                        <small style="font-weight: bold;">{{$color}} </small>
-                                    
-                                        <small style="font-weight: bold;">{{$fixed_sizes}}</small>
-                                    </td>
-                                    <td>
-                                        <div>{{($fixed_sizes_qty>0)?$fixed_sizes_qty:""}}</div>
-                                        <div>{{($fixed_size_price>0)? "$".number_format($fixed_size_price, 2): ""}}</div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            {{ (isset($detail["2XL"]["pieces"]))?$detail["2XL"]["pieces"]:""}}
-                                            {{ (isset($detail["2T"]["pieces"]))?$detail["2T"]["pieces"]:""}}
-                                        </div>
-                                        <div>
-                                            {{ (isset($detail["2XL"]["price"])) ? "$".$detail["2XL"]["price"] : ""}}
-                                            {{ (isset($detail["2T"]["price"])) ? "$".$detail["2T"]["price"] : ""}}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            {{ (isset($detail["3XL"]["pieces"]))?$detail["3XL"]["pieces"]:""}}
-                                            {{ (isset($detail["3T"]["pieces"]))?$detail["3T"]["pieces"]:""}}
-                                        </div>
-                                        <div>
-                                            {{ (isset($detail["3XL"]["price"])) ? "$".$detail["3XL"]["price"] : ""}}
-                                            {{ (isset($detail["3T"]["price"])) ? "$".$detail["3T"]["price"] : ""}}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            {{ (isset($detail["4XL"]["pieces"]))?$detail["4XL"]["pieces"]:""}}
-                                            {{ (isset($detail["4T"]["pieces"]))?$detail["4T"]["pieces"]:""}}
-                                        </div>
-                                        <div>
-                                            {{ (isset($detail["4XL"]["price"])) ? "$".$detail["4XL"]["price"] : ""}}
-                                            {{ (isset($detail["4T"]["price"])) ? "$".$detail["4T"]["price"] : ""}}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            {{ (isset($detail["5XL"]["pieces"]))?$detail["5XL"]["pieces"]:""}}
-                                            {{ (isset($detail["5T"]["pieces"]))?$detail["5T"]["pieces"]:""}}
-                                        </div>
-                                        <div>
-                                            {{ (isset($detail["5XL"]["price"])) ? "$".$detail["5XL"]["price"] : ""}}
-                                            {{ (isset($detail["5T"]["price"])) ? "$".$detail["5T"]["price"] : ""}}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            {{ (isset($detail["6XL"]["pieces"]))?$detail["6XL"]["pieces"]:""}}
-                                            {{ (isset($detail["6T"]["pieces"]))?$detail["6T"]["pieces"]:""}}
-                                        </div>
-                                        <div>
-                                            {{ (isset($detail["6XL"]["price"])) ? "$".$detail["6XL"]["price"] : ""}}
-                                            {{ (isset($detail["6T"]["price"])) ? "$".$detail["6T"]["price"] : ""}}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div><strong>{{$total_qty}}</strong></div>
-                                    </td>
-                                    <td>
-                                        <div><strong>{{"$".$r_total}}</strong></div>
-                                    </td>
-                                </tr>
+                                        $total_qty          += $fixed_sizes_qty;
+                                        $r_total            +=($fixed_sizes_qty*$fixed_size_price);
+                                        $sub_total          += $r_total;
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            <div><strong>{{ $product_name }}</strong></div>
+                                            <small style="font-weight: bold;">{{$color}} </small>
+                                            <small style="font-weight: bold;">{{$fixed_sizes}}</small>
+                                            
+                                        </td>
+                                        <td>
+                                            <div>{{($fixed_sizes_qty>0)?$fixed_sizes_qty:""}}</div>
+                                            <div>{{($fixed_size_price>0)? "$".number_format($fixed_size_price, 2): ""}}</div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                {{ (isset($detail["2XL"]["pieces"]))?$detail["2XL"]["pieces"]:""}}
+                                                {{ (isset($detail["2T"]["pieces"]))?$detail["2T"]["pieces"]:""}}
+                                            </div>
+                                            <div>
+                                                {{ (isset($detail["2XL"]["price"])) ? "$".$detail["2XL"]["price"] : ""}}
+                                                {{ (isset($detail["2T"]["price"])) ? "$".$detail["2T"]["price"] : ""}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                {{ (isset($detail["3XL"]["pieces"]))?$detail["3XL"]["pieces"]:""}}
+                                                {{ (isset($detail["3T"]["pieces"]))?$detail["3T"]["pieces"]:""}}
+                                            </div>
+                                            <div>
+                                                {{ (isset($detail["3XL"]["price"])) ? "$".$detail["3XL"]["price"] : ""}}
+                                                {{ (isset($detail["3T"]["price"])) ? "$".$detail["3T"]["price"] : ""}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                {{ (isset($detail["4XL"]["pieces"]))?$detail["4XL"]["pieces"]:""}}
+                                                {{ (isset($detail["4T"]["pieces"]))?$detail["4T"]["pieces"]:""}}
+                                            </div>
+                                            <div>
+                                                {{ (isset($detail["4XL"]["price"])) ? "$".$detail["4XL"]["price"] : ""}}
+                                                {{ (isset($detail["4T"]["price"])) ? "$".$detail["4T"]["price"] : ""}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                {{ (isset($detail["5XL"]["pieces"]))?$detail["5XL"]["pieces"]:""}}
+                                                {{ (isset($detail["5T"]["pieces"]))?$detail["5T"]["pieces"]:""}}
+                                            </div>
+                                            <div>
+                                                {{ (isset($detail["5XL"]["price"])) ? "$".$detail["5XL"]["price"] : ""}}
+                                                {{ (isset($detail["5T"]["price"])) ? "$".$detail["5T"]["price"] : ""}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                {{ (isset($detail["6XL"]["pieces"]))?$detail["6XL"]["pieces"]:""}}
+                                                {{ (isset($detail["6T"]["pieces"]))?$detail["6T"]["pieces"]:""}}
+                                            </div>
+                                            <div>
+                                                {{ (isset($detail["6XL"]["price"])) ? "$".$detail["6XL"]["price"] : ""}}
+                                                {{ (isset($detail["6T"]["price"])) ? "$".$detail["6T"]["price"] : ""}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div><strong>{{$total_qty}}</strong></div>
+                                        </td>
+                                        <td>
+                                            <div><strong>{{"$".$r_total}}</strong></div>
+                                        </td>
+                                    </tr>
+                                    @if($__flag == $__start)
+                                        <tr>
+                                            <td style="width: 100%;">
+                                                <div><strong>Color Per Location</strong></div>
+                                                @foreach ($color_per_locations[$product_name][$selector_ref]["location_number"] as $key=>$location)
+                                                <div>
+                                                    <small style="font-weight: bold;">{{$location}} {{$color_per_locations[$product_name][$selector_ref]["color_per_location"][$key] . " C. "}}</small>
+                                                </div>
+                                                @endforeach
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        <tr>        
+                                    @endif
+                                @endforeach
                             @endforeach
                         @endforeach
                         @foreach ($extra_details as $coulmn_name=>$extra_detail)
@@ -479,17 +507,20 @@
             </div>
             <div class="row">
                 <div class="col-sm-8">
-                    <ul class="list-unstyled">
+                    {{-- <ul class="list-unstyled">
                         @if (count($color_per_locations) > 0)
                             @foreach ($color_per_locations as $p_name=>$color_per_location)
+                            @foreach ($color_per_location as $selector_ref=>$location)
                             <li><strong style="padding-right: 24px;">{{$p_name}}</strong></li>
-                                @foreach ($color_per_location["color_per_location"] as $key=>$location)
-                                <li><strong style="padding-right: 24px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$color_per_location["location_number"][$key]}}</strong>{{$location." colors"}}</li>
+                                    @foreach ($location["location_number"] as $key=>$location_number)
+                                        <li>
+                                            <strong style="padding-right: 24px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$location_number}}</strong>{{$location["color_per_location"][$key]." colors"}}
+                                        </li>
+                                    @endforeach
                                 @endforeach
                             @endforeach
-                            
                         @endif
-                    </ul>
+                    </ul> --}}
                 </div>
                 <div class="col-sm-4">
                     <ul class="list-unstyled text-right">

@@ -16,6 +16,8 @@ class OrderColorPerLocation extends Model
     protected $fillable = [
         'order_id',
         'product_id',
+        'selector_ref',
+        'location_number',
         'location_number',
         'color_per_location'
     ];

@@ -19,6 +19,7 @@ class OrderProductVariant extends Model
     protected $fillable = [
         "order_id",
         "product_id",
+        "selector_ref",
         "variant_id",
         "variant_name",
         "attribute_id",

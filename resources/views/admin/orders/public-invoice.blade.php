@@ -86,8 +86,14 @@
                 </tr>
                 @endif
                 @foreach ($invoice as $product_name=>$invoice_detail)
-                    @foreach ($invoice_detail as $color=>$detail)
+                @foreach ($invoice_detail as $selector_ref=>$_detail)
+                    @php
+                        $__flag     = count($_detail);
+                        $__start    = 0;
+                    @endphp
+                    @foreach ($_detail as $color=>$detail)
                         @php
+                            $__start++;
                             $r_total            = 0;
                             $total_qty          = 0;
                             $fixed_sizes_qty    = 0;
@@ -142,6 +148,28 @@
                             <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;padding-bottom: 10px;"></td>
                             <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;padding-bottom: 10px;"></td>
                         </tr>
+                        @if($__flag == $__start)
+                        dd(1);
+                            <tr>
+                                <td style="width: 100%;">
+                                    <div><strong>Color Per Location</strong></div>
+                                    @foreach ($color_per_locations[$product_name][$selector_ref]["location_number"] as $key=>$location)
+                                    <div>
+                                        <small>{{$location}} {{$color_per_locations[$product_name][$selector_ref]["color_per_location"][$key] . " C. "}}</small>
+                                    </div>
+                                    @endforeach
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            <tr>        
+                        @endif
+                    @endforeach
                     @endforeach
                 @endforeach
             @endforeach
@@ -274,14 +302,6 @@
         @endphp
         <table style="width: 100%;margin-bottom: 10px;border-collapse: collapse;">
             <tr>
-                @if (count($color_per_locations) > 0)
-                    @foreach ($color_per_locations as $p_name=>$color_per_location)
-                        <span style="font-weight: 600;">{{$p_name}}</span> <br>
-                        @foreach ($color_per_location["color_per_location"] as $key=>$location)
-                        <span style="font-weight: 600;margin-left: 20px;">{{$color_per_location["location_number"][$key]}}</span> {{$location." colors"}} <br>
-                        @endforeach
-                    @endforeach
-                @endif
                 
                 <td style="width: 50%;font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;text-align: right;">
                    <span style="font-weight: 600;">Total Quantity:</span>  {{$client_details["projected_units"]}} <br>

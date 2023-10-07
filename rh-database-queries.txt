@@ -1,12 +1,15 @@
-
-ALTER TABLE `tyler_live`.`email_logs` 
+ALTER TABLE `email_logs` 
 ADD COLUMN `is_approved` int NULL AFTER `from`;
 
 
+ALTER TABLE `order_prices` 
+ADD COLUMN `selector_ref` int NULL AFTER `product_id`;
 
-Priority List
-- Action log tweaks, Notification Column, email to assignee changes.
+ALTER TABLE `order_product_variants` 
+ADD COLUMN `selector_ref` int NULL AFTER `product_id`;
 
-- Duplicated garments
+ALTER TABLE `order_products` 
+ADD COLUMN `selector_ref` int NULL AFTER `product_id`;
 
-- Art room function
+ALTER TABLE `order_color_per_locations` 
+ADD COLUMN `selector_ref` int NULL AFTER `product_id`;

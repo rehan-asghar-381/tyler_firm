@@ -61,10 +61,8 @@ class PublicController extends Controller
         
         $pageTitle  = "Invoice";
         $order      = Order::with([
-            'ClientSaleRep'=>function($query) use($email){
-                $query->where("email", "=", $email);
-            }, 
-            'OrderHistory', 
+            'client', 
+            'ClientSaleRep', 
             'OrderPrice', 
             'OrderImgs', 
             'OrderColorPerLocation', 
@@ -77,7 +75,6 @@ class PublicController extends Controller
             'OrderTransfer',
             'OrderOtherCharges'
         ])->find($id);
-       
         $order_images           = $order->OrderImgs;
         $extra_details          = [];
         $client_details         = [];
@@ -85,36 +82,43 @@ class PublicController extends Controller
         $invoice_details        = [];
         $color_per_locations    = [];
         foreach($order->OrderColorPerLocation as $colorPerLocation){
+          
             $product_name       = $colorPerLocation->Product->name;
-            $color_per_locations[$product_name]["location_number"][]        = $colorPerLocation->location_number;
-            $color_per_locations[$product_name]["color_per_location"][]     = $colorPerLocation->color_per_location;
+            $selector_ref       = $colorPerLocation->selector_ref;
+            $color_per_locations[$product_name][$selector_ref]["location_number"][]        = $colorPerLocation->location_number;
+            $color_per_locations[$product_name][$selector_ref]["color_per_location"][]     = $colorPerLocation->color_per_location;
         }
       
         foreach($order->OrderPrice as $OrderPrice){
             $rh_product_id      = $OrderPrice->product_id;
-            $order_prices[$rh_product_id][$OrderPrice->product_size]    = $OrderPrice->final_price;
+            $selector_ref       = $OrderPrice->selector_ref;
+            $order_prices[$rh_product_id][$selector_ref][$OrderPrice->product_size]    = $OrderPrice->final_price;
         }
+        
         foreach($order->OrderProducts as $OrderProduct){
-            foreach($OrderProduct->OrderProductVariant as $order_product_variant){
+            foreach($OrderProduct->OrderProductVariant as $product_count=>$order_product_variant){
+              
                 $rh_product_id  = $order_product_variant->product_id;
+                $selector_ref   = $order_product_variant->selector_ref;
                 $size_for       = $OrderProduct->Product->size_for;
                 $product_n      = $OrderProduct->product_name;
                 $attr1_name     = $order_product_variant->attribute1_name;
                 $attr2_name     = $order_product_variant->attribute2_name;
-                $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["pieces"]  = $order_product_variant->pieces;
+                $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["pieces"]  = $order_product_variant->pieces;
                 if($size_for == "adult_sizes"){
-                    $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedAdultSize))
-                                                                                        ?$order_prices[$rh_product_id]["XS-XL"]
-                                                                                        :$order_prices[$rh_product_id][$attr2_name];
+                    $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedAdultSize))
+                                                                                        ?$order_prices[$rh_product_id][$selector_ref]["XS-XL"]
+                                                                                        :$order_prices[$rh_product_id][$selector_ref][$attr2_name];
                 }
                 if($size_for == "baby_sizes"){
                     
-                    $invoice_details[$size_for][$product_n][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedBabySize))
-                                                                                        ?$order_prices[$rh_product_id]["OSFA-18M"]
-                                                                                        :$order_prices[$rh_product_id][$attr2_name];
+                    $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedBabySize))
+                                                                                        ?$order_prices[$rh_product_id][$selector_ref]["OSFA-18M"]
+                                                                                        :$order_prices[$rh_product_id][$selector_ref][$attr2_name];
                 }
             }
         }
+        
         $client_details["date"]                     = date("m/d/Y", $order->time_id);
         $client_details["company_name"]             = $order->client->company_name;
         $client_details["job_name"]                 = $order->job_name;

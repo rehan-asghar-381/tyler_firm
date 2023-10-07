@@ -267,9 +267,7 @@ hr{
                                         <select name="product_ids[]" id="product_ids" class="form-control basic-multiple" multiple="multiple">
                                             @if (count($products) > 0)
                                             @foreach ($products as $product)
-                                            <option value="{{$product->id}}" data-custom-selector="{{$product->id.'1'}}">{{$product->name}}</option>
-                                            <option value="{{$product->id}}" data-custom-selector="{{$product->id.'2'}}">{{$product->name}}</option>
-                                            <option value="{{$product->id}}" data-custom-selector="{{$product->id.'3'}}">{{$product->name}}</option>
+                                            <option value="{{$product->id}}" data-custom-selector="{{$product->id."-1"}}">{{$product->name}}</option>
                                             @endforeach
                                             @endif
                                         </select>
@@ -637,9 +635,35 @@ hr{
             var new_product_add         = product_add.clone().find("input").val("").end();
             var ttt = $(new_product_add).children().eq(1).children().eq(0).attr('data-add_product',product_id+'-'+init);
             var ttt = $(new_product_add).children().eq(1).children().eq(1).attr('data-remove_product',product_id+'-'+init);
+            let sizecurrentIndex        = $(this).closest("#cloneDev").find(".row:last").find('.v2_attr_id').find("option:selected").index();
+            let colorcurrentIndex       = $(this).closest("#cloneDev").find(".row:last").find('.v1_attr_id').find("option:selected").index();
+            let sizeLength              = $(this).closest("#cloneDev").find(".row:last").find('.v2_attr_id').find("option").length;
+            let colorLength             = $(this).closest("#cloneDev").find(".row:last").find('.v1_attr_id').find("option").length;
+            if(sizecurrentIndex == sizeLength-2){
+                let newSize             = new_product_add.find('.v2_attr_id').find("option:eq(" + (1) + ")").attr("value");
+                new_product_add.find('.v2_attr_id').val(newSize);
+                let newColor             = new_product_add.find('.v1_attr_id').find("option:eq(" + (colorcurrentIndex + 1) + ")").attr("value");
+                new_product_add.find('.v1_attr_id').val(newColor);
+            }else if(colorcurrentIndex < colorLength){
+                let newSize             = new_product_add.find('.v2_attr_id').find("option:eq(" + (sizecurrentIndex + 1) + ")").attr("value");
+                new_product_add.find('.v2_attr_id').val(newSize);
+                let newColor             = new_product_add.find('.v1_attr_id').find("option:eq(" + (colorcurrentIndex) + ")").attr("value");
+                new_product_add.find('.v1_attr_id').val(newColor);
+                console.log("sizecurrentIndex: ", sizecurrentIndex);
+                console.log("sizeLength - 1: ", sizeLength-1);
+            }else{
+                // do nothing
+            }
             append_parent.append(new_product_add);
+            var product_id              = new_product_add.find('.v2_attr_id').attr('data-product_id');
+            var selector_number         = new_product_add.find('.v2_attr_id').attr('data-selector');
+            var selector                = '.form-row';
+            let v1_attr_id              = new_product_add.find('.v1_attr_id').val();
+            let v2_attr_id              = new_product_add.find('.v2_attr_id').val();
+            let price_selector          = new_product_add.find('.price');
+            addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector);
             init++;
-        });
+        }); 
         $(document).on('click', '#remove_product', function(e) {
             e.preventDefault();
             var  product_id = $(this).data('product_id');
@@ -650,6 +674,7 @@ hr{
 
                 $(".clone-product-"+id).remove();
                 init--; //Decrement field counter
+                projected_units();
             }
         });
         
@@ -663,18 +688,7 @@ hr{
         }
 
     });
-    // function location_labels(selector){
 
-    //     if(selector != ""){
-    //         var length          = $(selector).find(".print-location").length;
-    //         $($(selector).find(".print-location")).each(function(index, element){
-    //             let number              = index+1;             
-    //             let label_text          = '# '+number;
-    //             $(this).find('label').text(label_text);
-    //         });
-    //     }
-
-    // }
     $(document).on("change", ".pieces", function(index, element){
         projected_units();
     });
@@ -725,6 +739,16 @@ hr{
 
     $(document).on("change", ".attribute", function(e){
         e.preventDefault();
+        var product_id              = $(this).attr('data-product_id');
+        var selector_number         = $(this).attr('data-selector');
+        var selector                = '.form-row';
+        let v1_attr_id              = $(this).closest(selector).find('.v1_attr_id').val();
+        let v2_attr_id              = $(this).closest(selector).find('.v2_attr_id').val();
+        let price_selector          = $(this).closest(selector).find('.price');
+        
+        addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector);
+    });
+    function addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector){
         let size_selector           = "";
         let size_select             = "";
         let all_adult_sizes         = JSON.parse($("#all_adult_sizes").html());
@@ -733,9 +757,9 @@ hr{
         let all_baby_sizes          = JSON.parse($('#all_baby_sizes').html());
         let all_sizes               = [];
         let fixed_sizes             = [];
-        var product_id              = $(this).attr('data-product_id');
         
-        if($('.product-detail-'+product_id).find(".product-type").val() == "Baby Size"){
+        var collapse_box_selector   = ".slector-number-"+product_id+"-"+selector_number;
+        if($(selector).find(".product-type").val() == "Baby Size"){
             all_sizes                   = all_baby_sizes;
             fixed_sizes                 = fixed_baby_sizes;
             size_select                 = "OSFA-18M-";
@@ -744,13 +768,8 @@ hr{
             fixed_sizes                 = adult_fixed_sizes;
             size_select                 = "XS-XL-";
         }
-        var selector                = '.form-row';
         let type                    = "";
-        let v1_attr_id              = $(this).closest(selector).find('.v1_attr_id').val();
-        let v2_attr_id              = $(this).closest(selector).find('.v2_attr_id').val();
-        let price_selector          = $(this).closest(selector).find('.price');
-
-        if($('.product-detail-'+product_id).find(".product-type").val() == "Baby Size"){
+        if($(collapse_box_selector).find(".product-type").val() == "Baby Size"){
             type                = "Baby Size";
         }
         if(v1_attr_id != "" && v2_attr_id != ""){
@@ -771,18 +790,18 @@ hr{
                         size_selector       = "#"+result.name+"-"+product_id;
                     } 
                
-                    $('.product-detail-'+product_id).find(size_selector).val(result.price);
-                    resetPrices(product_id);
-                    calcTotal(product_id);
-                    calcMargin(product_id);
+                    $(collapse_box_selector).find(size_selector).val(result.price);
+                    resetPrices(product_id, collapse_box_selector);
+                    calcTotal(product_id, collapse_box_selector);
+                    calcMargin(product_id, collapse_box_selector);
                 }
             });
         }
-    });
-    function calcDecogrationPrice(product_id=0){
+    }
+    function calcDecogrationPrice(product_id=0, collapse_box_selector = ""){
         var ProjectedUnits          = $('#ProjectedUnits').val();
         var color_locations_arr     = [];
-        var product_div             = ".product-detail-"+product_id;
+        var product_div             = collapse_box_selector;
         var selector                = $(product_div).find('.number-of-colors');
         $($(selector)).each(function(index, element){
             if($(this).val() > 0 && $(this).val() != ""){
@@ -802,34 +821,37 @@ hr{
                 $(product_div).find(".print_locations").each(function(index, element){
                     $(this).val(price);
                 });
-                calcTotal(product_id);
-                calcMargin(product_id);
+                calcTotal(product_id, collapse_box_selector);
+                calcMargin(product_id, collapse_box_selector);
             }
         });
         } 
     }
     $(document).on("change", ".number-of-colors", function(){
         var product_id              = $(this).attr('data-product-id');
-        calcDecogrationPrice(product_id);
+        let selector_number         = $(this).attr('data-selector');
+
+        var collapse_box_selector   = ".slector-number-"+product_id+"-"+selector_number;
+        calcDecogrationPrice(product_id, collapse_box_selector);
     });
 
-    function calcTotal(product_id=0){
+    function calcTotal(product_id=0, collapse_box_selector=""){
 
         let whole_sale_price            = 0;
         let location_price              = 0;
         let total_price                 = 0;
         for(var i=1; i <=6; i++){
             
-            let whole_sale_price         =  $('.product-detail-'+product_id).find(".whole-sale-"+i).val();
-            let location_price           =  $('.product-detail-'+product_id).find(".location-"+i).val();
+            let whole_sale_price         =  $(collapse_box_selector).find(".whole-sale-"+i).val();
+            let location_price           =  $(collapse_box_selector).find(".location-"+i).val();
 
             whole_sale_price            = (whole_sale_price != "") ? whole_sale_price: 0;
             location_price              = (location_price != "")? location_price: 0;
             let total                   = (parseFloat(whole_sale_price)+ parseFloat(location_price)).toFixed(2);
-            $($('.product-detail-'+product_id).find(".total-"+i)).val(total);
+            $($(collapse_box_selector).find(".total-"+i)).val(total);
         }
     } 
-    function resetPrices(product_id = 0){
+    function resetPrices(product_id = 0, collapse_box_selector = ""){
         let size_selector               = "";
         let all_adult_sizes             = JSON.parse($("#all_adult_sizes").html());
         let adult_fixed_sizes           = JSON.parse($('template').html());
@@ -839,9 +861,8 @@ hr{
         let fixed_sizes                 = [];
         let selected_sizes              = [];
         let flag                        = 0;
-        let selector                    = $('.product-detail-'+product_id).find('.v2_attr_id');
-
-        if($('.product-detail-'+product_id).find(".product-type").val() == "Baby Size"){
+        let selector                    = $(collapse_box_selector).find('.v2_attr_id');
+        if($(collapse_box_selector).find(".product-type").val() == "Baby Size"){
             all_sizes                   = all_baby_sizes;
             fixed_sizes                 = fixed_baby_sizes;
             size_selector               = "#OSFA-18M-";
@@ -860,50 +881,59 @@ hr{
             }
         });
         if(flag == 0){
-            $('.product-detail-'+product_id).find(size_selector+product_id).val('');
+            $(collapse_box_selector).find(size_selector+product_id).val('');
         }
         $.each(all_sizes, function(index, element){
             if(jQuery.inArray(element, selected_sizes) != -1) {
                 //do nothing
             }else{
-                $('.product-detail-'+product_id).find("#"+element+"-"+product_id).val('');
+                $(collapse_box_selector).find("#"+element+"-"+product_id).val('');
             }
         });
     } 
 
     $(document).on("change", ".profit-margin", function(){
-        let product_id          = $(this).attr('data-product-id');
-        let selector            = $(this).attr('data-selector');
-        calcMargin(product_id, selector);
+        let product_id              = $(this).attr('data-product-id');
+        let selector_number         = $(this).attr('data-selector');
+
+        var collapse_box_selector   = ".slector-number-"+product_id+"-"+selector_number;
+        calcMargin(product_id, collapse_box_selector);
     }); 
 
-    function calcMargin(product_id= 0, selector=""){
+    function calcMargin(product_id= 0, collapse_box_selector=""){
 
-        let profit_margin               = $('.slector-number-'+selector).find('.profit-margin').val();
+        let profit_margin               = $(collapse_box_selector).find('.profit-margin').val();
         let total_selector              = ".total-";
         let profit_margin_selector      = ".margin-";
         let final_price_selector        = ".final-price-";
         if(profit_margin > 0){
-            var diff = 100 - parseInt(profit_margin); 
-            var diff2= diff / 100 ;
-            
+            var diff    = 100 - parseInt(profit_margin); 
+            var diff2   = diff / 100 ;
             for(var i=1; i <=6; i++){
-
-                let total           = $('.slector-number-'+selector).find(total_selector+i).val();
+                let total           = $(collapse_box_selector).find(total_selector+i).val();
                 let value           =  total / diff2; 
-                $('.product-detail-'+product_id).find(profit_margin_selector+i).val(value.toFixed(2));   
-                $('.product-detail-'+product_id).find(final_price_selector+i).val(value.toFixed(2));   
+                $(collapse_box_selector).find(profit_margin_selector+i).val(value.toFixed(2));   
+                $(collapse_box_selector).find(final_price_selector+i).val(value.toFixed(2));   
             }
         }
     }
     $(document).on("change","#ProjectedUnits", function(){
-        let product_ids     = $("#product_ids").val();
-        $.each(product_ids, function(index, element){
+        let product_ids             = $("#product_ids").val();
+        let selector_number         = 0;
+        var collapse_box_selector   = "";
+        $.each(product_ids, function(index, product_id){
             
-            resetPrices(element);
-            calcDecogrationPrice(element);
-            calcTotal(element);
-            calcMargin(element);
+            let all_collapse_boxes   = ".product-detail-"+product_id;
+            $(all_collapse_boxes).each(function(index, element){
+                selector_number         = $(this).find(".profit-margin").attr("data-selector");
+                if(selector_number != undefined){
+                    collapse_box_selector   = ".slector-number-"+product_id+"-"+selector_number;
+                    resetPrices(product_id, collapse_box_selector);
+                    calcDecogrationPrice(product_id, collapse_box_selector);
+                    calcTotal(product_id, collapse_box_selector);
+                    calcMargin(product_id, collapse_box_selector);
+                }
+            });
         });
 
     });
@@ -952,18 +982,105 @@ hr{
             });
           });
 
-          $('body').on('click', ".upload__img-close", function (e) {
+        $('body').on('click', ".upload__img-close", function (e) {
             var file = $(this).parent().data("file");
             for (var i = 0; i < imgArray.length; i++) {
-              if (imgArray[i].name === file) {
+                if (imgArray[i].name === file) {
                 imgArray.splice(i, 1);
                 break;
-              }
+                }
             }
             $(this).parent().parent().remove();
-          });
-      }  
+        });
+        function _update_field_name(field_name, selector){
+            let removed_element     = field_name.split('[')[0];
+            var array = field_name.split(/\[|\]/).filter(function(item) {
+                return item !== "" && item != removed_element;
+            });
+            array[1] = selector;
+            var modifiedString = field_name.split('[')[0] + "[" + array.join("][") + "][]";  
+            return   modifiedString;
+        }
+        $(document).on('click', '.--add-product', function(event) {
 
-      ImgUpload();
+            var product_id                      = $(this).attr("data-id");
+            var terminator                      = $(this).attr("data-selector");
+            var selector                        = "";
+            var total_boxes                     = $(".--product-row").length;
+            $(".--product-row").each(function(index, item){
+                if( index+1 == $(".--product-row").length){
+                   selector                     = parseInt($(this).find(".--add-product").attr("data-selector"))+1;
+                }
+            });
+
+            var prev_selector_number            = "slector-number-"+product_id+"-"+terminator;
+            var new_selector_number             = "slector-number-"+product_id+"-"+selector;
+
+            // Garments Tab Product Clonning 
+            var product_template                = $(this).closest('.--product-row').clone();
+            var parent_selector                 = $(this).closest(".container-fluid");
+            var new_product_template            = product_template.clone();
+            event.preventDefault();
+            parent_selector.append(new_product_template);
+            // Changing Selector
+            new_product_template.find('.--add-product').attr('data-selector', selector);
+            new_product_template.find('.--remove-product').attr('data-selector', selector);
+            new_product_template.find("."+prev_selector_number).addClass(new_selector_number);
+            new_product_template.find("."+prev_selector_number).removeClass(prev_selector_number);
+            let field_name_seletor      = ".--update-name";
+            $.each(new_product_template.find(field_name_seletor), function(index, element){
+                let field_name          = $(this).attr("name");
+                let updated_name        = _update_field_name(field_name, selector);
+                new_product_template.find(element).attr("name", updated_name);
+            });
+            // 
+            var collapse_href                   = "#collapse-"+product_id+"-"+selector;
+            var collapse_id                     = "collapse-"+product_id+"-"+selector;
+            new_product_template.find('.collapse-href').attr('href', collapse_href);
+            new_product_template.find('.collapse-id').attr('id', collapse_id);
+            new_product_template.find('.attribute').attr('data-selector', selector);
+
+            // Print Details tab print and locations clonning
+            var prev_selector                           = "--print-and-location-row-"+product_id+"-"+terminator;
+            var new_selector                            = "--print-and-location-row-"+product_id+"-"+selector;
+            var print_and_location_template             = $("#accordion2").find('.--print-and-location-row-'+product_id+"-"+terminator).clone();
+            var parent_selector                         = $("#accordion2").find('.--print-and-location-row-'+product_id+"-"+terminator).closest(".container-fluid");
+            var new_print_and_location_template         = print_and_location_template.clone();
+            event.preventDefault();
+            parent_selector.append(new_print_and_location_template);
+            // Changing Selector
+            new_print_and_location_template.addClass(new_selector);
+            new_print_and_location_template.removeClass(prev_selector);
+            new_print_and_location_template.find("."+prev_selector_number).addClass(new_selector_number);
+            new_print_and_location_template.find("."+prev_selector_number).removeClass(prev_selector_number);
+            // 
+            new_print_and_location_template.find('.collapse-href').attr('href', collapse_href);
+            new_print_and_location_template.find('.collapse-id').attr('id', collapse_id);
+            new_print_and_location_template.find('.profit-margin').attr('data-selector', selector);
+            new_print_and_location_template.find('.number-of-colors').attr('data-selector', selector);
+            let int=1;
+            $.each(new_print_and_location_template.find(field_name_seletor), function(index, element){
+                let field_name          = $(this).attr("name"); 
+                let updated_name        = _update_field_name(field_name, selector);
+                new_print_and_location_template.find(element).attr("name", updated_name);
+            });
+            projected_units();
+        });
+
+        $(document).on('click', '.--remove-product', function(event) {
+            let min                             = 1;
+            var product_template                = $(this).closest('.--product-row');
+            var total                           = $(this).closest(".container-fluid").find(".--product-row").length;
+            event.preventDefault();
+            if(total > 1){
+                product_template.remove();
+                let product_id                      = $(this).attr('data-id');
+                let selector                        = $(this).attr('data-selector');
+                $("#accordion2").find('.--print-and-location-row-'+product_id+"-"+selector).remove();
+                projected_units();
+            }
+        });
+    }  
+    ImgUpload();
 </script>
 @endsection

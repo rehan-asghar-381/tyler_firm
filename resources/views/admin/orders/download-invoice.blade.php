@@ -70,62 +70,81 @@
                 </tr>
                 @endif
                 @foreach ($invoice as $product_name=>$invoice_detail)
-                    @foreach ($invoice_detail as $color=>$detail)
-                        @php
-                            $r_total            = 0;
-                            $total_qty          = 0;
-                            $fixed_sizes_qty    = 0;
-                            $fixed_size_price   = 0;
-                            $fixed_sizes        = "";
-                            
-                            foreach ($detail as $size=>$value){
-                                if(in_array($size, $fixed_adult_sizes) || in_array($size, $fixed_baby_sizes)){
-                                    $fixed_sizes_qty    = $fixed_sizes_qty+$value["pieces"];
-                                    $fixed_size_price   = $value["price"]??0; 
-                                    $fixed_sizes        .= $size."(".$value["pieces"].") ";
-                                }else{
-                                    $qty                = $value["pieces"]??0;
-                                    $price              = $value["price"]??0;
-                                    $r_total            += ($qty*$price);
-                                    $total_qty          += $qty;
+                @foreach ($invoice_detail as $selector_ref=>$_detail)
+                @php
+                    $__flag     = count($_detail);
+                    $__start    = 0;
+                @endphp
+                    @foreach ($_detail as $color=>$detail)
+                            @php
+                                $__start++;
+                                $r_total            = 0;
+                                $total_qty          = 0;
+                                $fixed_sizes_qty    = 0;
+                                $fixed_size_price   = 0;
+                                $fixed_sizes        = "";
+                                
+                                foreach ($detail as $size=>$value){
+                                    if(in_array($size, $fixed_adult_sizes) || in_array($size, $fixed_baby_sizes)){
+                                        $fixed_sizes_qty    = $fixed_sizes_qty+$value["pieces"];
+                                        $fixed_size_price   = $value["price"]??0; 
+                                        $fixed_sizes        .= $size."(".$value["pieces"].") ";
+                                    }else{
+                                        $qty                = $value["pieces"]??0;
+                                        $price              = $value["price"]??0;
+                                        $r_total            += ($qty*$price);
+                                        $total_qty          += $qty;
+                                    }
                                 }
-                            }
-                            $total_qty          += $fixed_sizes_qty;
-                            $r_total            +=($fixed_sizes_qty*$fixed_size_price);
-                            $sub_total          += $r_total;
-                        @endphp
-                        <tr>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 600;font-family: 'Poppins', sans-serif;border-top: 1px solid #ccc;">{{ $product_name }}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;border-top: 1px solid #ccc;">{{($fixed_sizes_qty>0)?$fixed_sizes_qty:""}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;border-top: 1px solid #ccc;">{{ (isset($detail["2XL"]["pieces"]))?$detail["2XL"]["pieces"]:""}}
-                                {{ (isset($detail["2T"]["pieces"]))?$detail["2T"]["pieces"]:""}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;border-top: 1px solid #ccc;">{{ (isset($detail["3XL"]["pieces"]))?$detail["3XL"]["pieces"]:""}}
-                                {{ (isset($detail["3T"]["pieces"]))?$detail["3T"]["pieces"]:""}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;border-top: 1px solid #ccc;">{{ (isset($detail["4XL"]["pieces"]))?$detail["4XL"]["pieces"]:""}}
-                                {{ (isset($detail["4T"]["pieces"]))?$detail["4T"]["pieces"]:""}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;border-top: 1px solid #ccc;"> {{ (isset($detail["5XL"]["pieces"]))?$detail["5XL"]["pieces"]:""}}
-                                {{ (isset($detail["5T"]["pieces"]))?$detail["5T"]["pieces"]:""}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;border-top: 1px solid #ccc;">{{ (isset($detail["6XL"]["pieces"]))?$detail["6XL"]["pieces"]:""}}
-                                {{ (isset($detail["6T"]["pieces"]))?$detail["6T"]["pieces"]:""}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 600;font-family: 'Poppins', sans-serif;border-top: 1px solid #ccc;">{{$total_qty}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 600;font-family: 'Poppins', sans-serif;border-top: 1px solid #ccc;">{{"$".$r_total}}</td>
-                        </tr>
-                        <tr>
-                            <td style="font-size: 12px;font-weight: 400;font-family: 'Poppins', sans-serif;padding-bottom: 10px;">{{$color}} {{$fixed_sizes}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;padding-bottom: 10px;">{{($fixed_size_price>0)? "$".number_format($fixed_size_price, 2): ""}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;padding-bottom: 10px;">{{ (isset($detail["2XL"]["price"])) ? "$".$detail["2XL"]["price"] : ""}}
-                                {{ (isset($detail["2T"]["price"])) ? "$".$detail["2T"]["price"] : ""}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;padding-bottom: 10px;">{{ (isset($detail["3XL"]["price"])) ? "$".$detail["3XL"]["price"] : ""}}
-                                {{ (isset($detail["3T"]["price"])) ? "$".$detail["3T"]["price"] : ""}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;padding-bottom: 10px;">{{ (isset($detail["4XL"]["price"])) ? "$".$detail["4XL"]["price"] : ""}}
-                                {{ (isset($detail["4T"]["price"])) ? "$".$detail["4T"]["price"] : ""}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;padding-bottom: 10px;">{{ (isset($detail["5XL"]["price"])) ? "$".$detail["5XL"]["price"] : ""}}
-                                {{ (isset($detail["5T"]["price"])) ? "$".$detail["5T"]["price"] : ""}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;padding-bottom: 10px;">{{ (isset($detail["6XL"]["price"])) ? "$".$detail["6XL"]["price"] : ""}}
-                                {{ (isset($detail["6T"]["price"])) ? "$".$detail["6T"]["price"] : ""}}</td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;padding-bottom: 10px;"></td>
-                            <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;padding-bottom: 10px;"></td>
-                        </tr>
+                                $total_qty          += $fixed_sizes_qty;
+                                $r_total            +=($fixed_sizes_qty*$fixed_size_price);
+                                $sub_total          += $r_total;
+                            @endphp
+                            <tr>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">{{ $product_name }}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">{{($fixed_sizes_qty>0)?$fixed_sizes_qty:""}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">{{ (isset($detail["2XL"]["pieces"]))?$detail["2XL"]["pieces"]:""}}
+                                    {{ (isset($detail["2T"]["pieces"]))?$detail["2T"]["pieces"]:""}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">{{ (isset($detail["3XL"]["pieces"]))?$detail["3XL"]["pieces"]:""}}
+                                    {{ (isset($detail["3T"]["pieces"]))?$detail["3T"]["pieces"]:""}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">{{ (isset($detail["4XL"]["pieces"]))?$detail["4XL"]["pieces"]:""}}
+                                    {{ (isset($detail["4T"]["pieces"]))?$detail["4T"]["pieces"]:""}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;"> {{ (isset($detail["5XL"]["pieces"]))?$detail["5XL"]["pieces"]:""}}
+                                    {{ (isset($detail["5T"]["pieces"]))?$detail["5T"]["pieces"]:""}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">{{ (isset($detail["6XL"]["pieces"]))?$detail["6XL"]["pieces"]:""}}
+                                    {{ (isset($detail["6T"]["pieces"]))?$detail["6T"]["pieces"]:""}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 600;font-family: 'Poppins', sans-serif;">{{$total_qty}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 600;font-family: 'Poppins', sans-serif;">{{"$".$r_total}}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;font-weight: 400;font-family: 'Poppins', sans-serif;">{{$color}} {{$fixed_sizes}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">{{($fixed_size_price>0)? "$".number_format($fixed_size_price, 2): ""}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">{{ (isset($detail["2XL"]["price"])) ? "$".$detail["2XL"]["price"] : ""}}
+                                    {{ (isset($detail["2T"]["price"])) ? "$".$detail["2T"]["price"] : ""}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">{{ (isset($detail["3XL"]["price"])) ? "$".$detail["3XL"]["price"] : ""}}
+                                    {{ (isset($detail["3T"]["price"])) ? "$".$detail["3T"]["price"] : ""}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">{{ (isset($detail["4XL"]["price"])) ? "$".$detail["4XL"]["price"] : ""}}
+                                    {{ (isset($detail["4T"]["price"])) ? "$".$detail["4T"]["price"] : ""}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">{{ (isset($detail["5XL"]["price"])) ? "$".$detail["5XL"]["price"] : ""}}
+                                    {{ (isset($detail["5T"]["price"])) ? "$".$detail["5T"]["price"] : ""}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">{{ (isset($detail["6XL"]["price"])) ? "$".$detail["6XL"]["price"] : ""}}
+                                    {{ (isset($detail["6T"]["price"])) ? "$".$detail["6T"]["price"] : ""}}</td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;"></td>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;"></td>
+                            </tr>
+                            @if($__flag == $__start)
+                            <tr>
+                                <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">
+                                @if (count($color_per_locations) > 0)
+                                    <div><strong style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">Color Per Location</strong></div>
+                                    @foreach ($color_per_locations[$product_name][$selector_ref]["location_number"] as $key=>$location)
+                                            <span style="font-size: 14px;line-height:22px;font-weight: 300;font-family: 'Poppins', sans-serif;">{{$location}} <small>{{$color_per_locations[$product_name][$selector_ref]["color_per_location"][$key] . " C. "}}</small></span><br>
+                                    @endforeach
+                                @endif
+                                </td>
+                            </tr>
+                            @endif
+                        @endforeach
                     @endforeach
                 @endforeach
             @endforeach
@@ -258,14 +277,16 @@
         @endphp
         <table style="width: 100%;margin-bottom: 10px;border-collapse: collapse;">
             <tr>
-                @if (count($color_per_locations) > 0)
+                {{-- @if (count($color_per_locations) > 0)
                     @foreach ($color_per_locations as $p_name=>$color_per_location)
-                        <span style="font-weight: 300;font-family: 'Poppins';">{{$p_name}}</span> <br>
-                        @foreach ($color_per_location["color_per_location"] as $key=>$location)
-                        <span style="font-weight: 300;margin-left: 20px;font-family: 'Poppins';">{{$color_per_location["location_number"][$key]}} <small style="font-weight: normal !important;margin-left: 20px;font-family: 'Poppins';">{{$location." colors"}}</small></span><br>
+                    @foreach ($color_per_location as $selector_ref=>$location)
+                    <span style="font-weight: 300;font-family: 'Poppins';">{{$p_name}}</span> <br>
+                            @foreach ($location["location_number"] as $key=>$location_number)
+                            <span style="font-weight: 300;margin-left: 20px;font-family: 'Poppins';">{{$location_number}} <small style="font-weight: normal !important;margin-left: 20px;font-family: 'Poppins';">{{$location["color_per_location"][$key]." colors"}}</small></span><br>
+                            @endforeach
                         @endforeach
                     @endforeach
-                @endif
+                @endif --}}
                 
                 <td style="width: 50%;font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;text-align: right;">
                    <span style="font-weight: 600;">Total Quantity:</span>  {{$client_details["projected_units"]}} <br>

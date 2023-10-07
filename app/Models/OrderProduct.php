@@ -25,6 +25,7 @@ class OrderProduct extends Model
     protected $fillable = [
         "order_id",
         "product_id",
+        "selector_ref",
         "product_name",
         "created_at",
         "updated_at",
