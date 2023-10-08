@@ -142,7 +142,7 @@ class OrderController extends Controller
             $rData              = $rData->where('status', '=', $request->status_id);
         }
         return DataTables::of($rData->get())
-        ->addIndexColumn()
+        // ->addIndexColumn()
         ->editColumn('id', function ($data) {
             if (isset($data->id) && $data->id != "")
                 return $data->id;

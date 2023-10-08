@@ -157,6 +157,7 @@ class PublicController extends Controller
         $fixed_baby_sizes                           = $this->fixedBabySize;
         $history                                    = OrderHistory::where(["is_approved"=>1, "order_id"=>$id])->first();
         $is_approved                                = (isset($history->id) && $history->id > 0) ? 1: 0;
+  
         return view('admin.orders.public-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images', 'is_approved'));
     }
 

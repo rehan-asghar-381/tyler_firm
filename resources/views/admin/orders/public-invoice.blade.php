@@ -149,9 +149,8 @@
                             <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;padding-bottom: 10px;"></td>
                         </tr>
                         @if($__flag == $__start)
-                        dd(1);
                             <tr>
-                                <td style="width: 100%;">
+                                <td>
                                     <div><strong>Color Per Location</strong></div>
                                     @foreach ($color_per_locations[$product_name][$selector_ref]["location_number"] as $key=>$location)
                                     <div>
