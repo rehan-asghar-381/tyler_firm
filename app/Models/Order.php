@@ -14,7 +14,9 @@ use App\Models\OrderTransfer;
 use App\Models\DYellowInkColor;
 use App\Models\OrderHistory;
 use App\Models\EmailLog;
-
+use App\Models\orderArtFile;
+use App\Models\orderCompFile;
+use App\Models\OrderCompDetail;
 class Order extends Model
 {
     use HasFactory;
@@ -60,6 +62,22 @@ class Order extends Model
     public function OrderImgs(){
         
         return $this->hasMany(OrderImgs::class, "order_id", "id");
+    }
+    public function OrderArtFiles(){
+        
+        return $this->hasMany(orderArtFile::class, "order_id", "id");
+    }
+    public function orderCompFiles(){
+        
+        return $this->hasMany(orderCompFile::class, "order_id", "id");
+    }
+    public function OrderArtDetail(){
+        
+        return $this->hasOne(OrderArtDetail::class, "order_id", "id");
+    }
+    public function OrderCompDetail(){
+        
+        return $this->hasMany(OrderCompDetail::class, "order_id", "id");
     }
     public function OrderHistory(){
         

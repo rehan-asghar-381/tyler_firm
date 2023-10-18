@@ -123,6 +123,9 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/email-template/action-log', [OrderController::class, 'action_log_popup'])->name('email-template.action_log');
     Route::get('/email-template/action-log-seen', [OrderController::class, 'action_log_seen'])->name('email-template.action_log_seen');
     Route::post('/send-email', [OrderController::class, 'sendEmail'])->name('sendEmail');
+    Route::get('/orders/download-art-files/{file_id}', [OrderController::class, 'downloadArtFiles'])->name('order.downloadArtFiles');
+    Route::get('/orders/download-comp-files/{file_id}', [OrderController::class, 'downloadCompFiles'])->name('order.downloadCompFiles');
+    Route::get('/order/approveComp', [OrderController::class, 'compApprove'])->name('order.approveComp');
     
     Route::get('/get_decoration_price', [OrderController::class, 'get_decoration_price'])->name('get_decoration_price');
     Route::get('/get_product_by_brand', [ProductController::class, 'get_product_by_brand'])->name('get_product_by_brand');

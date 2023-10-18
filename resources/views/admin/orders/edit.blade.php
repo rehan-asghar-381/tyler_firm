@@ -40,6 +40,22 @@
 .upload__btn-box {
     margin-bottom: 10px;
 }
+.art_btn {
+    display: inline-block;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+    padding: 2px;
+    min-width: 116px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid;
+    background-color: #041e42;
+    border-color: #041e42;
+    border-radius: 10px;
+    line-height: 26px;
+    font-size: 14px;
+}
 .upload__btn {
     display: inline-block;
     font-weight: 600;
@@ -273,6 +289,12 @@ hr{
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="OTHERCHARGES-tab" data-toggle="pill" href="#OTHERCHARGES" role="tab" aria-controls="OTHERCHARGES" aria-selected="false">Other Charges</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="art-room-tab" data-toggle="pill" href="#art-room" role="tab" aria-controls="art-room" aria-selected="false">Art Room</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="comps-tab" data-toggle="pill" href="#comps" role="tab" aria-controls="comps" aria-selected="false">Comps</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="pills-tabContent">
@@ -508,6 +530,98 @@ hr{
                                     </div>
                                 </div>
                             </div>
+                            <div class="tab-pane fade" id="art-room" role="tabpanel" aria-labelledby="art-room-tab">
+                                <input type="hidden" id="is_art_submit" name="is_art_submit" value="">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @if (count($order->OrderArtFiles) > 0)
+                                        @php
+                                            $i = 1;
+                                        @endphp
+                                            @foreach ($order->OrderArtFiles as $OrderArtFile)
+                                            <a href="{{route('admin.order.downloadArtFiles', $OrderArtFile->id)}}" class="btn btn-purple btn-circle mb-2 mr-1" style="width: 100px !important;"><i class="fas fa-download"></i> File {{$i++}}</a>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="art_btn">
+                                            <p style="margin: 0px;">Add Files</p>
+                                            <input type="file" class="artFile upload__inputfile" name="artFile[]" multiple="" data-max_length="20">
+                                        </label>
+                                    </div>
+                                    <div class="col-md-9 mb-3">
+                                        <label class="form-label text-dark-gray" for="">Description</label>
+                                        <textarea class="form-control art-room-directions summernote" name="art_details" rows="2">
+                                            @if (isset($order->OrderArtDetail) && $order->OrderArtDetail != ""){{$order->OrderArtDetail->art_detail}}@endif
+                                        </textarea>
+                                    </div>
+                                    <div class="col-md-12 form-check mt-5">
+                                        <button class="btn btn-primary mb-3" id="saveArt">Save Art Data</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="comps" role="tabpanel" aria-labelledby="comps-tab">
+                                <input type="hidden" id="is_comps_submit" name="is_comps_submit" value="">
+                                @if (count($order->orderCompFiles) > 0)
+                                <div class="row">
+                                    @php
+                                        $i = 1;
+                                    @endphp
+                                    @foreach ($order->orderCompFiles as $orderCompFile)
+                                    <div class="col-md-6">
+                                        <a href="{{route('admin.order.downloadCompFiles', $orderCompFile->id)}}" class="btn btn-purple btn-circle mb-2 mr-1" style="width: 150px !important;"><i class="fas fa-download"></i> Comp {{$i++}}</a>
+                                    </div>
+                                    @if ($orderCompFile->is_approved == 1)
+                                    <div class="col-md-2 float-right">
+                                        <h5 class="badge badge-success" style="padding: 1.33em 1.5em;color:#fff;">Approved</a>
+                                    </div>
+                                    @elseif($orderCompFile->is_approved == 2)
+                                    <div class="col-md-2 float-right">
+                                        <a class="badge badge-danger" style="padding: 1.33em 1.5em;color:#fff;">Rejected</a>
+                                    </div>
+                                    @else
+                                    <div class="col-md-2 float-right">
+                                        <a type="submit" class="btn btn-outline-success --comp-action" href="#" style="cursor:pointer;" data-id="{{$orderCompFile->id}}" data-approve="1" style="max-width: 114px;max-height: 47px;margin-top: 25px;">Approve</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <a  id='remove_product'  class="btn btn-outline-danger --comp-action" style="cursor:pointer;" data-id="{{$orderCompFile->id}}" data-approve="2" style="max-width: 114px;max-height: 47px;margin-top: 25px;
+                                        margin-left: 5px;">Reject</a>
+                                    </div>
+                                    @endif
+                                    
+                                    @endforeach
+                                </div>
+                                @endif
+                                @if (count($order->orderCompFiles) > 0)
+                                    <div class="row">
+                                        @php
+                                            $i = 1;
+                                        @endphp
+                                        @foreach ($order->OrderCompDetail as $comp)
+                                        <div class="col-md-12">
+                                            <h6 class="fs-14 font-weight-600 mb-0">Comment Added By- {{$comp->added_by_role}}</h6>
+                                            {!! $comp->comp_detail !!} 
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="art_btn">
+                                            <p style="margin: 0px;">Add Comp File</p>
+                                            <input type="file" class="compFile upload__inputfile" name="compFile" data-max_length="20">
+                                        </label>
+                                    </div>
+                                    <div class="col-md-9 mb-3">
+                                        <label class="form-label text-dark-gray" for="">Comp Description</label>
+                                        <textarea class="form-control art-room-directions summernote" name="comp_details" rows="2"></textarea>
+                                    </div>
+                                    <div class="col-md-12 form-check mt-5">
+                                        <button class="btn btn-primary mb-3" id="saveComp">Save Comp</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </form>
                     <template>{{json_encode($fixed_sizes)}}</template>
@@ -523,6 +637,15 @@ hr{
     @section('footer-script')
     <script>
     $(document).ready(function(){
+
+        $('.summernote').summernote({
+            height: 100, // set editor height
+            minHeight: null, // set minimum height of editor
+            maxHeight: null, // set maximum height of editor
+            focus: true                  // set focus to editable area after initializing summernote
+        });
+        
+
         var _order_id       = '{{$order->id}}';
         $('#product_ids').on('select2:unselect', function (e) {
             var p_id        = ".product-detail-"+e.params.data.id;
@@ -1139,7 +1262,6 @@ hr{
             });
             projected_units();
         });
-
         $(document).on('click', '.--remove-product', function(event) {
             let min                             = 1;
             var product_template                = $(this).closest('.--product-row');
@@ -1152,6 +1274,41 @@ hr{
                 let selector                        = $(this).attr('data-selector');
                 $("#accordion2").find('.--print-and-location-row-'+product_id+"-"+selector).remove();
                 projected_units();
+            }
+        });
+        $(document).on("click", "#saveArt", function(event){
+            event.preventDefault();
+            $("#is_art_submit").val('1');
+            $('form').submit();
+        });
+        $(document).on("click", "#saveComp", function(event){
+            event.preventDefault();
+            $("#is_comps_submit").val('1');
+            $('form').submit();
+        });
+        $(document).on('click', ".--comp-action", function (e) {
+            e.preventDefault();
+            
+
+            var id          = $(this).attr('data-id');
+            var approve     = $(this).attr('data-approve');
+            
+            if(id != "" && approve != ""){
+
+              if(confirm("Are you sure?")){
+                $.ajax({
+                    url: "{{ route('admin.order.approveComp') }}",
+                    type: "GET",
+                    data: {
+                        id: id,
+                        approve: approve
+                    },
+                    success: function(data) {
+                        location.reload();
+                    }
+                })
+              }
+              
             }
         });
 </script>

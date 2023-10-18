@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\OrderImgs;
+use App\Models\orderArtFile;
+use App\Models\orderCompFile;
+use App\Models\OrderArtDetail;
+use App\Models\OrderCompDetail;
 use App\Models\Status;
 use App\Models\Client;
 use App\Models\OrderTransfer;
@@ -396,6 +400,47 @@ class OrderController extends Controller
         }
         $order->OrderImgs()->saveMany($order_images);
     }
+   public function save_art_files($files_arr=[], $order_id){
+        $order                  = Order::find($order_id);
+        $art_files              = [];
+        foreach($files_arr as $file){             
+            if(is_file($file)){
+                $destinationPath        = public_path('/uploads/artfiles-'.$order_id.'/');
+                $original_name = $file->getClientOriginalName();
+                $file_name = time().rand(100,999).$original_name;
+                if (!is_dir($destinationPath)) {
+                    mkdir($destinationPath, 0777);
+                }
+                $file->move($destinationPath, $file_name);
+                $file_slug  = '/uploads/artfiles-'.$order_id.'/'.$file_name;
+                $art_file                       = new orderArtFile();
+                $art_file->order_id             = $order_id;
+                $art_file->file                 = $file_slug;
+                $art_files[]                    = $art_file;
+            }
+        }
+        $order->OrderArtFiles()->saveMany($art_files);
+    }
+   public function save_comp_files($file, $order_id){
+        $order                  = Order::find($order_id);
+        $art_files              = [];           
+        if(is_file($file)){
+            $destinationPath        = public_path('/uploads/compfiles-'.$order_id.'/');
+            $original_name = $file->getClientOriginalName();
+            $file_name = time().rand(100,999).$original_name;
+            if (!is_dir($destinationPath)) {
+                mkdir($destinationPath, 0777);
+            }
+            $file->move($destinationPath, $file_name);
+            $file_slug  = '/uploads/compfiles-'.$order_id.'/'.$file_name;
+            $art_file                       = new orderCompFile();
+            $art_file->order_id             = $order_id;
+            $art_file->file                 = $file_slug;
+            $art_files[]                    = $art_file;
+        }
+    
+        $order->OrderArtFiles()->saveMany($art_files);
+    }
     public function save_order_prices($order_id, $rData){
         
         $order                          = Order::find($order_id);
@@ -562,7 +607,11 @@ class OrderController extends Controller
             'Orderstatus',
             'OrderProductVariant',
             'OrderTransfer',
-            'OrderOtherCharges'
+            'OrderOtherCharges',
+            'OrderArtFiles',
+            'OrderArtDetail',
+            'orderCompFiles',
+            'OrderCompDetail'
         ])->find($id);
         $order_product_ids_arr      = [];
         $clients                    = Client::get();
@@ -579,11 +628,55 @@ class OrderController extends Controller
         }
         return view('admin.orders.edit',compact('pageTitle', 'order', 'clients', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr'));
     }
-
+    public function save_comp_details($comp_comment, $id){
+        $user_id                = Auth::user()->id;
+        $userRole               = (Auth::user()->hasRole('Artist'))?'Artist':'Assignee';
+        $order_comp_detail      = new OrderCompDetail();
+        $order_comp_detail->order_id        = $id;
+        $order_comp_detail->comp_detail     = $comp_comment;
+        $order_comp_detail->added_by        = $user_id;
+        $order_comp_detail->added_by_role   = $userRole ;
+        $order_comp_detail->save();
+    }
+    public function save_art_details($art_details, $id){
+    
+        $order_art_detail = OrderArtDetail::updateOrCreate(['order_id' => $id], [
+            'art_detail' => $art_details
+        ]);
+    }
     public function update(Request $request, $id)
     {
         $user_id                    = Auth::user()->id;
-        $user_name                  = Auth::user()->name;     
+        $user_name                  = Auth::user()->name; 
+
+        if($request->has('is_art_submit') && $request->is_art_submit == 1){
+
+            if($request->hasFile('artFile')){
+                if(count($request->file('artFile')) > 0 ){
+                    $this->save_art_files($request->file('artFile'), $id);
+                }
+            }
+            if($request->has('art_details') && $request->art_details != ""){
+
+                $art_details        = $request->art_details;
+                $this->save_art_details($art_details, $id);
+            }
+
+            return redirect()->route("admin.order.edit", $id)->withSuccess('Art Room Data saved successfully!');
+        }
+        if($request->has('is_comps_submit') && $request->is_comps_submit == 1){
+
+            if($request->hasFile('compFile')){
+                $this->save_comp_files($request->file('compFile'), $id);
+            }
+            if($request->has('comp_details') && $request->comp_details != ""){
+                $comp_details           = $request->comp_details;
+                $this->save_comp_details($comp_details, $id);
+            }
+
+            return redirect()->route("admin.order.edit", $id)->withSuccess('Comp Details saved successfully!');
+        }
+            
         $rData                      = $request->all();
         $due_date                   = explode("-", $rData['due_date']);
         $due_date                   = (count($due_date)>0  && $due_date[0])? $due_date[2]."-".$due_date[0]."-".$due_date[1]:"";
@@ -720,6 +813,14 @@ class OrderController extends Controller
         $order_id               = $request->order_id;
         $img_id                 = $request->img_id;
         OrderImgs::where(['order_id'=> $order_id, 'id'=>$img_id])->delete();
+        return json_encode(array("status"=>true));
+
+    }
+    public function compApprove(Request $request)
+    {
+        $id               = $request->id;
+        $approve        = $request->approve;
+        orderCompFile::where(['id'=> $id])->update(['is_approved'=>$approve]);
         return json_encode(array("status"=>true));
 
     }
@@ -1357,5 +1458,30 @@ class OrderController extends Controller
         return view('admin.orders.popup.action-log', compact('action_logs'));
     }
 
-    
+    public function downloadArtFiles($file_id){
+        $art_file       = orderArtFile::find($file_id);
+        if($art_file){
+            $path       = public_path($art_file->file);
+            if (file_exists($path)) {
+                return response()->download($path);
+            } else {
+                abort(404, 'File not found');
+            }
+        }else{
+            abort(404, 'File not found');
+        }
+    }
+    public function downloadCompFiles($file_id){
+        $comp_file       = orderCompFile::find($file_id);
+        if($comp_file){
+            $path       = public_path($comp_file->file);
+            if (file_exists($path)) {
+                return response()->download($path);
+            } else {
+                abort(404, 'File not found');
+            }
+        }else{
+            abort(404, 'File not found');
+        }
+    }
 }
