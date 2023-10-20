@@ -695,7 +695,7 @@ textarea {
                                 @foreach($order->OrderImgs as $key=>$OrderImg)
                                 <div class="col-md-3 photo mt-1">
                                     <a class="example-image-link" href="{{asset($OrderImg->image)}}" data-lightbox="example-1">
-                                        <img src="{{asset($OrderImg->image)}}" class="img-rounded" alt="{{$OrderImg->order_id}}" >
+                                        <img src="{{asset($OrderImg->image)}}" class="img-rounded" alt="{{$OrderImg->order_id}}" height="200px" width="300px">
                                     </a>
                                 </div>
                              @endforeach

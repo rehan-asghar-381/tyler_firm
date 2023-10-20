@@ -542,7 +542,7 @@
                                 <div class="col-md-6 photo mt-1">
                                     
                                     <a class="example-image-link" href="{{asset($OrderImg->image)}}" data-lightbox="example-1">
-                                        <img src="{{asset($OrderImg->image)}}" class="img-rounded" alt="{{$OrderImg->order_id}}" style="object-fit: fill;">
+                                        <img src="{{asset($OrderImg->image)}}" class="img-rounded" alt="{{$OrderImg->order_id}}" style="object-fit: fill;" height="200px" width="300px">
                                     </a>
                                 </div>
                             @endforeach

@@ -330,7 +330,7 @@ class OrderController extends Controller
         $order                      = new Order();
         $order->time_id             = date('U');
         $order->client_id           = $rData['client_id'];
-        $order->sales_rep           = $rData['sales_rep'];
+        $order->sales_rep           = $rData['sales_rep'] ?? 0;
         $order->due_date            = (isset($due_date) && $due_date != "")?strtotime($due_date):0;
         $order->event               = $rData['event'];
         $order->shipping_address    = $rData['shipping_address'];
@@ -378,7 +378,23 @@ class OrderController extends Controller
         }
         $this->save_order_other_charges($rData, $orderID);
         $this->order_transfer($rData, $orderID);
+        if($request->hasFile('artFile')){
+            if(count($request->file('artFile')) > 0 ){
+                $this->save_art_files($request->file('artFile'), $orderID);
+            }
+        }
+        if($request->has('art_details') && $request->art_details != ""){
 
+            $art_details        = $request->art_details;
+            $this->save_art_details($art_details, $orderID);
+        }
+        if($request->hasFile('compFile')){
+            $this->save_comp_files($request->file('compFile'), $orderID);
+        }
+        if($request->has('comp_details') && $request->comp_details != ""){
+            $comp_details           = $request->comp_details;
+            $this->save_comp_details($comp_details, $orderID);
+        }
         return redirect()->route('admin.order.edit', $orderID)->withSuccess('Order data has been saved successfully!');
     }
    public function save_order_imgs($files_arr=[], $order_id){
@@ -439,7 +455,7 @@ class OrderController extends Controller
             $art_files[]                    = $art_file;
         }
     
-        $order->OrderArtFiles()->saveMany($art_files);
+        $order->orderCompFiles()->saveMany($art_files);
     }
     public function save_order_prices($order_id, $rData){
         
@@ -553,9 +569,10 @@ class OrderController extends Controller
                     $size_attr_arr[$selector_ref]           = $attr_arr;
                 }
             }
+
             foreach($color_attr_arr as $selector_ref=>$_color_attr_arr){
                 foreach($_color_attr_arr as $key=>$attr_id){
-
+                
                     $order_product_var                      = new OrderProductVariant();
                     $order_product_var->order_id            = $order_id;
                     $order_product_var->product_id          = $product_id;
@@ -570,13 +587,14 @@ class OrderController extends Controller
                     $order_product_var->attribute2_id       = $size_attr_arr[$selector_ref][$key];
                     $product_variant_attribute              = ProductVariantAttribute::find($size_attr_arr[$selector_ref][$key]);
                     $order_product_var->attribute2_name     = $product_variant_attribute->name??"";
-                    $order_product_var->pieces              = $pieces[$product_id][$selector_ref][$key];
-                    $order_product_var->price               = $prices[$product_id][$selector_ref][$key];
-                    $order_product_var->total               = $total[$product_id][$selector_ref][$key];
+                    $order_product_var->pieces              = $pieces[$product_id][$selector_ref][$key]??'Missing';
+                    $order_product_var->price               = $prices[$product_id][$selector_ref][$key]??'Missing';
+                    $order_product_var->total               = $total[$product_id][$selector_ref][$key]??'Missing';
                     $order_product_variant_arr[]            = $order_product_var;
                 }     
             }     
         }
+       
         $order->OrderProductVariant()->delete();
         $order->OrderProductVariant()->saveMany($order_product_variant_arr);
     }
@@ -598,6 +616,7 @@ class OrderController extends Controller
     }
     public function edit($id)
     {
+       
         $pageTitle                  = "Orders";
         $order                      = Order::with([
             'OrderPrice', 
@@ -626,7 +645,14 @@ class OrderController extends Controller
                 $order_product_ids_arr[$orderProduct->selector_ref]    = $orderProduct->product_id;
             }
         }
-        return view('admin.orders.edit',compact('pageTitle', 'order', 'clients', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr'));
+        $active_art_room            = false;
+        $active_comp                = false;
+        if(session('art_room')){
+            $active_art_room        = true;
+        }elseif(session('comp_tab')){
+            $active_comp            = true;
+        }
+        return view('admin.orders.edit',compact('pageTitle', 'order', 'clients', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr', 'active_art_room', 'active_comp'));
     }
     public function save_comp_details($comp_comment, $id){
         $user_id                = Auth::user()->id;
@@ -662,7 +688,7 @@ class OrderController extends Controller
                 $this->save_art_details($art_details, $id);
             }
 
-            return redirect()->route("admin.order.edit", $id)->withSuccess('Art Room Data saved successfully!');
+            return redirect()->route("admin.order.edit", $id)->withSuccess('Art Room Data saved successfully!')->with('art_room', true);
         }
         if($request->has('is_comps_submit') && $request->is_comps_submit == 1){
 
@@ -674,7 +700,7 @@ class OrderController extends Controller
                 $this->save_comp_details($comp_details, $id);
             }
 
-            return redirect()->route("admin.order.edit", $id)->withSuccess('Comp Details saved successfully!');
+            return redirect()->route("admin.order.edit", $id)->withSuccess('Comp Details saved successfully!')->with('comp_tab', true);
         }
             
         $rData                      = $request->all();
@@ -818,8 +844,8 @@ class OrderController extends Controller
     }
     public function compApprove(Request $request)
     {
-        $id               = $request->id;
-        $approve        = $request->approve;
+        $id                 = $request->id;
+        $approve            = $request->approve;
         orderCompFile::where(['id'=> $id])->update(['is_approved'=>$approve]);
         return json_encode(array("status"=>true));
 
@@ -1015,10 +1041,10 @@ class OrderController extends Controller
         }
   
         $client_details["date"]                     = date("m/d/Y", $order->time_id);
-        $client_details["company_name"]             = $order->client->company_name;
+        $client_details["company_name"]             = $order->client->company_name??"";
         $client_details["job_name"]                 = $order->job_name;
         $client_details["order_number"]             = $order->order_number;
-        $client_details["email"]                    = $order->client->email;
+        $client_details["email"]                    = $order->client->email??"";
         $client_details["invoice_number"]           = $order->id;
         $client_details["projected_units"]          = $order->projected_units;
         $extra_details["label_pieces"]              = $order->OrderOtherCharges->label_pieces ?? 0;
@@ -1074,8 +1100,11 @@ class OrderController extends Controller
             'OrderProductVariant',
             'OrderTransfer',
             'OrderOtherCharges',
+            'OrderArtFiles',
+            'OrderArtDetail',
+            'orderCompFiles',
+            'OrderCompDetail'
         ])->find($id);
-
         $user_id                        = Auth::user()->id;
         $user_name                      = Auth::user()->name;     
         $new_order                      = new Order();
@@ -1088,6 +1117,8 @@ class OrderController extends Controller
         $new_order->job_name            = $order->job_name;
         $new_order->order_number        = $order->order_number;
         $new_order->projected_units     = $order->projected_units;
+        $new_order->created_by_id       = $user_id;
+        $new_order->created_by_name     = $user_name;
         $new_order->updated_by_id       = $user_id;
         $new_order->updated_by_name     = $user_name;
         $new_order->save();
@@ -1098,6 +1129,56 @@ class OrderController extends Controller
         $order_products_arr             = [];
         $order_products_arr             = [];
         $order_images                   = [];
+        $art_files                      = [];
+        $comp_files                     = [];
+        $order_comp_detail_arr          = [];
+        if(count($order->OrderArtFiles)>0){
+
+            foreach($order->OrderArtFiles as $OrderArtFile)
+            {   
+                $art_file                       = new orderArtFile();
+                $art_file->order_id             = $order_id;
+                $art_file->file                 = $OrderArtFile->file;
+                $art_files[]                    = $art_file;
+            }
+            $new_order->OrderArtFiles()->saveMany($art_files);
+        }
+        if($order->OrderArtDetail){
+
+            $order_art_detail                   = new OrderArtDetail();
+            $order_art_detail->order_id         = $order_id;
+            $order_art_detail->art_detail       = $order->OrderArtDetail->art_detail;
+            $order_art_detail->save();
+
+        }
+        if(count($order->orderCompFiles)>0){
+
+            foreach($order->orderCompFiles as $orderCompFile)
+            {   
+                $comp_file                      = new orderCompFile();
+                $comp_file->order_id            = $order_id;
+                $comp_file->file                = $orderCompFile->file;
+                $comp_file->is_approved         = $orderCompFile->is_approved;
+                $comp_files[]                   = $comp_file;
+            }
+            $new_order->orderCompFiles()->saveMany($comp_files);
+        }
+        
+        if(count($order->OrderCompDetail)>0){
+            
+            foreach($order->OrderCompDetail as $compDetail){
+                $user_id                            = Auth::user()->id;
+                $userRole                           = (Auth::user()->hasRole('Artist'))?'Artist':'Assignee';
+                $order_comp_detail                  = new OrderCompDetail();
+                $order_comp_detail->order_id        = $order_id;
+                $order_comp_detail->comp_detail     = $compDetail->comp_detail;
+                $order_comp_detail->added_by        = $user_id;
+                $order_comp_detail->added_by_role   = $userRole ;
+                $order_comp_detail_arr[]            = $order_comp_detail;
+            }
+            $new_order->OrderCompDetail()->saveMany($order_comp_detail_arr);
+        }
+        
         foreach($order->OrderImgs as $OrderImg)
         {   
             $order_img                      = new OrderImgs();
@@ -1290,14 +1371,15 @@ class OrderController extends Controller
             }
         }
         
-        $sales_rep                                  = $order->client->ClientSaleRep->where("id", $order->sales_rep)->first();
+        $sales_rep                                  = (isset($order->sales_rep) && $order->sales_rep!=0)?$order->client->ClientSaleRep->where("id", $order->sales_rep)->first():"";
+  
         $client_details["date"]                     = date("m/d/Y", $order->time_id);
-        $client_details["company_name"]             = $order->client->company_name;
-        $client_details["company_name"]             = $order->client->company_name;
+        $client_details["company_name"]             = $order->client->company_name??"";
+        $client_details["company_name"]             = $order->client->company_name??"";
         $client_details["job_name"]                 = $order->job_name;
         $client_details["order_number"]             = $order->order_number;
-        $client_details["address"]                  = $order->client->address;
-        $client_details["email"]                    = $order->client->email;
+        $client_details["address"]                  = $order->client->address??"";
+        $client_details["email"]                    = $order->client->email??"";
         $first_name                                 = $sales_rep->first_name??"";
         $last_name                                  = $sales_rep->last_name??"";
         $client_details["sales_rep"]                = $first_name." ".$last_name;
@@ -1392,9 +1474,16 @@ class OrderController extends Controller
         $data["email"]              = $request->email ;
         $data["title"]              = $request->subject;
         $data["description"]        = $request->description;
-        \Mail::send('admin.orders.email', $data, function($message)use($data) {
+        if((isset($request->send_comp_attachment) && $request->send_comp_attachment) && (isset($request->comp_id) && $request->comp_id!="")){
+            $comp_file          = orderCompFile::find($request->comp_id);
+            $attachmentPath     = public_path($comp_file->file);
+        }else{
+           // do nothing
+        }
+        \Mail::send('admin.orders.email', $data, function($message)use($data, $attachmentPath) {
                 $message->to($data["email"])
-                ->subject($data["title"]);         
+                ->subject($data["title"]);   
+                $message->attach($attachmentPath);      
         });
         $email->save();
         if(count(\Mail::failures()) > 0){
@@ -1413,6 +1502,10 @@ class OrderController extends Controller
         $order->OrderProductVariant()->delete();
         $order->OrderTransfer()->delete();
         $order->OrderOtherCharges()->delete();
+        $order->OrderArtFiles()->delete();
+        $order->OrderArtDetail()->delete();
+        $order->orderCompFiles()->delete();
+        $order->OrderCompDetail()->delete();
         OrderDYellow::where("order_id", $id)->delete();
         DYellowInkColor::where("order_id", $id)->delete();
         $order->delete();
@@ -1420,6 +1513,7 @@ class OrderController extends Controller
     }
     public function email_popup(Request $request){
         $selected_template  = "";
+        $comp_id            = $request->comp_id??'';
         $order_id           = $request->order_id;
         $client_id          = $request->client_id;
         $email              = $request->email;
@@ -1433,7 +1527,7 @@ class OrderController extends Controller
             $selected_template      = EmailTemplate::find($template_id);
         }
         $email_templates            = EmailTemplate::get();
-        return view('admin.orders.popup.send-email', compact('order_id', 'client_id', 'email', 'email_templates', 'selected_template', 'template_id', 'sale_rep_name', 'company_name', 'job_name', 'order_number', 'encrypted_email'));
+        return view('admin.orders.popup.send-email', compact('order_id', 'client_id', 'email', 'email_templates', 'selected_template', 'template_id', 'sale_rep_name', 'company_name', 'job_name', 'order_number', 'encrypted_email', 'comp_id'));
     }
     public function action_log_popup(Request $request){
  

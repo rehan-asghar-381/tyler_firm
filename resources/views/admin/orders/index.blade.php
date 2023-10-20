@@ -186,15 +186,19 @@
 	}
 
 	var table = $('table').DataTable({
-		processing: false,
+		processing: true,
 		serverSide: true,
 		searching: true,
 		stateSave: false,
 		pagingType: "full_numbers",
-		lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+		pagingType: "full_numbers",
+		lengthMenu: [
+			[10, 25, 50, -1],  // Specify the number of records to display
+			['10', '25', '50', 'Show All'] // Label for the options
+		],
 		pageLength: 10,
 		//order: [[ "2" , "DESC" ]],
-		dom: 'Bfrtip',
+		dom: 'lBfrtip',
 		buttons: [
 		{
 			extend: 'colvis'

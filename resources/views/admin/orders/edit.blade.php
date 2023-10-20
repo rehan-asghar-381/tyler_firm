@@ -210,7 +210,7 @@ hr{
                             <div class="col-md-3">
                                 <label>Sales Rep.</label>
 
-                                <select name="sales_rep" id="sales_rep" class="form-control"  >
+                                <select name="sales_rep" id="sales_rep" class="form-control">
                                     <option value=""> Select</option>
                                 </select>
                                 
@@ -279,10 +279,13 @@ hr{
                                     <textarea type="text" value="" class="form-control" name="internal_notes" id="internal_notes" placeholder="" rows="2" >{{$order->internal_notes}}</textarea>
                                 </div>
                             </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary mt-5" id="submit-form">Save Order</button>
+                            </div>
                         </div>
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Garments</a>
+                                <a class="nav-link @if(!$active_art_room && !$active_comp) active @endif" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Garments</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Print Details</a>
@@ -291,14 +294,14 @@ hr{
                                 <a class="nav-link" id="OTHERCHARGES-tab" data-toggle="pill" href="#OTHERCHARGES" role="tab" aria-controls="OTHERCHARGES" aria-selected="false">Other Charges</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="art-room-tab" data-toggle="pill" href="#art-room" role="tab" aria-controls="art-room" aria-selected="false">Art Room</a>
+                                <a class="nav-link @if($active_art_room) active show @endif" id="art-room-tab" data-toggle="pill" href="#art-room" role="tab" aria-controls="art-room" aria-selected="false">Art Room</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="comps-tab" data-toggle="pill" href="#comps" role="tab" aria-controls="comps" aria-selected="false">Comps</a>
+                                <a class="nav-link @if($active_comp) active show @endif" id="comps-tab" data-toggle="pill" href="#comps" role="tab" aria-controls="comps" aria-selected="false">Comps</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="pills-tabContent">
-                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                         <div class="tab-pane fade @if(!$active_art_room && !$active_comp) show active @endif" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 
                             <div class="row mb-3">
                                     <div class="col-md-5">
@@ -312,7 +315,15 @@ hr{
                                         </select>
                                     </div>
                                 </div>
-                                
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="art_fee" class="col-sm-2 font-weight-600">Projected Units</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" value="{{$order->projected_units}}" readonly="" style="background-color: #ced4da" class="my-form-control ProjectedUnits" 
+                                            name="projected_units" id="ProjectedUnits" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row Order-form btn-d-none">
                                     <div id="accordion" class="accordion">
                                     </div>
@@ -324,7 +335,7 @@ hr{
                                     <div class="form-group row">
                                         <label for="art_fee" class="col-sm-2 font-weight-600">Projected Units</label>
                                         <div class="col-sm-3">
-                                            <input type="text" value="{{$order->projected_units}}" readonly="" style="background-color: #ced4da" class="my-form-control" 
+                                            <input type="text" value="{{$order->projected_units}}" readonly="" style="background-color: #ced4da" class="my-form-control ProjectedUnits" 
                                             name="projected_units" id="ProjectedUnits" placeholder="">
                                         </div>
                                     </div>
@@ -525,12 +536,9 @@ hr{
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 form-check mt-5">
-                                        <button type="submit" class="btn btn-primary mb-3" id="submit-form">Save Order</button>
-                                    </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="art-room" role="tabpanel" aria-labelledby="art-room-tab">
+                            <div class="tab-pane fade @if($active_art_room) show active @endif" id="art-room" role="tabpanel" aria-labelledby="art-room-tab">
                                 <input type="hidden" id="is_art_submit" name="is_art_submit" value="">
                                 <div class="row">
                                     <div class="col-md-12">
@@ -563,7 +571,7 @@ hr{
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="comps" role="tabpanel" aria-labelledby="comps-tab">
+                            <div class="tab-pane fade @if($active_comp) show active @endif" id="comps" role="tabpanel" aria-labelledby="comps-tab">
                                 <input type="hidden" id="is_comps_submit" name="is_comps_submit" value="">
                                 @if (count($order->orderCompFiles) > 0)
                                 <div class="row">
@@ -574,22 +582,23 @@ hr{
                                     <div class="col-md-6">
                                         <a href="{{route('admin.order.downloadCompFiles', $orderCompFile->id)}}" class="btn btn-purple btn-circle mb-2 mr-1" style="width: 150px !important;"><i class="fas fa-download"></i> Comp {{$i++}}</a>
                                     </div>
-                                    @if ($orderCompFile->is_approved == 1)
+                                  
                                     <div class="col-md-2 float-right">
-                                        <h5 class="badge badge-success" style="padding: 1.33em 1.5em;color:#fff;">Approved</a>
-                                    </div>
-                                    @elseif($orderCompFile->is_approved == 2)
-                                    <div class="col-md-2 float-right">
-                                        <a class="badge badge-danger" style="padding: 1.33em 1.5em;color:#fff;">Rejected</a>
-                                    </div>
-                                    @else
-                                    <div class="col-md-2 float-right">
-                                        <a type="submit" class="btn btn-outline-success --comp-action" href="#" style="cursor:pointer;" data-id="{{$orderCompFile->id}}" data-approve="1" style="max-width: 114px;max-height: 47px;margin-top: 25px;">Approve</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        {{-- <a type="submit" class="btn btn-outline-success --comp-action" href="#" style="cursor:pointer;" data-id="{{$orderCompFile->id}}" data-approve="1" style="max-width: 114px;max-height: 47px;margin-top: 25px;">Approve</a>&nbsp;&nbsp;&nbsp;&nbsp;
                                         <a  id='remove_product'  class="btn btn-outline-danger --comp-action" style="cursor:pointer;" data-id="{{$orderCompFile->id}}" data-approve="2" style="max-width: 114px;max-height: 47px;margin-top: 25px;
-                                        margin-left: 5px;">Reject</a>
+                                        margin-left: 5px;">Reject</a> --}}
+                                        
+                                        <select name="is_approved" id="is_approved" class="form-control search_test select-one --comp-action" data-id="{{$orderCompFile->id}}">
+                                            <option value="">Select Status</option>
+                                            <option value="Changes Needed" @if($orderCompFile->is_approved == "Changes Needed"){{"selected"}}@endif>Changes Needed</option>
+                                            <option value="Approved" @if($orderCompFile->is_approved == "Approved"){{"selected"}}@endif>Approved</option>
+                                            <option value="Approved No Films" @if($orderCompFile->is_approved == "Approved No Films"){{"selected"}}@endif>Approved No Films</option>
+                                            <option value="Films Done" @if($orderCompFile->is_approved == "Films Done"){{"selected"}}@endif>Films Done</option>
+                                        </select>
                                     </div>
-                                    @endif
-                                    
+                                    <div class="col-md-2 float-right">
+                                        <a class="btn btn-md btn-warning mb-3 send-email-modal" href="#" data-client_id="{{ $order->client_id }}" data-id="{{ $order->id }}" data-email="{{ $order->ClientSaleRep->email ?? '' }}"  data-sale_rep_name="{{$order->ClientSaleRep->first_name ?? ''}} {{ $order->ClientSaleRep->last_name ?? '' }}" data-company_name="{{ $order->client->company_name ?? '' }}" data-job_name="{{ $order->job_name ?? '' }}" data-order_number="{{ $order->order_number ?? '' }}" data-comp-id="{{$orderCompFile->id}}"><i class="hvr-buzz-out far fa-envelope"></i>Send Email</a>
+                                    </div>
                                     @endforeach
                                 </div>
                                 @endif
@@ -633,19 +642,22 @@ hr{
             </div>
         </div>
     </div>
+    <div class="email-popup no-print">
+
+    </div>
     @endsection
     @section('footer-script')
     <script>
     $(document).ready(function(){
-
+        $('#sales_rep').SumoSelect({
+			search: true
+		});
         $('.summernote').summernote({
             height: 100, // set editor height
             minHeight: null, // set minimum height of editor
             maxHeight: null, // set maximum height of editor
             focus: true                  // set focus to editable area after initializing summernote
         });
-        
-
         var _order_id       = '{{$order->id}}';
         $('#product_ids').on('select2:unselect', function (e) {
             var p_id        = ".product-detail-"+e.params.data.id;
@@ -690,14 +702,14 @@ hr{
                             html +='<option value="' + sales_rep.id + '" '+selected+'>' + sales_rep.first_name + ' ' +sales_rep.last_name+'</option>';
                         })
                         $('#sales_rep').html(html);
-                        // $('select#sales_rep').trigger('change');
+                        $('#sales_rep')[0].sumo.reload();
                     },
                     beforeSend: function() {
-                    $('#preloader').show();
+                        $('.page-loader-wrapper').show();
                     },
                     complete: function(){
-                    $('#preloader').hide();
-                    },
+                        $('.page-loader-wrapper').hide();
+                    }
                 })
 
             }else{
@@ -719,6 +731,12 @@ hr{
                 success: function(data) {
                     $('#product_ids').empty();
                     $('#product_ids').html(data);
+                },
+                beforeSend: function() {
+                    $('.page-loader-wrapper').show();
+                },
+                complete: function(){
+                    $('.page-loader-wrapper').hide();
                 }
             });
 
@@ -779,6 +797,8 @@ hr{
         });
         var init                     = 1;
         $(document).on('click', '.add_product', function(event) {
+            $('#preloader').show();
+          
             event.preventDefault();
             var time = {{time()}};
             var  product_id = $(this).data('product_id');
@@ -870,8 +890,8 @@ hr{
                 let label_text          = '#'+number;
                 projected_units         = projected_units+parseInt(($(this).val()!="")?$(this).val():0);
             });
-            $("#ProjectedUnits").val(projected_units);
-            $("#ProjectedUnits").trigger("change");
+            $(".ProjectedUnits").val(projected_units);
+            $(".ProjectedUnits").trigger("change");
 
     }
 
@@ -902,7 +922,7 @@ hr{
             $(this).closest('.print-location').remove();
             $($('.product-detail-'+parent_id)).find('.location-count').val(count);
             location_labels(parent_selector);
-            $("#ProjectedUnits").trigger("change");
+            $(".ProjectedUnits").trigger("change");
         }
         
     });
@@ -964,6 +984,12 @@ hr{
                     resetPrices(product_id, collapse_box_selector);
                     calcTotal(product_id, collapse_box_selector);
                     calcMargin(product_id, collapse_box_selector);
+                },
+                beforeSend: function() {
+                    $('.page-loader-wrapper').show();
+                },
+                complete: function(){
+                    $('.page-loader-wrapper').hide();
                 }
             });
         }
@@ -993,6 +1019,12 @@ hr{
                 });
                 calcTotal(product_id, collapse_box_selector);
                 calcMargin(product_id, collapse_box_selector);
+            },
+            beforeSend: function() {
+                $('.page-loader-wrapper').show();
+            },
+            complete: function(){
+                $('.page-loader-wrapper').hide();
             }
         });
         } 
@@ -1090,7 +1122,7 @@ hr{
         }
     }
 
-    $(document).on("change","#ProjectedUnits", function(){
+    $(document).on("change",".ProjectedUnits", function(){
         let product_ids             = $("#product_ids").val();
         let selector_number         = 0;
         var collapse_box_selector   = "";
@@ -1180,6 +1212,12 @@ hr{
                     },
                     success: function(data) {
                         console.log(data);
+                    },
+                    beforeSend: function() {
+                        $('.page-loader-wrapper').show();
+                    },
+                    complete: function(){
+                        $('.page-loader-wrapper').hide();
                     }
                 })
               }
@@ -1203,12 +1241,16 @@ hr{
             var terminator                      = $(this).attr("data-selector");
             var selector                        = "";
             var total_boxes                     = $(".--product-row").length;
+            let initial_selector                = 0;
             $(".--product-row").each(function(index, item){
-                if( index+1 == $(".--product-row").length){
-                   selector                     = parseInt($(this).find(".--add-product").attr("data-selector"))+1;
+                
+                selector                     = parseInt($(this).find(".--add-product").attr("data-selector"));
+                if(initial_selector < selector){
+                    initial_selector        = selector;
                 }
+                
             });
-
+            selector    = parseInt(initial_selector)+1;
             var prev_selector_number            = "slector-number-"+product_id+"-"+terminator;
             var new_selector_number             = "slector-number-"+product_id+"-"+selector;
 
@@ -1286,16 +1328,11 @@ hr{
             $("#is_comps_submit").val('1');
             $('form').submit();
         });
-        $(document).on('click', ".--comp-action", function (e) {
+        $(document).on('change', ".--comp-action", function (e) {
             e.preventDefault();
-            
-
             var id          = $(this).attr('data-id');
-            var approve     = $(this).attr('data-approve');
-            
-            if(id != "" && approve != ""){
-
-              if(confirm("Are you sure?")){
+            var approve     = $(this).val();
+            if(id != ""){
                 $.ajax({
                     url: "{{ route('admin.order.approveComp') }}",
                     type: "GET",
@@ -1304,12 +1341,152 @@ hr{
                         approve: approve
                     },
                     success: function(data) {
-                        location.reload();
+                        data = JSON.parse(data);
+                        if(data.status){
+                            alert("Comp status has been changed!");
+                        }
+                    },
+                    beforeSend: function() {
+                        $('.page-loader-wrapper').show();
+                    },
+                    complete: function(){
+                        $('.page-loader-wrapper').hide();
                     }
-                })
-              }
-              
+                    })
             }
+        });
+        $(document).on('click', '.send-email-modal', function(e){
+            e.preventDefault();
+            $('.email-popup').empty();
+            var comp_id 		  	= $(this).attr('data-comp-id');
+            var order_id 		  	= $(this).attr('data-id');
+            var client_id 		  	= $(this).attr('data-client_id');
+            var email 		  		= $(this).attr('data-email');
+            var sale_rep_name 		= $(this).attr('data-sale_rep_name');
+            var company_name 		= $(this).attr('data-company_name');
+            var job_name 			= $(this).attr('data-job_name');
+            var order_number 		= $(this).attr('data-order_number');
+            
+            $.ajax({
+                url: '{{ route("admin.email-template.email_popup") }}',
+                type: "GET",
+                data: {
+                    comp_id: comp_id,
+                    order_id: order_id,
+                    client_id: client_id,
+                    sale_rep_name: sale_rep_name,
+                    company_name: company_name,
+                    job_name: job_name,
+                    order_number: order_number,
+                    email: email
+                },
+                success: function(data) {
+                    $('.email-popup').html(data);
+                    "use strict"; // Start of use strict
+                    //summernote
+                    $('#summernote').summernote({
+                        height: 200, // set editor height
+                        minHeight: null, // set minimum height of editor
+                        maxHeight: null, // set maximum height of editor
+                        focus: true                  // set focus to editable area after initializing summernote
+                    });
+                    $('.copy-to-clipboard').hide();
+                    $('#send-email-modal').show();
+                }
+            });
+        });
+        $(document).on('change', '.template', function(e){
+            e.preventDefault();
+            $('.email-popup').empty();
+            var comp_id 		  	= $(this).closest("#sendEmail").find("#comp_id").val();
+            var order_id 		  	= $(this).closest("#sendEmail").find("#order_number").val();
+            var client_id 		  	= $(this).closest("#sendEmail").find("#clientId").val();
+            var email 		  		= $(this).closest("#sendEmail").find("#clientEmail").val();
+            var sale_rep_name 		= $(this).closest("#sendEmail").find("#saleRepName").val();
+            var company_name 		= $(this).closest("#sendEmail").find("#compantName").val();
+            var job_name 			= $(this).closest("#sendEmail").find("#jobName").val();
+            var order_number 		= $(this).closest("#sendEmail").find("#orderNumber").val();
+            var template_id 		= $(this).val();
+            $.ajax({
+                url: '{{ route("admin.email-template.email_popup") }}',
+                type: "GET",
+                data: {
+                    comp_id: comp_id,
+                    order_id: order_id,
+                    client_id: client_id,
+                    sale_rep_name: sale_rep_name,
+                    company_name: company_name,
+                    template_id: template_id,
+                    job_name: job_name,
+                    order_number: order_number,
+                    email: email
+                },
+                success: function(data) {
+                    $('.email-popup').html(data);
+                    "use strict"; // Start of use strict
+                    //summernote
+                    $('#summernote').summernote({
+                        height: 200, // set editor height
+                        minHeight: null, // set minimum height of editor
+                        maxHeight: null, // set maximum height of editor
+                        focus: true                  // set focus to editable area after initializing summernote
+                    });
+                    $('.copy-to-clipboard').hide();
+                    $('#send-email-modal').show();
+                }
+            });
+        });
+        $(document).on('click', '.close-modal', function(e){
+            $(this).closest('.modal').hide();
+        });
+        $(document).ready(function (e) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $(document).submit("form#sendEmail", function(e) {
+                e.preventDefault();
+                var form 		= $("form#sendEmail");
+                var formData = new FormData(form[0]);
+                formData.append("send_comp_attachment", true);
+                console.log(formData);
+                $.ajax({
+                    url: "{{ route('admin.sendEmail')}}",
+                    type:'POST',
+                    data: formData,
+                    cache:false,
+                    contentType: false,
+                    processData: false,
+                    success: (data) => {
+                        $('#send-email-modal').modal('hide');
+                        $('#sendEmail').trigger('reset');
+                        console.log(data);
+                        $.confirm({
+                            title : "Alert",
+                            content:function(){
+                                return data;
+                            },
+                            buttons:{
+                                ok:{
+                                    text:"Ok",
+                                    btnClass:"btn btn-success confirmed"
+                                }
+                            }
+                        });
+                    },
+                    beforeSend: function() {
+                        $('.page-loader-wrapper').show();
+                    },
+                    complete: function(){
+                        $('.page-loader-wrapper').hide();
+                        $('.Order-form').show();
+                    },
+                    error: function(data){
+                        console.log(data);
+                    }
+                });
+            });
         });
 </script>
 @endsection

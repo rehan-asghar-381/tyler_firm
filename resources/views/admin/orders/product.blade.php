@@ -2,7 +2,7 @@
 
     <div class="row --product-row">
         <div class="col-md-9 product-detail product-detail-{{$product_detail->id}} slector-number-{{$selector_number}}" id="product-detail-{{$product_detail->id}}">
-            <div class="card card_product_order mb-4 mt-4">
+            <div class="card card_product_order mb-1 mt-1">
                 <div class="card-header collapsed collapse-href" data-toggle="collapse" href="#collapse-{{$selector_number}}" style="background-color: #eee;">
                     <a class="card-title">
                         {{$product_detail->name}}
@@ -122,10 +122,10 @@
             </div>
         </div>
         <div class="col-sm-1">
-            <i type="submit" class="fas fa-plus mt-5 --add-product" style="color:green;cursor:pointer;"  style="max-width: 114px;max-height: 47px;margin-top: 25px;" data-id="{{$product_detail->id}}" data-selector="{{$terminator}}"></i>
+            <i type="submit" class="fas fa-plus mt-4 --add-product" style="color:green;cursor:pointer;"  style="max-width: 114px;max-height: 47px;margin-top: 25px;" data-id="{{$product_detail->id}}" data-selector="{{$terminator}}"></i>
         </div>
         <div class="col-sm-1">
-            <i  class="fas fa-minus mt-5 --remove-product" style="color:red;cursor:pointer;" style="max-width: 114px;max-height: 47px;margin-top: 25px; margin-left: 5px;" data-id="{{$product_detail->id}}" data-selector="{{$terminator}}"></i>
+            <i  class="fas fa-minus mt-4 --remove-product" style="color:red;cursor:pointer;" style="max-width: 114px;max-height: 47px;margin-top: 25px; margin-left: 5px;" data-id="{{$product_detail->id}}" data-selector="{{$terminator}}"></i>
         </div>
     </div>
 <div class="row">

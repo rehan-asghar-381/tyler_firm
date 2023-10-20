@@ -1,7 +1,7 @@
 <div class="container-fluid mt-3" >
     <div class="row --print-and-location-row-{{$selector_number}}">
         <div class="col-md-12  product-detail rh-product-detail-{{$product_detail->id}} product-detail-{{$product_detail->id}} slector-number-{{$selector_number}}" id="product-detail-{{$product_detail->id}}">
-            <div class="card card_product_order mb-4 mt-4">
+            <div class="card card_product_order mb-1 mt-1">
                 <input type="hidden" class="product-type" value="{{$type}}">
                 <input type="hidden" class="location-count" value="1">
                 <div class="card-header collapse-href collapsed" data-toggle="collapse" href="#collapse-{{$selector_number}}" style="background-color: #eee;">

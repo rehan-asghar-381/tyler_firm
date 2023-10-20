@@ -40,6 +40,22 @@
 .upload__btn-box {
     margin-bottom: 10px;
 }
+.art_btn {
+    display: inline-block;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+    padding: 2px;
+    min-width: 116px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid;
+    background-color: #041e42;
+    border-color: #041e42;
+    border-radius: 10px;
+    line-height: 26px;
+    font-size: 14px;
+}
 .upload__btn {
     display: inline-block;
     font-weight: 600;
@@ -178,7 +194,7 @@ hr{
                             <div class="col-md-3">
                                 <label>Sales Rep.</label>
 
-                                <select name="sales_rep" id="sales_rep" class="form-control"  >
+                                <select name="sales_rep" id="sales_rep" class="form-control">
                                     <option value=""> Select</option>
                                 </select>
                                 
@@ -246,6 +262,9 @@ hr{
                                     <textarea type="text" value="" class="form-control" name="internal_notes" id="internal_notes" placeholder="" rows="2" ></textarea>
                                 </div>
                             </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary mt-5" id="submit-form">Save Order</button>
+                            </div>
                         </div>
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                             <li class="nav-item">
@@ -256,6 +275,12 @@ hr{
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="OTHERCHARGES-tab" data-toggle="pill" href="#OTHERCHARGES" role="tab" aria-controls="OTHERCHARGES" aria-selected="false">Other Charges</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="art-room-tab" data-toggle="pill" href="#art-room" role="tab" aria-controls="art-room" aria-selected="false">Art Room</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="comps-tab" data-toggle="pill" href="#comps" role="tab" aria-controls="comps" aria-selected="false">Comps</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="pills-tabContent">
@@ -273,6 +298,15 @@ hr{
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-10">
+                                    <div class="form-group row">
+                                        <label for="art_fee" class="col-sm-2 font-weight-600">Projected Units</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" value="" readonly="" style="background-color: #ced4da" class="my-form-control ProjectedUnits" 
+                                            name="projected_units" id="ProjectedUnits" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row Order-form btn-d-none">
                                     <div id="accordion" class="accordion">
                                     </div>
@@ -284,7 +318,7 @@ hr{
                                     <div class="form-group row">
                                         <label for="art_fee" class="col-sm-2 font-weight-600">Projected Units</label>
                                         <div class="col-sm-3">
-                                            <input type="text" value="" readonly="" style="background-color: #ced4da" class="my-form-control" 
+                                            <input type="text" value="" readonly="" style="background-color: #ced4da" class="my-form-control ProjectedUnits" 
                                             name="projected_units" id="ProjectedUnits" placeholder="">
                                         </div>
                                     </div>
@@ -485,8 +519,33 @@ hr{
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 form-check mt-5">
-                                        <button type="submit" class="btn btn-primary mb-3" id="submit-form">Save Order</button>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="art-room" role="tabpanel" aria-labelledby="art-room-tab">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="art_btn">
+                                            <p style="margin: 0px;">Add Files</p>
+                                            <input type="file" class="artFile upload__inputfile" name="artFile[]" multiple="" data-max_length="20">
+                                        </label>
+                                    </div>
+                                    <div class="col-md-9 mb-3">
+                                        <label class="form-label text-dark-gray" for="">Description</label>
+                                        <textarea class="form-control art-room-directions summernote" name="art_details" rows="2"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="comps" role="tabpanel" aria-labelledby="comps-tab">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="art_btn">
+                                            <p style="margin: 0px;">Add Comp File</p>
+                                            <input type="file" class="compFile upload__inputfile" name="compFile" data-max_length="20">
+                                        </label>
+                                    </div>
+                                    <div class="col-md-9 mb-3">
+                                        <label class="form-label text-dark-gray" for="">Comp Description</label>
+                                        <textarea class="form-control art-room-directions summernote" name="comp_details" rows="2"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -504,12 +563,20 @@ hr{
     @section('footer-script')
     <script>
     $(document).ready(function(){
+        $('#sales_rep').SumoSelect({
+			search: true
+		});
         $('#product_ids').on('select2:unselect', function (e) {
             var elm         = e.params.data.element;
             var p_id        = ".slector-number-"+$(elm).attr('data-custom-selector');
             $(p_id).remove();
         });
-
+        $('.summernote').summernote({
+            height: 100, // set editor height
+            minHeight: null, // set minimum height of editor
+            maxHeight: null, // set maximum height of editor
+            focus: true                  // set focus to editable area after initializing summernote
+        });
         $('#client_id').on('change', function(e) {
             var client_id       = $(this).val();
             get_sales_rep(client_id);
@@ -535,13 +602,14 @@ hr{
                         console.log(html);
                         $('#sales_rep').html(html);
                         // $('select#sales_rep').trigger('change');
+                        $('#sales_rep')[0].sumo.reload();
                     },
                     beforeSend: function() {
-                    $('#preloader').show();
+                        $('.page-loader-wrapper').show();
                     },
                     complete: function(){
-                    $('#preloader').hide();
-                    },
+                        $('.page-loader-wrapper').hide();
+                    }
                 })
 
             }else{
@@ -563,6 +631,12 @@ hr{
                 success: function(data) {
                     $('#product_ids').empty();
                     $('#product_ids').html(data);
+                },
+                beforeSend: function() {
+                    $('.page-loader-wrapper').show();
+                },
+                complete: function(){
+                    $('.page-loader-wrapper').hide();
                 }
             });
 
@@ -700,8 +774,8 @@ hr{
                 let label_text          = '#'+number;
                 projected_units         = projected_units+parseInt(($(this).val()!="")?$(this).val():0);
             });
-            $("#ProjectedUnits").val(projected_units);
-            $("#ProjectedUnits").trigger("change");
+            $(".ProjectedUnits").val(projected_units);
+            $(".ProjectedUnits").trigger("change");
 
     }
 
@@ -732,7 +806,7 @@ hr{
             $(this).closest('.print-location').remove();
             $($('.product-detail-'+parent_id)).find('.location-count').val(count);
             // location_labels(parent_selector);
-            $("#ProjectedUnits").trigger("change");
+            $(".ProjectedUnits").trigger("change");
         }
         
     });
@@ -794,6 +868,12 @@ hr{
                     resetPrices(product_id, collapse_box_selector);
                     calcTotal(product_id, collapse_box_selector);
                     calcMargin(product_id, collapse_box_selector);
+                },
+                beforeSend: function() {
+                    $('.page-loader-wrapper').show();
+                },
+                complete: function(){
+                    $('.page-loader-wrapper').hide();
                 }
             });
         }
@@ -823,6 +903,12 @@ hr{
                 });
                 calcTotal(product_id, collapse_box_selector);
                 calcMargin(product_id, collapse_box_selector);
+            },
+            beforeSend: function() {
+                $('.page-loader-wrapper').show();
+            },
+            complete: function(){
+                $('.page-loader-wrapper').hide();
             }
         });
         } 
@@ -917,7 +1003,7 @@ hr{
             }
         }
     }
-    $(document).on("change","#ProjectedUnits", function(){
+    $(document).on("change",".ProjectedUnits", function(){
         let product_ids             = $("#product_ids").val();
         let selector_number         = 0;
         var collapse_box_selector   = "";

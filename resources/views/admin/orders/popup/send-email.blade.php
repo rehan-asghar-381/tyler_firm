@@ -12,6 +12,7 @@
 				<div class="modal-body" style="max-height: calc(100vh - 210px);overflow-y: auto;">
 					<form  method="POST" id="sendEmail"  enctype="multipart/form-data">
 						@csrf
+						<input type="hidden" name="comp_id" id="comp_id" value="{{$comp_id}}">
 						<input type="hidden" name="order_number" id="order_number" value="{{$order_id}}">
 						<input type="hidden" name="clientId" id="clientId" value="{{$client_id}}">
 						<input type="hidden" name="saleRepName" id="saleRepName" value="{{$sale_rep_name}}">
