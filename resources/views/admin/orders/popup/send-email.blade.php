@@ -53,7 +53,7 @@
                                 <textarea class="form-control require" name="description" id="summernote" > {!! isset($selected_template->description) ? str_replace(array("{company_name}", "{sales_rep}", "{job_name}", "{order_number}"), array($company_name, $sale_rep_name, $job_name, $order_number) , $selected_template->description): "" !!}</textarea>
 							</div>
 						</div>
-						<button type="submit" class="btn btn-success" id="save-button">Submit</button>
+						<button type="submit" class="btn btn-success" id="--sendEmail">Submit</button>
 					</form>
 				</div>
 				<!-- Modal footer -->

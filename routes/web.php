@@ -43,6 +43,10 @@ Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     /* Start Dashboard Routes */
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/notfications', [DashboardController::class, 'get_notifications'])->name('dashboard.get_notifications');
+    Route::get('/all-notfications', [DashboardController::class, 'all_notifications'])->name('dashboard.get_all_notifications');
+    Route::get('/all-notfications/ajax', [DashboardController::class, 'notificationAjaxData'])->name('dashboard.notificationAjaxData');
+    Route::get('/notification-seen-by', [DashboardController::class, 'notification_seeb_by'])->name('dashboard.notification_seeb_by');
     /* End Dashboard Routes */
     Route::get('/change-password',  [AuthController::class, 'changePassword'])->name('changePassword'); 
     Route::post('/change-password-save',  [AuthController::class, 'changePasswordSave'])->name('changePasswordSave');

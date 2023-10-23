@@ -309,7 +309,7 @@ hr{
                                         <select name="product_ids[]" id="product_ids" class="form-control basic-multiple" multiple="multiple">
                                             @if (count($products) > 0)
                                             @foreach ($products as $product)
-                                            <option value="{{$product->id}}" @if(in_array($product->id, $order_product_ids_arr)) {{"selected"}} @endif data-custom-selector="{{$product->id."-1"}}">{{$product->name}}</option>
+                                            <option value="{{$product->id}}" @if(in_array($product->id, array_keys($order_product_ids_arr))) {{"selected"}} @endif data-custom-selector="{{$product->id."-1"}}">{{$product->name}}</option>
                                             @endforeach
                                             @endif
                                         </select>
@@ -665,12 +665,14 @@ hr{
         });
         
         let order_product_ids       = JSON.parse($("#order_product_ids").html());
-        console.log("order_product_ids", order_product_ids);
-        $.each(order_product_ids, function(index, product_id){
-            console.log("product_id:", product_id);
-            var selector_number     = product_id+'-'+index;
-            accordian_products(product_id, _order_id,selector_number);
-            accordian2_products(product_id, _order_id, selector_number);
+
+        $.each(order_product_ids, function(i, arr){
+            $.each(arr, function(index, product_id){
+                console.log("product_id:", product_id);
+                var selector_number     = product_id+'-'+index;
+                accordian_products(product_id, _order_id,selector_number);
+                accordian2_products(product_id, _order_id, selector_number);
+            });
         });
     
         var _client_id      = '{{$order->client_id}}';
@@ -1445,7 +1447,7 @@ hr{
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            $(document).submit("form#sendEmail", function(e) {
+            $(document).on("click", "#--sendEmail", function(e) {
                 e.preventDefault();
                 var form 		= $("form#sendEmail");
                 var formData = new FormData(form[0]);

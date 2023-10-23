@@ -32,8 +32,8 @@
     }
     
     .photo img {
-        width: 100%;
-        height: 100%;
+        width: 300px;
+        height: 200px;
     }
     label{
         margin-bottom:none !important;

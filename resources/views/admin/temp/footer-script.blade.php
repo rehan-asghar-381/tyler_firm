@@ -38,6 +38,44 @@
 				enableTime: true,
 				dateFormat: "m-d-Y",
 			});
+
+			function notification(){
+				$.ajax({
+					url: "{{ route('admin.dashboard.get_notifications') }}",
+					type: "GET",
+					data: {},
+					success: function(result) {
+						var data 	= JSON.parse(result);
+						$('.notification-list').html(data.html);	
+						$('.nt-count').html(data.count);	
+					}
+				});
+
+				setTimeout(function() {
+					notification();
+				}, 3000);
+			}
+			notification();
+			$(document).on("click", ".fa-envelope", function(event){
+			
+				var refresh 		= $(this).hasClass('list-all-nt');
+				event.stopPropagation();
+				var nt_id 		= $(this).attr('data-nt-id');
+				$.ajax({
+					url: "{{ route('admin.dashboard.notification_seeb_by') }}",
+					type: "GET",
+					data: {nt_id:nt_id},
+					success: function(result) {
+						if(refresh){
+							window.location.reload();
+						}
+						
+					}
+				});
+
+
+			});
+			
 		});
 		$('.select-one').SumoSelect({
 			search: true

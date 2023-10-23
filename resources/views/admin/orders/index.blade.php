@@ -196,7 +196,8 @@
 			[10, 25, 50, -1],  // Specify the number of records to display
 			['10', '25', '50', 'Show All'] // Label for the options
 		],
-		pageLength: 10,
+		pageLength: -1,
+		// pageLength: 10,
 		//order: [[ "2" , "DESC" ]],
 		dom: 'lBfrtip',
 		buttons: [

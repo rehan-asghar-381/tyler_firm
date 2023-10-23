@@ -395,6 +395,15 @@ class OrderController extends Controller
             $comp_details           = $request->comp_details;
             $this->save_comp_details($comp_details, $orderID);
         }
+
+        $body                           = $user_name." created a <strong>New Order</strong> ( <strong>#".$order->id."</strong> )";
+        $data['idFK']                   = $orderID;
+        $data['type']                   = 'orders';
+        $data['added_by_id']            = $user_id;
+        $data['added_by_name']          = $user_name;
+        $data['body']                   = $body;
+        $data['time_id']                = date('U');
+        $this->add_notification($data);
         return redirect()->route('admin.order.edit', $orderID)->withSuccess('Order data has been saved successfully!');
     }
    public function save_order_imgs($files_arr=[], $order_id){
@@ -436,6 +445,17 @@ class OrderController extends Controller
             }
         }
         $order->OrderArtFiles()->saveMany($art_files);
+
+        $user_name                      = Auth::user()->name;
+        $user_id                        = Auth::user()->id;
+        $body                           = $user_name." uploaded <strong>Art Files</strong> for <strong>Order</strong> ( <strong>#".$order->id."</strong> )";
+        $data['idFK']                   = $order_id;
+        $data['type']                   = 'arts';
+        $data['added_by_id']            = $user_id;
+        $data['added_by_name']          = $user_name;
+        $data['body']                   = $body;
+        $data['time_id']                = date('U');
+        $this->add_notification($data);
     }
    public function save_comp_files($file, $order_id){
         $order                  = Order::find($order_id);
@@ -454,8 +474,17 @@ class OrderController extends Controller
             $art_file->file                 = $file_slug;
             $art_files[]                    = $art_file;
         }
-    
         $order->orderCompFiles()->saveMany($art_files);
+        $user_name                      = Auth::user()->name;
+        $user_id                        = Auth::user()->id;
+        $body                           = $user_name." uploaded <strong>Comp Files</strong> for <strong>Order</strong> ( <strong>#".$order->id."</strong> )";
+        $data['idFK']                   = $order_id;
+        $data['type']                   = 'comps';
+        $data['added_by_id']            = $user_id;
+        $data['added_by_name']          = $user_name;
+        $data['body']                   = $body;
+        $data['time_id']                = date('U');
+        $this->add_notification($data);
     }
     public function save_order_prices($order_id, $rData){
         
@@ -632,6 +661,7 @@ class OrderController extends Controller
             'orderCompFiles',
             'OrderCompDetail'
         ])->find($id);
+       
         $order_product_ids_arr      = [];
         $clients                    = Client::get();
         $products                   = Product::get();
@@ -642,7 +672,7 @@ class OrderController extends Controller
        
         if(count($order->OrderProducts) > 0){
             foreach($order->OrderProducts as $orderProduct){
-                $order_product_ids_arr[$orderProduct->selector_ref]    = $orderProduct->product_id;
+                $order_product_ids_arr[$orderProduct->product_id][$orderProduct->selector_ref]    = $orderProduct->product_id;
             }
         }
         $active_art_room            = false;
@@ -672,6 +702,7 @@ class OrderController extends Controller
     }
     public function update(Request $request, $id)
     {
+        
         $user_id                    = Auth::user()->id;
         $user_name                  = Auth::user()->name; 
 
@@ -738,6 +769,7 @@ class OrderController extends Controller
         if(count($product_ids) > 0){
             $this->save_order_prices($orderID, $rData);
         }
+ 
         if (count($product_ids) > 0) {
             $this->save_order_products($product_ids,$products_name, $orderID, $selector_references_arr);
         }
@@ -802,14 +834,14 @@ class OrderController extends Controller
         $order                  = Order::find($order_id);
         $order->status          = $status;
         $order->save();
-        // $body                           = $user_name." set Status to <strong>".$order->Orderstatus->name."</strong> for Order ( <strong>#".$order->id."</strong> )";
-        // $data['idFK']                   = $order->id;
-        // $data['type']                   = 'orders';
-        // $data['added_by_id']            = $user_id;
-        // $data['added_by_name']          = $user_name;
-        // $data['body']                   = $body;
-        // $data['time_id']                = date('U');
-        // $this->add_notification($data);
+        $body                           = $user_name." set Status to <strong>".$order->Orderstatus->name."</strong> for Order ( <strong>#".$order->id."</strong> )";
+        $data['idFK']                   = $order->id;
+        $data['type']                   = 'orders';
+        $data['added_by_id']            = $user_id;
+        $data['added_by_name']          = $user_name;
+        $data['body']                   = $body;
+        $data['time_id']                = date('U');
+        $this->add_notification($data);
         return json_encode(array("status"=>true, "message"=>"Status has been updated successfully!"));
     }
     public function quote_update(Request $request)
@@ -847,6 +879,17 @@ class OrderController extends Controller
         $id                 = $request->id;
         $approve            = $request->approve;
         orderCompFile::where(['id'=> $id])->update(['is_approved'=>$approve]);
+        // $user_id                        = Auth::user()->id;
+        // $user_name                      = Auth::user()->name;
+        // $body                           = $user_name." changed comp status to ".$approve." for <strong>Order</strong> ( <strong>#".$order->id."</strong> )";
+        // $data['idFK']                   = $orderID;
+        // $data['type']                   = 'orders';
+        // $data['added_by_id']            = $user_id;
+        // $data['added_by_name']          = $user_name;
+        // $data['body']                   = $body;
+        // $data['time_id']                = date('U');
+        // $this->add_notification($data);
+
         return json_encode(array("status"=>true));
 
     }
@@ -1474,6 +1517,7 @@ class OrderController extends Controller
         $data["email"]              = $request->email ;
         $data["title"]              = $request->subject;
         $data["description"]        = $request->description;
+        $attachmentPath             = "";
         if((isset($request->send_comp_attachment) && $request->send_comp_attachment) && (isset($request->comp_id) && $request->comp_id!="")){
             $comp_file          = orderCompFile::find($request->comp_id);
             $attachmentPath     = public_path($comp_file->file);
@@ -1483,7 +1527,10 @@ class OrderController extends Controller
         \Mail::send('admin.orders.email', $data, function($message)use($data, $attachmentPath) {
                 $message->to($data["email"])
                 ->subject($data["title"]);   
-                $message->attach($attachmentPath);      
+                if($attachmentPath != ""){
+
+                    $message->attach($attachmentPath);      
+                }
         });
         $email->save();
         if(count(\Mail::failures()) > 0){

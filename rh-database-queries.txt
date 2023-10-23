@@ -1,15 +1,21 @@
-ALTER TABLE `email_logs` 
-ADD COLUMN `is_approved` int NULL AFTER `from`;
+CREATE TABLE `seen_notificatins` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `notification_id` int DEFAULT NULL,
+  `seen_by_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+);
 
-
-ALTER TABLE `order_prices` 
-ADD COLUMN `selector_ref` int NULL AFTER `product_id`;
-
-ALTER TABLE `order_product_variants` 
-ADD COLUMN `selector_ref` int NULL AFTER `product_id`;
-
-ALTER TABLE `order_products` 
-ADD COLUMN `selector_ref` int NULL AFTER `product_id`;
-
-ALTER TABLE `order_color_per_locations` 
-ADD COLUMN `selector_ref` int NULL AFTER `product_id`;
+CREATE TABLE `notifications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `idFK` int DEFAULT NULL,
+  `type` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `added_by_id` int DEFAULT NULL,
+  `added_by_name` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `body` text CHARACTER SET utf8mb4,
+  `time_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+);
