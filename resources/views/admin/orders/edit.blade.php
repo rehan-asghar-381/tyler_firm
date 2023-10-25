@@ -588,7 +588,7 @@ hr{
                                         <a  id='remove_product'  class="btn btn-outline-danger --comp-action" style="cursor:pointer;" data-id="{{$orderCompFile->id}}" data-approve="2" style="max-width: 114px;max-height: 47px;margin-top: 25px;
                                         margin-left: 5px;">Reject</a> --}}
                                         
-                                        <select name="is_approved" id="is_approved" class="form-control search_test select-one --comp-action" data-id="{{$orderCompFile->id}}">
+                                        <select name="is_approved" id="is_approved" class="form-control search_test select-one --comp-action" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}">
                                             <option value="">Select Status</option>
                                             <option value="Changes Needed" @if($orderCompFile->is_approved == "Changes Needed"){{"selected"}}@endif>Changes Needed</option>
                                             <option value="Approved" @if($orderCompFile->is_approved == "Approved"){{"selected"}}@endif>Approved</option>
@@ -597,7 +597,7 @@ hr{
                                         </select>
                                     </div>
                                     <div class="col-md-2 float-right">
-                                        <a class="btn btn-md btn-warning mb-3 send-email-modal" href="#" data-client_id="{{ $order->client_id }}" data-id="{{ $order->id }}" data-email="{{ $order->ClientSaleRep->email ?? '' }}"  data-sale_rep_name="{{$order->ClientSaleRep->first_name ?? ''}} {{ $order->ClientSaleRep->last_name ?? '' }}" data-company_name="{{ $order->client->company_name ?? '' }}" data-job_name="{{ $order->job_name ?? '' }}" data-order_number="{{ $order->order_number ?? '' }}" data-comp-id="{{$orderCompFile->id}}"><i class="hvr-buzz-out far fa-envelope"></i>Send Email</a>
+                                        <a class="btn btn-md btn-warning mb-3 send-email-modal" href="#" data-client_id="{{ $order->client_id }}" data-id="{{ $order->id }}" data-email="{{ $order->ClientSaleRep->email ?? '' }}"  data-sale_rep_name="{{$order->ClientSaleRep->first_name ?? ''}} {{ $order->ClientSaleRep->last_name ?? '' }}" data-company_name="{{ $order->client->company_name ?? '' }}" data-job_name="{{ $order->job_name ?? '' }}" data-order_number="{{ $order->order_number ?? '' }}" data-comp-id="{{$orderCompFile->id}}"><i class="hvr-buzz-out far fa-envelope"></i> Send Email</a>
                                     </div>
                                     @endforeach
                                 </div>
@@ -1333,6 +1333,7 @@ hr{
         $(document).on('change', ".--comp-action", function (e) {
             e.preventDefault();
             var id          = $(this).attr('data-id');
+            var order_id    = $(this).attr('data-order-id');
             var approve     = $(this).val();
             if(id != ""){
                 $.ajax({
@@ -1340,12 +1341,13 @@ hr{
                     type: "GET",
                     data: {
                         id: id,
+                        order_id: order_id,
                         approve: approve
                     },
                     success: function(data) {
                         data = JSON.parse(data);
                         if(data.status){
-                            alert("Comp status has been changed!");
+                            //
                         }
                     },
                     beforeSend: function() {

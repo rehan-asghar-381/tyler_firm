@@ -448,7 +448,7 @@ class OrderController extends Controller
 
         $user_name                      = Auth::user()->name;
         $user_id                        = Auth::user()->id;
-        $body                           = $user_name." uploaded <strong>Art Files</strong> for <strong>Order</strong> ( <strong>#".$order->id."</strong> )";
+        $body                           = $user_name." uploaded <strong>Art Files</strong> for <strong>".$order->job_name." </strong> ( <strong>#".$order->id."</strong> )";
         $data['idFK']                   = $order_id;
         $data['type']                   = 'arts';
         $data['added_by_id']            = $user_id;
@@ -477,7 +477,7 @@ class OrderController extends Controller
         $order->orderCompFiles()->saveMany($art_files);
         $user_name                      = Auth::user()->name;
         $user_id                        = Auth::user()->id;
-        $body                           = $user_name." uploaded <strong>Comp Files</strong> for <strong>Order</strong> ( <strong>#".$order->id."</strong> )";
+        $body                           = "Comp for <strong>".$order->job_name." is Ready! ( <strong>#".$order->id."</strong> )";
         $data['idFK']                   = $order_id;
         $data['type']                   = 'comps';
         $data['added_by_id']            = $user_id;
@@ -877,18 +877,20 @@ class OrderController extends Controller
     public function compApprove(Request $request)
     {
         $id                 = $request->id;
+        $order_id           = $request->order_id;
+        $order              = Order::find($order_id);
         $approve            = $request->approve;
         orderCompFile::where(['id'=> $id])->update(['is_approved'=>$approve]);
-        // $user_id                        = Auth::user()->id;
-        // $user_name                      = Auth::user()->name;
-        // $body                           = $user_name." changed comp status to ".$approve." for <strong>Order</strong> ( <strong>#".$order->id."</strong> )";
-        // $data['idFK']                   = $orderID;
-        // $data['type']                   = 'orders';
-        // $data['added_by_id']            = $user_id;
-        // $data['added_by_name']          = $user_name;
-        // $data['body']                   = $body;
-        // $data['time_id']                = date('U');
-        // $this->add_notification($data);
+        $user_id                        = Auth::user()->id;
+        $user_name                      = Auth::user()->name;
+        $body                           = "Comp ".$approve." for <strong>".$order->job_name."</strong> ( <strong>#".$order_id."</strong> )";
+        $data['idFK']                   = $order_id;
+        $data['type']                   = 'comp feedback';
+        $data['added_by_id']            = $user_id;
+        $data['added_by_name']          = $user_name;
+        $data['body']                   = $body;
+        $data['time_id']                = date('U');
+        $this->add_notification($data);
 
         return json_encode(array("status"=>true));
 

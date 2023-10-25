@@ -205,6 +205,14 @@ class PublicController extends Controller
             // return "Mail send successfully !!";
         }
         $email      = Crypt::encrypt($order->ClientSaleRep->email);
+        $body                           = "Quote ".$logs_action.": ".$order->job_name." ( <strong>#".$order_id."</strong> )";
+        $data['idFK']                   = $order_id;
+        $data['type']                   = 'orders';
+        $data['added_by_id']            = Null;
+        $data['added_by_name']          = Null;
+        $data['body']                   = $body;
+        $data['time_id']                = date('U');
+        $this->add_notification($data);
         return redirect()->route("order.quote", ['order_id' => $request->order_number, 'email' =>  $email])->withSuccess('Thank you for your response.');
     }
 }

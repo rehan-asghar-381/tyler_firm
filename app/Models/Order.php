@@ -157,5 +157,9 @@ class Order extends Model
         
         return $this->belongsTo(ClientSaleRep::class, "sales_rep", "id");
     }
+    public function users(){
+        
+        return $this->belongsTo(User::class, "created_by_id", "id");
+    }
 
 }

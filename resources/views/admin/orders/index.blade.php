@@ -116,6 +116,7 @@
 								<tr>
 									{{-- <th width="250px">Sr.</th> --}}
 									<th width="250px">Action Log</th>
+									<th width="250px">Quote #</th>
 									<th width="250px">PO #</th>
 									<th width="250px">Assignee</th>
 									<th width="250px">Job Name</th>
@@ -218,6 +219,7 @@
 		columns: [
 		// {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center text-smaller'},
 		{data: 'notification', name: 'notification', width:"250px", className: 'text-smaller'},
+		{data: 'id', name: 'id', width:"250px", className: 'text-smaller'},
 		{data: 'order_number', name: 'order_number', width:"250px", className: 'text-smaller'},
 		{data: 'created_by_name', name: 'created_by_name', width:"250px", className: 'text-smaller', orderable: true},
 		{data: 'job_name', name: 'job_name', width:"250px", className: 'text-smaller'},
