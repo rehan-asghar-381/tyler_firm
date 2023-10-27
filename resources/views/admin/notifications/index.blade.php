@@ -14,20 +14,23 @@
 						<div>
 							<h6 class="fs-17 font-weight-600 mb-0">Notifications List</h6>
 						</div>
+            <div class="text-right">
+              <div class="actions">
+                  <a href="{{route('admin.dashboard.deleteNotifications')}}" class="action-item"><i class="fas fa-trash"></i> Delete All</a>
+                  
+              </div>
+          </div>
 					</div>
 				</div>
 				<div class="card-body">
-					@if (Session::has('resp'))
+					@if (Session::has('success'))
 						@php
-							$resp = session()->get("resp");
-							$msg = session()->get("msg");
+							$msg = session()->get("success");
 						@endphp
 						<div class="col-md-12">
-							@if ($resp=="success")
 								<div class="alert alert-success">
 									{!!$msg!!}
 								</div>
-							@endif
 						</div>
 					@endif
 					<div class="table-responsive">

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Notification;
 use App\Models\NotificationSeen;
+use App\Models\NotificationConfig;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 /**
@@ -25,10 +26,12 @@ trait NotificationTrait
         $notifiction_type_arr   = ["arts", "comp feedback"];
         $user_email             = Auth::user()->email;
         $user                   = User::find($user_id);
+        $deleted_time           = NotificationConfig::where('user_id', $user_id)->first()->time_id ?? 0;
         $user_created_orders    = $user->orders->pluck('id');
         $notifications_list     = Notification::with(['NotificationSeen'  => function($q) use ($user_id){
                                     $q->where('seen_by_id', '=', $user_id);
                                 }])
+                                ->where('time_id', '>', $deleted_time)
                                 ->limit(4)
                                 ->orderBy('id', 'desc');
         if($user_email == "art@nuworldgraphicslv.com"){
@@ -40,7 +43,7 @@ trait NotificationTrait
         }
         $notifications_list     = $notifications_list->get();
         $notifications_arr      = $notifications_list->pluck('id');
-        $notification_count     = Notification::doesntHave('NotificationSeen')->whereIn("id", $notifications_arr);
+        $notification_count     = Notification::doesntHave('NotificationSeen')->whereIn("id", $notifications_arr)->where('time_id', '>', $deleted_time);
         if($user_email == "art@nuworldgraphicslv.com"){
             $notification_count     = $notification_count->whereIn("type", $notifiction_type_arr);
         }
@@ -65,9 +68,11 @@ trait NotificationTrait
     function all_notification_list($user_id){
         $user                   = User::find($user_id);
         $user_created_orders    = $user->orders->pluck('id');
+        $deleted_time           = NotificationConfig::where('user_id', $user_id)->first()->time_id ?? 0;
+    
         $notifications_list     = Notification::with(['NotificationSeen'  => function($q) use ($user_id){
             $q->where('seen_by_id', '=', $user_id);
-        }])->get();
+        }])->where('time_id', '>', $deleted_time)->get();
         return $notifications_list;
     }
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\Status;
+use App\Models\NotificationConfig;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
@@ -290,6 +291,14 @@ class DashboardController extends Controller
         }else{
             return json_encode(["status"=>false]);
         }
+    }
+    public function destroy(Request $request){
+
+        $user_id    = Auth::user()->id;
+        NotificationConfig::updateOrCreate(['user_id' => $user_id], [ 
+            'time_id' => date('U')
+        ]);
+        return redirect()->route('admin.dashboard.get_all_notifications')->with('success', 'Notifications has been deleted successfully.');
     }
 
 }

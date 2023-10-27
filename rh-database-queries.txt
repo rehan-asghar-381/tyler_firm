@@ -1,21 +1,13 @@
-CREATE TABLE `seen_notificatins` (
+CREATE TABLE `notificatios_config` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `notification_id` int DEFAULT NULL,
-  `seen_by_id` int DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-);
-
-CREATE TABLE `notifications` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `idFK` int DEFAULT NULL,
-  `type` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
-  `added_by_id` int DEFAULT NULL,
-  `added_by_name` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
-  `body` text CHARACTER SET utf8mb4,
+  `user_id` int DEFAULT NULL,
   `time_id` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`)
 );
+
+ALTER TABLE ``email_logs` 
+ADD COLUMN `invoice` text NULL AFTER `attachment`;
+
+-- UPDATE statuses values IN order_statuses table

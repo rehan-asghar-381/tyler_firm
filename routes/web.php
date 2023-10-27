@@ -47,6 +47,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/all-notfications', [DashboardController::class, 'all_notifications'])->name('dashboard.get_all_notifications');
     Route::get('/all-notfications/ajax', [DashboardController::class, 'notificationAjaxData'])->name('dashboard.notificationAjaxData');
     Route::get('/notification-seen-by', [DashboardController::class, 'notification_seeb_by'])->name('dashboard.notification_seeb_by');
+    Route::get('/notifications/delete', [DashboardController::class, 'destroy'])->name('dashboard.deleteNotifications');
     /* End Dashboard Routes */
     Route::get('/change-password',  [AuthController::class, 'changePassword'])->name('changePassword'); 
     Route::post('/change-password-save',  [AuthController::class, 'changePasswordSave'])->name('changePasswordSave');

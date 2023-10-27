@@ -20,6 +20,7 @@
 									<th scope="col">Assignee</th>
 									<th scope="col">Send To</th>
 									<th scope="col">From</th>
+									<th scope="col">Quote pdf</th>
 									<th scope="col">Action</th>
 									<th scope="col">Approval</th>
 									<th scope="col">Remarks</th>
@@ -34,6 +35,7 @@
 									<td>{{$action_log->assignee_name}}</td>
 									<td>{{$action_log->send_to}}</td>
 									<td>{{$action_log->from}}</td>
+									<td>@if($action_log->invoice!="")<a class="btn btn-success" href="{{asset($action_log->invoice)}} " target="_blank" style="white-space: nowrap;">Quote Preview</a>@else {{"-"}} @endif</td>
 									<td>{{($action_log->is_response == "Y")? "Received":"Sent"}}</td>
 									<td>{{($action_log->is_response == "Y")? ($action_log->is_approved == 1 && $action_log->is_response == "Y")? "Yes":"No":"-"}}</td>
 									<td>{!! $action_log->description !!}</td>

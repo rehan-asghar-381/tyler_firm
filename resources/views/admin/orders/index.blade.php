@@ -4,8 +4,12 @@
 .text-smaller{
 	font-size: 12px !important;
 }
+.btn-sucess-custom{
+	background-color: #28a745;
+	color: #fff;
+}
 .dropdown-toggle::after {
-	border: none !important;
+	/* border: none !important; */
 }
 @keyframes blink {
 	0% { opacity: 1; }
@@ -294,157 +298,80 @@ table.ajax.reload();
 	});
 	$(document).on("click", ".btn-change-status", function(event){
 		event.preventDefault();
-		var statuses 			= $('template').html();
-		var statuses_arr		= JSON.parse(statuses);
-				console.log(statuses_arr);
-		var status 				= $(this).attr("data-status");
-		var id 					= $(this).attr("data-id");
-		
-		$.confirm({
-			title : "Change Status",
-			content:function(){
-				var html = "";
-				$.each(statuses_arr, function(index, value){
-					console.log(value);
-					if(value.id==status){
-						html+="<label><input type='radio' name='status' value='"+value.id+"' checked> "+value.name+"</label><br>";
-					}else{
-						html+="<label><input type='radio' name='status' value='"+value.id+"'> "+value.name+"</label><br>";
-					}
-				});
-				
-				return html;
-			},
-			buttons:{
-				ok:{
-					text:"Save",
-					btnClass:"btn btn-success confirmed",
-					action:function(){
-						var v = this.$content.find("input[type='radio']:checked").val();
-						let url = "{{ route('admin.order.status_update') }}";
-						save_status(v, id,url);
-						alert('Status has been updated successfully!');
-						// window.location.reload();
-						table.ajax.reload();
-					}
+		let url 			= "{{ route('admin.order.status_update') }}";
+		var status_id 		= $(this).attr("data-status-id");
+		var order_id 		= $(this).attr("data-order-id");
+		if(confirm("Are you sure you want to perform this action?")){
+			$.ajax({
+				url: url, 
+				type: "GET",
+				data: {
+					status_id: status_id,
+					order_id: order_id
 				},
-				no:{
-					text:"Cancel"
-				}
-			}
-		});
-		return false;
+				success: function(data) {
+					table.ajax.reload();
+				},
+				beforeSend: function() {
+						$('.page-loader-wrapper').show();
+				},
+				complete: function(){
+					$('.page-loader-wrapper').hide();
+				},
+			});
+		}
 	});	
-		$(document).on("click", ".btn-change-quote_approval", function(event){
+	$(document).on("click", ".btn-change-quote_approval", function(event){
 		event.preventDefault();
-	
-		 let quote_approval_arr       = JSON.parse($("#quote_approval").html());
-		 console.log(quote_approval_arr);
-		var status 				= $(this).attr("data-quote_approval");
-		var id 					= $(this).attr("data-id");
-		
-		$.confirm({
-			title : "Change Status",
-			content:function(){
-				var html = "";
-				// console.log(statuses_arr);
-				$.each(quote_approval_arr, function(index, value){
-					console.log(value);
-					if(value.id==status){
-						html+="<label><input type='radio' name='status' value='"+value.id+"' checked> "+value.name+"</label><br>";
-					}else{
-						html+="<label><input type='radio' name='status' value='"+value.id+"'> "+value.name+"</label><br>";
-					}
-				});
-				
-				return html;
-			},
-			buttons:{
-				ok:{
-					text:"Save",
-					btnClass:"btn btn-success confirmed",
-					action:function(){
-						var v = this.$content.find("input[type='radio']:checked").val();
-						let url = "{{ route('admin.order.quote_update') }}";
-						save_status(v, id,url);
-						alert('Quote has been updated successfully!');
-						// window.location.reload();
-						table.ajax.reload();
-					}
+		let url 			= "{{ route('admin.order.quote_update') }}";
+		var status_id 		= $(this).attr("data-status-id");
+		var order_id 		= $(this).attr("data-order-id");
+		if(confirm("Are you sure you want to perform this action?")){
+			$.ajax({
+				url: url, 
+				type: "GET",
+				data: {
+					status_id: status_id,
+					order_id: order_id
 				},
-				no:{
-					text:"Cancel"
-				}
-			}
-		});
-		return false;
+				success: function(data) {
+					table.ajax.reload();
+				},
+				beforeSend: function() {
+						$('.page-loader-wrapper').show();
+				},
+				complete: function(){
+					$('.page-loader-wrapper').hide();
+				},
+			});
+		}
 	});
 	$(document).on("click", ".btn-change-blank", function(event){
 		event.preventDefault();
-	
-		 let blank_arr       = JSON.parse($("#blank").html());
-		 console.log(blank_arr);
-		var status 				= $(this).attr("data-blank");
-		var id 					= $(this).attr("data-id");
-		
-		$.confirm({
-			title : "Change Status",
-			content:function(){
-				var html = "";
-				// console.log(statuses_arr);
-				$.each(blank_arr, function(index, value){
-					console.log(value);
-					if(value.id==status){
-						html+="<label><input type='radio' name='status' value='"+value.id+"' checked> "+value.name+"</label><br>";
-					}else{
-						html+="<label><input type='radio' name='status' value='"+value.id+"'> "+value.name+"</label><br>";
-					}
-				});
-				
-				return html;
-			},
-			buttons:{
-				ok:{
-					text:"Save",
-					btnClass:"btn btn-success confirmed",
-					action:function(){
-						var v = this.$content.find("input[type='radio']:checked").val();
-						let url = "{{ route('admin.order.blank_update') }}";
-						save_status(v, id,url);
-						alert('Blank has been updated successfully!');
-						// window.location.reload();
-						table.ajax.reload();
-					}
+		let url = "{{ route('admin.order.blank_update') }}";
+		var status_id 		= $(this).attr("data-status-id");
+		var order_id 		= $(this).attr("data-order-id");
+		if(confirm("Are you sure you want to perform this action?")){
+			$.ajax({
+				url: url, 
+				type: "GET",
+				data: {
+					status_id: status_id,
+					order_id: order_id
 				},
-				no:{
-					text:"Cancel"
-				}
-			}
-		});
-		return false;
+				success: function(data) {
+					table.ajax.reload();
+				},
+				beforeSend: function() {
+						$('.page-loader-wrapper').show();
+				},
+				complete: function(){
+					$('.page-loader-wrapper').hide();
+				},
+			});
+		}
 	});
-	function save_status(status_id, order_id,url){
-
-		$.ajax({
-			url: url, 
-			type: "GET",
-			data: {
-				status_id: status_id,
-				order_id: order_id
-			},
-			success: function(data) {
-
-				data = JSON.parse(data);
-
-				console.log(data.status);
-				if(data.status == true){
-					console.log(data.message);
-					return data.message;
-				}
-			}
-		});
-	}
-
+	
 	$(document).on('click', '.close-modal', function(e){
 		$('#job-modal').hide();
 	});

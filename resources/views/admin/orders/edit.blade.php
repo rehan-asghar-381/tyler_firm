@@ -145,6 +145,10 @@ hr{
     background-color:#93938861;
     height: 1px;
 }
+.btn-sucess-custom{
+	background-color: #28a745;
+	color: #fff;
+}
 </style>
 <div class="container-fluid mt-2">
     <div class="row">
@@ -582,19 +586,44 @@ hr{
                                     <div class="col-md-6">
                                         <a href="{{route('admin.order.downloadCompFiles', $orderCompFile->id)}}" class="btn btn-purple btn-circle mb-2 mr-1" style="width: 150px !important;"><i class="fas fa-download"></i> Comp {{$i++}}</a>
                                     </div>
-                                  
                                     <div class="col-md-2 float-right">
-                                        {{-- <a type="submit" class="btn btn-outline-success --comp-action" href="#" style="cursor:pointer;" data-id="{{$orderCompFile->id}}" data-approve="1" style="max-width: 114px;max-height: 47px;margin-top: 25px;">Approve</a>&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <a  id='remove_product'  class="btn btn-outline-danger --comp-action" style="cursor:pointer;" data-id="{{$orderCompFile->id}}" data-approve="2" style="max-width: 114px;max-height: 47px;margin-top: 25px;
-                                        margin-left: 5px;">Reject</a> --}}
-                                        
-                                        <select name="is_approved" id="is_approved" class="form-control search_test select-one --comp-action" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}">
-                                            <option value="">Select Status</option>
-                                            <option value="Changes Needed" @if($orderCompFile->is_approved == "Changes Needed"){{"selected"}}@endif>Changes Needed</option>
-                                            <option value="Approved" @if($orderCompFile->is_approved == "Approved"){{"selected"}}@endif>Approved</option>
-                                            <option value="Approved No Films" @if($orderCompFile->is_approved == "Approved No Films"){{"selected"}}@endif>Approved No Films</option>
-                                            <option value="Films Done" @if($orderCompFile->is_approved == "Films Done"){{"selected"}}@endif>Films Done</option>
-                                        </select>
+                                        @php
+                                            $cls            = "light";
+                                            $com_approved   = ($orderCompFile->is_approved != "") ? $orderCompFile->is_approved:"";
+                                            if($com_approved != "" && $com_approved == "Changes Needed"){
+                                                $cls        = "light";
+                                            }elseif($com_approved != "" && $com_approved == "Approved"){
+                                                $cls        = "sucess-custom";
+                                            }elseif($com_approved != "" && $com_approved == "Approved No Films"){
+                                                $cls        = "info";
+                                            }elseif($com_approved != "" && $com_approved == "Films Done"){
+                                                $cls        = "black";
+                                            }elseif($com_approved != "" && $com_approved == "Comp Sent"){
+                                                $cls        = "violet";
+                                            }elseif($com_approved != "" && $com_approved == "Need Approval"){
+                                                $cls        = "warning";
+                                            }elseif($com_approved != "" && $com_approved == "Reorder"){
+                                                $cls        = "pink";
+                                            }elseif($com_approved != "" && $com_approved == "In Art Room"){
+                                                $cls        = "light";
+                                            }
+                                        @endphp
+                                       <div class="btn-group mb-2 mr-1 --status-div">
+                                            <button type="button" class="btn btn-{{$cls}}  --new-value" style="white-space: nowrap;width:125px;">{{$orderCompFile->is_approved ?? "--select--"}}</button>
+                                            <button type="button" class="dynamic-btn btn btn-{{$cls}} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Changes Needed" data-prev-class="{{$cls}}" data-new-class="light">Changes Needed</a>
+                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Approved" data-prev-class="{{$cls}}" data-new-class="sucess-custom">Approved</a>
+                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Approved No Films" data-prev-class="{{$cls}}" data-new-class="info">Approved No Films</a>
+                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Films Done" data-prev-class="{{$cls}}" data-new-class="black">Films Done</a>
+                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Comp Sent" data-prev-class="{{$cls}}" data-new-class="violet">Comp Sent</a>
+                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Need Approval" data-prev-class="{{$cls}}" data-new-class="warning">Need Approval</a>
+                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Reorder" data-prev-class="{{$cls}}" data-new-class="pink">Reorder</a>
+                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="In Art Room" data-prev-class="{{$cls}}" data-new-class="light">In Art Room</a>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-2 float-right">
                                         <a class="btn btn-md btn-warning mb-3 send-email-modal" href="#" data-client_id="{{ $order->client_id }}" data-id="{{ $order->id }}" data-email="{{ $order->ClientSaleRep->email ?? '' }}"  data-sale_rep_name="{{$order->ClientSaleRep->first_name ?? ''}} {{ $order->ClientSaleRep->last_name ?? '' }}" data-company_name="{{ $order->client->company_name ?? '' }}" data-job_name="{{ $order->job_name ?? '' }}" data-order_number="{{ $order->order_number ?? '' }}" data-comp-id="{{$orderCompFile->id}}"><i class="hvr-buzz-out far fa-envelope"></i> Send Email</a>
@@ -1330,11 +1359,16 @@ hr{
             $("#is_comps_submit").val('1');
             $('form').submit();
         });
-        $(document).on('change', ".--comp-action", function (e) {
+        $(document).on('click', ".--comp-action", function (e) {
             e.preventDefault();
             var id          = $(this).attr('data-id');
             var order_id    = $(this).attr('data-order-id');
-            var approve     = $(this).val();
+            var approve     = $(this).attr('data-value');
+            var prev_cls    = "btn-"+$(this).attr('data-prev-class');
+            var new_cls     = "btn-"+$(this).attr('data-new-class');
+            $(this).closest('.--status-div').find('.dynamic-btn').removeClass(prev_cls);
+            $(this).closest('.--status-div').find('.dynamic-btn').addClass(new_cls);
+            $(this).closest('.--status-div').find('.--new-value').text(approve);
             if(id != ""){
                 $.ajax({
                     url: "{{ route('admin.order.approveComp') }}",
@@ -1347,7 +1381,7 @@ hr{
                     success: function(data) {
                         data = JSON.parse(data);
                         if(data.status){
-                            //
+                           
                         }
                     },
                     beforeSend: function() {

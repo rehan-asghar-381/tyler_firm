@@ -128,6 +128,9 @@ class OrderController extends Controller
 
     public function ajaxtData(Request $request){
         $user_id            = Auth::user()->id;
+        $statuses           = Status::where('is_active', 'Y')->get(['id', 'name']);
+        $quote_approval     = QuoteApproval::where('is_active', 'Y')->get(['id', 'name']);
+        $blanks             = Blank::where('is_active', 'Y')->get(['id', 'name']);
         $rData              = Order::withCount("EmailLog")->with(["client", "ClientSaleRep","ActionSeen"=>function($q) use($user_id){
             $q->where('seen_by', '=', $user_id);
         
@@ -189,45 +192,100 @@ class OrderController extends Controller
             else
                 return '-';
         })
-        ->editColumn('status', function ($data) {
+        ->editColumn('status', function ($data) use($statuses){
 
             if (isset($data->Orderstatus->name) && $data->Orderstatus->name != ""){
+                $cls        = 'light';
                 if($data->status == 1){
-                    return '<span class="badge badge-secondary">'.$data->Orderstatus->name.'</span>';
+                    
+                    $cls        = 'light';
                 }
                 if($data->status == 2){
-                    return '<span class="badge badge-primary">'.$data->Orderstatus->name.'</span>';
+                    $cls        = 'warning';
                 }
                 if($data->status == 3){
-                    return '<span class="badge badge-info">'.$data->Orderstatus->name.'</span>';
+                    $cls        = 'pink';
                 }
                 if($data->status == 4){
-                    return '<span class="badge badge-light">'.$data->Orderstatus->name.'</span>';
+                    $cls        = 'violet';
                 }
                 if($data->status == 5){
-                    return '<span class="badge badge-success">'.$data->Orderstatus->name.'</span>';
+                    $cls        = 'sucess-custom';
                 }
+                if($data->status == 6){
+                    $cls        = 'primary';
+                }
+                $html   = '<div class="btn-group mb-2 mr-1">
+                <button type="button" class="btn btn-'.$cls.'" style="white-space: nowrap;width:110px;">'.$data->Orderstatus->name.'</button>
+                <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">';
+                foreach($statuses as $status){
+                    $html   .= '<a class="dropdown-item btn-change-status" href="#" data-status-id="'.$status->id.'" data-order-id="'.$data->id.'">'.$status->name.'</a>';
+                }
+                $html   .=    '</div></div>';
+
+                return $html;
             
             }else{
 
                 return '-';
             }
+        })
+        ->editColumn('quote_approval', function ($data) use($quote_approval){
+            if(isset($data->QuoteApproval->name)){
+                $name   = $data->QuoteApproval->name;
+            }else{
+                $name   = "--select";
+            }
+            $cls        = 'light';
+            if($data->quote_approval == 1){
                 
-            
-        })
-        ->editColumn('quote_approval', function ($data) {
+                $cls        = 'sucess-custom';
+            }
+            if($data->quote_approval == 2){
+                $cls        = 'danger';
+            }
+            $html   = '<div class="btn-group mb-2 mr-1">
+            <button type="button" class="btn btn-'.$cls.'" style="white-space: nowrap;width:110px;">'.$name.'</button>
+            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div class="dropdown-menu">';
+            foreach($quote_approval as $quote){
+                $html   .= '<a class="dropdown-item btn-change-quote_approval" href="#" data-status-id="'.$quote->id.'" data-order-id="'.$data->id.'">'.$quote->name.'</a>';
+            }
+            $html   .=    '</div></div>';
 
-            if (isset($data->QuoteApproval->name) && $data->QuoteApproval->name != "")
-                return $data->QuoteApproval->name;
-            else
-                return '-';
+            return $html;
+                
         })
-        ->editColumn('blank', function ($data) {
-
-            if (isset($data->Blank->name) && $data->Blank->name != "")
-                return $data->Blank->name;
-            else
-                return '-';
+        ->editColumn('blank', function ($data) use($blanks){
+            if(isset($data->Blank->name)){
+                $name   = $data->Blank->name;
+            }else{
+                $name   = "--select";
+            }
+            $cls        = 'light';
+            if($data->blank == 2){
+                
+                $cls        = 'sucess-custom';
+            }
+            if($data->blank == 1){
+                $cls        = 'danger';
+            }
+            $html   = '<div class="btn-group mb-2 mr-1">
+            <button type="button" class="btn btn-'.$cls.'" style="white-space: nowrap;width:110px;">'.$name.'</button>
+            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div class="dropdown-menu">';
+            foreach($blanks as $blank){
+                $html   .= '<a class="dropdown-item btn-change-blank" href="#" data-status-id="'.$blank->id.'" data-order-id="'.$data->id.'">'.$blank->name.'</a>';
+            }
+            $html   .=    '</div></div>';
+            return $html;
         })
         ->editColumn('order_date', function ($data) {
             if ($data->time_id > 0 )
@@ -273,15 +331,15 @@ class OrderController extends Controller
             if(auth()->user()->can('orders-generate-invoice')){
                 $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice', $data->id) .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
             }
-            if(auth()->user()->can('orders-change-status')){
-                $action_list    .= '<a class="dropdown-item btn-change-status" href="#" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-life-ring"></i> Change Status</a>';
-            }
-             if(auth()->user()->can('orders-approve-quote')){
-                $action_list    .= '<a class="dropdown-item btn-change-quote_approval" href="#" data-quote_approval="'.$data->quote_approval.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-galactic-republic"></i> Quote Approval</a>';
-            }
-            if(auth()->user()->can('orders-blank')){
-                $action_list    .= '<a class="dropdown-item btn-change-blank" href="#" data-blank="'.$data->blank.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-hornbill"></i> Blanks</a>';
-            }
+            // if(auth()->user()->can('orders-change-status')){
+            //     $action_list    .= '<a class="dropdown-item btn-change-status" href="#" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-life-ring"></i> Change Status</a>';
+            // }
+            //  if(auth()->user()->can('orders-approve-quote')){
+            //     $action_list    .= '<a class="dropdown-item btn-change-quote_approval" href="#" data-quote_approval="'.$data->quote_approval.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-galactic-republic"></i> Quote Approval</a>';
+            // }
+            // if(auth()->user()->can('orders-blank')){
+            //     $action_list    .= '<a class="dropdown-item btn-change-blank" href="#" data-blank="'.$data->blank.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-hornbill"></i> Blanks</a>';
+            // }
             if(auth()->user()->can('orders-action-log')){
                 $action_list    .= '<a class="dropdown-item action-logs" href="#" data-id="'.$data->id.'"><i class="hvr-buzz-out far fa fa-history"></i> Action Log</a>';
             }
@@ -292,7 +350,7 @@ class OrderController extends Controller
             $action_list        .= '</div></div>';
             return  $action_list;
         })
-        ->rawColumns(['actions', 'status', 'notification'])
+        ->rawColumns(['actions', 'status', 'notification', 'blank', 'quote_approval'])
         ->make(TRUE);
     }
   
@@ -616,9 +674,9 @@ class OrderController extends Controller
                     $order_product_var->attribute2_id       = $size_attr_arr[$selector_ref][$key];
                     $product_variant_attribute              = ProductVariantAttribute::find($size_attr_arr[$selector_ref][$key]);
                     $order_product_var->attribute2_name     = $product_variant_attribute->name??"";
-                    $order_product_var->pieces              = $pieces[$product_id][$selector_ref][$key]??'Missing';
-                    $order_product_var->price               = $prices[$product_id][$selector_ref][$key]??'Missing';
-                    $order_product_var->total               = $total[$product_id][$selector_ref][$key]??'Missing';
+                    $order_product_var->pieces              = $pieces[$product_id][$selector_ref][$key]??0;
+                    $order_product_var->price               = $prices[$product_id][$selector_ref][$key]??0;
+                    $order_product_var->total               = $total[$product_id][$selector_ref][$key]??0;
                     $order_product_variant_arr[]            = $order_product_var;
                 }     
             }     
@@ -1122,15 +1180,23 @@ class OrderController extends Controller
         $fixed_adult_sizes                          = $this->fixedAdultSize;
         $fixed_baby_sizes                           = $this->fixedBabySize;
         // dd($extra_details);
+      
         if($request->has('download_invoice') && $request->download_invoice==true){
             // return view('admin.orders.download-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images'));
             
             $customPaper = array(0,0,1000,1000);
             $pdf    = PDF::loadView('admin.orders.download-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images'))->setOptions(['isRemoteEnabled' => true])->setPaper($customPaper, 'portrait');
-            
+            if($request->has('save_invoice') && $request->save_invoice==true){
+                $path = public_path('/uploads/order/invoices-'.$order->id.'/');
+                if (!file_exists($path)) {
+                    mkdir($path, 0777, true);
+                } 
+                $file_name = time().rand(100,999).'invoice.pdf';
+                $pdf->save($path.$file_name);
+                $file_url       = 'uploads/order/invoices-'.$order->id.'/'.$file_name;
+                return $file_url;
+            }
             return $pdf->download('Quote.pdf');
-            // $path = public_path('/uploads/order/email/');
-            // $pdf->save($path.'invoice.pdf');
         }   
     
         return view('admin.orders.generate-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images', 'order'));
@@ -1504,7 +1570,6 @@ class OrderController extends Controller
         $user                       = User::find($user_id);
         $assignee_email             = $user->email;
         $assignee_name              = $user->name;
-
         $email                      = new EmailLog();
         $email->time_id             = time();
         $email->order_id            = $request->order_number;
@@ -1534,10 +1599,13 @@ class OrderController extends Controller
                     $message->attach($attachmentPath);      
                 }
         });
-        $email->save();
         if(count(\Mail::failures()) > 0){
             return 'Something went wrong.';
         }else{
+            $request->merge(["download_invoice"=> true, "save_invoice"=> true]);
+            $file                       = $this->generateInvoice($request, $order->id);
+            $email->invoice             = $file;
+            $email->save();
             return "Mail send successfully !!";
         }
     }
