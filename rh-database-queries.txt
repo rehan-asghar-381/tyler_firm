@@ -1,13 +1,14 @@
-CREATE TABLE `notificatios_config` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int DEFAULT NULL,
-  `time_id` int DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-);
+Meeting Notes (10.28.23)
 
-ALTER TABLE ``email_logs` 
-ADD COLUMN `invoice` text NULL AFTER `attachment`;
+- Redesign the quoting portion in the Garments tab (picture below)
+- In Order page, change Split Button Dropdowns to Button Dropdowns.
+- From the Comp page in Orders, I need to be able to send Comps to the customer for approval or not approval. The file type of each comp will be PNG
+- Remove pop up after changing button status in order form (except for when selecting "Done" in Status dropdown)
+- Dashboard
 
--- UPDATE statuses values IN order_statuses table
+
+
+Meeting Notes (10.28.23)
+
+- Redesign the quoting portion in the Garments tab (picture below)
+- Dashboard

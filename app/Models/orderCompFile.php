@@ -24,7 +24,7 @@ class orderCompFile extends Model
 
     public function Order(){
 
-        return $this->belongsTo(Order::class, 'id','order_id');
+        return $this->belongsTo(Order::class, 'order_id','id');
     }
 
 

@@ -216,11 +216,8 @@ class OrderController extends Controller
                     $cls        = 'primary';
                 }
                 $html   = '<div class="btn-group mb-2 mr-1">
-                <button type="button" class="btn btn-'.$cls.'" style="white-space: nowrap;width:110px;">'.$data->Orderstatus->name.'</button>
-                <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <div class="dropdown-menu">';
+                            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$data->Orderstatus->name.'</button>
+                            <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
                 foreach($statuses as $status){
                     $html   .= '<a class="dropdown-item btn-change-status" href="#" data-status-id="'.$status->id.'" data-order-id="'.$data->id.'">'.$status->name.'</a>';
                 }
@@ -248,11 +245,8 @@ class OrderController extends Controller
                 $cls        = 'danger';
             }
             $html   = '<div class="btn-group mb-2 mr-1">
-            <button type="button" class="btn btn-'.$cls.'" style="white-space: nowrap;width:110px;">'.$name.'</button>
-            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <div class="dropdown-menu">';
+            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$name.'</button>
+            <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
             foreach($quote_approval as $quote){
                 $html   .= '<a class="dropdown-item btn-change-quote_approval" href="#" data-status-id="'.$quote->id.'" data-order-id="'.$data->id.'">'.$quote->name.'</a>';
             }
@@ -276,11 +270,8 @@ class OrderController extends Controller
                 $cls        = 'danger';
             }
             $html   = '<div class="btn-group mb-2 mr-1">
-            <button type="button" class="btn btn-'.$cls.'" style="white-space: nowrap;width:110px;">'.$name.'</button>
-            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <div class="dropdown-menu">';
+            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$name.'</button>
+            <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
             foreach($blanks as $blank){
                 $html   .= '<a class="dropdown-item btn-change-blank" href="#" data-status-id="'.$blank->id.'" data-order-id="'.$data->id.'">'.$blank->name.'</a>';
             }
@@ -1644,7 +1635,11 @@ class OrderController extends Controller
             $selected_template      = EmailTemplate::find($template_id);
         }
         $email_templates            = EmailTemplate::get();
-        return view('admin.orders.popup.send-email', compact('order_id', 'client_id', 'email', 'email_templates', 'selected_template', 'template_id', 'sale_rep_name', 'company_name', 'job_name', 'order_number', 'encrypted_email', 'comp_id'));
+        $link_url                   = route('order.quote',  ['order_id' => Crypt::encrypt($order_id), 'email' => $encrypted_email]);
+        if($request->has('comp_id') && $request->comp_id != ''){
+            $link_url                   = route('order.comp',  ['comp_id' => Crypt::encrypt($comp_id), 'email' => $encrypted_email]);
+        }
+        return view('admin.orders.popup.send-email', compact('order_id', 'client_id', 'email', 'email_templates', 'selected_template', 'template_id', 'sale_rep_name', 'company_name', 'job_name', 'order_number', 'encrypted_email', 'comp_id', 'link_url'));
     }
     public function action_log_popup(Request $request){
  

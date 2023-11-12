@@ -151,7 +151,9 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
 /* End Admin Routes */
 /* Start Public Routes */
 Route::get('/clients/quote/{order_id}/{email}', [PublicController::class, 'get_quote'])->name('order.quote');
+Route::get('/clients/comp/{comp_id}/{email}', [PublicController::class, 'get_comp'])->name('order.comp');
 Route::post('/clients/quote/store-response', [PublicController::class, 'store'])->name('quote.store');
+Route::post('/clients/comp/storeComment', [PublicController::class, 'comp_store'])->name('comp.store');
 /* End Public Routes */
 
 

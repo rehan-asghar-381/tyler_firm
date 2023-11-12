@@ -22,7 +22,7 @@
 
 						<div class="row">
 							<div class="col-md-12 mb-3">
-								<button class="btn btn-info copy-to-clipboard" data-link="{{route('order.quote',  ['order_id' => $order_id, 'email' => $encrypted_email])}}">Copy Link</button>
+								<button class="btn btn-info copy-to-clipboard" data-link="{{$link_url}}">Copy Link</button>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label class="form-label text-dark-gray" for="email">Sent to Email</label>

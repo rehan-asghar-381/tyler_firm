@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\orderCompFile;
 use App\Traits\NotificationTrait;
 use App\Models\OrderHistory;
 use App\Models\EmailLog;
@@ -55,6 +56,7 @@ class PublicController extends Controller
     {
         try {
             $email      = Crypt::decrypt($email);
+            $id         = Crypt::decrypt($id);
         } catch (DecryptException $e) {
             return abort(404);
         }
@@ -161,6 +163,53 @@ class PublicController extends Controller
         return view('admin.orders.public-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images', 'is_approved'));
     }
 
+    public function comp_store(Request $request){
+        
+        $logs_action                = ( $request->action == 1)?"Approved":"Not Approved";
+        $message_body               = "<strong>From: </strong>".$request->email."\n <strong>Action: </strong>".$logs_action."\n <strong>message: </strong>".$request->description;
+        $comp_id                    = $request->comp_id;
+        $comp                       = orderCompFile::find($comp_id);
+        $user_id                    = $comp->Order->created_by_id;
+        $user                       = User::find($user_id);
+        $assignee_email             = $user->email;
+        $assignee_name              = $user->name;
+        $email                      = new EmailLog();
+        $email->time_id             = time();
+        $email->order_id            = $comp->Order->id;
+        $email->client_id           = $comp->Order->client_id;
+        $email->send_to             = $assignee_email;
+        $email->from                = $request->email;
+        $email->assignee_name       = $assignee_name;
+        $email->is_approved         = $request->action;
+        $email->subject             = "Response for Comp ".$comp->Order->job_name." Quote";
+        $email->description         = $request->description;
+        $email->is_sent             = "Y";
+        $email->created_by_id       = 0;
+        $email->is_response         = "Y";
+        $data["email"]              = $assignee_email ;
+        $data["title"]              = "Response for Comp ".$comp->Order->job_name." Quote";
+        $data["description"]        = $message_body;
+        \Mail::send('admin.orders.email', $data, function($message)use($data) {
+                $message->to($data["email"])
+                ->subject($data["title"]);         
+        });
+        $email->save();
+        if(count(\Mail::failures()) > 0){
+            // return 'Something went wrong.';
+        }else{
+            // return "Mail send successfully !!";
+        }
+        $url_email                      = Crypt::encrypt($request->url_email);
+        $body                           = "Quote ".$logs_action.": ".$comp->Order->job_name." ( <strong>#".$comp->Order->id."</strong> )";
+        $data['idFK']                   = $comp->Order->id;
+        $data['type']                   = 'comps';
+        $data['added_by_id']            = Null;
+        $data['added_by_name']          = Null;
+        $data['body']                   = $body;
+        $data['time_id']                = date('U');
+        $this->add_notification($data);
+        return redirect()->route('order.comp',  ['comp_id' => Crypt::encrypt($comp_id), 'email' => $url_email])->withSuccess('Thank you for your response.');
+    }
     public function store(Request $request){
         $history                = new OrderHistory();
         $history->time_id       = date('U');
@@ -214,5 +263,26 @@ class PublicController extends Controller
         $data['time_id']                = date('U');
         $this->add_notification($data);
         return redirect()->route("order.quote", ['order_id' => $request->order_number, 'email' =>  $email])->withSuccess('Thank you for your response.');
+    }
+
+    public function get_comp(Request $request, $id, $email){
+        try {
+            $email      = Crypt::decrypt($email);
+            $id         = Crypt::decrypt($id);
+        } catch (DecryptException $e) {
+            return abort(404);
+        }
+        $comp           = orderCompFile::find($id);
+        if(isset($comp->file) && $comp->file != ""){
+            return view('admin.orders.public-comp', compact('comp', 'id', 'email'));
+        }else{
+            return abort(404);
+        }
+    }
+
+    public function storeComment(Request $request){
+
+        
+
     }
 }

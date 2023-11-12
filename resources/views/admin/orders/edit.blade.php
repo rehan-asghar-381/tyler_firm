@@ -608,12 +608,9 @@ hr{
                                                 $cls        = "light";
                                             }
                                         @endphp
-                                       <div class="btn-group mb-2 mr-1 --status-div">
-                                            <button type="button" class="btn btn-{{$cls}}  --new-value" style="white-space: nowrap;width:125px;">{{$orderCompFile->is_approved ?? "--select--"}}</button>
-                                            <button type="button" class="dynamic-btn btn btn-{{$cls}} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <span class="sr-only">Toggle Dropdown</span>
-                                            </button>
-                                            <div class="dropdown-menu">
+                                        <div class="btn-group mb-2 mr-1  --status-div">
+                                            <button type="button" class="btn btn-{{$cls}} --new-value dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:125px;">{{$orderCompFile->is_approved ?? "--select--"}}</button>
+                                            <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">
                                                <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Changes Needed" data-prev-class="{{$cls}}" data-new-class="light">Changes Needed</a>
                                                <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Approved" data-prev-class="{{$cls}}" data-new-class="sucess-custom">Approved</a>
                                                <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Approved No Films" data-prev-class="{{$cls}}" data-new-class="info">Approved No Films</a>
@@ -1428,7 +1425,7 @@ hr{
                         maxHeight: null, // set maximum height of editor
                         focus: true                  // set focus to editable area after initializing summernote
                     });
-                    $('.copy-to-clipboard').hide();
+                    
                     $('#send-email-modal').show();
                 }
             });
@@ -1478,6 +1475,15 @@ hr{
             $(this).closest('.modal').hide();
         });
         $(document).ready(function (e) {
+            $(document).on('click', '.copy-to-clipboard', function(e){
+                e.preventDefault();
+                var link = $(this).attr('data-link');
+                var temp = $("<input>");
+                $("body").append(temp);
+                temp.val(link).select();
+                document.execCommand("copy");
+                temp.remove();
+            });
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

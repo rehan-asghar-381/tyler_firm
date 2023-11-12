@@ -301,7 +301,12 @@ table.ajax.reload();
 		let url 			= "{{ route('admin.order.status_update') }}";
 		var status_id 		= $(this).attr("data-status-id");
 		var order_id 		= $(this).attr("data-order-id");
-		if(confirm("Are you sure you want to perform this action?")){
+
+		var _confirm 		= true;
+		if(status_id 	== 5){
+			_confirm 		= confirm("Are you sure you want to perform this action?")
+		}
+		if(_confirm){
 			$.ajax({
 				url: url, 
 				type: "GET",
@@ -326,50 +331,46 @@ table.ajax.reload();
 		let url 			= "{{ route('admin.order.quote_update') }}";
 		var status_id 		= $(this).attr("data-status-id");
 		var order_id 		= $(this).attr("data-order-id");
-		if(confirm("Are you sure you want to perform this action?")){
-			$.ajax({
-				url: url, 
-				type: "GET",
-				data: {
-					status_id: status_id,
-					order_id: order_id
-				},
-				success: function(data) {
-					table.ajax.reload();
-				},
-				beforeSend: function() {
-						$('.page-loader-wrapper').show();
-				},
-				complete: function(){
-					$('.page-loader-wrapper').hide();
-				},
-			});
-		}
+		$.ajax({
+			url: url, 
+			type: "GET",
+			data: {
+				status_id: status_id,
+				order_id: order_id
+			},
+			success: function(data) {
+				table.ajax.reload();
+			},
+			beforeSend: function() {
+					$('.page-loader-wrapper').show();
+			},
+			complete: function(){
+				$('.page-loader-wrapper').hide();
+			},
+		});
 	});
 	$(document).on("click", ".btn-change-blank", function(event){
 		event.preventDefault();
 		let url = "{{ route('admin.order.blank_update') }}";
 		var status_id 		= $(this).attr("data-status-id");
 		var order_id 		= $(this).attr("data-order-id");
-		if(confirm("Are you sure you want to perform this action?")){
-			$.ajax({
-				url: url, 
-				type: "GET",
-				data: {
-					status_id: status_id,
-					order_id: order_id
-				},
-				success: function(data) {
-					table.ajax.reload();
-				},
-				beforeSend: function() {
-						$('.page-loader-wrapper').show();
-				},
-				complete: function(){
-					$('.page-loader-wrapper').hide();
-				},
-			});
-		}
+		$.ajax({
+			url: url, 
+			type: "GET",
+			data: {
+				status_id: status_id,
+				order_id: order_id
+			},
+			success: function(data) {
+				table.ajax.reload();
+			},
+			beforeSend: function() {
+					$('.page-loader-wrapper').show();
+			},
+			complete: function(){
+				$('.page-loader-wrapper').hide();
+			},
+		});
 	});
 	
 	$(document).on('click', '.close-modal', function(e){

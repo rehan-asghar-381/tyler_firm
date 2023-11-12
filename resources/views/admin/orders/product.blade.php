@@ -1,5 +1,4 @@
 <div class="container-fluid mt-3" >
-
     <div class="row --product-row">
         <div class="col-md-9 product-detail product-detail-{{$product_detail->id}} slector-number-{{$selector_number}}" id="product-detail-{{$product_detail->id}}">
             <div class="card card_product_order mb-1 mt-1">

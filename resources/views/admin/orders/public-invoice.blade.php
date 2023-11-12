@@ -322,7 +322,7 @@
         @if ($is_approved == 0)
         <table style="width: 100%;margin-bottom: 40px;border-collapse: collapse;">
             <tr>
-                <div style="margin-top: 20px;margin-bottom: 20px;"><a class="btn btn-success mb-3 action-btn" id="submit-form" style="color:#ffffff" data-action="1">Approve</a><a class="btn btn-danger mb-3 action-btn" id="submit-form" style="margin: 0px 10px;color:#ffffff" data-action="2">Not Approved</a></div>
+                <div style="margin-top: 20px;margin-bottom: 20px;"><a class="btn btn-success mb-3 action-btn" id="submit-form" style="color:#ffffff" data-action="1">Approve</a><a class="btn btn-danger mb-3 action-btn" id="submit-form" style="margin: 0px 10px;color:#ffffff" data-action="2">Not Approve</a></div>
             </tr>
         </table>
         @endif
