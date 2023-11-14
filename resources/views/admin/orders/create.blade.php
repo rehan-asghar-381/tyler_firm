@@ -817,7 +817,13 @@ hr{
         var selector_number         = $(this).attr('data-selector');
         var selector                = '.form-row';
         let v1_attr_id              = $(this).closest(selector).find('.v1_attr_id').val();
-        let v2_attr_id              = $(this).closest(selector).find('.v2_attr_id').val();
+        // let v2_attr_id              = $(this).closest(selector).find('.v2_attr_id').val();
+
+        let v2_attr_id              = 0;
+        if($(this).hasClass('v2_attr_id')){
+            v2_attr_id              = $(this).attr('data-attr-id');
+        }
+        
         let price_selector          = $(this).closest(selector).find('.price');
         
         addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector);
@@ -858,13 +864,24 @@ hr{
                 success: function(result) {
                     result      = JSON.parse(result);
                     price_selector.val(result.price);
+
+
+                    console.log("fixed_sizes", fixed_sizes);
+                    console.log("result.name", result.name);
                     if(jQuery.inArray(result.name, fixed_sizes) != -1) {
                         size_selector       = "#"+size_select+product_id;
                     }else{
                         size_selector       = "#"+result.name+"-"+product_id;
                     } 
-               
-                    $(collapse_box_selector).find(size_selector).val(result.price);
+
+                    console.log("Collapse Box Selector:", $(collapse_box_selector).length);
+                    console.log("Size Selector:", $(collapse_box_selector).find(size_selector).length);
+                    console.log("Result Price:", result.price);
+                    
+                    $(collapse_box_selector).each(function() {
+                        $(this).find(size_selector).val(result.price);
+                    });
+                    console.log("value--", $(collapse_box_selector).find(size_selector).val());
                     resetPrices(product_id, collapse_box_selector);
                     calcTotal(product_id, collapse_box_selector);
                     calcMargin(product_id, collapse_box_selector);
