@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\Status;
+use App\Models\User;
 use App\Models\NotificationConfig;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
 use App\Traits\NotificationTrait;
+use App\Models\QuoteApproval;
+use App\Models\Blank;
 class DashboardController extends Controller
 {
     use NotificationTrait;
@@ -41,41 +44,27 @@ class DashboardController extends Controller
         $status_counts_arr          = [];
         $order_counts               = [];
 
-        $orders                     = Order::groupBy('status')
-                                    ->select('status', DB::raw('count(*) as total'));
-
-        // if(!auth()->user()->hasRole('Super Admin') && !auth()->user()->hasRole('Admin')){
-
-        //     // if(auth()->user()->hasRole('Production Manager')){
-
-        //     //     $orders                     =$orders->where('created_by_id', auth()->user()->id);
-
-        //     // }else
-        //     if(auth()->user()->hasRole('Tailor')){
-
-        //         $orders                     =$orders->where('created_by_id', auth()->user()->id);
-        //     }
-
-        // }
+        $orders                     = Order::groupBy('created_by_id')
+                                    ->select('created_by_id', DB::raw('count(*) as total'));
         if($date_from != ""){
             $orders                 = $orders->where("order_date_timestamp", ">=", strtotime($date_from));
         }
         if($date_to != ""){
             $orders                 = $orders->where("order_date_timestamp", "<=", strtotime($date_to));
         }
-        $orders                     = $orders->get();                          
-        $statuses                   = Status::get();
+        $orders                     = $orders->where("status", "!=", 5)->get();                          
+        $users                   = User::get();
         foreach($orders as $id=>$order){
 
-            $order_counts[$order->status]       = $order->total;
+            $order_counts[$order->created_by_id]       = $order->total;
         }
 
-        foreach($statuses as $id=>$status){
+        foreach($users as $id=>$user){
 
             $counts_arr                 = [];
-            $counts_arr['status_id']    = $status->id;
-            $counts_arr['status']       = $status->name;
-            $counts_arr['total']        = (isset($order_counts[$status->id]))?$order_counts[$status->id]:0;
+            $counts_arr['status_id']    = $user->id;
+            $counts_arr['status']       = $user->name;
+            $counts_arr['total']        = (isset($order_counts[$user->id]))?$order_counts[$user->id]:0;
             $status_counts_arr[]        = $counts_arr;
         }
 
@@ -84,131 +73,183 @@ class DashboardController extends Controller
     }
 
     public function ajaxtData(Request $request){
+        $user_id            = Auth::user()->id;
+        $statuses           = Status::where('is_active', 'Y')->get(['id', 'name']);
+        $quote_approval     = QuoteApproval::where('is_active', 'Y')->get(['id', 'name']);
+        $blanks             = Blank::where('is_active', 'Y')->get(['id', 'name']);
+        $rData              = Order::withCount("EmailLog")->with(["client", "ClientSaleRep","ActionSeen"=>function($q) use($user_id){
+            $q->where('seen_by', '=', $user_id);
         
-        $date_from                  = $request->get('date_from');
-        $date_to                    = $request->get('date_to');
-
-        $rData                      = Order::where('id', '<>',0)->orderBy('collection_date_timestamp', 'desc');
-
-        // if(!auth()->user()->hasRole('Super Admin') && !auth()->user()->hasRole('Admin')){
-
-        //     // if(auth()->user()->hasRole('Production Manager')){
-
-        //     //     $rData                     =$rData->where('created_by_id', auth()->user()->id);
-
-        //     // }else
-        //     if(auth()->user()->hasRole('Tailor')){
-
-        //         $rData                     =$rData->where('created_by_id', auth()->user()->id);
-        //     }
-
-        // }
-
-        if($date_from != ""){
-            $rData                 = $rData->where("order_date_timestamp", ">=", strtotime($date_from));
-        }
-        if($date_to != ""){
-            $rData                 = $rData->where("order_date_timestamp", "<=", strtotime($date_to));
-        }
+        }])->where('status','<>',5);
         
-        if($request->get('status') != ""){
-
-            $rData              = $rData->where('status', $request->get('status'));
-
+        if($request->client_id != ""){
+            $rData              = $rData->where('client_id', $request->client_id);
+        }
+        if($request->date_from != ""){
+            $rData              = $rData->where('time_id', '>=', strtotime($request->date_from));
+        }
+        if($request->date_to != ""){
+            $rData              = $rData->where('time_id', '<=', strtotime($request->date_to));
+        }
+        if($request->user_id != ""){
+            $rData              = $rData->where('created_by_id', '=', $request->user_id);
         }
         return DataTables::of($rData->get())
-            ->addIndexColumn()
-            ->editColumn('first_name', function ($data) {
-                if (isset($data->client->first_name) && $data->client->first_name != "")
-                    return $data->client->first_name;
-                else
-                    return '-';
-            })
-            ->editColumn('last_name', function ($data) {
-                if (isset($data->client->first_name) && $data->client->last_name != "")
-                    return $data->client->last_name;
-                else
-                    return '-';
-            })
-            ->editColumn('email', function ($data) {
-                if (isset($data->client->first_name) && $data->client->email != "")
-                    return $data->client->email;
-                else
-                    return '-';
-            })
-            ->editColumn('phone_number', function ($data) {
-                if (isset($data->client->first_name) && $data->client->phone_number != "")
-                    return $data->client->phone_number;
-                else
-                    return '-';
-            })
-            ->editColumn('country', function ($data) {
-                if ($data->country != "")
-                    return $data->country;
-                else
-                    return '-';
-            })
-            ->editColumn('title', function ($data) {
-                if ($data->title != "")
-                    return $data->title;
-                else
-                    return '-';
-            })
-            ->editColumn('status', function ($data) {
+        // ->addIndexColumn()
+        ->editColumn('id', function ($data) {
+            if (isset($data->id) && $data->id != "")
+                return $data->id;
+            else
+                return '-';
+        })
+        ->addColumn('company_name', function ($data) {
+            if (isset($data->client->company_name) && $data->client->company_name != "")
+                return $data->client->company_name;
+            else
+                return '-';
+        })
+        ->editColumn('job_name', function ($data) {
+            if ($data->job_name != "")
+                return $data->job_name;
+            else
+                return '-';
+        })
+        ->editColumn('projected_units', function ($data) {
+            if ($data->projected_units != "")
+                return $data->projected_units;
+            else
+                return '-';
+        })
+        ->editColumn('due_date', function ($data) {
+            if ($data->due_date != "")
+                return date("m-d-Y", $data->due_date);
+            else
+                return '-';
+        })
+        ->editColumn('event', function ($data) {
+            if ($data->event != "")
+                return $data->event;
+            else
+                return '-';
+        })
+        ->editColumn('order_number', function ($data) {
+            if ($data->order_number != "")
+                return $data->order_number;
+            else
+                return '-';
+        })
+        ->editColumn('status', function ($data) use($statuses){
+
+            if (isset($data->Orderstatus->name) && $data->Orderstatus->name != ""){
+                $cls        = 'light';
+                if($data->status == 1){
+                    
+                    $cls        = 'light';
+                }
+                if($data->status == 2){
+                    $cls        = 'warning';
+                }
+                if($data->status == 3){
+                    $cls        = 'pink';
+                }
+                if($data->status == 4){
+                    $cls        = 'violet';
+                }
+                if($data->status == 5){
+                    $cls        = 'sucess-custom';
+                }
+                if($data->status == 6){
+                    $cls        = 'primary';
+                }
+                $html   = '<div class="btn-group mb-2 mr-1">
+                            <button type="button" class="btn btn-'.$cls.'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$data->Orderstatus->name.'</button>';
+                $html   .=    '</div>';
+
+                return $html;
+            
+            }else{
+
+                return '-';
+            }
+        })
+        ->editColumn('quote_approval', function ($data) use($quote_approval){
+            if(isset($data->QuoteApproval->name)){
+                $name   = $data->QuoteApproval->name;
+            }else{
+                $name   = "--select";
+            }
+            $cls        = 'light';
+            if($data->quote_approval == 1){
                 
-                if (isset($data->Orderstatus->name) && $data->Orderstatus->name != "")
-                    return $data->Orderstatus->name;
-                else
-                    return '-';
-            })
-            ->editColumn('order_date', function ($data) {
-                if ($data->order_date != "")
-                    return $data->order_date;
-                else
-                    return '-';
-            })
-            ->editColumn('collection_date', function ($data) {
-                if ($data->collection_date != "")
-                    return $data->collection_date;
-                else
-                    return '-';
-            })
-            ->editColumn('description', function ($data) {
-                if ($data->description != "")
-                    return $data->description;
-                else
-                    return '-';
-            })
-            ->editColumn('tailor_comments', function ($data) {
-                if ($data->tailor_comments != "")
-                    return $data->tailor_comments;
-                else
-                    return '-';
-            })
-            ->addColumn('actions', function ($data){
+                $cls        = 'sucess-custom';
+            }
+            if($data->quote_approval == 2){
+                $cls        = 'danger';
+            }
+            $html   = '<div class="btn-group mb-2 mr-1">
+            <button type="button" class="btn btn-'.$cls.'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$name.'</button>
+            ';
+            $html   .=    '</div>';
 
-                $action_list    = '<div class="dropdown">
-                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="ti-more-alt"></i>
-                </a><div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
-               
-                if(auth()->user()->can('orders-view')){
+            return $html;
+                
+        })
+        ->editColumn('blank', function ($data) use($blanks){
+            if(isset($data->Blank->name)){
+                $name   = $data->Blank->name;
+            }else{
+                $name   = "--select";
+            }
+            $cls        = 'light';
+            if($data->blank == 2){
+                
+                $cls        = 'sucess-custom';
+            }
+            if($data->blank == 1){
+                $cls        = 'danger';
+            }
+            $html   = '<div class="btn-group mb-2 mr-1">
+            <button type="button" class="btn btn-'.$cls.'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$name.'</button>';
+            $html   .=    '</div>';
+            return $html;
+        })
+        ->editColumn('order_date', function ($data) {
+            if ($data->time_id > 0 )
+                return date('m-d-Y',$data->time_id);
+            else
+                return '-';
+        })
+        ->addColumn('notification', function ($data) use($user_id){
+            if($data->email_log_count == 1){
 
-                    $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.detail', $data->id).'"><i class="far fa-eye"></i> View Details</a>';
-                }
-                if(auth()->user()->can('orders-delete')){
+                return '<span class="badge badge-light action-logs" data-id="'.$data->id.'" style="cursor:pointer;">Email Sent</span>';
+            }elseif (count($data->ActionSeen) == $data->email_log_count ){
 
-                    $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.detail', $data->id).'"><i class="far fa-trash-alt"></i> Delete</a>';
-                }
-                if(auth()->user()->can('orders-view')){
+                return '<span class="badge badge-primary action-logs" data-id="'.$data->id.'" style="cursor:pointer;">Activity Seen</span>';
+            }else{
 
-                    $action_list    .= '<a class="dropdown-item btn-change-status" href="#" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-life-ring"></i> Change Status</a>';
-                }
-                $action_list    .='</div></div>';
-                return  $action_list;
-            })
-            ->rawColumns(['actions'])
-            ->make(TRUE);
+                return '<span class="badge badge-info blinking" data-id="'.$data->id.'" data-user-id="'.$user_id.'">View Activity</span>';
+            }
+        })
+        ->addColumn('actions', function ($data){
+
+            $action_list    = '<div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="ti-more-alt"></i>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
+            if(auth()->user()->can('orders-view')){
+                $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.view', $data->id).'"><i class="far fa-eye"></i> View Details</a>';
+            }
+            if(auth()->user()->can('orders-edit')){
+                $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.edit', $data->id).'"><i class="far fa-edit"></i> Edit</a>';
+            }
+            
+            $action_list        .= '</div></div>';
+            return  $action_list;
+        })
+        ->rawColumns(['actions', 'status', 'notification', 'blank', 'quote_approval'])
+        ->make(TRUE);
     }
 
     public function prepareHtml($status_counts_arr){
@@ -301,4 +342,36 @@ class DashboardController extends Controller
         return redirect()->route('admin.dashboard.get_all_notifications')->with('success', 'Notifications has been deleted successfully.');
     }
 
+    public function calanderEvents(Request $request){
+
+        $orders                     = Order::where("due_date", "!=", "")->where("due_date", ">", 0)->where('status', '!=', 5)->get();
+        $r_default_date = Order::where("due_date", "!=", "")
+        ->where("due_date", ">", 0)
+        ->where('status', '!=', 5)
+        ->orderBy('due_date') // Order by due_date in ascending order
+        ->first();
+
+        if ($r_default_date) {
+            $default_date = date("Y-m-d", $r_default_date->due_date);
+        } else {
+            $default_date = date("Y-m-d");
+        }
+
+        $_events_arr                = [];
+        foreach($orders as $order){
+            $event                      = [];
+            $event["title"]             = $order->job_name;
+            $event["start"]             = date('Y-m-d\TH:i:s', $order->due_date);
+            if($order->event == "Yes"){
+                $event["color"]         = "#fb7979";
+            }else{
+                $event["color"]         = "#22e321";
+
+            }
+            $_events_arr[]              = $event;
+        }
+
+
+        return json_encode(["events"=> $_events_arr, "default_date"=> $default_date]);
+    }
 }

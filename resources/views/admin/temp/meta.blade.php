@@ -29,6 +29,10 @@ crossorigin="anonymous">
 	{{-- <link rel="stylesheet" type="text/css" href="{{ asset('b/plugins/select2/dist/css/dataTables.bootstrap4.min.css') }}"> --}}
 	<link rel="stylesheet" href="{{ asset('b/datatables.net-bs/css/fixedColumns.dataTables.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('b/datatables.net-bs/css/buttons.dataTables.min.css') }}">
+	<link href="{{ asset('b/plugins/fullcalendar/packages/core/main.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('b/plugins/fullcalendar/packages/daygrid/main.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('b/plugins/fullcalendar/packages/timegrid/main.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('b/plugins/fullcalendar/packages/list/main.min.css') }}" rel="stylesheet">
 	<style>
 		.sidebar-bunker {
 			background-color: #6aa4e6 !important;
