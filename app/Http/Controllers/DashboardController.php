@@ -91,6 +91,9 @@ class DashboardController extends Controller
         if($request->date_to != ""){
             $rData              = $rData->where('time_id', '<=', strtotime($request->date_to));
         }
+        if($request->status_id != ""){
+            $rData              = $rData->where('status', '=', $request->status_id);
+        }
         if($request->user_id != ""){
             $rData              = $rData->where('created_by_id', '=', $request->user_id);
         }
@@ -162,8 +165,12 @@ class DashboardController extends Controller
                     $cls        = 'primary';
                 }
                 $html   = '<div class="btn-group mb-2 mr-1">
-                            <button type="button" class="btn btn-'.$cls.'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$data->Orderstatus->name.'</button>';
-                $html   .=    '</div>';
+                            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$data->Orderstatus->name.'</button>
+                            <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
+                foreach($statuses as $status){
+                    $html   .= '<a class="dropdown-item btn-change-status" href="#" data-status-id="'.$status->id.'" data-order-id="'.$data->id.'">'.$status->name.'</a>';
+                }
+                $html   .=    '</div></div>';
 
                 return $html;
             
@@ -187,9 +194,12 @@ class DashboardController extends Controller
                 $cls        = 'danger';
             }
             $html   = '<div class="btn-group mb-2 mr-1">
-            <button type="button" class="btn btn-'.$cls.'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$name.'</button>
-            ';
-            $html   .=    '</div>';
+            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$name.'</button>
+            <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
+            foreach($quote_approval as $quote){
+                $html   .= '<a class="dropdown-item btn-change-quote_approval" href="#" data-status-id="'.$quote->id.'" data-order-id="'.$data->id.'">'.$quote->name.'</a>';
+            }
+            $html   .=    '</div></div>';
 
             return $html;
                 
@@ -209,8 +219,12 @@ class DashboardController extends Controller
                 $cls        = 'danger';
             }
             $html   = '<div class="btn-group mb-2 mr-1">
-            <button type="button" class="btn btn-'.$cls.'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$name.'</button>';
-            $html   .=    '</div>';
+            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$name.'</button>
+            <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
+            foreach($blanks as $blank){
+                $html   .= '<a class="dropdown-item btn-change-blank" href="#" data-status-id="'.$blank->id.'" data-order-id="'.$data->id.'">'.$blank->name.'</a>';
+            }
+            $html   .=    '</div></div>';
             return $html;
         })
         ->editColumn('order_date', function ($data) {

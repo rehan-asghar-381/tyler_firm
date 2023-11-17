@@ -256,10 +256,10 @@
 									{{-- <th width="250px">Sr.</th> --}}
 									<th width="250px">Action Log</th>
 									<th width="250px">Quote #</th>
-									<th width="250px">PO #</th>
-									<th width="250px">Assignee</th>
 									<th width="250px">Job Name</th>
 									<th width="250px">Company</th>
+									<th width="250px">PO #</th>
+									<th width="250px">Assignee</th>
 									<th width="250px">Quantity</th>
 									<th width="250px">Due Date</th>
 									<th width="250px">Event</th>
@@ -277,6 +277,9 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="action-log-popup">
+
   </div>
 </div><!--/.main content-->
 @endsection
@@ -360,18 +363,23 @@
         
         $('.--DT').DataTable().destroy();
         $('.--DT').DataTable({
-          processing: false,
+          processing: true,
           serverSide: true,
-          searching: false,
+          searching: true,
           stateSave: false,
           pagingType: "full_numbers",
-          pageLength: 10,
+          lengthMenu: [
+            [10, 25, 50, -1],  // Specify the number of records to display
+            ['10', '25', '50', 'Show All'] // Label for the options
+          ],
+          pageLength: -1,
+          // pageLength: 10,
           //order: [[ "2" , "DESC" ]],
-          dom: 'Bfrtip',
+          dom: 'lBfrtip',
           buttons: [
-          // {
-          //   extend: 'colvis'
-          // }
+          {
+            extend: 'colvis'
+          }
           ],
           ajax: {
             'url': '{!! route('admin.dashboard.ajaxtData') !!}',
@@ -385,10 +393,10 @@
           columns: [
           {data: 'notification', name: 'notification', width:"250px", className: 'text-smaller'},
           {data: 'id', name: 'id', width:"250px", className: 'text-smaller'},
-          {data: 'order_number', name: 'order_number', width:"250px", className: 'text-smaller'},
-          {data: 'created_by_name', name: 'created_by_name', width:"250px", className: 'text-smaller', orderable: true},
           {data: 'job_name', name: 'job_name', width:"250px", className: 'text-smaller'},
           {data: 'company_name', name: 'company_name', width:"250px", className: 'text-smaller', orderable: true},
+          {data: 'order_number', name: 'order_number', width:"250px", className: 'text-smaller'},
+          {data: 'created_by_name', name: 'created_by_name', width:"250px", className: 'text-smaller', orderable: true},
           {data: 'projected_units', name: 'projected_units', width:"250px", className: 'text-smaller'},
           {data: 'due_date', name: 'due_date', width:"250px", className: 'text-smaller'},
           {data: 'event', name: 'event', width:"250px", className: 'text-smaller', orderable: true},
@@ -448,6 +456,123 @@
         // Requery the server with the new one-time export settings
         dt.ajax.reload();
       };
+      $(document).on("click", ".btn-change-status", function(event){
+        event.preventDefault();
+        let url 			= "{{ route('admin.order.status_update') }}";
+        var status_id 		= $(this).attr("data-status-id");
+        var order_id 		= $(this).attr("data-order-id");
+
+        var _confirm 		= true;
+        if(status_id 	== 5){
+          _confirm 		= confirm("Are you sure you want to perform this action?")
+        }
+        if(_confirm){
+          $.ajax({
+            url: url, 
+            type: "GET",
+            data: {
+              status_id: status_id,
+              order_id: order_id
+            },
+            success: function(data) {
+              _getData();
+            },
+            beforeSend: function() {
+                $('.page-loader-wrapper').show();
+            },
+            complete: function(){
+              $('.page-loader-wrapper').hide();
+            },
+          });
+        }
+      });	
+      $(document).on("click", ".btn-change-quote_approval", function(event){
+        event.preventDefault();
+        let url 			= "{{ route('admin.order.quote_update') }}";
+        var status_id 		= $(this).attr("data-status-id");
+        var order_id 		= $(this).attr("data-order-id");
+        $.ajax({
+          url: url, 
+          type: "GET",
+          data: {
+            status_id: status_id,
+            order_id: order_id
+          },
+          success: function(data) {
+            _getData();
+          },
+          beforeSend: function() {
+              $('.page-loader-wrapper').show();
+          },
+          complete: function(){
+            $('.page-loader-wrapper').hide();
+          },
+        });
+      });
+      $(document).on("click", ".btn-change-blank", function(event){
+        event.preventDefault();
+        let url = "{{ route('admin.order.blank_update') }}";
+        var status_id 		= $(this).attr("data-status-id");
+        var order_id 		= $(this).attr("data-order-id");
+        $.ajax({
+          url: url, 
+          type: "GET",
+          data: {
+            status_id: status_id,
+            order_id: order_id
+          },
+          success: function(data) {
+            _getData();
+          },
+          beforeSend: function() {
+              $('.page-loader-wrapper').show();
+          },
+          complete: function(){
+            $('.page-loader-wrapper').hide();
+          },
+        });
+      });
+      $(document).on('click', '.action-logs', function(e){
+        e.preventDefault();
+        $('.action-log-popup').empty();
+        var order_id 		  	= $(this).attr('data-id');
+        
+        $.ajax({
+          url: '{{ route("admin.email-template.action_log") }}',
+          type: "GET",
+          data: {
+            order_id: order_id
+          },
+          success: function(data) {
+            $('.action-log-popup').html(data);
+            $('#action-log-modal').show();
+          }
+        });
+      });
+      $(document).on('click', '.close-modal', function(e){
+        $(this).closest('.modal').hide();
+      });
+      $(document).on('click', '.blinking', function(e){
+        e.preventDefault();
+        $('.action-log-popup').empty();
+        var order_id 		  	= $(this).attr('data-id');
+        var user_id 		  	= $(this).attr('data-user-id');
+        $.ajax({
+          url: '{{ route("admin.email-template.action_log_seen") }}',
+          type: "GET",
+          data: {
+            order_id: order_id,
+            user_id: user_id
+          },
+          success: function(data) {
+            $('.action-log-popup').html(data);
+            $('#action-log-modal').show();
+          }
+        });
+      });
+      $(document).on('click', '.close-modal', function(e){
+        $('#job-modal').hide();
+      });
       function _load_calander(data, default_date){
         var Calendar = FullCalendar.Calendar;
         /* initialize the calendar
