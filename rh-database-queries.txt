@@ -9,6 +9,15 @@ Meeting Notes (10.28.23)
 
 
 Meeting Notes (10.28.23)
-
 - Redesign the quoting portion in the Garments tab (picture below)
-- Dashboard
+
+
+In dashboard and order tab:
+- change the order to show (from left to right) Action Log, Quote #, Job Name, Company, PO, Assignee 
+
+In Dashboard
+- “show all” orders under each name
+- search function for orders
+- make Action Log, Status, Quote Approval, Blanks into clickable buttons similar to orders tab
+
+

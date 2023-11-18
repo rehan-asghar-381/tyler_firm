@@ -121,10 +121,10 @@
 									{{-- <th width="250px">Sr.</th> --}}
 									<th width="250px">Action Log</th>
 									<th width="250px">Quote #</th>
-									<th width="250px">PO #</th>
-									<th width="250px">Assignee</th>
 									<th width="250px">Job Name</th>
 									<th width="250px">Company</th>
+									<th width="250px">PO #</th>
+									<th width="250px">Assignee</th>
 									<th width="250px">Quantity</th>
 									<th width="250px">Due Date</th>
 									<th width="250px">Event</th>
@@ -196,7 +196,6 @@
 		searching: true,
 		stateSave: false,
 		pagingType: "full_numbers",
-		pagingType: "full_numbers",
 		lengthMenu: [
 			[10, 25, 50, -1],  // Specify the number of records to display
 			['10', '25', '50', 'Show All'] // Label for the options
@@ -224,10 +223,10 @@
 		// {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center text-smaller'},
 		{data: 'notification', name: 'notification', width:"250px", className: 'text-smaller'},
 		{data: 'id', name: 'id', width:"250px", className: 'text-smaller'},
-		{data: 'order_number', name: 'order_number', width:"250px", className: 'text-smaller'},
-		{data: 'created_by_name', name: 'created_by_name', width:"250px", className: 'text-smaller', orderable: true},
 		{data: 'job_name', name: 'job_name', width:"250px", className: 'text-smaller'},
 		{data: 'company_name', name: 'company_name', width:"250px", className: 'text-smaller', orderable: true},
+		{data: 'order_number', name: 'order_number', width:"250px", className: 'text-smaller'},
+		{data: 'created_by_name', name: 'created_by_name', width:"250px", className: 'text-smaller', orderable: true},
 		{data: 'projected_units', name: 'projected_units', width:"250px", className: 'text-smaller'},
 		{data: 'due_date', name: 'due_date', width:"250px", className: 'text-smaller'},
 		{data: 'event', name: 'event', width:"250px", className: 'text-smaller', orderable: true},

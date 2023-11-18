@@ -43,6 +43,9 @@ Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     /* Start Dashboard Routes */
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/ajaxData', [DashboardController::class, 'ajaxtData'])->name('dashboard.ajaxtData');
+    Route::get('/dashboard/status-counts', [DashboardController::class, 'statusCounts'])->name('dashboard.status_counts');
+    Route::get('/dashboard/calander', [DashboardController::class, 'calanderEvents'])->name('dashboard.calanderEvents');
     Route::get('/notfications', [DashboardController::class, 'get_notifications'])->name('dashboard.get_notifications');
     Route::get('/all-notfications', [DashboardController::class, 'all_notifications'])->name('dashboard.get_all_notifications');
     Route::get('/all-notfications/ajax', [DashboardController::class, 'notificationAjaxData'])->name('dashboard.notificationAjaxData');
