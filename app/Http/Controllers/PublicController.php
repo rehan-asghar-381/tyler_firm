@@ -108,15 +108,25 @@ class PublicController extends Controller
                 $attr2_name     = $order_product_variant->attribute2_name;
                 $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["pieces"]  = $order_product_variant->pieces;
                 if($size_for == "adult_sizes"){
-                    $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedAdultSize))
-                                                                                        ?$order_prices[$rh_product_id][$selector_ref]["XS-XL"]
-                                                                                        :$order_prices[$rh_product_id][$selector_ref][$attr2_name];
+
+                    if(in_array($attr2_name,$this->fixedAdultSize)){
+                        $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"] = $order_prices[$rh_product_id][$selector_ref]["XS-XL"];
+                    }else{
+                        $price_for_NF   = (isset($order_prices[$rh_product_id][$selector_ref][$attr2_name])) ? $order_prices[$rh_product_id][$selector_ref][$attr2_name]: 0;
+
+                        $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"] = $price_for_NF;
+                    }
+                    
                 }
                 if($size_for == "baby_sizes"){
                     
-                    $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedBabySize))
-                                                                                        ?$order_prices[$rh_product_id][$selector_ref]["OSFA-18M"]
-                                                                                        :$order_prices[$rh_product_id][$selector_ref][$attr2_name];
+                    if(in_array($attr2_name,$this->fixedBabySize)){
+                        $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"] = $order_prices[$rh_product_id][$selector_ref]["OSFA-18M"];
+                    }else{
+                        $price_for_NF   = (isset($order_prices[$rh_product_id][$selector_ref][$attr2_name])) ? $order_prices[$rh_product_id][$selector_ref][$attr2_name]: 0;
+
+                        $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"] = $price_for_NF;
+                    }
                 }
             }
         }

@@ -367,6 +367,7 @@ class OrderController extends Controller
 
     public function store(Request $request)
     { 
+      
         $user_id                    = Auth::user()->id;
         $user_name                  = Auth::user()->name;     
         $rData                      = $request->all();
@@ -375,7 +376,6 @@ class OrderController extends Controller
         $due_date                   = (count($due_date)>0  && $due_date[0])? $due_date[2]."-".$due_date[0]."-".$due_date[1]:"";
         $ship_date                   = explode("-", $rData['ship_date']);
         $ship_date                   = (count($ship_date)>0 && $ship_date[0])? $ship_date[2]."-".$ship_date[0]."-".$ship_date[1]:"";
-
         $order                      = new Order();
         $order->time_id             = date('U');
         $order->client_id           = $rData['client_id'];
@@ -421,7 +421,8 @@ class OrderController extends Controller
         $attribute_size                         = $rData['attribute_size'];
         $pieces                                 = $rData['pieces'];
         $prices                                 = $rData['price'];
-        $total                                  = $rData['total'];
+        // $total                                  = $rData['total'];
+        $total                                  = [];
         if (count($attribute_color) > 0 ) {
             $this->save_product_attribute($product_ids, $attribute_color,$attribute_size,$pieces,$prices,$total, $orderID);
         }
@@ -627,8 +628,10 @@ class OrderController extends Controller
     } 
 
     public function save_product_attribute($product_ids, $attribute_color,$attribute_size,$pieces,$prices,$total, $order_id){
+       
         $order                          = Order::find($order_id);
         $order_product_variant_arr      = [];
+        
         foreach ($product_ids as $product_id) {
             
             foreach($attribute_color[$product_id] as $selector_ref=>$_attr_arr){
@@ -647,28 +650,37 @@ class OrderController extends Controller
                     $size_attr_arr[$selector_ref]           = $attr_arr;
                 }
             }
-
             foreach($color_attr_arr as $selector_ref=>$_color_attr_arr){
+                $color_count            = count($_color_attr_arr);
+                $size_count             = count($size_attr_arr[$selector_ref]);
+
+                $chunk_size             = $size_count/$color_count;
+                $chunked_size_arr       = array_chunk($size_attr_arr[$selector_ref], $chunk_size );
+                $chunked_pieces_arr     = array_chunk($pieces[$product_id][$selector_ref], $chunk_size);
+                $chunked_prices_arr     = array_chunk($prices[$product_id][$selector_ref], $chunk_size);
+
                 foreach($_color_attr_arr as $key=>$attr_id){
-                
-                    $order_product_var                      = new OrderProductVariant();
-                    $order_product_var->order_id            = $order_id;
-                    $order_product_var->product_id          = $product_id;
-                    $order_product_var->selector_ref        = $selector_ref;
-                    $order_product_var->variant1_id         = $variant1_id;
-                    $order_product_var->variant1_name       = $variant1_name ;
-                    $order_product_var->variant2_id         = $variant2_id;
-                    $order_product_var->variant2_name       = $variant2_name;
-                    $order_product_var->attribute1_id       = $attr_id ?? 0;
-                    $product_variant_attribute              = ProductVariantAttribute::find($attr_id);
-                    $order_product_var->attribute1_name     = $product_variant_attribute->name ??"";
-                    $order_product_var->attribute2_id       = $size_attr_arr[$selector_ref][$key];
-                    $product_variant_attribute              = ProductVariantAttribute::find($size_attr_arr[$selector_ref][$key]);
-                    $order_product_var->attribute2_name     = $product_variant_attribute->name??"";
-                    $order_product_var->pieces              = $pieces[$product_id][$selector_ref][$key]??0;
-                    $order_product_var->price               = $prices[$product_id][$selector_ref][$key]??0;
-                    $order_product_var->total               = $total[$product_id][$selector_ref][$key]??0;
-                    $order_product_variant_arr[]            = $order_product_var;
+                    foreach($chunked_size_arr[$key] as $chunk_arr_key=>$attribute2_id){
+                        $order_product_var                      = new OrderProductVariant();
+                        $order_product_var->order_id            = $order_id;
+                        $order_product_var->product_id          = $product_id;
+                        $order_product_var->selector_ref        = $selector_ref;
+                        $order_product_var->variant1_id         = $variant1_id;
+                        $order_product_var->variant1_name       = $variant1_name ;
+                        $order_product_var->variant2_id         = $variant2_id;
+                        $order_product_var->variant2_name       = $variant2_name;
+                        $order_product_var->attribute1_id       = $attr_id ?? 0;
+                        $product_variant_attribute              = ProductVariantAttribute::find($attr_id);
+                        $order_product_var->attribute1_name     = $product_variant_attribute->name ??"";
+                        $order_product_var->attribute2_id       = $attribute2_id;
+                        $product_variant_attribute              = ProductVariantAttribute::find($attribute2_id);
+                        $order_product_var->attribute2_name     = $product_variant_attribute->name??"";
+                        $order_product_var->pieces              = $chunked_pieces_arr[$key][$chunk_arr_key]??0;
+                        $order_product_var->price               = $chunked_prices_arr[$key][$chunk_arr_key]??0;
+                        // $order_product_var->total               = $total[$product_id][$selector_ref][$key]??0;
+                        $order_product_variant_arr[]            = $order_product_var;
+
+                    }
                 }     
             }     
         }
@@ -831,7 +843,8 @@ class OrderController extends Controller
         $attribute_size                         = $rData['attribute_size'];
         $pieces                                 = $rData['pieces'];
         $prices                                 = $rData['price'];
-        $total                                  = $rData['total'];
+        // $total                                  = $rData['total'];
+        $total                                  = [];
         if (count($attribute_color) > 0 ) {
             $this->save_product_attribute($product_ids, $attribute_color,$attribute_size,$pieces,$prices,$total, $orderID);
         }
@@ -958,8 +971,9 @@ class OrderController extends Controller
         $order_id               = (isset($request->order_id) && $request->order_id != "")? $request->order_id: 0;
 
         if($order_id  > 0){
-            $order_product_variants         = OrderProductVariant::where(['order_id'=> $order_id, 'product_id'=> $product_id, "selector_ref"=>$terminator])->get();
+            $order_product_variants         = OrderProductVariant::where(['order_id'=> $order_id, 'product_id'=> $product_id, "selector_ref"=>$terminator])->get()->chunk(10);
         }
+        
         $product_detail     = Product::with( 'ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
    
         return view('admin.orders.product', compact('product_detail', 'order_product_variants', 'selector_number', 'terminator'));
@@ -1110,6 +1124,7 @@ class OrderController extends Controller
             $selector_ref       = $OrderPrice->selector_ref;
             $order_prices[$rh_product_id][$selector_ref][$OrderPrice->product_size]    = $OrderPrice->final_price;
         }
+       
         foreach($order->OrderProducts as $OrderProduct){
             foreach($OrderProduct->OrderProductVariant as $product_count=>$order_product_variant){
               
@@ -1121,15 +1136,25 @@ class OrderController extends Controller
                 $attr2_name     = $order_product_variant->attribute2_name;
                 $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["pieces"]  = $order_product_variant->pieces;
                 if($size_for == "adult_sizes"){
-                    $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedAdultSize))
-                                                                                        ?$order_prices[$rh_product_id][$selector_ref]["XS-XL"]
-                                                                                        :$order_prices[$rh_product_id][$selector_ref][$attr2_name];
+
+                    if(in_array($attr2_name,$this->fixedAdultSize)){
+                        $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"] = $order_prices[$rh_product_id][$selector_ref]["XS-XL"];
+                    }else{
+                        $price_for_NF   = (isset($order_prices[$rh_product_id][$selector_ref][$attr2_name])) ? $order_prices[$rh_product_id][$selector_ref][$attr2_name]: 0;
+
+                        $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"] = $price_for_NF;
+                    }
+                    
                 }
                 if($size_for == "baby_sizes"){
                     
-                    $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedBabySize))
-                                                                                        ?$order_prices[$rh_product_id][$selector_ref]["OSFA-18M"]
-                                                                                        :$order_prices[$rh_product_id][$selector_ref][$attr2_name];
+                    if(in_array($attr2_name,$this->fixedBabySize)){
+                        $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"] = $order_prices[$rh_product_id][$selector_ref]["OSFA-18M"];
+                    }else{
+                        $price_for_NF   = (isset($order_prices[$rh_product_id][$selector_ref][$attr2_name])) ? $order_prices[$rh_product_id][$selector_ref][$attr2_name]: 0;
+
+                        $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"] = $price_for_NF;
+                    }
                 }
             }
         }
@@ -1448,7 +1473,7 @@ class OrderController extends Controller
             $selector_ref       = $OrderPrice->selector_ref;
             $order_prices[$rh_product_id][$selector_ref][$OrderPrice->product_size]    = $OrderPrice->final_price;
         }
-       
+        
         foreach($order->OrderProducts as $OrderProduct){
             foreach($OrderProduct->OrderProductVariant as $product_count=>$order_product_variant){
               
@@ -1459,20 +1484,27 @@ class OrderController extends Controller
                 $attr1_name     = $order_product_variant->attribute1_name;
                 $attr2_name     = $order_product_variant->attribute2_name;
                 $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["pieces"]  = $order_product_variant->pieces;
+
                 if($size_for == "adult_sizes"){
-                    $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedAdultSize))
-                                                                                        ?$order_prices[$rh_product_id][$selector_ref]["XS-XL"]
-                                                                                        :$order_prices[$rh_product_id][$selector_ref][$attr2_name];
+                    if(in_array($attr2_name,$this->fixedAdultSize)){
+                        $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"] = $order_prices[$rh_product_id][$selector_ref]["XS-XL"];
+                    }else{
+                        $price_for_NF   = (isset($order_prices[$rh_product_id][$selector_ref][$attr2_name])) ? $order_prices[$rh_product_id][$selector_ref][$attr2_name]: 0;
+
+                        $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"] = $price_for_NF;
+                    }
                 }
-                if($size_for == "baby_sizes"){
-                    
-                    $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"]  = (in_array($attr2_name,$this->fixedBabySize))
-                                                                                        ?$order_prices[$rh_product_id][$selector_ref]["OSFA-18M"]
-                                                                                        :$order_prices[$rh_product_id][$selector_ref][$attr2_name];
+                if($size_for == "baby_sizes"){ 
+                    if(in_array($attr2_name,$this->fixedBabySize)){
+                        $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"] = $order_prices[$rh_product_id][$selector_ref]["OSFA-18M"];
+                    }else{
+                        $price_for_NF   = (isset($order_prices[$rh_product_id][$selector_ref][$attr2_name])) ? $order_prices[$rh_product_id][$selector_ref][$attr2_name]: 0;
+
+                        $invoice_details[$size_for][$product_n][$selector_ref][$attr1_name][$attr2_name]["price"] = $price_for_NF;
+                    }
                 }
             }
         }
-        
         $sales_rep                                  = (isset($order->sales_rep) && $order->sales_rep!=0)?$order->client->ClientSaleRep->where("id", $order->sales_rep)->first():"";
   
         $client_details["date"]                     = date("m/d/Y", $order->time_id);

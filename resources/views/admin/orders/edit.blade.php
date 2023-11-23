@@ -961,10 +961,30 @@ hr{
         var selector_number         = $(this).attr('data-selector');
         var selector                = '.form-row';
         let v1_attr_id              = $(this).closest(selector).find('.v1_attr_id').val();
-        let v2_attr_id              = $(this).closest(selector).find('.v2_attr_id').val();
-        let price_selector          = $(this).closest(selector).find('.price');
-        
-        addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector);
+        let v2_attr_id_arr          = [];
+
+        $($(this).closest(selector).find('.v2_attr_id')).each(function(i, e){
+            if($(this).val() != ""){
+
+                v2_attr_id_arr.push($(this).attr('data-attr-id'));
+            }
+        });
+
+        let price_selector          = '';
+        let v2_attr_id              = 0;
+        if($(this).hasClass('v2_attr_id')){
+            v2_attr_id              = $(this).attr('data-attr-id');
+            price_selector          = $(this).closest('.row').find('.price-'+v2_attr_id);
+            $(this).prev().val(v2_attr_id);
+            addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector);
+            
+        }else if($(this).hasClass('v1_attr_id')){
+            $.each(v2_attr_id_arr, function(index, v2_attr_id){
+
+                price_selector          = $(this).closest('.row').find('.price-'+v2_attr_id);
+                addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector);
+            });
+        }
     });
     function addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector){
         let size_selector           = "";
@@ -977,7 +997,7 @@ hr{
         let fixed_sizes             = [];
         
         var collapse_box_selector   = ".slector-number-"+product_id+"-"+selector_number;
-        if($(selector).find(".product-type").val() == "Baby Size"){
+        if($(collapse_box_selector).find(".product-type").val() == "Baby Size"){
             all_sizes                   = all_baby_sizes;
             fixed_sizes                 = fixed_baby_sizes;
             size_select                 = "OSFA-18M-";
@@ -1101,8 +1121,8 @@ hr{
             fixed_sizes                 = adult_fixed_sizes;
             size_selector               = "#S-XL-";
         }
-        $(selector).each(function(indx, elm){
-            selected_sizes.push($(this).find('option:selected').text());
+        $(selector).each(function(indx, elm){;
+            selected_sizes.push($(this).attr('placeholder'));
         });
         
         $.each(fixed_sizes, function(index, element){
