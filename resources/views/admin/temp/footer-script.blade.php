@@ -30,8 +30,11 @@
 	 <script src="{{ asset('b/plugins/summernote/summernote.min.js') }}"></script>
 	 <script src="{{ asset('b/plugins/summernote/summernote-bs4.min.js') }}"></script>
 	 <!--Page Active Scripts(used by this page)-->
-	 <script src="{{ asset('b/plugins/summernote/summernote.active.js') }}"></script>
-	 <script src="{{asset('b/plugins/lightbox/js/lightbox.js')}}"></script>
+	<script src="{{ asset('b/plugins/summernote/summernote.active.js') }}"></script>
+	<script src="{{asset('b/plugins/lightbox/js/lightbox.js')}}"></script>
+	<script src="{{asset('b/plugins/NotificationStyles/js/modernizr.custom.js') }}"></script>
+   	<script src="{{asset('b/plugins/NotificationStyles/js/classie.js') }}"></script>
+	<script src="{{asset('b/plugins/NotificationStyles/js/notificationFx.js')}}"></script>
 	<script>
 		$(document).ready(function(){
 			$('.flatpickr').flatpickr({

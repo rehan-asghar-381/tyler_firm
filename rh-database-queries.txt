@@ -1,23 +1,15 @@
-Meeting Notes (10.28.23)
-
-- Redesign the quoting portion in the Garments tab (picture below)
-- In Order page, change Split Button Dropdowns to Button Dropdowns.
-- From the Comp page in Orders, I need to be able to send Comps to the customer for approval or not approval. The file type of each comp will be PNG
-- Remove pop up after changing button status in order form (except for when selecting "Done" in Status dropdown)
-- Dashboard
+11.20.23 Notes
 
 
-
-Meeting Notes (10.28.23)
-- Redesign the quoting portion in the Garments tab (picture below)
+- When in Print Details, if there are sizes we're not using, please leave boxes blank with zero values so it looks cleaner. Example below (we don't have XXL, 3XL, 4XL, etc. make boxes empty and only show values of shirts we're using)
 
 
-In dashboard and order tab:
-- change the order to show (from left to right) Action Log, Quote #, Job Name, Company, PO, Assignee 
-
-In Dashboard
-- “show all” orders under each name
-- search function for orders
-- make Action Log, Status, Quote Approval, Blanks into clickable buttons similar to orders tab
-
-
+CREATE TABLE `tasks` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `task_detail` varchar(255) DEFAULT NULL,
+  `is_checked` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);

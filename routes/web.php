@@ -45,12 +45,18 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/ajaxData', [DashboardController::class, 'ajaxtData'])->name('dashboard.ajaxtData');
     Route::get('/dashboard/status-counts', [DashboardController::class, 'statusCounts'])->name('dashboard.status_counts');
+    Route::get('/dashboard/order-counts', [DashboardController::class, 'orderCounts'])->name('dashboard.order_counts');
     Route::get('/dashboard/calander', [DashboardController::class, 'calanderEvents'])->name('dashboard.calanderEvents');
     Route::get('/notfications', [DashboardController::class, 'get_notifications'])->name('dashboard.get_notifications');
     Route::get('/all-notfications', [DashboardController::class, 'all_notifications'])->name('dashboard.get_all_notifications');
     Route::get('/all-notfications/ajax', [DashboardController::class, 'notificationAjaxData'])->name('dashboard.notificationAjaxData');
     Route::get('/notification-seen-by', [DashboardController::class, 'notification_seeb_by'])->name('dashboard.notification_seeb_by');
     Route::get('/notifications/delete', [DashboardController::class, 'destroy'])->name('dashboard.deleteNotifications');
+    Route::get('/dashboard/task-popup', [DashboardController::class, 'task_popup'])->name('dashboard.task_pop_up');
+    Route::post('/dashboard/save-task', [DashboardController::class, 'save_task'])->name('dashboard.save_task');
+    Route::get('/dashboard/get-task', [DashboardController::class, 'get_task'])->name('dashboard.get_task');
+    Route::get('/dashboard/delete-task', [DashboardController::class, 'delete_task'])->name('dashboard.delete_task');
+    Route::get('/dashboard/status-task', [DashboardController::class, 'status_task'])->name('dashboard.status_task');
     /* End Dashboard Routes */
     Route::get('/change-password',  [AuthController::class, 'changePassword'])->name('changePassword'); 
     Route::post('/change-password-save',  [AuthController::class, 'changePasswordSave'])->name('changePasswordSave');

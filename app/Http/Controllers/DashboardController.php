@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Traits\NotificationTrait;
 use App\Models\QuoteApproval;
 use App\Models\Blank;
+use App\Models\Task;
 class DashboardController extends Controller
 {
     use NotificationTrait;
@@ -71,6 +72,32 @@ class DashboardController extends Controller
         $html       = $this->prepareHtml($status_counts_arr);
         return ['status_counts' => $html];
     }
+    public function orderCounts(Request $request){
+        $date_from                  = $request->get('date_from');
+        $date_to                    = $request->get('date_to');
+        $status_counts_arr          = [];
+        $order_counts               = [];
+
+        $orders                     = Order::groupBy('status')
+                                    ->select('status', DB::raw('count(*) as total'));
+        if($date_from != ""){
+            $orders                 = $orders->where("order_date_timestamp", ">=", strtotime($date_from));
+        }
+        if($date_to != ""){
+            $orders                 = $orders->where("order_date_timestamp", "<=", strtotime($date_to));
+        }
+        $orders                     = $orders->get();  
+        $totalOrders                = Order::count();
+        foreach($orders as $id=>$order){
+
+            $order_counts[$order->Orderstatus->name]["total"]           = $order->total;
+            $order_counts[$order->Orderstatus->name]["perc"]            = ($order->total/$totalOrders)*100;
+        }
+        $html       = $this->prepareOrderCountHtml($order_counts);
+        return ['order_counts' => $html];
+    }
+
+    
 
     public function ajaxtData(Request $request){
         $user_id            = Auth::user()->id;
@@ -278,6 +305,17 @@ class DashboardController extends Controller
         return  $html;
 
     }
+    public function prepareOrderCountHtml($order_counts){
+
+        $html           = '';
+        foreach ($order_counts as $status=>$order_count){
+            ;
+          $html         .='<div class="row mb-3"><div class="col-9"><div class="progress-wrapper"><span class="progress-label text-muted">'.$status.'</span><div class="progress mt-1 mb-2" style="height: 5px;"><div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'.$order_count["perc"].'" aria-valuemin="0" aria-valuemax="100" style="width: '.$order_count["perc"].'%"></div></div></div></div><div class="col-3 align-self-end text-right"><span class="h6 mb-0">'.$order_count["total"].' <strong>('.$order_count["perc"].'%)</strong></span></div></div>';
+          
+        }
+        return  $html;
+
+    }
     public function get_notifications(){
 
         $user_id        = Auth::user()->id;
@@ -359,17 +397,17 @@ class DashboardController extends Controller
     public function calanderEvents(Request $request){
 
         $orders                     = Order::where("due_date", "!=", "")->where("due_date", ">", 0)->where('status', '!=', 5)->get();
-        $r_default_date = Order::where("due_date", "!=", "")
-        ->where("due_date", ">", 0)
-        ->where('status', '!=', 5)
-        ->orderBy('due_date') // Order by due_date in ascending order
-        ->first();
+        // $r_default_date = Order::where("due_date", "!=", "")
+        // ->where("due_date", ">", 0)
+        // ->where('status', '!=', 5)
+        // ->orderBy('due_date') // Order by due_date in ascending order
+        // ->first();
 
-        if ($r_default_date) {
-            $default_date = date("Y-m-d", $r_default_date->due_date);
-        } else {
+        // if ($r_default_date) {
+        //     $default_date = date("Y-m-d", $r_default_date->due_date);
+        // } else {
             $default_date = date("Y-m-d");
-        }
+        // }
 
         $_events_arr                = [];
         foreach($orders as $order){
@@ -387,5 +425,71 @@ class DashboardController extends Controller
 
 
         return json_encode(["events"=> $_events_arr, "default_date"=> $default_date]);
+    }
+
+    public function task_popup(Request $request){
+        $task_id        = $request->has('task_id') ? $request->get('task_id') :  0;
+        $data           = Task::find($task_id);
+        return view('admin.dashboard.popups.add-task-popup', compact('task_id', 'data'));
+    }
+
+    public function save_task(Request $request){
+        $response                       = ["status" => "error", "data"=>""];
+        $user_id                        = Auth::user()->id;
+        $task_id                        = $request->has('task_id') ? $request->task_id :  0;
+        $task_detail                    = ($request->has('description')) ? $request->description: '';
+        if($task_detail == ""){
+            $response["data"]           = "Task detail is required.";
+        }else{
+            if($task_id <= 0){
+                $task                       = new Task();
+                $task->user_id              = $user_id;
+                $task->task_detail          = $task_detail;
+                $task->user_id              = $user_id;
+                $task->save();
+            }else{
+                $task                       = Task::find($task_id);
+                $task->task_detail          = $task_detail;
+                $task->save();
+            }
+            $response["status"]         = "success";
+            $todo_list_data             = Task::where("user_id", $user_id)->get();
+            $todolist                   = view('admin.dashboard.todolist', compact("todo_list_data"))->render();
+            $response["data"]           = $todolist;
+
+        }
+        return json_encode($response);
+    }
+
+    public function get_task(Request $request){
+
+        $response                   = ["status" => "success", "data"=>""];
+        $user_id                    = Auth::user()->id;
+        $todo_list_data             = Task::where("user_id", $user_id)->get();
+        $todolist                   = view('admin.dashboard.todolist', compact("todo_list_data"))->render();
+        $response["data"]           = $todolist;
+        return json_encode($response);
+    }
+
+    public function delete_task(Request $request){
+        $task_id                    = $request->has('task_id') ? $request->task_id :  0;
+        Task::where("id", $task_id)->delete();
+        $response                   = ["status" => "success", "data"=>""];
+        $user_id                    = Auth::user()->id;
+        $todo_list_data             = Task::where("user_id", $user_id)->get();
+        $todolist                   = view('admin.dashboard.todolist', compact("todo_list_data"))->render();
+        $response["data"]           = $todolist;
+        return json_encode($response);
+    }
+    public function status_task(Request $request){
+        $task_id                    = $request->has('task_id') ? $request->task_id :  0;
+        $is_checked                 = $request->has('is_checked') ? $request->is_checked :  0;
+        Task::where("id", $task_id)->update(["is_checked"=>$is_checked]);
+        $response                   = ["status" => "success", "data"=>""];
+        $user_id                    = Auth::user()->id;
+        $todo_list_data             = Task::where("user_id", $user_id)->get();
+        $todolist                   = view('admin.dashboard.todolist', compact("todo_list_data"))->render();
+        $response["data"]           = $todolist;
+        return json_encode($response);
     }
 }

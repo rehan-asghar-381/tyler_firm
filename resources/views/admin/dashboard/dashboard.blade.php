@@ -1,6 +1,11 @@
 @extends("admin.template", ["pageTitle"=>$pageTitle])
 @section('content')
 <style>
+.--card-right {
+    height: 318px;
+    max-height: 318px;
+    overflow-y: auto;
+  }
 .text-smaller{
 	font-size: 12px !important;
 }
@@ -222,7 +227,7 @@
   <!--/.Content Header (Page header)--> 
   <div class="body-content">
       <div class="row">
-          <div class="col-lg-12 col-xl-12">
+          <div class="col-lg-8 col-xl-8">
               <div class="card">
                   <div class="card-body">
                       <!-- calender -->
@@ -230,6 +235,37 @@
                   </div>
               </div>
           </div>
+          <div class="col-md-12 col-lg-4">
+            <div class="card mb-4 --card-right">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="fs-17 font-weight-600 mb-0">Todo list</h6>
+                        </div>
+                        <div class="text-right">
+                          <a class="--open-task-popup" href="#" data-task-id="0"><i class="far fa fa-plus"></i> Add Task</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body --todolist">
+                    
+                </div>
+              </div>
+              <div class="card mb-4 --card-right">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="fs-17 font-weight-600 mb-0">Quote Progress</h6>
+                        </div>
+                        <div class="text-right">
+                          
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body order-counts">
+                </div>
+              </div>
+        </div>
       </div>
   </div><!--/.body content-->
   <div class="bootstrap snippets bootdey">
@@ -281,6 +317,9 @@
   <div class="action-log-popup">
 
   </div>
+  <div class="task-modal">
+
+  </div>
 </div><!--/.main content-->
 @endsection
 
@@ -328,6 +367,20 @@
             dataType: 'json',
             success: function (result) {
                 $("#status-counts").append(result.status_counts);
+            },
+            error: function (e) {
+            }
+        });
+      }
+      function orderCounts(){
+        $form = $("#reportForm").serialize();
+        $(".order-counts").html("");
+        $.ajax({
+            url: "{{ route('admin.dashboard.order_counts') }}",
+            data: $form,
+            dataType: 'json',
+            success: function (result) {
+                $(".order-counts").append(result.order_counts);
             },
             error: function (e) {
             }
@@ -551,6 +604,7 @@
       });
       $(document).on('click', '.close-modal', function(e){
         $(this).closest('.modal').hide();
+        $('#add-task').modal('hide');
       });
       $(document).on('click', '.blinking', function(e){
         e.preventDefault();
@@ -601,8 +655,164 @@
         });
         calendar.render();
       }
+      $(document).on("click", ".--open-task-popup", function(event){
+        event.preventDefault();
+        let task_id             = $(this).attr('data-task-id');
+        var reqdata             = {};
+        reqdata.task_id         = task_id;
+        $(".task-modal").html("");
+        $.ajax({
+            url: "{{ route('admin.dashboard.task_pop_up') }}",
+            data: reqdata,
+            dataType: 'html',
+            success: function (result) {
+                $(".task-modal").append(result);
+                $('#add-task').modal('show');
+            },
+            beforeSend: function() {
+                $('.page-loader-wrapper').show();
+            },
+            complete: function(){
+              $('.page-loader-wrapper').hide();
+            },
+            error: function (e) {
+            }
+        });
+       
+      });
+
+      $(document).on("click", "#--saveTask", function(event){
+        event.preventDefault();
+        $(".--todolist").html('');
+        let task_id             = $('#task_id').val();
+        var reqData             = {};
+        reqData._token          = '{{ csrf_token() }}';
+        reqData.description     = $('textarea[name="description"]').val();
+        reqData.task_id         = task_id;
+        $.ajax({
+            url: "{{ route('admin.dashboard.save_task') }}",
+            type: "POST",
+            data: reqData,
+            dataType: 'json',
+            success: function (result) {
+              console.log(result);
+              console.log(result.status);
+              console.log(result.message);
+              if(result.status == "error"){
+                error_notification(result.data)
+              }else if(result.status == "success"){
+                $(".--todolist").html(result.data);
+                $('#add-task').modal('hide');
+              }
+              
+            },
+            beforeSend: function() {
+                $('.page-loader-wrapper').show();
+            },
+            complete: function(){
+              $('.page-loader-wrapper').hide();
+            },
+            error: function (e) {
+            }
+        });
+      });
+      $(document).on("click", ".--delete-task", function(event){
+        event.preventDefault();
+        $(".--todolist").html('');
+        let task_id             = $(this).attr('data-task-id');
+        var reqData             = {};
+        reqData.task_id         = task_id;
+        $.ajax({
+            url: "{{ route('admin.dashboard.delete_task') }}",
+            type: "GET",
+            data: reqData,
+            dataType: 'json',
+            success: function (result) {
+              $(".--todolist").html(result.data);
+              
+            },
+            beforeSend: function() {
+                $('.page-loader-wrapper').show();
+            },
+            complete: function(){
+              $('.page-loader-wrapper').hide();
+            },
+            error: function (e) {
+            }
+        });
+      });
+      $(document).on("change", ".--ischecked", function(event){
+        event.preventDefault();
+        $(".--todolist").html('');
+        let task_id             = $(this).attr('data-task-id');
+        let is_checked          = 0;
+        if ($(this).is(':checked')) {
+          is_checked            = 1;
+        }
+        var reqData             = {};
+        reqData.task_id         = task_id;
+        reqData.is_checked      = is_checked;
+        $.ajax({
+            url: "{{ route('admin.dashboard.status_task') }}",
+            type: "GET",
+            data: reqData,
+            dataType: 'json',
+            success: function (result) {
+              $(".--todolist").html(result.data);
+              
+            },
+            beforeSend: function() {
+                $('.page-loader-wrapper').show();
+            },
+            complete: function(){
+              $('.page-loader-wrapper').hide();
+            },
+            error: function (e) {
+            }
+        });
+      });
+
+      function error_notification(message){
+        var notification = new NotificationFx({
+            message: '<span class="icon icon-megaphone"></span><p>'+message+'</p>',
+            layout: 'growl',
+            effect: 'scale',
+            type: 'notice', // notice, warning, error or success
+            onClose: function () {
+                bttn.disabled = false;
+            }
+        });
+
+        // show the notification
+        notification.show();
+
+      }
+
+      function getTasks(){
+
+        $.ajax({
+            url: "{{ route('admin.dashboard.get_task') }}",
+            type: "GET",
+            data: {},
+            dataType: 'json',
+            success: function (result) {
+              $(".--todolist").html(result.data);
+              
+            },
+            beforeSend: function() {
+                $('.page-loader-wrapper').show();
+            },
+            complete: function(){
+              $('.page-loader-wrapper').hide();
+            },
+            error: function (e) {
+            }
+          });
+      }
       calanderEvents();
       loadCounts();
+      orderCounts();
+      getTasks();
     });
   </script>
 @endsection

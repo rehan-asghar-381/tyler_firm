@@ -33,7 +33,10 @@ crossorigin="anonymous">
 	<link href="{{ asset('b/plugins/fullcalendar/packages/daygrid/main.min.css') }}" rel="stylesheet">
 	<link href="{{ asset('b/plugins/fullcalendar/packages/timegrid/main.min.css') }}" rel="stylesheet">
 	<link href="{{ asset('b/plugins/fullcalendar/packages/list/main.min.css') }}" rel="stylesheet">
-	<style>
+	<link href="{{ asset('b/plugins/NotificationStyles/css/ns-default.css') }}" rel="stylesheet">
+	<link href="{{ asset('b/plugins/NotificationStyles/css/ns-style-growl.css') }}" rel="stylesheet">
+	<link href="{{ asset('b/plugins/NotificationStyles/css/ns-style-bar.css') }}" rel="stylesheet">
+<style>
 		.sidebar-bunker {
 			background-color: #6aa4e6 !important;
 		}
