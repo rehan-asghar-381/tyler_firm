@@ -1,15 +1,49 @@
-11.20.23 Notes
+- When emailing a comp, the COMP LINK button disappears when email template is picked. (Done)
+- When customer approves/not approves comp, can there be a window that pops up stating "Thank you! We will process your submission shortly" (Done)
+- After customer approves/not approves comp, the email sent to the sales rep shows "Response for Comp ORDER NAME Quote". Can you please remove the word Quote so it's not confused with the actual quote that will be approved as well? (Done)
+- After customer approves/not approves comp, the notification that shows up in program shows "Quote Approved: Order Name". Can you please change that to "Comp Approved: Order Name" to not get it confused when the actual quote is approved? (Done)
+- In "View Activity" for each order, can you show both the "Quote Preview" and "Comp Preview" for what was sent to the customer? I really like this feature, but we just need to show both the comp and quote that was sent. (Done)
+
+- In order tab, can you please add new column named "Comp" and place it between Status and Quote Approval column. 
+- Please have a dropdown option for "Comp" column with the following choices:
+In Art Room (Yellow)
+Changes Needed (Red)
+Approved (Green)
+Approved No Films (Teal)
+Films Done (Black)
+Comp Sent (Blue)
+Need Approval (Purple)
+Reorder (Pink)
+
+- With this new column, can the dropdown option in orders page reflect what is picked in the comps page dropdown box? Meaning, if I'm in the Comps page in an order and I select the option "Approved", then the dropdown box in the Comps column on the orders page will also show "Approved" (Done)
+
+- In Quote and Comp email template, can you add {quote_link} and {comp_link} so the link to approve either the quote and comp will automatically generate when sending the approval email (Done)
+
+- one major issue I ran into was the layout of the YELLOW when we go to print. Please see attached
 
 
-- When in Print Details, if there are sizes we're not using, please leave boxes blank with zero values so it looks cleaner. Example below (we don't have XXL, 3XL, 4XL, etc. make boxes empty and only show values of shirts we're using)
+ALTER TABLE `email_logs` 
+ADD COLUMN `comp_id` int NULL DEFAULT 0 AFTER `is_approved`;
+ALTER TABLE `orders` 
+ADD COLUMN `comp_approval` varchar(255) NULL AFTER `status`;
 
-
-CREATE TABLE `tasks` (
+CREATE TABLE `comp_statuses`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int DEFAULT NULL,
-  `task_detail` varchar(255) DEFAULT NULL,
-  `is_checked` int DEFAULT '0',
+  `name` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `class` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`) USING BTREE
 );
+
+-- ----------------------------
+-- Records of comp_statuses
+-- ----------------------------
+INSERT INTO `comp_statuses` VALUES (1, 'Changes Needed', 'danger', NULL, NULL);
+INSERT INTO `comp_statuses` VALUES (2, 'Approved', 'sucess-custom', NULL, NULL);
+INSERT INTO `comp_statuses` VALUES (3, 'Approved No Films', 'info', NULL, NULL);
+INSERT INTO `comp_statuses` VALUES (4, 'Films Done', 'black', NULL, NULL);
+INSERT INTO `comp_statuses` VALUES (5, 'Comp Sent', 'primary', NULL, NULL);
+INSERT INTO `comp_statuses` VALUES (6, 'Need Approval', 'violet', NULL, NULL);
+INSERT INTO `comp_statuses` VALUES (7, 'Reorder', 'pink', NULL, NULL);
+INSERT INTO `comp_statuses` VALUES (8, 'In Art Room', 'warning', NULL, NULL);
