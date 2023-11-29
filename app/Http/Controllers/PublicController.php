@@ -191,13 +191,14 @@ class PublicController extends Controller
         $email->from                = $request->email;
         $email->assignee_name       = $assignee_name;
         $email->is_approved         = $request->action;
-        $email->subject             = "Response for Comp ".$comp->Order->job_name." Quote";
+        $email->comp_id             = $comp_id;
+        $email->subject             = "Response for Comp ".$comp->Order->job_name;
         $email->description         = $request->description;
         $email->is_sent             = "Y";
         $email->created_by_id       = 0;
         $email->is_response         = "Y";
         $data["email"]              = $assignee_email ;
-        $data["title"]              = "Response for Comp ".$comp->Order->job_name." Quote";
+        $data["title"]              = "Response for Comp ".$comp->Order->job_name;
         $data["description"]        = $message_body;
         \Mail::send('admin.orders.email', $data, function($message)use($data) {
                 $message->to($data["email"])
@@ -210,7 +211,7 @@ class PublicController extends Controller
             // return "Mail send successfully !!";
         }
         $url_email                      = Crypt::encrypt($request->url_email);
-        $body                           = "Quote ".$logs_action.": ".$comp->Order->job_name." ( <strong>#".$comp->Order->id."</strong> )";
+        $body                           = "Comp ".$logs_action.": ".$comp->Order->job_name." ( <strong>#".$comp->Order->id."</strong> )";
         $data['idFK']                   = $comp->Order->id;
         $data['type']                   = 'comps';
         $data['added_by_id']            = Null;
@@ -218,7 +219,7 @@ class PublicController extends Controller
         $data['body']                   = $body;
         $data['time_id']                = date('U');
         $this->add_notification($data);
-        return redirect()->route('order.comp',  ['comp_id' => Crypt::encrypt($comp_id), 'email' => $url_email])->withSuccess('Thank you for your response.');
+        return redirect()->route('order.comp',  ['comp_id' => Crypt::encrypt($comp_id), 'email' => $url_email])->withSuccess('Thank you! We will process your submission shortly.');
     }
     public function store(Request $request){
         $history                = new OrderHistory();

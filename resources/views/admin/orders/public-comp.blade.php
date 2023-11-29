@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="{{asset('b/plugins/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('b/plugins/NotificationStyles/css/ns-default.css') }}" rel="stylesheet">
+	<link href="{{ asset('b/plugins/NotificationStyles/css/ns-style-growl.css') }}" rel="stylesheet">
+	<link href="{{ asset('b/plugins/NotificationStyles/css/ns-style-bar.css') }}" rel="stylesheet">
     <style>
         .has-error{
             border: 1px solid red;
@@ -15,6 +18,11 @@
     </style>
 </head>
 <body style="padding: 0;margin: 0;">
+    @if(session('success'))
+        <p id="--n-message" style="display: none;">{{ session('success') }}</p>
+    @else
+        <p id="--n-message" style="display: none;"></p>
+    @endif
     <div class="wrapper">
         <!-- Page Content  -->
         <div class="content-wrapper">
@@ -98,6 +106,9 @@
     <script src="{{ asset('b/plugins/jQuery/jquery-3.4.1.min.js')}} "></script>
 	<script src="{{ asset('b/dist/js/popper.min.js')}} "></script>
 	<script src="{{ asset('b/plugins/bootstrap/js/bootstrap.min.js')}} "></script>
+    <script src="{{asset('b/plugins/NotificationStyles/js/modernizr.custom.js') }}"></script>
+   	<script src="{{asset('b/plugins/NotificationStyles/js/classie.js') }}"></script>
+	<script src="{{asset('b/plugins/NotificationStyles/js/notificationFx.js')}}"></script>
     <script>
         $(document).ready(function(){
             function required(){
@@ -157,6 +168,27 @@
                 $("#action").val(action);
                 $('#response-modal').show();
             });
+
+            function notification_message(message){
+                var notification = new NotificationFx({
+                    message: '<span class="icon icon-megaphone"></span><p>'+message+'</p>',
+                    layout: 'growl',
+                    effect: 'scale',
+                    type: 'notice', // notice, warning, error or success
+                    onClose: function () {
+                        bttn.disabled = false;
+                    }
+                });
+
+                // show the notification
+                notification.show();
+
+            }
+            let message         = $("#--n-message").text();
+            if(message != ""){
+
+                notification_message(message);
+            }
         });
     </script>
 </body>

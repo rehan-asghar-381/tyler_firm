@@ -14,7 +14,7 @@
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <label class="form-label text-dark-gray" for="description">Task Details</label>
-                            <textarea class="form-control require" name="description">{{ $data->task_detail ?? "" }}</textarea>
+                            <textarea class="form-control require" name="description" rows="5">{{ $data->task_detail ?? "" }}</textarea>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-success" id="--saveTask">Submit</button>

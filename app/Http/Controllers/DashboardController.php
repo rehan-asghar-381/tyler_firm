@@ -91,7 +91,7 @@ class DashboardController extends Controller
         foreach($orders as $id=>$order){
 
             $order_counts[$order->Orderstatus->name]["total"]           = $order->total;
-            $order_counts[$order->Orderstatus->name]["perc"]            = ($order->total/$totalOrders)*100;
+            $order_counts[$order->Orderstatus->name]["perc"]            = number_format(($order->total/$totalOrders)*100, 0);
         }
         $html       = $this->prepareOrderCountHtml($order_counts);
         return ['order_counts' => $html];
@@ -299,7 +299,7 @@ class DashboardController extends Controller
         foreach ($status_counts_arr as $key=>$status_count){
             
           $html         .='<div class="col-md-3 col-sm-6 col-xs-12 count-widget" data-status="'.$status_count["status_id"].'"  data-status-name="'.$status_count["status"].'">
-          <div class="mini-stat clearfix bg-'.$key.' rounded"><span class="mini-stat-icon"><i class="fas fa-chess-king bg-'.$key.'"></i></span><div class="mini-stat-info"><span>'.$status_count["total"].'</span>'.$status_count["status"].'</div></div></div>';
+          <div class="mini-stat clearfix bg-'.$key.' rounded"><span class="mini-stat-icon"><i class="fas fa-user bg-'.$key.'"></i></span><div class="mini-stat-info"><span>'.$status_count["total"].'</span>'.$status_count["status"].'</div></div></div>';
           
         }
         return  $html;

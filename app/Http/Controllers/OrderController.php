@@ -34,6 +34,7 @@ use App\Models\DYellowInkColor;
 use Yajra\DataTables\DataTables;
 use App\Traits\NotificationTrait;
 use App\Models\EmailLog;
+use App\Models\CompStatus;
 use App\Models\EmailTemplate;
 use PDF;
 use Illuminate\Support\Facades\Crypt;
@@ -129,6 +130,7 @@ class OrderController extends Controller
     public function ajaxtData(Request $request){
         $user_id            = Auth::user()->id;
         $statuses           = Status::where('is_active', 'Y')->get(['id', 'name']);
+        $comp_statuses      = CompStatus::get();
         $quote_approval     = QuoteApproval::where('is_active', 'Y')->get(['id', 'name']);
         $blanks             = Blank::where('is_active', 'Y')->get(['id', 'name']);
         $rData              = Order::withCount("EmailLog")->with(["client", "ClientSaleRep","ActionSeen"=>function($q) use($user_id){
@@ -229,6 +231,29 @@ class OrderController extends Controller
 
                 return '-';
             }
+        })
+        ->editColumn('comp_approval', function ($data) use($comp_statuses){
+            $cls            = "";
+            $inner_html     = "";
+            $name           = ($data->comp_approval != "") ? $data->comp_approval: "--select";
+            foreach($comp_statuses as $status){
+                if($data->comp_approval == $status->name){
+
+                    $cls            = $status->class;
+                }
+                $inner_html   .= '<a class="dropdown-item btn-change-comp-status" href="#" data-status-id="'.$status->name.'" data-order-id="'.$data->id.'">'.$status->name.'</a>';
+            }
+
+            $html   = '<div class="btn-group mb-2 mr-1">
+                        <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:140px;">'.$name.'</button>
+                        <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
+            
+            $html   .=    $inner_html;
+            $html   .=    '</div></div>';
+
+                return $html;
+            
+           
         })
         ->editColumn('quote_approval', function ($data) use($quote_approval){
             if(isset($data->QuoteApproval->name)){
@@ -341,7 +366,7 @@ class OrderController extends Controller
             $action_list        .= '</div></div>';
             return  $action_list;
         })
-        ->rawColumns(['actions', 'status', 'notification', 'blank', 'quote_approval'])
+        ->rawColumns(['actions', 'status', 'notification', 'blank', 'quote_approval', 'comp_approval'])
         ->make(TRUE);
     }
   
@@ -916,6 +941,15 @@ class OrderController extends Controller
         $order->quote_approval  = $status;
         $order->save();
         return json_encode(array("status"=>true, "message"=>"Status has been updated successfully!"));
+    }
+    public function comp_status_update(Request $request)
+    {
+        $order_id               = $request->get('order_id');
+        $status                 = $request->get('status_id');
+        $order                  = Order::find($order_id);
+        $order->comp_approval   = $status;
+        $order->save();
+        return json_encode(array("status"=>true, "message"=>"Comp Status has been updated successfully!"));
     }
     public function blank_update(Request $request)
     {
@@ -1669,9 +1703,11 @@ class OrderController extends Controller
         $email_templates            = EmailTemplate::get();
         $link_url                   = route('order.quote',  ['order_id' => Crypt::encrypt($order_id), 'email' => $encrypted_email]);
         if($request->has('comp_id') && $request->comp_id != ''){
-            $link_url                   = route('order.comp',  ['comp_id' => Crypt::encrypt($comp_id), 'email' => $encrypted_email]);
+            $link_url               = route('order.comp',  ['comp_id' => Crypt::encrypt($comp_id), 'email' => $encrypted_email]);
         }
-        return view('admin.orders.popup.send-email', compact('order_id', 'client_id', 'email', 'email_templates', 'selected_template', 'template_id', 'sale_rep_name', 'company_name', 'job_name', 'order_number', 'encrypted_email', 'comp_id', 'link_url'));
+        $link_anchor_tag            = '<a href="'.$link_url.'" >Click here</a>';
+        
+        return view('admin.orders.popup.send-email', compact('order_id', 'client_id', 'email', 'email_templates', 'selected_template', 'template_id', 'sale_rep_name', 'company_name', 'job_name', 'order_number', 'encrypted_email', 'comp_id', 'link_url', 'link_anchor_tag'));
     }
     public function action_log_popup(Request $request){
  

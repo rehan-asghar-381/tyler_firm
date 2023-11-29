@@ -591,7 +591,7 @@ hr{
                                             $cls            = "light";
                                             $com_approved   = ($orderCompFile->is_approved != "") ? $orderCompFile->is_approved:"";
                                             if($com_approved != "" && $com_approved == "Changes Needed"){
-                                                $cls        = "light";
+                                                $cls        = "danger";
                                             }elseif($com_approved != "" && $com_approved == "Approved"){
                                                 $cls        = "sucess-custom";
                                             }elseif($com_approved != "" && $com_approved == "Approved No Films"){
@@ -599,13 +599,13 @@ hr{
                                             }elseif($com_approved != "" && $com_approved == "Films Done"){
                                                 $cls        = "black";
                                             }elseif($com_approved != "" && $com_approved == "Comp Sent"){
-                                                $cls        = "violet";
+                                                $cls        = "primary";
                                             }elseif($com_approved != "" && $com_approved == "Need Approval"){
-                                                $cls        = "warning";
+                                                $cls        = "violet";
                                             }elseif($com_approved != "" && $com_approved == "Reorder"){
                                                 $cls        = "pink";
                                             }elseif($com_approved != "" && $com_approved == "In Art Room"){
-                                                $cls        = "light";
+                                                $cls        = "warning";
                                             }
                                         @endphp
                                         <div class="btn-group mb-2 mr-1  --status-div">
@@ -1486,7 +1486,6 @@ hr{
                         maxHeight: null, // set maximum height of editor
                         focus: true                  // set focus to editable area after initializing summernote
                     });
-                    $('.copy-to-clipboard').hide();
                     $('#send-email-modal').show();
                 }
             });

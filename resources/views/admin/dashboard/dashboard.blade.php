@@ -110,13 +110,13 @@
 
 
 .bg-3 {
-  background-color: #40ff00 !important;
-  border: 1px solid #40ff00;
+  background-color: #ffb600 !important;
+  border: 1px solid #ffb600;
   color: white;
 }
 
 .fg-3 {
-  color: #40ff00 !important;
+  color: #ffb600 !important;
 }
 
 .bg-2 {
@@ -255,7 +255,7 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="fs-17 font-weight-600 mb-0">Quote Progress</h6>
+                            <h6 class="fs-17 font-weight-600 mb-0">Order Progress</h6>
                         </div>
                         <div class="text-right">
                           

@@ -127,6 +127,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/orders/view/{order_id}', [OrderController::class, 'orderView'])->name('order.view');
     Route::get('/orders/status_update', [OrderController::class, 'status_update'])->name('order.status_update');
     Route::get('/orders/quote_update', [OrderController::class, 'quote_update'])->name('order.quote_update');
+    Route::get('/orders/comp_status_update', [OrderController::class, 'comp_status_update'])->name('order.comp_status_update');
     Route::get('/orders/blank_update', [OrderController::class, 'blank_update'])->name('order.blank_update');
     Route::get('/orders/generate_invoice/{order_id}', [OrderController::class, 'generateInvoice'])->name('order.generateInvoice');
     Route::get('/orders/recreate/{order_id}', [OrderController::class, 'recreate'])->name('order.recreate');

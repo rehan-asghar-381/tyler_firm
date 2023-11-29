@@ -41,6 +41,8 @@
                             <li>Use <strong class="text-danger">{sales_rep}</strong> to autofill Sales Rep Name</li>
                             <li>Use <strong class="text-danger">{job_name}</strong> to autofill Job name</li>
                             <li>Use <strong class="text-danger">{order_number}</strong> to autofill Purchase Order #</li>
+                            <li>Use <strong class="text-danger">{quote_link}</strong> to autofill Quote Link</li>
+                            <li>Use <strong class="text-danger">{comp_link}</strong> to autofill Comp Link</li>
                         </ul>
                     </div>
                 </div>

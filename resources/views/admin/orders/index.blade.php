@@ -131,6 +131,7 @@
 									<th width="250px">Status</th>
 									<th width="250px">Quote Approval</th>
 									<th width="250px">Blank</th>
+									<th width="250px">Comp Status</th>
 									<th>Action</th>
 								</tr>
 							</thead>
@@ -233,6 +234,7 @@
 		{data: 'status', name: 'status', width:"250px", className: 'text-smaller'},
 		{data: 'quote_approval', name: 'quote_approval', width:"250px", className: 'text-smaller', orderable: true},
 		{data: 'blank', name: 'blank', width:"250px", className: 'text-smaller', className: 'text-smaller'},
+		{data: 'comp_approval', name: 'comp_approval', width:"250px", className: 'text-smaller', className: 'text-smaller'},
 		{data: 'actions', name: 'actions'}
 		]
 	});
@@ -328,6 +330,29 @@ table.ajax.reload();
 	$(document).on("click", ".btn-change-quote_approval", function(event){
 		event.preventDefault();
 		let url 			= "{{ route('admin.order.quote_update') }}";
+		var status_id 		= $(this).attr("data-status-id");
+		var order_id 		= $(this).attr("data-order-id");
+		$.ajax({
+			url: url, 
+			type: "GET",
+			data: {
+				status_id: status_id,
+				order_id: order_id
+			},
+			success: function(data) {
+				table.ajax.reload();
+			},
+			beforeSend: function() {
+					$('.page-loader-wrapper').show();
+			},
+			complete: function(){
+				$('.page-loader-wrapper').hide();
+			},
+		});
+	});
+	$(document).on("click", ".btn-change-comp-status", function(event){
+		event.preventDefault();
+		let url 			= "{{ route('admin.order.comp_status_update') }}";
 		var status_id 		= $(this).attr("data-status-id");
 		var order_id 		= $(this).attr("data-order-id");
 		$.ajax({

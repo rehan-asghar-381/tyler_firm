@@ -50,7 +50,7 @@
 							</div> --}}
 							<div class="col-md-12 mb-3">
 								<label class="form-label text-dark-gray" for="description">Message</label>
-                                <textarea class="form-control require" name="description" id="summernote" > {!! isset($selected_template->description) ? str_replace(array("{company_name}", "{sales_rep}", "{job_name}", "{order_number}"), array($company_name, $sale_rep_name, $job_name, $order_number) , $selected_template->description): "" !!}</textarea>
+                                <textarea class="form-control require" name="description" id="summernote" > {!! isset($selected_template->description) ? str_replace(array("{company_name}", "{sales_rep}", "{job_name}", "{order_number}", "{comp_link}", "{quote_link}"), array($company_name, $sale_rep_name, $job_name, $order_number, $link_anchor_tag, $link_anchor_tag) , $selected_template->description): "" !!}</textarea>
 							</div>
 						</div>
 						<button type="submit" class="btn btn-success" id="--sendEmail">Submit</button>
