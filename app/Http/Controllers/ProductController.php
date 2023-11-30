@@ -54,7 +54,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $pageTitle          = "Products";
-        $brands             = Brand::get();
+        $brands             = Brand::orderBy('name', 'asc')->get();
         return view('admin.products.index',compact('pageTitle', 'brands'));
     }
 

@@ -1,4 +1,7 @@
-<nav class="navbar-custom-menu navbar navbar-expand-lg m-0 no-print">
+@php
+	$segment_one = request()->segment(2);
+@endphp
+<nav class="navbar-custom-menu navbar navbar-expand-lg m-0 no-print @if($segment_one == "orders") {{"active"}} @endif">
 	<div class="sidebar-toggle-icon" id="sidebarCollapse">
 		sidebar toggle<span></span>
 	</div>

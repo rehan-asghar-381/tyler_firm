@@ -1425,8 +1425,8 @@ table code {
 }
 
 .sidebar {
-    min-width: 250px;
-    max-width: 250px;
+    min-width: 230px;
+    max-width: 230px;
     background: #fff;
     -webkit-transition: all .3s;
     transition: all .3s;

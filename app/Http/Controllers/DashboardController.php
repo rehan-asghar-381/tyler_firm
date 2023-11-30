@@ -78,7 +78,7 @@ class DashboardController extends Controller
         $status_counts_arr          = [];
         $order_counts               = [];
 
-        $orders                     = Order::groupBy('status')
+        $orders                     = Order::where("status", "<>", 5)->groupBy('status')
                                     ->select('status', DB::raw('count(*) as total'));
         if($date_from != ""){
             $orders                 = $orders->where("order_date_timestamp", ">=", strtotime($date_from));
@@ -87,7 +87,7 @@ class DashboardController extends Controller
             $orders                 = $orders->where("order_date_timestamp", "<=", strtotime($date_to));
         }
         $orders                     = $orders->get();  
-        $totalOrders                = Order::count();
+        $totalOrders                = Order::where("status", "<>", 5)->count();
         foreach($orders as $id=>$order){
 
             $order_counts[$order->Orderstatus->name]["total"]           = $order->total;

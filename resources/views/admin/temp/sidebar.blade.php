@@ -1,4 +1,7 @@
-<nav class="sidebar sidebar-bunker no-print no-print">
+@php
+	$segment_one = request()->segment(2);
+@endphp
+<nav class="sidebar sidebar-bunker no-print no-print @if($segment_one == "orders") {{"active"}} @endif ">
 	<div class="sidebar-header">
 		{{-- <a href="#" class="logo"><span>Tyler Firm</span></a> --}}
 		<a href="{{url("/")}}" class="logo"><img src="{{asset('assets/images/logo/logo.webp')}}" alt=""></a>

@@ -16,6 +16,7 @@
 							<thead>
 								<tr>
 									<th scope="col">#</th>
+									<th scope="col" width="250">Date</th>
 									<th scope="col">Quote #</th>
 									<th scope="col">Assignee</th>
 									<th scope="col">Send To</th>
@@ -31,15 +32,17 @@
 								@foreach ($action_logs as $key=>$action_log)
 								<tr>
 									<th scope="row">{{$key+1}}</th>
+									<td width="250">{{ date("m-d-Y", $action_log->time_id) }}</td>
 									<td>{{$action_log->order_id}}</td>
 									<td>{{$action_log->assignee_name}}</td>
 									<td>{{$action_log->send_to}}</td>
 									<td>{{$action_log->from}}</td>
 									<td>
-										@if($action_log->invoice!="")
-											<a class="btn btn-success" href="{{asset($action_log->invoice)}} " target="_blank" style="white-space: nowrap;">Quote Preview</a>
-										@elseif($action_log->comp_id > 0)
+										@if($action_log->comp_id > 0)
+											
 											<a class="btn btn-success" href="{{route('admin.order.downloadCompFiles', $action_log->comp_id)}} " target="_blank" style="white-space: nowrap;"><i class="fas fa-download"></i> Comp</a>
+										@elseif($action_log->invoice!="")
+											<a class="btn btn-success" href="{{asset($action_log->invoice)}} " target="_blank" style="white-space: nowrap;">Quote Preview</a>
 										@else
 										{{"-"}}
 										@endif

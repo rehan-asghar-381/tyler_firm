@@ -265,6 +265,7 @@ class PublicController extends Controller
             // return "Mail send successfully !!";
         }
         $email      = Crypt::encrypt($order->ClientSaleRep->email);
+        $order_number      = Crypt::encrypt($request->order_number);
         $body                           = "Quote ".$logs_action.": ".$order->job_name." ( <strong>#".$order_id."</strong> )";
         $data['idFK']                   = $order_id;
         $data['type']                   = 'orders';
@@ -273,7 +274,7 @@ class PublicController extends Controller
         $data['body']                   = $body;
         $data['time_id']                = date('U');
         $this->add_notification($data);
-        return redirect()->route("order.quote", ['order_id' => $request->order_number, 'email' =>  $email])->withSuccess('Thank you for your response.');
+        return redirect()->route("order.quote", ['order_id' => $order_number, 'email' =>  $email])->withSuccess('Thank you for your response.');
     }
 
     public function get_comp(Request $request, $id, $email){

@@ -45,7 +45,7 @@ label{
     margin-bottom:none !important;
 }
 .productionSample{
-    margin-left: 2%;
+    margin-left: 9%;
 }
 </style>
 <style media="print">
@@ -112,24 +112,40 @@ textarea {
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="form-row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-3 mb-3">
                                             <label for="print_crew" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">PRINT CREW</label>
                                             <input type="text" name="print_crew" class="form-control input-sm" id="print_crew" readonly="" value="{{$order_d_yellow->print_crew ?? ""}}">
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-3 mb-3">
                                             <label for="goods_rec" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">Goods REC'D</label>
                                             <input type="text" name="goods_rec" readonly="" class="form-control input-sm" id="goods_rec" value="{{$order_d_yellow->goods_rec ?? ""}}">
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-3 mb-3">
                                             <label for="order_date" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">ORDER DATE</label>
                                             <input type="text" name="order_date" class="form-control input-sm" id="order_date" value="{{date("m/d/Y", $order->time_id)}}" disabled>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-3 mb-3">
                                             <label for="boxes" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">TOTAL # OF BOXES</label>
                                             <input type="text" readonly="" name="boxes" class="form-control input-sm" id="boxes" value="{{$order_d_yellow->boxes ?? ""}}">
                                         </div>
-                                     
-                                        <div class="col-md-7 mt-4" style="white-space: nowrap;">
+                                        <div class="col-md-4  mt-4">
+                                            <label for="production_sample" style="font-size: 13px;font-weight: bold; margin-bottom:unset;width: 100%">PRODUCTION SAMPLE 
+                                                <span  class="productionSample" >Yes</span>
+                                                <span class="productionSample">No</span>
+                                                {{-- <span class="productionSample">1</span> --}}
+                                                {{-- <span class="productionSample">2</span> --}}
+                                                {{-- <span class="productionSample" >3</span></label> --}}
+                                                <input type="hidden" name="production_sample" id="production_sample" value="">
+                                            {{-- <select name="production_sample" id="production_sample" class="form-control input-sm">
+                                                <option value="">Select</option>
+                                                <option value="Yes" @if(isset($order_d_yellow->production_sample) && $order_d_yellow->production_sample == "Yes") {{"selected"}} @endif>Yes</option>
+                                                <option value="No" @if(isset($order_d_yellow->production_sample) && $order_d_yellow->production_sample == "No") {{"selected"}} @endif>No</option>
+                                                <option value="1" @if(isset($order_d_yellow->production_sample) && $order_d_yellow->production_sample == "1") {{"selected"}} @endif>1</option>
+                                                <option value="2" @if(isset($order_d_yellow->production_sample) && $order_d_yellow->production_sample == "2") {{"selected"}} @endif>2</option>
+                                                <option value="3" @if(isset($order_d_yellow->production_sample) && $order_d_yellow->production_sample == "3") {{"selected"}} @endif>3</option>
+                                            </select> --}}
+                                        </div>
+                                        <div class="col-md-5 mt-4">
                                             <label for="production_sample" style="font-size: 13px;font-weight: bold; margin-bottom:unset;width: 100%">BURN PLACEMENT
                                                 <span  class="productionSample">1</span>
                                                 <span class="productionSample">2</span>
@@ -143,14 +159,14 @@ textarea {
                                                 <input type="hidden" name="production_sample" id="production_sample" value="">
 
                                             </div>
-                                            <div class="col-md-4 mt-4 mb-1">
-                                                <label for="event" style="font-size: 13px;font-weight: bold; margin-bottom:unset;   ">EVENT
+                                            <div class="col-md-2 mt-4 mb-1">
+                                                <label for="event" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">EVENT
                                                     {{-- <span style="margin-left: 30%;">Yes</span> --}}
                                                     {{-- <span style="margin-left: 30%;">No</span> --}}
                                                 </label>
                                                 {{-- <input type="hidden" name="event" id="event" value=""> --}}
 
-                                                <select name="event" id="event" class="form-control input-sm" style="margin-left: 50px;margin-top: -22px;" disabled>
+                                                <select name="event" id="event" class="form-control input-sm" style="margin-left: 65px;margin-top: -22px;" disabled>
                                                     <option value="">Select</option>
                                                     <option value="Yes" @if($order->event == "Yes") {{"selected"}} @endif>Yes</option>
                                                     <option value="No" @if($order->event == "No") {{"selected"}} @endif>No</option>
@@ -207,15 +223,15 @@ textarea {
                                                 <label for="other_info" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">Sales Rep</label>
                                                 <input type="text" name="other_info" class="form-control" id="other_info" value="{{$client_details["sales_rep"]}}" disabled>
                                             </div>
-                                            <div class="col-md-2 mb-1">
+                                            <div class="col-md-2 mb-3">
                                                 <label for="in_hands" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">Due Date</label>
                                                 <input type="text" name="in_hands" class="form-control" id="in_hands" value="@if($order->due_date>0){{date("m-d-Y", $order->due_date)}} @endif" disabled>
                                             </div>
-                                            <div class="col-md-2 mb-1>
+                                            <div class="col-md-2 mb-3">
                                                 <label for="ship_date" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">SHIP DATE</label>
                                                 <input type="text" name="ship_date" class="form-control" id="ship_date" value="@if($order->ship_date>0){{date("m-d-Y", $order->ship_date)}}@endif" disabled>
                                             </div>
-                                            <div class="col-md-2 mb-1">
+                                            <div class="col-md-2 mb-3">
                                                 <label for="palletize" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">PALLETIZE</label>
                                                 <select name="palletize_opt" id="palletize_opt" class="form-control">
                                                     <option value="">Select</option>
@@ -223,7 +239,7 @@ textarea {
                                                     <option value="No" @if(isset($order_d_yellow->palletize_opt) && $order_d_yellow->palletize_opt == "No") {{"selected"}} @endif>No</option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-2 mb-1">
+                                            <div class="col-md-2 mb-3">
                                                 <label for="ship" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">SHIP</label>
                                                 <select name="ship" id="ship" class="form-control">
                                                     <option value="">Select</option>
@@ -237,11 +253,11 @@ textarea {
                                                     <option value="POWER FORCE" @if(isset($order_d_yellow->ship) && $order_d_yellow->ship == "POWER FORCE") {{"selected"}} @endif>POWER FORCE</option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-2 mb-1">
+                                            <div class="col-md-2 mb-3">
                                                 <label for="acct" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">ACCNT</label>
                                                 <input type="text" name="acct" class="form-control" id="acct" value="{{$order_d_yellow->acct ?? ""}}">
                                             </div>
-                                            <div class="col-md-2 mb-1">
+                                            <div class="col-md-2 mb-3">
                                                 <label for="ship_date" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">DATE SHIPPED</label>
                                                 <input type="text" name="ship_date" class="form-control" id="ship_date" value="" readonly="">
                                             </div>
@@ -717,7 +733,7 @@ textarea {
                                     <label for="notes" class="col-sm-8 font-weight-600">Notes</label>
                                    
                                     <div class="col-sm-10">
-                                        <textarea type="text" rows="4" cols="45" value="" class="form-control" name="notes" id="notes" placeholder="" style="height: auto !important;">{!!$order->notes ?? ""!!}</textarea>
+                                        <textarea type="text" rows="4" cols="55" value="" class="form-control" name="notes" id="notes" placeholder="" style="height: auto !important;">{!!$order->notes ?? ""!!}</textarea>
                                       
                                     </div>
                                 </div>

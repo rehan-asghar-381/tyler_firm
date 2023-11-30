@@ -1645,6 +1645,7 @@ class OrderController extends Controller
         if((isset($request->send_comp_attachment) && $request->send_comp_attachment) && (isset($request->comp_id) && $request->comp_id!="")){
             $comp_file          = orderCompFile::find($request->comp_id);
             $attachmentPath     = public_path($comp_file->file);
+            $email->comp_id     = $request->comp_id;
         }else{
            // do nothing
         }

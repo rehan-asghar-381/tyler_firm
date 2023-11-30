@@ -55,7 +55,6 @@
                                 </tr>
                             </table>
                             {{-- @endif --}}
-                            <p style="position: fixed;bottom: 0;text-align: center;width: 100%;margin: 0 auto; padding: 10px; background-color: #fff;">Art Charge $60 per hour (1 Hour Min.) Production time is 7-12 business days from receipt of all necessary components. 50% deposit required. NWG not responsible for damages to customer provided goods. Approval must be received before order goes into production.</p>
                         </div>
                     </div>
                 </div><!--/.body content-->
