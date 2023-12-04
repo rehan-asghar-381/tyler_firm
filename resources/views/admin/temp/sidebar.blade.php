@@ -1,7 +1,8 @@
 @php
-	$segment_one = request()->segment(2);
+	$segment_one 	= request()->segment(2);
+	$segment_2 		= request()->segment(3);
 @endphp
-<nav class="sidebar sidebar-bunker no-print no-print @if($segment_one == "orders") {{"active"}} @endif ">
+<nav class="sidebar sidebar-bunker no-print no-print @if($segment_one == "orders" && $segment_2 == "") {{"active"}} @endif ">
 	<div class="sidebar-header">
 		{{-- <a href="#" class="logo"><span>Tyler Firm</span></a> --}}
 		<a href="{{url("/")}}" class="logo"><img src="{{asset('assets/images/logo/logo.webp')}}" alt=""></a>

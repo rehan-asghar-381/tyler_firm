@@ -1,17 +1,11 @@
-1. When emailing the comp and using the comp template with the {comp_link}, it's sending the quote link and not the comp link to approve. (Done)
-2. For all dropdown options in order page and dashboard, can you have a "none" or "clear" option in case someone clicks a dropdown option by mistake? (Done)
+- In Order Progress box in Dashboard, please show when Comp Status changes to "Changes Needed", "Need Approval", "In Art Room" (I won't need any of the other options to show, just those three) (Done)
 
-3. Can all Action options show in dashboard Action dropdown?
-4. I want to do my best to keep Yellow to one page, can you make the following adjustments:
+- In CREATE ORDER Page, can you please add text box to the right of Event with the title Ship Method. Move Shipping Address box to third row next to Notes box. Please have what is typed in Ship Method box show on Yellow in field "Ship". (Done)
 
-
+- Add Radio Button next to each Comp Dropdown box in COMPS field. When Radio Button is selected, the dropdown option in COMPS page will reflect on ORDERS page
 
 
-
-For D-Yellow
-
-
-1. Remove Production sample.
-2. Move Burn Placement to the left and have numbers on one line
-3. Reduce the size of the ink color boxes
-4. Bring in the "Notes" box so it's not on the edge of the page
+ALTER TABLE `orders` 
+ADD COLUMN `ship_method` text NULL AFTER `shipping_address`;
+ALTER TABLE order_comp_files` 
+ADD COLUMN `is_reflected` int NULL DEFAULT 0 AFTER `is_approved`;

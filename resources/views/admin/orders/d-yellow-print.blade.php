@@ -140,17 +140,7 @@
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label for="ship" class="font-weight-600" style="font-size: 11px;font-weight: bold;">SHIP</label>
-                                    <select name="ship" id="ship" class="form-control">
-                                        <option value="">Select</option>
-                                        <option value="WC" @if(isset($order_d_yellow->ship) && $order_d_yellow->ship == "WC") {{"selected"}} @endif>WC</option>
-                                        <option value="OT" @if(isset($order_d_yellow->ship) && $order_d_yellow->ship == "OT") {{"selected"}} @endif>OT</option>
-                                        <option value="GRND" @if(isset($order_d_yellow->ship) && $order_d_yellow->ship == "GRND") {{"selected"}} @endif>GRND</option>
-                                        <option value="2-DAY" @if(isset($order_d_yellow->ship) && $order_d_yellow->ship == "2-DAY") {{"selected"}} @endif>2-DAY</option>
-                                        <option value="OVERNIGHT" @if(isset($order_d_yellow->ship) && $order_d_yellow->ship == "OVERNIGHT") {{"selected"}} @endif>OVERNIGHT</option>
-                                        <option value="FEDEX" @if(isset($order_d_yellow->ship) && $order_d_yellow->ship == "FEDEX") {{"selected"}} @endif>FEDEX</option>
-                                        <option value="FX-3DAY AIR" @if(isset($order_d_yellow->ship) && $order_d_yellow->ship == "FX-3DAY AIR") {{"selected"}} @endif>FX-3DAY AIR</option>
-                                        <option value="POWER FORCE" @if(isset($order_d_yellow->ship) && $order_d_yellow->ship == "POWER FORCE") {{"selected"}} @endif>POWER FORCE</option>
-                                    </select>
+                                    <input type="text" name="ship" class="form-control" id="ship" value="{{$order->ship_method}}">
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label for="acct" class="font-weight-600" style="font-size: 11px;font-weight: bold;">ACCNT</label>

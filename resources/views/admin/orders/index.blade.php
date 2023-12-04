@@ -36,7 +36,7 @@
 					</select>
 				</div>
 			</div>
-			<div class="col-md-3 mb-3">
+			<div class="col-md-2 mb-3">
 				<div class="form-group">
 					<label>Date From: </label>&nbsp;&nbsp;&nbsp;
 					<div class="input-group date">
@@ -50,7 +50,7 @@
 				</div>
 			</div>
 
-			<div class="col-md-3 mb-3">
+			<div class="col-md-2 mb-3">
 				<div class="form-group">
 					<label>Date To: </label>&nbsp;&nbsp;&nbsp;
 					<div class="input-group date">
@@ -71,7 +71,16 @@
 					@php
 					$status  	= json_decode($status, true);
 					@endphp
-					<option value="{{ $status['id'] }}">{{ $status['name'] }}</option>
+					<option value="{{ $status['id'] }}" @if ($status_filter == $status['id']) {{ "selected" }} @endif>{{ $status['name'] }}</option>
+					@endforeach
+				</select>
+			</div>
+			<div class="col-md-2">
+				<label>Comp Status</label>
+				<select type="text" name="comp_status" id="comp_status" class="form-control require required-online" value="" >
+					<option value="">--select--</option>
+					@foreach ($comp_statuses as $id=>$comp_status)
+					<option value="{{ $comp_status->name }}" @if ($comp_filter == $comp_status->name) {{ "selected" }} @endif>{{ $comp_status->name }}</option>
 					@endforeach
 				</select>
 			</div>
@@ -217,6 +226,7 @@
 				d.date_from = $("input[name='date_from']").val();
 				d.date_to = $("input[name='date_to']").val();
 				d.status_id = $("select[name='status_id']").val();
+				d.comp_status = $("select[name='comp_status']").val();
 				return d;
 			}
 		},
@@ -350,29 +360,7 @@ table.ajax.reload();
 			},
 		});
 	});
-	$(document).on("click", ".btn-change-comp-status", function(event){
-		event.preventDefault();
-		let url 			= "{{ route('admin.order.comp_status_update') }}";
-		var status_id 		= $(this).attr("data-status-id");
-		var order_id 		= $(this).attr("data-order-id");
-		$.ajax({
-			url: url, 
-			type: "GET",
-			data: {
-				status_id: status_id,
-				order_id: order_id
-			},
-			success: function(data) {
-				table.ajax.reload();
-			},
-			beforeSend: function() {
-					$('.page-loader-wrapper').show();
-			},
-			complete: function(){
-				$('.page-loader-wrapper').hide();
-			},
-		});
-	});
+	
 	$(document).on("click", ".btn-change-blank", function(event){
 		event.preventDefault();
 		let url = "{{ route('admin.order.blank_update') }}";

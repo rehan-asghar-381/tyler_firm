@@ -13,7 +13,9 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
 use App\Traits\NotificationTrait;
 use App\Models\QuoteApproval;
+use App\Models\CompStatus;
 use App\Models\Blank;
+use App\Models\orderCompFile;
 use App\Models\Task;
 class DashboardController extends Controller
 {
@@ -53,8 +55,8 @@ class DashboardController extends Controller
         if($date_to != ""){
             $orders                 = $orders->where("order_date_timestamp", "<=", strtotime($date_to));
         }
-        $orders                     = $orders->where("status", "!=", 5)->get();                          
-        $users                   = User::get();
+        $orders                     = $orders->where("status", "!=", 5)->where("created_by_id", "!=", 6)->get();                          
+        $users                   = User::where("id", "!=", 6)->get();
         foreach($orders as $id=>$order){
 
             $order_counts[$order->created_by_id]       = $order->total;
@@ -75,7 +77,6 @@ class DashboardController extends Controller
     public function orderCounts(Request $request){
         $date_from                  = $request->get('date_from');
         $date_to                    = $request->get('date_to');
-        $status_counts_arr          = [];
         $order_counts               = [];
 
         $orders                     = Order::where("status", "<>", 5)->groupBy('status')
@@ -90,9 +91,21 @@ class DashboardController extends Controller
         $totalOrders                = Order::where("status", "<>", 5)->count();
         foreach($orders as $id=>$order){
 
+            $order_counts[$order->Orderstatus->name]["filter_type"]     = 1;
             $order_counts[$order->Orderstatus->name]["total"]           = $order->total;
             $order_counts[$order->Orderstatus->name]["perc"]            = number_format(($order->total/$totalOrders)*100, 0);
         }
+
+        $comps                                                          = Order::wherein("comp_approval", ["Changes Needed", "Need Approval", "In Art Room"])->get();
+        $compstotal                                                     = $comps->count();
+        $countByApproval                                                = $comps->countBy('comp_approval');
+
+        foreach($countByApproval as $approvalStatus =>$count ){
+            $order_counts[$approvalStatus]["filter_type"]               = 2;
+            $order_counts[$approvalStatus]["total"]                     = $count;
+            $order_counts[$approvalStatus]["perc"]                      = number_format(($count/$compstotal)*100, 0);
+        }
+
         $html       = $this->prepareOrderCountHtml($order_counts);
         return ['order_counts' => $html];
     }
@@ -104,6 +117,7 @@ class DashboardController extends Controller
         $statuses           = Status::where('is_active', 'Y')->get(['id', 'name']);
         $quote_approval     = QuoteApproval::where('is_active', 'Y')->get(['id', 'name']);
         $blanks             = Blank::where('is_active', 'Y')->get(['id', 'name']);
+        $comp_statuses      = CompStatus::get();
         $rData              = Order::withCount("EmailLog")->with(["client", "ClientSaleRep","ActionSeen"=>function($q) use($user_id){
             $q->where('seen_by', '=', $user_id);
         
@@ -206,6 +220,29 @@ class DashboardController extends Controller
                 return '-';
             }
         })
+        ->editColumn('comp_approval', function ($data) use($comp_statuses){
+            $cls            = "";
+            $inner_html     = "";
+            $name           = ($data->comp_approval != "") ? $data->comp_approval: "--select";
+            foreach($comp_statuses as $status){
+                if($data->comp_approval == $status->name){
+
+                    $cls            = $status->class;
+                }
+                $inner_html   .= '<a class="dropdown-item btn-change-comp-status" href="#" data-status-id="'.$status->name.'" data-order-id="'.$data->id.'">'.$status->name.'</a>';
+            }
+
+            $html   = '<div class="btn-group mb-2 mr-1">
+                        <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:140px;">'.$name.'</button>
+                        <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
+            
+            $html   .=    $inner_html;
+            $html   .=    '</div></div>';
+
+                return $html;
+            
+           
+        })
         ->editColumn('quote_approval', function ($data) use($quote_approval){
             if(isset($data->QuoteApproval->name)){
                 $name   = $data->QuoteApproval->name;
@@ -289,7 +326,7 @@ class DashboardController extends Controller
             $action_list        .= '</div></div>';
             return  $action_list;
         })
-        ->rawColumns(['actions', 'status', 'notification', 'blank', 'quote_approval'])
+        ->rawColumns(['actions', 'status', 'notification', 'blank', 'quote_approval', 'comp_approval'])
         ->make(TRUE);
     }
 
@@ -309,8 +346,13 @@ class DashboardController extends Controller
 
         $html           = '';
         foreach ($order_counts as $status=>$order_count){
-            ;
-          $html         .='<div class="row mb-3"><div class="col-9"><div class="progress-wrapper"><span class="progress-label text-muted">'.$status.'</span><div class="progress mt-1 mb-2" style="height: 5px;"><div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'.$order_count["perc"].'" aria-valuemin="0" aria-valuemax="100" style="width: '.$order_count["perc"].'%"></div></div></div></div><div class="col-3 align-self-end text-right"><span class="h6 mb-0">'.$order_count["total"].' <strong>('.$order_count["perc"].'%)</strong></span></div></div>';
+            
+            $filter_type        = $order_count["filter_type"] ?? "";
+            $filter_value       = $status;
+            $url                = route("admin.orders.index", ["filter_type"=>$filter_type, "filter_value"=>$filter_value]);
+            // dd($url);
+
+          $html         .='<a href="'.$url.'"><div class="row mb-3"><div class="col-9"><div class="progress-wrapper"><span class="progress-label text-muted">'.$status.'</span><div class="progress mt-1 mb-2" style="height: 5px;"><div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'.$order_count["perc"].'" aria-valuemin="0" aria-valuemax="100" style="width: '.$order_count["perc"].'%"></div></div></div></div><div class="col-3 align-self-end text-right"><span class="h6 mb-0">'.$order_count["total"].' <strong>('.$order_count["perc"].'%)</strong></span></div></div></a>';
           
         }
         return  $html;
@@ -413,7 +455,7 @@ class DashboardController extends Controller
         foreach($orders as $order){
             $event                      = [];
             $event["title"]             = $order->job_name;
-            $event["start"]             = date('Y-m-d\TH:i:s', $order->due_date);
+            $event["start"]             = date('Y-m-d', $order->due_date);
             if($order->event == "Yes"){
                 $event["color"]         = "#fb7979";
             }else{

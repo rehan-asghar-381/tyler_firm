@@ -246,6 +246,12 @@ hr{
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
+                                    <label>Ship Method</label>
+                                    <textarea type="text" value="" class="form-control" name="ship_method" id="ship_method" placeholder="" rows="2" ></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
                                     <label>Shipping Address</label>
                                     <textarea type="text" value="" class="form-control" name="shipping_address" id="shipping_address" placeholder="" rows="2" ></textarea>
                                 </div>

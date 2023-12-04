@@ -95,12 +95,24 @@ class OrderController extends Controller
      *
      * @return response()
      */
-    public function index()
+    public function index(Request $request)
     {
+
+        
         $pageTitle                              = "Orders";
         $statuses_arr                           = [];
+        $status_filter                          = "";
+        $comp_filter                            = "";
+        $filter_type                            = $request->has('filter_type') ? $request->filter_type: 0;
+        $filter_value                           = $request->has('filter_value') ? $request->filter_value: "";
+        if($filter_type == 1 && $filter_value != "" ){
+            $status_filter_ob                   = Status::where('name', $filter_value)->first();
+            $status_filter                      = $status_filter_ob->id;
+        }elseif($filter_type == 2 && $filter_value != ""){
+            $comp_filter                        = $filter_value;
+        }
         $statuses                               = Status::where('is_active', 'Y')->get(['id', 'name']);
-        
+        $comp_statuses                          = CompStatus::get();
         foreach($statuses as $key=>$status){
 
             $statuses_arr['"'.$key.'"']          = $status;
@@ -124,7 +136,7 @@ class OrderController extends Controller
         
         $clients        = Client::get();
 
-        return view('admin.orders.index', compact('pageTitle', 'statuses_arr', 'blank_arr','quote_approval_arr','clients'));
+        return view('admin.orders.index', compact('pageTitle', 'statuses_arr', 'blank_arr','quote_approval_arr','clients', 'comp_statuses', 'status_filter', 'comp_filter'));
     } 
 
     public function ajaxtData(Request $request){
@@ -140,6 +152,10 @@ class OrderController extends Controller
         
         if($request->client_id != ""){
             $rData              = $rData->where('client_id', $request->client_id);
+        }
+        
+        if($request->comp_status != ""){
+            $rData              = $rData->where('comp_approval', $request->comp_status);
         }
         if($request->date_from != ""){
             $rData              = $rData->where('time_id', '>=', strtotime($request->date_from));
@@ -408,6 +424,7 @@ class OrderController extends Controller
         $order->due_date            = (isset($due_date) && $due_date != "")?strtotime($due_date):0;
         $order->event               = $rData['event'];
         $order->shipping_address    = $rData['shipping_address'];
+        $order->ship_method         = $rData['ship_method'];
         $order->ship_date           = (isset($ship_date) && $ship_date != "")?strtotime($ship_date):0;
         $order->shipping_address    = $rData['shipping_address'];
         $order->notes               = $rData['notes'];
@@ -833,6 +850,7 @@ class OrderController extends Controller
         $order->ship_date           = (isset($ship_date) && $ship_date != "")?strtotime($ship_date):0;
         $order->event               = $rData['event'];
         $order->shipping_address    = $rData['shipping_address'];
+        $order->ship_method         = $rData['ship_method'];
         $order->notes               = $rData['notes'];
         $order->internal_notes      = $rData['internal_notes'];
         $order->job_name            = $rData['job_name'];
@@ -946,9 +964,19 @@ class OrderController extends Controller
     {
         $order_id               = $request->get('order_id');
         $status                 = $request->get('status_id');
+        $comp_id                = $request->get('comp_id');
         $order                  = Order::find($order_id);
         $order->comp_approval   = $status;
         $order->save();
+
+        $comp                   = orderCompFile::where(["order_id"=>$order_id, "is_reflected"=>1])->first();
+        if($comp){
+            if($comp->id != $comp_id){
+                $upComp                 = orderCompFile::find($comp_id);
+                $upComp->is_reflected   = 1;
+                $upComp->save();
+            }
+        }
         return json_encode(array("status"=>true, "message"=>"Comp Status has been updated successfully!"));
     }
     public function blank_update(Request $request)

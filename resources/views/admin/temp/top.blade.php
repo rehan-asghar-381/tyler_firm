@@ -1,7 +1,8 @@
 @php
 	$segment_one = request()->segment(2);
+	$segment_2 		= request()->segment(3);
 @endphp
-<nav class="navbar-custom-menu navbar navbar-expand-lg m-0 no-print @if($segment_one == "orders") {{"active"}} @endif">
+<nav class="navbar-custom-menu navbar navbar-expand-lg m-0 no-print @if($segment_one == "orders" && $segment_2 == "") {{"active"}} @endif">
 	<div class="sidebar-toggle-icon" id="sidebarCollapse">
 		sidebar toggle<span></span>
 	</div>

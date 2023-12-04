@@ -158,6 +158,15 @@
                 <hr>
                 <div class="row align-items-center">
                     <div class="col">
+                        <h6 class="mb-0 font-weight-600">Ship Method</h6>
+                    </div>
+                    <div class="col-auto">
+                        <a href="#!" class="fs-13 font-weight-600">{{ $order->ship_method ?? "-" }}</a>
+                    </div>
+                </div>
+                <hr>
+                <div class="row align-items-center">
+                    <div class="col">
                         <h6 class="mb-0 font-weight-600">Due Date</h6>
                     </div>
                     <div class="col-auto">

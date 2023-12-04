@@ -267,6 +267,12 @@ hr{
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
+                                    <label>Ship Method</label>
+                                    <textarea type="text" value="" class="form-control" name="ship_method" id="ship_method" placeholder="" rows="2" >{{$order->ship_method}}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
                                 <label>Shipping Address</label>
                                 <textarea type="text" value="" class="form-control" name="shipping_address" id="shipping_address" placeholder="" rows="2" >{{$order->shipping_address}}</textarea>
                                 </div>
@@ -586,6 +592,12 @@ hr{
                                     <div class="col-md-6">
                                         <a href="{{route('admin.order.downloadCompFiles', $orderCompFile->id)}}" class="btn btn-purple btn-circle mb-2 mr-1" style="width: 150px !important;"><i class="fas fa-download"></i> Comp {{$i++}}</a>
                                     </div>
+                                    <div class="col-md-2">
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            <input type="radio" id="customRadioInline{{$orderCompFile->id}}" name="customRadioInline1" class="custom-control-input btn-change-comp-status" data-order-id="{{$order->id}}" data-status-id="{{$orderCompFile->is_approved}}" data-comp-id="{{ $orderCompFile->id }}">
+                                            <label class="custom-control-label" for="customRadioInline{{$orderCompFile->id}}">Reflect to orders</label>
+                                        </div>
+                                    </div>
                                     <div class="col-md-2 float-right">
                                         @php
                                             $cls            = "light";
@@ -609,7 +621,7 @@ hr{
                                             }
                                         @endphp
                                         <div class="btn-group mb-2 mr-1  --status-div">
-                                            <button type="button" class="btn btn-{{$cls}} --new-value dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:125px;">{{$orderCompFile->is_approved ?? "--select--"}}</button>
+                                            <button type="button" class="btn btn-{{$cls}} --new-value dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:125px;">{{ $orderCompFile->is_approved ?? "--select--"}}</button>
                                             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">
                                                <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Changes Needed" data-prev-class="{{$cls}}" data-new-class="light">Changes Needed</a>
                                                <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Approved" data-prev-class="{{$cls}}" data-new-class="sucess-custom">Approved</a>
@@ -1549,6 +1561,32 @@ hr{
                         console.log(data);
                     }
                 });
+            });
+            $(document).on("change", ".btn-change-comp-status", function(event){
+                event.preventDefault();
+                setTimeout(() => {
+                    let url 			= "{{ route('admin.order.comp_status_update') }}";
+                    var status_id 		= $(this).attr("data-status-id");
+                    var order_id 		= $(this).attr("data-order-id");
+                    var comp_id 		= $(this).attr("data-comp-id");
+                    $.ajax({
+                        url: url, 
+                        type: "GET",
+                        data: {
+                            status_id: status_id,
+                            order_id: order_id,
+                            comp_id: comp_id
+                        },
+                        success: function(data) {
+                        },
+                        beforeSend: function() {
+                                $('.page-loader-wrapper').show();
+                        },
+                        complete: function(){
+                            $('.page-loader-wrapper').hide();
+                        },
+                    });
+                }, 1000);
             });
         });
 </script>
