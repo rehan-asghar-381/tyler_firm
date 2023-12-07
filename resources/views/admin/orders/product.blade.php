@@ -50,7 +50,7 @@
                                                         class="form-control select-one --update-name attribute {{ ($ProductVariant->name == "Color") ? "v1_attr_id" : "v2_attr_id" }}" data-selector="{{$terminator}}">
                                                             <option value="">Color</option>
                                                             @if (count($ProductVariant->Atrributes)>0)
-                                                                @foreach ($ProductVariant->Atrributes as $Atrribute)
+                                                                @foreach ($ProductVariant->Atrributes->sortBy('name')->values() as $Atrribute)
                                                                 <option id="customRadioInline-{{$Atrribute->id}}"   value="{{$Atrribute->id}}" @if(in_array($Atrribute->id, $order_clrs_arr["colors"])) {{ "selected" }} @endif>{{$Atrribute->name}}</option>
                                                                 @endforeach
                                                             @endif
@@ -147,7 +147,7 @@
                                                     class="form-control select-one --update-name attribute {{ ($ProductVariant->name == "Color") ? "v1_attr_id" : "v2_attr_id" }}" data-selector="{{$terminator}}">
                                                         <option value="">Color</option>
                                                         @if (count($ProductVariant->Atrributes)>0)
-                                                            @foreach ($ProductVariant->Atrributes as $Atrribute)
+                                                            @foreach ($ProductVariant->Atrributes->sortBy('name')->values() as $Atrribute)
                                                             <option id="customRadioInline-{{$Atrribute->id}}"   value="{{$Atrribute->id}}" >{{$Atrribute->name}}</option>
                                                             @endforeach
                                                         @endif

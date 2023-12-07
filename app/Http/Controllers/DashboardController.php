@@ -232,14 +232,20 @@ class DashboardController extends Controller
                 $inner_html   .= '<a class="dropdown-item btn-change-comp-status" href="#" data-status-id="'.$status->name.'" data-order-id="'.$data->id.'">'.$status->name.'</a>';
             }
 
-            $html   = '<div class="btn-group mb-2 mr-1">
-                        <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:140px;">'.$name.'</button>
-                        <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
+            // $html   = '<div class="btn-group mb-2 mr-1">
+            //             <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:140px;">'.$name.'</button>
+            //             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
             
-            $html   .=    $inner_html;
-            $html   .=    '</div></div>';
+            // $html   .=    $inner_html;
+            // $html   .=    '</div></div>';
 
-                return $html;
+            // return $html;
+
+            $html   = '<div class="btn-group mb-2 mr-1">
+                        <button type="button" class="btn btn-'.$cls.' " style="white-space: nowrap;width:140px;">'.$name.'</button>';
+            $html   .=    '</div>';
+
+            return $html;
             
            
         })
@@ -322,7 +328,9 @@ class DashboardController extends Controller
             if(auth()->user()->can('orders-edit')){
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.edit', $data->id).'"><i class="far fa-edit"></i> Edit</a>';
             }
-            
+            $url  = route('admin.order.edit', $data->id).'?comp_tab=true';
+            $action_list    .= '<a class="dropdown-item" href="'.$url.'"><i class="far fa fa-file"></i> Comps View </a>';
+
             $action_list        .= '</div></div>';
             return  $action_list;
         })
@@ -456,6 +464,7 @@ class DashboardController extends Controller
             $event                      = [];
             $event["title"]             = $order->job_name;
             $event["start"]             = date('Y-m-d', $order->due_date);
+            $event["url"]               = route("admin.order.view", $order->id);
             if($order->event == "Yes"){
                 $event["color"]         = "#fb7979";
             }else{

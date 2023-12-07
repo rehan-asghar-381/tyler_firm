@@ -1,11 +1,11 @@
-- In Order Progress box in Dashboard, please show when Comp Status changes to "Changes Needed", "Need Approval", "In Art Room" (I won't need any of the other options to show, just those three) (Done)
+- Any time "Delete" is clicked for any order, product, or garment brand, please add pop up saying "Are You Sure You Want To Delete? with a Yes and No button (Done)
 
-- In CREATE ORDER Page, can you please add text box to the right of Event with the title Ship Method. Move Shipping Address box to third row next to Notes box. Please have what is typed in Ship Method box show on Yellow in field "Ship". (Done)
+    This one is done for orders and we can't delete products and brands from the database because it will have negetive impact in orders, invoice and yellow etc.
+- When selecting a garment color while creating a new order, can you please make this list alphabetical (Done)
+- Was getting this error after attempting to save an order when I had 3 different items in the quote
+    
 
-- Add Radio Button next to each Comp Dropdown box in COMPS field. When Radio Button is selected, the dropdown option in COMPS page will reflect on ORDERS page
+- I also wasn't able to email the quote, it would act like it's sending and then nothing would happen on screen
+- Comp status issue (Done)
 
-
-ALTER TABLE `orders` 
-ADD COLUMN `ship_method` text NULL AFTER `shipping_address`;
-ALTER TABLE order_comp_files` 
-ADD COLUMN `is_reflected` int NULL DEFAULT 0 AFTER `is_approved`;
+- Need to add profit margin calculation box in view detail page for admin. Nobody else can see it. (Need Discussion on it.)

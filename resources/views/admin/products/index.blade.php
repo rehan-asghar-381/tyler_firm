@@ -485,6 +485,13 @@ $("#search-button").click(function (e) {
   table.ajax.reload();
 
 });
+$(document).on("click", ".del", function(){
+  if(window.confirm('Are you sure you want to delete it?')){
+    return true;
+  }else{
+    return false;
+  }
+});
 
 
 </script>

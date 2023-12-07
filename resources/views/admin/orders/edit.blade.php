@@ -592,53 +592,37 @@ hr{
                                     <div class="col-md-6">
                                         <a href="{{route('admin.order.downloadCompFiles', $orderCompFile->id)}}" class="btn btn-purple btn-circle mb-2 mr-1" style="width: 150px !important;"><i class="fas fa-download"></i> Comp {{$i++}}</a>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-2 --radio-parent">
                                         <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="customRadioInline{{$orderCompFile->id}}" name="customRadioInline1" class="custom-control-input btn-change-comp-status" data-order-id="{{$order->id}}" data-status-id="{{$orderCompFile->is_approved}}" data-comp-id="{{ $orderCompFile->id }}">
+                                            <input type="radio" id="customRadioInline{{$orderCompFile->id}}" name="customRadioInline1" class="custom-control-input btn-change-comp-status" data-order-id="{{$order->id}}" data-status-id="{{$orderCompFile->is_approved}}" data-comp-id="{{ $orderCompFile->id }}" @if($orderCompFile->is_reflected == 1) {{"checked"}} @endif>
                                             <label class="custom-control-label" for="customRadioInline{{$orderCompFile->id}}">Reflect to orders</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-2 float-right">
+
                                         @php
-                                            $cls            = "light";
-                                            $com_approved   = ($orderCompFile->is_approved != "") ? $orderCompFile->is_approved:"";
-                                            if($com_approved != "" && $com_approved == "Changes Needed"){
-                                                $cls        = "danger";
-                                            }elseif($com_approved != "" && $com_approved == "Approved"){
-                                                $cls        = "sucess-custom";
-                                            }elseif($com_approved != "" && $com_approved == "Approved No Films"){
-                                                $cls        = "info";
-                                            }elseif($com_approved != "" && $com_approved == "Films Done"){
-                                                $cls        = "black";
-                                            }elseif($com_approved != "" && $com_approved == "Comp Sent"){
-                                                $cls        = "primary";
-                                            }elseif($com_approved != "" && $com_approved == "Need Approval"){
-                                                $cls        = "violet";
-                                            }elseif($com_approved != "" && $com_approved == "Reorder"){
-                                                $cls        = "pink";
-                                            }elseif($com_approved != "" && $com_approved == "In Art Room"){
-                                                $cls        = "warning";
+                                            $cls            = "";
+                                            $inner_html     = "";
+                                            $name           = ($orderCompFile->is_approved != "") ? $orderCompFile->is_approved: "--select";
+                                            foreach($comp_statuses as $status){
+                                                if($orderCompFile->is_approved == $status->name){
+
+                                                    $cls            = $status->class;
+                                                }
+                                                $inner_html   .= '<a class="dropdown-item btn-change-comp-status" href="#" data-status-id="'.$status->name.'" data-comp-id="'.$orderCompFile->id.'" data-order-id="'.$order->id.'">'.$status->name.'</a>';
                                             }
-                                        @endphp
-                                        <div class="btn-group mb-2 mr-1  --status-div">
-                                            <button type="button" class="btn btn-{{$cls}} --new-value dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:125px;">{{ $orderCompFile->is_approved ?? "--select--"}}</button>
-                                            <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Changes Needed" data-prev-class="{{$cls}}" data-new-class="light">Changes Needed</a>
-                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Approved" data-prev-class="{{$cls}}" data-new-class="sucess-custom">Approved</a>
-                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Approved No Films" data-prev-class="{{$cls}}" data-new-class="info">Approved No Films</a>
-                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Films Done" data-prev-class="{{$cls}}" data-new-class="black">Films Done</a>
-                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Comp Sent" data-prev-class="{{$cls}}" data-new-class="violet">Comp Sent</a>
-                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Need Approval" data-prev-class="{{$cls}}" data-new-class="warning">Need Approval</a>
-                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="Reorder" data-prev-class="{{$cls}}" data-new-class="pink">Reorder</a>
-                                               <a class="dropdown-item --comp-action" href="#" data-id="{{$orderCompFile->id}}" data-order-id="{{$order->id}}" data-value="In Art Room" data-prev-class="{{$cls}}" data-new-class="light">In Art Room</a>
-                                            </div>
-                                        </div>
-                                    </div>
+
+                                            $html   = '<div class="btn-group mb-2 mr-1">
+                                                        <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:155px;" data-name="'.$name.'">'.$name.'</button>
+                                                        <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
+                                            
+                                            $html   .=    $inner_html;
+                                            $html   .=    '</div></div>';
+                                        @endphp 
+                                    {!! $html !!}
                                     <div class="col-md-2 float-right">
-                                        <a class="btn btn-md btn-warning mb-3 send-email-modal" href="#" data-client_id="{{ $order->client_id }}" data-id="{{ $order->id }}" data-email="{{ $order->ClientSaleRep->email ?? '' }}"  data-sale_rep_name="{{$order->ClientSaleRep->first_name ?? ''}} {{ $order->ClientSaleRep->last_name ?? '' }}" data-company_name="{{ $order->client->company_name ?? '' }}" data-job_name="{{ $order->job_name ?? '' }}" data-order_number="{{ $order->order_number ?? '' }}" data-comp-id="{{$orderCompFile->id}}"><i class="hvr-buzz-out far fa-envelope"></i> Send Email</a>
+                                        <a class="btn btn-md btn-warning send-email-modal" href="#" data-client_id="{{ $order->client_id }}" data-id="{{ $order->id }}" data-email="{{ $order->ClientSaleRep->email ?? '' }}"  data-sale_rep_name="{{$order->ClientSaleRep->first_name ?? ''}} {{ $order->ClientSaleRep->last_name ?? '' }}" data-company_name="{{ $order->client->company_name ?? '' }}" data-job_name="{{ $order->job_name ?? '' }}" data-order_number="{{ $order->order_number ?? '' }}" data-comp-id="{{$orderCompFile->id}}"><i class="hvr-buzz-out far fa-envelope"></i> Send Email</a>
                                     </div>
                                     @endforeach
-                                </div>
                                 @endif
                                 @if (count($order->orderCompFiles) > 0)
                                     <div class="row">
@@ -1562,31 +1546,38 @@ hr{
                     }
                 });
             });
-            $(document).on("change", ".btn-change-comp-status", function(event){
+            $(document).on("blur", ".btn-change-comp-status", function(event){
                 event.preventDefault();
-                setTimeout(() => {
-                    let url 			= "{{ route('admin.order.comp_status_update') }}";
-                    var status_id 		= $(this).attr("data-status-id");
-                    var order_id 		= $(this).attr("data-order-id");
-                    var comp_id 		= $(this).attr("data-comp-id");
-                    $.ajax({
-                        url: url, 
-                        type: "GET",
-                        data: {
-                            status_id: status_id,
-                            order_id: order_id,
-                            comp_id: comp_id
-                        },
-                        success: function(data) {
-                        },
-                        beforeSend: function() {
-                                $('.page-loader-wrapper').show();
-                        },
-                        complete: function(){
-                            $('.page-loader-wrapper').hide();
-                        },
-                    });
-                }, 1000);
+                let url 			= "{{ route('admin.order.comp_status_update') }}";
+                var status_id 		= $(this).attr("data-status-id");
+                var order_id 		= $(this).attr("data-order-id");
+                var comp_id 		= $(this).attr("data-comp-id");
+                var is_checked      = 0;
+
+                if($(this).hasClass('custom-control-input')){
+                    if($(this).is(':checked')){
+                        is_checked  = 1;
+                        status_id   = $(this).closest('.--radio-parent').next().find('button').attr('data-name');
+                    }
+                }else{
+                    if($(this).parent().parent().prev().find('.custom-control-input').is(':checked')){
+                        is_checked  = 1;
+                    }
+                }
+                $.ajax({
+                    url: url, 
+                    type: "GET",
+                    data: {
+                        status_id: status_id,
+                        order_id: order_id,
+                        comp_id: comp_id,
+                        is_checked: is_checked
+                    },
+                    success: function(data) {
+                        let url  = '{{route("admin.order.edit", $order->id).'?comp_tab=true'}}';
+                        window.location.href = url;
+                    }
+                });
             });
         });
 </script>

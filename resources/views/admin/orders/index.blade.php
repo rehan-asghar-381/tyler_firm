@@ -605,6 +605,14 @@ table.ajax.reload();
 				}
 			});
 		});
+
+		$(document).on("click", ".del", function(){
+			if(window.confirm('Are You Sure You Want To Delete?')){
+				return true;
+			}else{
+				return false;
+			}
+		});
 	});
 </script>
 @endsection

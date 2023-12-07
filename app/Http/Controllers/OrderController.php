@@ -261,13 +261,12 @@ class OrderController extends Controller
             }
 
             $html   = '<div class="btn-group mb-2 mr-1">
-                        <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:140px;">'.$name.'</button>
-                        <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
+                        <button type="button" class="btn btn-'.$cls.'" style="white-space: nowrap;width:140px;">'.$name.'</button>';
             
-            $html   .=    $inner_html;
-            $html   .=    '</div></div>';
+            // $html   .=    $inner_html;
+            $html   .=    '</div>';
 
-                return $html;
+            return $html;
             
            
         })
@@ -351,7 +350,7 @@ class OrderController extends Controller
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.edit', $data->id).'"><i class="far fa-edit"></i> Edit</a>';
             }
             if(auth()->user()->can('orders-delete')){
-                $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.delete', $data->id).'"><i class="far fa-trash-alt"></i> Delete</a>';
+                $action_list    .= '<a class="dropdown-item del" href="'.route('admin.order.delete', $data->id).'"><i class="far fa-trash-alt"></i> Delete</a>';
             }
             if(auth()->user()->can('orders-replicate')){
             
@@ -359,7 +358,9 @@ class OrderController extends Controller
             }
             if(auth()->user()->can('orders-generate-d-yellow')){
             $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.DYellow', $data->id).'"><i class="far fa fa-file"></i> Create Yellow</a>';
-            }
+        }
+            $url  = route('admin.order.edit', $data->id).'?comp_tab=true';
+            $action_list    .= '<a class="dropdown-item" href="'.$url.'"><i class="far fa fa-file"></i> Comps View </a>';
             if(auth()->user()->can('orders-generate-invoice')){
                 $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice', $data->id) .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
             }
@@ -438,16 +439,18 @@ class OrderController extends Controller
         $order->save();
         $orderID                    = $order->id;
         $selector_references_arr    = [];
-        $selector_references        = $rData['product_size'];
+        $selector_references        = $rData['product_size'] ?? [];
+        if(count($selector_references) > 0){
 
-        foreach($selector_references as $p_d=>$selector_reference){
-            foreach($selector_reference as $ref_id=>$ref_size){
-                $selector_references_arr[$p_d][] = $ref_id;
+            foreach($selector_references as $p_d=>$selector_reference){
+                foreach($selector_reference as $ref_id=>$ref_size){
+                    $selector_references_arr[$p_d][] = $ref_id;
+                }
             }
         }
 
-        $product_ids                = $rData['product_ids'];
-        $products_name              = $rData['products_name'];
+        $product_ids                = $rData['product_ids'] ?? [];
+        $products_name              = $rData['products_name'] ?? [];
         if($request->hasFile('filePhoto')){
             if(count($request->file('filePhoto')) > 0 ){
                 $this->save_order_imgs($request->file('filePhoto'), $orderID);
@@ -459,10 +462,10 @@ class OrderController extends Controller
         if (count($product_ids) > 0) {
             $this->save_order_products($product_ids,$products_name, $orderID, $selector_references_arr);
         }
-        $attribute_color                        = $rData['attribute_color'];
-        $attribute_size                         = $rData['attribute_size'];
-        $pieces                                 = $rData['pieces'];
-        $prices                                 = $rData['price'];
+        $attribute_color                        = $rData['attribute_color'] ?? [];
+        $attribute_size                         = $rData['attribute_size'] ?? [];
+        $pieces                                 = $rData['pieces'] ?? [];
+        $prices                                 = $rData['price'] ?? [];
         // $total                                  = $rData['total'];
         $total                                  = [];
         if (count($attribute_color) > 0 ) {
@@ -519,6 +522,7 @@ class OrderController extends Controller
     }
    public function save_art_files($files_arr=[], $order_id){
         $order                  = Order::find($order_id);
+        
         $art_files              = [];
         foreach($files_arr as $file){             
             if(is_file($file)){
@@ -537,7 +541,8 @@ class OrderController extends Controller
             }
         }
         $order->OrderArtFiles()->saveMany($art_files);
-
+        $order->comp_approval="In Art Room";
+        $order->save();
         $user_name                      = Auth::user()->name;
         $user_id                        = Auth::user()->id;
         $body                           = $user_name." uploaded <strong>Art Files</strong> for <strong>".$order->job_name." </strong> ( <strong>#".$order->id."</strong> )";
@@ -746,7 +751,7 @@ class OrderController extends Controller
         $order->OrderProducts()->delete();
         $order->OrderProducts()->saveMany($order_products_arr);
     }
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
        
         $pageTitle                  = "Orders";
@@ -782,10 +787,11 @@ class OrderController extends Controller
         $active_comp                = false;
         if(session('art_room')){
             $active_art_room        = true;
-        }elseif(session('comp_tab')){
+        }elseif(session('comp_tab') || ( $request->has('comp_tab') && $request->comp_tab == true) ){
             $active_comp            = true;
         }
-        return view('admin.orders.edit',compact('pageTitle', 'order', 'clients', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr', 'active_art_room', 'active_comp'));
+        $comp_statuses      = CompStatus::get();
+        return view('admin.orders.edit',compact('pageTitle', 'order', 'clients', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr', 'active_art_room', 'active_comp', 'comp_statuses'));
     }
     public function save_comp_details($comp_comment, $id){
         $user_id                = Auth::user()->id;
@@ -861,15 +867,18 @@ class OrderController extends Controller
         $order->save();
         $orderID                    = $order->id;
         $selector_references_arr    = [];
-        $selector_references        = $rData['product_size'];
+        $selector_references        = $rData['product_size'] ?? [];
 
-        foreach($selector_references as $p_d=>$selector_reference){
-            foreach($selector_reference as $ref_id=>$ref_size){
-                $selector_references_arr[$p_d][] = $ref_id;
+        if(count($selector_references) > 0){
+
+            foreach($selector_references as $p_d=>$selector_reference){
+                foreach($selector_reference as $ref_id=>$ref_size){
+                    $selector_references_arr[$p_d][] = $ref_id;
+                }
             }
         }
-        $product_ids                = $rData['product_ids'];
-        $products_name              = $rData['products_name'];
+        $product_ids                = $rData['product_ids'] ?? [];
+        $products_name              = $rData['products_name'] ?? [];
         if(count($product_ids) > 0){
             $this->save_order_prices($orderID, $rData);
         }
@@ -882,10 +891,10 @@ class OrderController extends Controller
                 $this->save_order_imgs($request->file('filePhoto'), $orderID);
             }
         }
-        $attribute_color                        = $rData['attribute_color'];
-        $attribute_size                         = $rData['attribute_size'];
-        $pieces                                 = $rData['pieces'];
-        $prices                                 = $rData['price'];
+        $attribute_color                        = $rData['attribute_color'] ?? [];
+        $attribute_size                         = $rData['attribute_size'] ?? [];
+        $pieces                                 = $rData['pieces'] ?? [];
+        $prices                                 = $rData['price'] ?? [];
         // $total                                  = $rData['total'];
         $total                                  = [];
         if (count($attribute_color) > 0 ) {
@@ -965,18 +974,24 @@ class OrderController extends Controller
         $order_id               = $request->get('order_id');
         $status                 = $request->get('status_id');
         $comp_id                = $request->get('comp_id');
-        $order                  = Order::find($order_id);
-        $order->comp_approval   = $status;
-        $order->save();
-
+        $is_checked             = $request->get('is_checked');
+        
+        if($is_checked){
+            $order                  = Order::find($order_id);
+            $order->comp_approval   = $status;
+            $order->save();
+        }
         $comp                   = orderCompFile::where(["order_id"=>$order_id, "is_reflected"=>1])->first();
         if($comp){
-            if($comp->id != $comp_id){
-                $upComp                 = orderCompFile::find($comp_id);
-                $upComp->is_reflected   = 1;
-                $upComp->save();
-            }
+            $comp->is_reflected   = 0;
+            $comp->save();
         }
+        $upComp                 = orderCompFile::find($comp_id);
+        if($is_checked){
+            $upComp->is_reflected   = 1;
+        }
+        $upComp->is_approved    = $status;
+        $upComp->save();
         return json_encode(array("status"=>true, "message"=>"Comp Status has been updated successfully!"));
     }
     public function blank_update(Request $request)
@@ -1617,7 +1632,7 @@ class OrderController extends Controller
         $order_d_yellow->palletize_opt          = $rData["palletize_opt"];
         // $order_d_yellow->in_hands               = $rData["in_hands"];
         // $order_d_yellow->design                 = $rData["design"];
-        $order_d_yellow->ship                   = $rData["ship"];
+        // $order_d_yellow->ship                   = $rData["ship"];
         $order_d_yellow->acct                   = $rData["acct"];
         $order_d_yellow->alpha                  = $rData["alpha"];
         $order_d_yellow->s_and_s                = $rData["s_and_s"];
