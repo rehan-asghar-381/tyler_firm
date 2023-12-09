@@ -2,12 +2,12 @@
 <style type="text/css">
 
 .form-control {
-    height:calc(1.5em + 0.25rem + 0px) !important;
+    height:calc(1.25em + 0.25rem + 0px) !important;
     font-size:14px !important;
     padding:0 0.75rem !important;
     font-weight: 700 !important;
     color: #000000 !important;
-    border: 2px solid #000000 !important;
+    border: 1px solid #000000 !important;
 }
 textarea {
   width: auto !important; 
@@ -191,32 +191,32 @@ textarea {
                                     <div class="col-md-12">
                                         <div class="form-row">
                                             <div class="col-md-3 mb-3">
-                                                <label for="company_name" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">CUSTOMER</label>
+                                                <label for="company_name" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">CUSTOMER</label>
                                                 <input type="text" name="company_name" class="form-control input-sm" id="company_name" value="{{$client_details["company_name"]}}" disabled>
                                             </div>
                                             <div class="col-md-5 mb-3">
-                                                <label for="design" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">Job Name</label>
+                                                <label for="design" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">JOB NAME</label>
                                                 <input type="text" name="design" class="form-control" id="design" value="{{$order->job_name ?? ""}}" disabled>
                                                 
                                             </div>
                                             <div class="col-md-2 mb-3">
-                                                <label for="order_number" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">P.O #</label>
+                                                <label for="order_number" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">P.O #</label>
                                                 <input type="text" name="order_number" class="form-control" id="order_number" value="{{$order->order_number}}" disabled>
                                             </div>
                                             <div class="col-md-2 mb-3">
-                                                <label for="other_info" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">Sales Rep</label>
+                                                <label for="other_info" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">SALES REP</label>
                                                 <input type="text" name="other_info" class="form-control" id="other_info" value="{{$client_details["sales_rep"]}}" disabled>
                                             </div>
                                             <div class="col-md-2 mb-1">
-                                                <label for="in_hands" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">Due Date</label>
+                                                <label for="in_hands" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">DUE DATE</label>
                                                 <input type="text" name="in_hands" class="form-control" id="in_hands" value="@if($order->due_date>0){{date("m-d-Y", $order->due_date)}} @endif" disabled>
                                             </div>
                                             <div class="col-md-2 mb-1>
-                                                <label for="ship_date" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">SHIP DATE</label>
+                                                <label for="ship_date" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">SHIP DATE</label>
                                                 <input type="text" name="ship_date" class="form-control" id="ship_date" value="@if($order->ship_date>0){{date("m-d-Y", $order->ship_date)}}@endif" disabled>
                                             </div>
                                             <div class="col-md-2 mb-1">
-                                                <label for="palletize" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">PALLETIZE</label>
+                                                <label for="palletize" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">PALLETIZE</label>
                                                 <select name="palletize_opt" id="palletize_opt" class="form-control">
                                                     <option value="">Select</option>
                                                     <option value="Yes" @if(isset($order_d_yellow->palletize_opt) && $order_d_yellow->palletize_opt == "Yes") {{"selected"}} @endif>Yes</option>
@@ -224,15 +224,15 @@ textarea {
                                                 </select>
                                             </div>
                                             <div class="col-md-2 mb-1">
-                                                <label for="ship" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">SHIP</label>
+                                                <label for="ship" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">SHIP</label>
                                                 <input type="text" name="ship" class="form-control" id="ship" value="{{$order->ship_method}}" disabled>
                                             </div>
                                             <div class="col-md-2 mb-1">
-                                                <label for="acct" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">ACCNT</label>
+                                                <label for="acct" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">ACCNT</label>
                                                 <input type="text" name="acct" class="form-control" id="acct" value="{{$order_d_yellow->acct ?? ""}}">
                                             </div>
                                             <div class="col-md-2 mb-1">
-                                                <label for="ship_date" style="font-size: 13px;font-weight: bold; margin-bottom:unset;">DATE SHIPPED</label>
+                                                <label for="ship_date" style="font-size: 11px;font-weight: bold; margin-bottom:unset;">DATE SHIPPED</label>
                                                 <input type="text" name="ship_date" class="form-control" id="ship_date" value="" readonly="">
                                             </div>
                                         </div>
@@ -387,7 +387,7 @@ textarea {
                                                 <select class="form-control location-name" name="location_number[1][]" data-column="1">
                                                     <option value="">select</option>
                                                     @foreach ($print_locations as $print_location)
-                                                    <option value="{{$print_location->name}}" @if($print_location->name == "Full Back") {{"selected"}} @endif>{{$print_location->abbr}}</option>
+                                                    <option value="{{$print_location->name}}">{{$print_location->abbr}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -445,8 +445,8 @@ textarea {
                                 </div>
                             </div>
                         </div>
-                        @endif
-                        <h6 class="font-weight-600 text-center" style="background: #d3d3d3;padding:13px;"></h6>
+                        @endif  
+                        {{-- <h6 class="font-weight-600 text-center" style="background: #d3d3d3;padding:13px;"></h6> --}}
                         <div class="row">
                             <div class="col-md-12">
 

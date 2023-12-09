@@ -84,7 +84,7 @@
 					@endforeach
 				</select>
 			</div>
-			<div class="col-md-12 mb-3">
+			<div class="col-md-1 mb-3" style="margin-left: 25px;">
 				<button class="btn btn-success" style="margin-top: 31px;width:150px;float:right" id="search-button">Search</button>
 			</div>
 		</div>

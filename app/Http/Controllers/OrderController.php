@@ -418,88 +418,105 @@ class OrderController extends Controller
         $due_date                   = (count($due_date)>0  && $due_date[0])? $due_date[2]."-".$due_date[0]."-".$due_date[1]:"";
         $ship_date                   = explode("-", $rData['ship_date']);
         $ship_date                   = (count($ship_date)>0 && $ship_date[0])? $ship_date[2]."-".$ship_date[0]."-".$ship_date[1]:"";
-        $order                      = new Order();
-        $order->time_id             = date('U');
-        $order->client_id           = $rData['client_id'];
-        $order->sales_rep           = $rData['sales_rep'] ?? 0;
-        $order->due_date            = (isset($due_date) && $due_date != "")?strtotime($due_date):0;
-        $order->event               = $rData['event'];
-        $order->shipping_address    = $rData['shipping_address'];
-        $order->ship_method         = $rData['ship_method'];
-        $order->ship_date           = (isset($ship_date) && $ship_date != "")?strtotime($ship_date):0;
-        $order->shipping_address    = $rData['shipping_address'];
-        $order->notes               = $rData['notes'];
-        $order->internal_notes      = $rData['internal_notes'];
-        $order->job_name            = $rData['job_name'];
-        $order->order_number        = $rData['order_number'];
-        $order->projected_units     = $rData['projected_units'];
-        $order->status              = 1;
-        $order->created_by_id       = $user_id;
-        $order->created_by_name     = $user_name;
-        $order->save();
-        $orderID                    = $order->id;
-        $selector_references_arr    = [];
-        $selector_references        = $rData['product_size'] ?? [];
-        if(count($selector_references) > 0){
+        DB::beginTransaction();
+        try {
+            $order                      = new Order();
+            $order->time_id             = date('U');
+            $order->client_id           = $rData['client_id'];
+            $order->sales_rep           = $rData['sales_rep'] ?? 0;
+            $order->due_date            = (isset($due_date) && $due_date != "")?strtotime($due_date):0;
+            $order->event               = $rData['event'];
+            $order->shipping_address    = $rData['shipping_address'];
+            $order->ship_method         = $rData['ship_method'];
+            $order->ship_date           = (isset($ship_date) && $ship_date != "")?strtotime($ship_date):0;
+            $order->shipping_address    = $rData['shipping_address'];
+            $order->notes               = $rData['notes'];
+            $order->internal_notes      = $rData['internal_notes'];
+            $order->job_name            = $rData['job_name'];
+            $order->order_number        = $rData['order_number'];
+            $order->projected_units     = $rData['projected_units'];
+            $order->status              = 1;
+            $order->created_by_id       = $user_id;
+            $order->created_by_name     = $user_name;
+            $order->save();
+            $orderID                    = $order->id;
+            $selector_references_arr    = [];
+            $selector_references        = $rData['product_size'] ?? [];
+            if(count($selector_references) > 0){
 
-            foreach($selector_references as $p_d=>$selector_reference){
-                foreach($selector_reference as $ref_id=>$ref_size){
-                    $selector_references_arr[$p_d][] = $ref_id;
+                foreach($selector_references as $p_d=>$selector_reference){
+                    foreach($selector_reference as $ref_id=>$ref_size){
+                        $selector_references_arr[$p_d][] = $ref_id;
+                    }
                 }
             }
-        }
-
-        $product_ids                = $rData['product_ids'] ?? [];
-        $products_name              = $rData['products_name'] ?? [];
-        if($request->hasFile('filePhoto')){
-            if(count($request->file('filePhoto')) > 0 ){
-                $this->save_order_imgs($request->file('filePhoto'), $orderID);
+            
+            $product_ids                = $rData['product_ids'] ?? [];
+            $products_name              = $rData['products_name'] ?? [];
+            if($request->hasFile('filePhoto')){
+                if(count($request->file('filePhoto')) > 0 ){
+                    $this->save_order_imgs($request->file('filePhoto'), $orderID);
+                }
             }
-        }
-        if(count($product_ids) > 0){
-            $this->save_order_prices($orderID, $rData);
-        }
-        if (count($product_ids) > 0) {
-            $this->save_order_products($product_ids,$products_name, $orderID, $selector_references_arr);
-        }
-        $attribute_color                        = $rData['attribute_color'] ?? [];
-        $attribute_size                         = $rData['attribute_size'] ?? [];
-        $pieces                                 = $rData['pieces'] ?? [];
-        $prices                                 = $rData['price'] ?? [];
-        // $total                                  = $rData['total'];
-        $total                                  = [];
-        if (count($attribute_color) > 0 ) {
-            $this->save_product_attribute($product_ids, $attribute_color,$attribute_size,$pieces,$prices,$total, $orderID);
-        }
-        $this->save_order_other_charges($rData, $orderID);
-        $this->order_transfer($rData, $orderID);
-        if($request->hasFile('artFile')){
-            if(count($request->file('artFile')) > 0 ){
-                $this->save_art_files($request->file('artFile'), $orderID);
+            if(count($product_ids) > 0){
+                $this->save_order_prices($orderID, $rData);
             }
-        }
-        if($request->has('art_details') && $request->art_details != ""){
+            if (count($product_ids) > 0) {
+                $this->save_order_products($product_ids,$products_name, $orderID, $selector_references_arr);
+            }
+            $attribute_color                        = $rData['attribute_color'] ?? [];
+            $attribute_size                         = $rData['attribute_size'] ?? [];
+            $pieces                                 = $rData['pieces'] ?? [];
+            $prices                                 = $rData['price'] ?? [];
+            // $total                                  = $rData['total'];
+            $total                                  = [];
+            if (count($attribute_color) > 0 ) {
+                $this->save_product_attribute($product_ids, $attribute_color,$attribute_size,$pieces,$prices,$total, $orderID);
+            }
+            $this->save_order_other_charges($rData, $orderID);
+            $this->order_transfer($rData, $orderID);
+            if($request->hasFile('artFile')){
+                if(count($request->file('artFile')) > 0 ){
+                    $this->save_art_files($request->file('artFile'), $orderID);
+                }
+            }
+            if($request->has('art_details') && $request->art_details != ""){
 
-            $art_details        = $request->art_details;
-            $this->save_art_details($art_details, $orderID);
-        }
-        if($request->hasFile('compFile')){
-            $this->save_comp_files($request->file('compFile'), $orderID);
-        }
-        if($request->has('comp_details') && $request->comp_details != ""){
-            $comp_details           = $request->comp_details;
-            $this->save_comp_details($comp_details, $orderID);
-        }
+                $art_details        = $request->art_details;
+                $this->save_art_details($art_details, $orderID);
+            }
+            if($request->hasFile('compFile')){
+                $this->save_comp_files($request->file('compFile'), $orderID);
+            }
+            if($request->has('comp_details') && $request->comp_details != ""){
+                $comp_details           = $request->comp_details;
+                $this->save_comp_details($comp_details, $orderID);
+            }
 
-        $body                           = $user_name." created a <strong>New Order</strong> ( <strong>#".$order->id."</strong> )";
-        $data['idFK']                   = $orderID;
-        $data['type']                   = 'orders';
-        $data['added_by_id']            = $user_id;
-        $data['added_by_name']          = $user_name;
-        $data['body']                   = $body;
-        $data['time_id']                = date('U');
-        $this->add_notification($data);
-        return redirect()->route('admin.order.edit', $orderID)->withSuccess('Order data has been saved successfully!');
+            $body                           = $user_name." created a <strong>New Order</strong> ( <strong>#".$order->id."</strong> )";
+            $data['idFK']                   = $orderID;
+            $data['type']                   = 'orders';
+            $data['added_by_id']            = $user_id;
+            $data['added_by_name']          = $user_name;
+            $data['body']                   = $body;
+            $data['time_id']                = date('U');
+            // $this->add_notification($data);
+            DB::commit();
+            return redirect()->route('admin.order.edit', $orderID)->withSuccess('Order data has been saved successfully!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            // $errorMessage = $e->getMessage();
+            // $errorDetails = [
+            //     'message' => $errorMessage,
+            //     'code' => $e->getCode(),
+            //     'file' => $e->getFile(),
+            //     'line' => $e->getLine(),
+            //     // 'trace' => $e->getTraceAsString(),
+            // ];
+        
+            // // Now you can use $errorDetails as needed
+            // dd($errorDetails);
+        }
     }
    public function save_order_imgs($files_arr=[], $order_id){
         $order                  = Order::find($order_id);
@@ -811,99 +828,100 @@ class OrderController extends Controller
     }
     public function update(Request $request, $id)
     {
-        
         $user_id                    = Auth::user()->id;
         $user_name                  = Auth::user()->name; 
+        DB::beginTransaction();
+        try {
+            if($request->has('is_art_submit') && $request->is_art_submit == 1){
+                if($request->hasFile('artFile')){
+                    if(count($request->file('artFile')) > 0 ){
+                        $this->save_art_files($request->file('artFile'), $id);
+                    }
+                }
+                if($request->has('art_details') && $request->art_details != ""){
 
-        if($request->has('is_art_submit') && $request->is_art_submit == 1){
+                    $art_details        = $request->art_details;
+                    $this->save_art_details($art_details, $id);
+                }
+                return redirect()->route("admin.order.edit", $id)->withSuccess('Art Room Data saved successfully!')->with('art_room', true);
+            }
+            if($request->has('is_comps_submit') && $request->is_comps_submit == 1){
 
-            if($request->hasFile('artFile')){
-                if(count($request->file('artFile')) > 0 ){
-                    $this->save_art_files($request->file('artFile'), $id);
+                if($request->hasFile('compFile')){
+                    $this->save_comp_files($request->file('compFile'), $id);
+                }
+                if($request->has('comp_details') && $request->comp_details != ""){
+                    $comp_details           = $request->comp_details;
+                    $this->save_comp_details($comp_details, $id);
+                }
+                return redirect()->route("admin.order.edit", $id)->withSuccess('Comp Details saved successfully!')->with('comp_tab', true);
+            }
+                
+            $rData                      = $request->all();
+            $due_date                   = explode("-", $rData['due_date']);
+            $due_date                   = (count($due_date)>0  && $due_date[0])? $due_date[2]."-".$due_date[0]."-".$due_date[1]:"";
+            $ship_date                   = explode("-", $rData['ship_date']);
+            $ship_date                   = (count($ship_date)>0 && $ship_date[0])? $ship_date[2]."-".$ship_date[0]."-".$ship_date[1]:"";
+
+            $order                      = Order::find($id);
+            $order->client_id           = $rData['client_id'];
+            $order->sales_rep           = $rData['sales_rep'];
+            $order->due_date            = (isset($due_date) && $due_date != "")?strtotime($due_date):0;
+            $order->ship_date           = (isset($ship_date) && $ship_date != "")?strtotime($ship_date):0;
+            $order->event               = $rData['event'];
+            $order->shipping_address    = $rData['shipping_address'];
+            $order->ship_method         = $rData['ship_method'];
+            $order->notes               = $rData['notes'];
+            $order->internal_notes      = $rData['internal_notes'];
+            $order->job_name            = $rData['job_name'];
+            $order->order_number        = $rData['order_number'];
+            $order->projected_units     = $rData['projected_units'];
+            $order->updated_by_id       = $user_id;
+            $order->updated_by_name     = $user_name;
+            $order->save();
+            $orderID                    = $order->id;
+            $selector_references_arr    = [];
+            $selector_references        = $rData['product_size'] ?? [];
+
+            if(count($selector_references) > 0){
+
+                foreach($selector_references as $p_d=>$selector_reference){
+                    foreach($selector_reference as $ref_id=>$ref_size){
+                        $selector_references_arr[$p_d][] = $ref_id;
+                    }
                 }
             }
-            if($request->has('art_details') && $request->art_details != ""){
-
-                $art_details        = $request->art_details;
-                $this->save_art_details($art_details, $id);
+            $product_ids                = $rData['product_ids'] ?? [];
+            $products_name              = $rData['products_name'] ?? [];
+            if(count($product_ids) > 0){
+                $this->save_order_prices($orderID, $rData);
             }
-
-            return redirect()->route("admin.order.edit", $id)->withSuccess('Art Room Data saved successfully!')->with('art_room', true);
-        }
-        if($request->has('is_comps_submit') && $request->is_comps_submit == 1){
-
-            if($request->hasFile('compFile')){
-                $this->save_comp_files($request->file('compFile'), $id);
+    
+            if (count($product_ids) > 0) {
+                $this->save_order_products($product_ids,$products_name, $orderID, $selector_references_arr);
             }
-            if($request->has('comp_details') && $request->comp_details != ""){
-                $comp_details           = $request->comp_details;
-                $this->save_comp_details($comp_details, $id);
-            }
-
-            return redirect()->route("admin.order.edit", $id)->withSuccess('Comp Details saved successfully!')->with('comp_tab', true);
-        }
-            
-        $rData                      = $request->all();
-        $due_date                   = explode("-", $rData['due_date']);
-        $due_date                   = (count($due_date)>0  && $due_date[0])? $due_date[2]."-".$due_date[0]."-".$due_date[1]:"";
-        $ship_date                   = explode("-", $rData['ship_date']);
-        $ship_date                   = (count($ship_date)>0 && $ship_date[0])? $ship_date[2]."-".$ship_date[0]."-".$ship_date[1]:"";
-
-        $order                      = Order::find($id);
-        $order->client_id           = $rData['client_id'];
-        $order->sales_rep           = $rData['sales_rep'];
-        $order->due_date            = (isset($due_date) && $due_date != "")?strtotime($due_date):0;
-        $order->ship_date           = (isset($ship_date) && $ship_date != "")?strtotime($ship_date):0;
-        $order->event               = $rData['event'];
-        $order->shipping_address    = $rData['shipping_address'];
-        $order->ship_method         = $rData['ship_method'];
-        $order->notes               = $rData['notes'];
-        $order->internal_notes      = $rData['internal_notes'];
-        $order->job_name            = $rData['job_name'];
-        $order->order_number        = $rData['order_number'];
-        $order->projected_units     = $rData['projected_units'];
-        $order->updated_by_id       = $user_id;
-        $order->updated_by_name     = $user_name;
-        $order->save();
-        $orderID                    = $order->id;
-        $selector_references_arr    = [];
-        $selector_references        = $rData['product_size'] ?? [];
-
-        if(count($selector_references) > 0){
-
-            foreach($selector_references as $p_d=>$selector_reference){
-                foreach($selector_reference as $ref_id=>$ref_size){
-                    $selector_references_arr[$p_d][] = $ref_id;
+            if($request->hasFile('filePhoto')){
+                if(count($request->file('filePhoto')) > 0 ){
+                    $this->save_order_imgs($request->file('filePhoto'), $orderID);
                 }
             }
-        }
-        $product_ids                = $rData['product_ids'] ?? [];
-        $products_name              = $rData['products_name'] ?? [];
-        if(count($product_ids) > 0){
-            $this->save_order_prices($orderID, $rData);
-        }
- 
-        if (count($product_ids) > 0) {
-            $this->save_order_products($product_ids,$products_name, $orderID, $selector_references_arr);
-        }
-        if($request->hasFile('filePhoto')){
-            if(count($request->file('filePhoto')) > 0 ){
-                $this->save_order_imgs($request->file('filePhoto'), $orderID);
+            $attribute_color                        = $rData['attribute_color'] ?? [];
+            $attribute_size                         = $rData['attribute_size'] ?? [];
+            $pieces                                 = $rData['pieces'] ?? [];
+            $prices                                 = $rData['price'] ?? [];
+            // $total                                  = $rData['total'];
+            $total                                  = [];
+            if (count($attribute_color) > 0 ) {
+                $this->save_product_attribute($product_ids, $attribute_color,$attribute_size,$pieces,$prices,$total, $orderID);
             }
-        }
-        $attribute_color                        = $rData['attribute_color'] ?? [];
-        $attribute_size                         = $rData['attribute_size'] ?? [];
-        $pieces                                 = $rData['pieces'] ?? [];
-        $prices                                 = $rData['price'] ?? [];
-        // $total                                  = $rData['total'];
-        $total                                  = [];
-        if (count($attribute_color) > 0 ) {
-            $this->save_product_attribute($product_ids, $attribute_color,$attribute_size,$pieces,$prices,$total, $orderID);
-        }
-        $this->save_order_other_charges($rData, $orderID);
-        $this->order_transfer($rData, $orderID);
+            $this->save_order_other_charges($rData, $orderID);
+            $this->order_transfer($rData, $orderID);
 
-        return redirect()->route("admin.order.edit", $orderID)->withSuccess('Order data has been updated successfully!');
+            DB::commit();
+            return redirect()->route("admin.order.edit", $orderID)->withSuccess('Order data has been updated successfully!');
+        } catch (\Exception $e) {
+            DB::rollback();
+        }
     }
 
     public function orderView(Request $request, $id)
@@ -1296,6 +1314,7 @@ class OrderController extends Controller
     }
     public function recreate(Request $request, $id)
     {
+        
         $order                  = Order::with([
             'OrderImgs', 
             'OrderPrice', 
@@ -1337,7 +1356,6 @@ class OrderController extends Controller
         $comp_files                     = [];
         $order_comp_detail_arr          = [];
         if(count($order->OrderArtFiles)>0){
-
             foreach($order->OrderArtFiles as $OrderArtFile)
             {   
                 $art_file                       = new orderArtFile();
@@ -1348,15 +1366,12 @@ class OrderController extends Controller
             $new_order->OrderArtFiles()->saveMany($art_files);
         }
         if($order->OrderArtDetail){
-
             $order_art_detail                   = new OrderArtDetail();
             $order_art_detail->order_id         = $order_id;
             $order_art_detail->art_detail       = $order->OrderArtDetail->art_detail;
             $order_art_detail->save();
-
         }
         if(count($order->orderCompFiles)>0){
-
             foreach($order->orderCompFiles as $orderCompFile)
             {   
                 $comp_file                      = new orderCompFile();
@@ -1367,9 +1382,8 @@ class OrderController extends Controller
             }
             $new_order->orderCompFiles()->saveMany($comp_files);
         }
-        
+    
         if(count($order->OrderCompDetail)>0){
-            
             foreach($order->OrderCompDetail as $compDetail){
                 $user_id                            = Auth::user()->id;
                 $userRole                           = (Auth::user()->hasRole('Artist'))?'Artist':'Assignee';
@@ -1395,6 +1409,7 @@ class OrderController extends Controller
         {   
             $or_price                   = new OrderPrice();
             $or_price->product_id       = $_OrderPrice->product_id;
+            $or_price->selector_ref     = $_OrderPrice->selector_ref;
             $or_price->product_size     = $_OrderPrice->product_size;
             $or_price->wholesale_price  = $_OrderPrice->wholesale_price;
             $or_price->print_price      = $_OrderPrice->print_price ;
@@ -1410,6 +1425,7 @@ class OrderController extends Controller
         {
             $order_color_perlocation                        = new OrderColorPerLocation();
             $order_color_perlocation->product_id            = $_OrderColorPerLocation->product_id;
+            $order_color_perlocation->selector_ref          = $_OrderColorPerLocation->selector_ref;
             $order_color_perlocation->color_per_location    = $_OrderColorPerLocation->color_per_location;
             $order_color_perlocation->location_number       = $_OrderColorPerLocation->location_number;
             $order_color_perlocation_arr[]                  = $order_color_perlocation; 
@@ -1418,8 +1434,9 @@ class OrderController extends Controller
 
         foreach($order->OrderProductVariant as $_OrderProductVariant)
         {
-            $order_product_var                      = new OrderProductVariant();
+            $order_product_var                          = new OrderProductVariant();
                 $order_product_var->product_id          = $_OrderProductVariant->product_id;
+                $order_product_var->selector_ref        = $_OrderProductVariant->selector_ref;
                 $order_product_var->variant1_id         = $_OrderProductVariant->variant1_id;
                 $order_product_var->variant1_name       = $_OrderProductVariant->variant1_name ;
                 $order_product_var->variant2_id         = $_OrderProductVariant->variant2_id;
@@ -1439,9 +1456,11 @@ class OrderController extends Controller
 
         foreach($order->OrderProducts as $_OrderProducts)
         {
-            $order_products               = new OrderProduct();
-            $order_products->product_id        = $_OrderProducts->product_id;
-            $order_products->product_name        = $_OrderProducts->product_name;
+            $order_products                 = new OrderProduct();
+            $order_products->product_id     = $_OrderProducts->product_id;
+            $order_products->selector_ref   = $_OrderProducts->selector_ref;
+            $order_products->product_name   = $_OrderProducts->product_name;
+
             $order_products_arr[]  = $order_products;
         }
         $new_order->OrderProducts()->saveMany($order_products_arr);

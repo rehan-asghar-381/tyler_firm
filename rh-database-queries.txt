@@ -1,11 +1,44 @@
 - Any time "Delete" is clicked for any order, product, or garment brand, please add pop up saying "Are You Sure You Want To Delete? with a Yes and No button (Done)
 
     This one is done for orders and we can't delete products and brands from the database because it will have negetive impact in orders, invoice and yellow etc.
+
 - When selecting a garment color while creating a new order, can you please make this list alphabetical (Done)
+
 - Was getting this error after attempting to save an order when I had 3 different items in the quote
-    
+
+    I tried a lot but this error is not being produced on my end. Please do the same with me by sharing your screen.
 
 - I also wasn't able to email the quote, it would act like it's sending and then nothing would happen on screen
 - Comp status issue (Done)
 
 - Need to add profit margin calculation box in view detail page for admin. Nobody else can see it. (Need Discussion on it.)
+
+
+
+- Disable save order button once clicked to prevent accidentally duplicating the same order.
+- When sending a revised quote (after quote was approved), please remove Green box at the top of the quote that says "This Quote Has Been Approved" and add Approve / Not Approve buttons again for customer
+- Make To Do List view the same for all inside sales team. Allow everyone to add, edit, delete the to do's
+
+
+View Details Page Changes:
+
+- Under garments, make only the garments with quantities viewable.
+- Under print price, make only pricing for garments with quantities viewable
+- Under additional services, only show services that are selected while creating the order.
+- Under "Notes" on the left side, add these line items:
+- 1. Cost Of Goods (calculating all of our wholesale costs for the garments)
+- 2. Subtotal amount from Invoice
+- 3. Difference (Subtotal minus Cost Of Goods)
+
+After changing the urgent above, please add "Cancelled" option in Status on order page that will also move the order to the customer profile. So two options will perform this action "Done" and "Cancelled"
+
+
+Sorry Rehan, some other changes needed. Here's a priority list of items that need fixed:
+
+- Fix error when duplicating errors first.
+- Add "Cancelled" to status dropdown in Order page and move the order to customer profile. So two options will perform this action "Done" and "Cancelled"
+- Disable save order button once clicked to prevent accidentally duplicating the same order
+- When sending a revised quote (after quote was approved), please remove Green box at the top of the quote that says "This Quote Has Been Approved" and add Approve / Not Approve buttons again for customer
+- In Action Log, please add Quote Preview to emailed response from customer (similar to comp preview)
+This is a question for you. When uploading the comp in the comp page, is there a way to preview the comp on the page and not need to download it?
+Yes we can preview it but can't 

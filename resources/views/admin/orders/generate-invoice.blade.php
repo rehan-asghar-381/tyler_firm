@@ -709,6 +709,8 @@
 				complete: function(){
 					$('.page-loader-wrapper').hide();
 					$('.Order-form').show();
+                    $('#send-email-modal').show();
+					$('.email-popup').empty();
 				},
 				error: function(data){
 					console.log(data);

@@ -53,7 +53,7 @@
   padding-top: 2px;
 }
 
-.count-widget span, p {
+.count-widget span {
   color: white;
 }
 

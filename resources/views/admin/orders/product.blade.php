@@ -160,7 +160,7 @@
                                             @endphp
                                                     @foreach ($ProductVariant->Atrributes as $Atrribute)
                                                     <div class=" form-group col-md-1">
-                                                        <input type="hidden" class="form-control mb-2 mr-sm-2 --new-size-attr" name="{{$name}}"  value="">
+                                                        <input type="hidden" class="form-control mb-2 mr-sm-2 --new-size-attr --update-name" name="{{$name}}"  value="">
                                                         <input type="text" data-product_id="{{$product_detail->id}}" name="pieces[{{$product_detail->id}}][{{$terminator}}][]" class="form-control select-one --update-name attribute pieces {{ ($ProductVariant->name == "Color") ? "v1_attr_id" : "v2_attr_id" }}" data-selector="{{$terminator}}" placeholder="{{$Atrribute->name}}" data-attr-id="{{$Atrribute->id}}">
                                                     </div> 
                                                     @endforeach
