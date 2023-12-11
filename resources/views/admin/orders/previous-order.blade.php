@@ -40,6 +40,7 @@
 			<div class="col-md-2">
 				<label>Status</label>
 				<select type="text" name="status_id" id="order_type" class="form-control require required-online" value="" >
+					<option value="">-select-</option>
 					@foreach ($statuses_arr as $id=>$status)
 					@php
 					$status  	= json_decode($status, true);

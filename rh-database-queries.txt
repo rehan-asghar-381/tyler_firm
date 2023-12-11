@@ -15,7 +15,7 @@
 
 
 
-- Disable save order button once clicked to prevent accidentally duplicating the same order.
+- Disable save order button once clicked to prevent accidentally duplicating the same order. (Done)
 - When sending a revised quote (after quote was approved), please remove Green box at the top of the quote that says "This Quote Has Been Approved" and add Approve / Not Approve buttons again for customer
 - Make To Do List view the same for all inside sales team. Allow everyone to add, edit, delete the to do's
 

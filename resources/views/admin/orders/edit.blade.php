@@ -291,6 +291,7 @@ hr{
                             </div>
                             <div class="col-md-3">
                                 <button type="submit" class="btn btn-primary mt-5" id="submit-form">Save Order</button>
+                                <div id="loading" class="btn btn-primary mt-5" style="display: none;">Order Saving...</div>
                             </div>
                         </div>
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -671,6 +672,10 @@ hr{
     @section('footer-script')
     <script>
     $(document).ready(function(){
+        $("#submit-form").on("click", function(){
+            $(this).hide();
+            $('#loading').show();
+        });
         $('#sales_rep').SumoSelect({
 			search: true
 		});
@@ -707,7 +712,7 @@ hr{
 
         function get_sales_rep(client_id="", _sale_rep = ""){
 
-            if(client_id != "" && _sale_rep != ""){
+            if(client_id != ""){
                 
                 $.ajax({
                     url: "{{ route('admin.client.get_sales_rep') }}",
@@ -940,7 +945,6 @@ hr{
         console.log(parent_id);
         let count                           = $('.product-detail-'+parent_id).find('.location-count').val();
         count                               = parseInt(count)-1;
-        console.log(count);
         e.preventDefault();
         if(count >= 1){
             $(this).closest('.print-location').remove();

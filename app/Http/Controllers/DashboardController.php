@@ -79,7 +79,7 @@ class DashboardController extends Controller
         $date_to                    = $request->get('date_to');
         $order_counts               = [];
 
-        $orders                     = Order::where("status", "<>", 5)->groupBy('status')
+        $orders                     = Order::whereNotIn('status', [5,7])->groupBy('status')
                                     ->select('status', DB::raw('count(*) as total'));
         if($date_from != ""){
             $orders                 = $orders->where("order_date_timestamp", ">=", strtotime($date_from));
@@ -446,7 +446,7 @@ class DashboardController extends Controller
 
     public function calanderEvents(Request $request){
 
-        $orders                     = Order::where("due_date", "!=", "")->where("due_date", ">", 0)->where('status', '!=', 5)->get();
+        $orders                     = Order::where("due_date", "!=", "")->where("due_date", ">", 0)->whereNotIn('status', [5,7])->get();
         // $r_default_date = Order::where("due_date", "!=", "")
         // ->where("due_date", ">", 0)
         // ->where('status', '!=', 5)

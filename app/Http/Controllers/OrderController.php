@@ -97,8 +97,6 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-
-        
         $pageTitle                              = "Orders";
         $statuses_arr                           = [];
         $status_filter                          = "";
@@ -148,7 +146,7 @@ class OrderController extends Controller
         $rData              = Order::withCount("EmailLog")->with(["client", "ClientSaleRep","ActionSeen"=>function($q) use($user_id){
             $q->where('seen_by', '=', $user_id);
         
-        }])->where('status','<>',5);
+        }])->whereNotIn('status',[5,7]);
         
         if($request->client_id != ""){
             $rData              = $rData->where('client_id', $request->client_id);

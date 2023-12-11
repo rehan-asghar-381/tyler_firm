@@ -354,7 +354,7 @@ class ClientController extends Controller
     public function previousOrder(Request $request,$id){
     
         $pageTitle          = "Client  Previous Order";
-        $statuses           = Status::where('id', 5)->get(['id', 'name']);
+        $statuses           = Status::whereIn('id', [5,7])->get(['id', 'name']);
         
         foreach($statuses as $key=>$status){
 
@@ -367,7 +367,7 @@ class ClientController extends Controller
 
     public function ajaxClientsOrderHistory(Request $request){
         
-        $rData          = Order::where('client_id', $request->client_id);
+        $rData          = Order::where('client_id', $request->client_id)->whereIn('status', [5,7]);
         if($request->date_from != ""){
             $rData      = $rData->where('time_id', '>=', strtotime($request->date_from));
         }

@@ -270,6 +270,7 @@ hr{
                             </div>
                             <div class="col-md-3">
                                 <button type="submit" class="btn btn-primary mt-5" id="submit-form">Save Order</button>
+                                <div id="loading" class="btn btn-primary mt-5" style="display: none;">Order Saving...</div>
                             </div>
                         </div>
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -569,6 +570,10 @@ hr{
     @section('footer-script')
     <script>
     $(document).ready(function(){
+        $("#submit-form").on("click", function(){
+            $(this).hide();
+            $('#loading').show();
+        });
         $('#sales_rep').SumoSelect({
 			search: true
 		});
