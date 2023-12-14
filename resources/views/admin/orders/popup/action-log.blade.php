@@ -12,27 +12,26 @@
 				<div class="modal-body" style="max-height: calc(100vh - 210px);overflow-y: auto;">
 					<div class="table-responsive">
 						@if (count($action_logs)>0)
-						<table class="table table-striped">
+						<table class="table table-striped" style="font-size:11px !important;">
 							<thead>
 								<tr>
 									<th scope="col">#</th>
-									<th scope="col" width="250">Date</th>
-									<th scope="col">Quote #</th>
+									<th scope="col">Date</th>
+									<th scope="col">Quote</th>
 									<th scope="col">Assignee</th>
 									<th scope="col">Send To</th>
 									<th scope="col">From</th>
-									<th scope="col">Quote/Comp pdf</th>
+									<th scope="col">Quote/Comp</th>
 									<th scope="col">Action</th>
 									<th scope="col">Approval</th>
 									<th scope="col">Remarks</th>
-									<th scope="col">Created At</th>
 								</tr>
 							</thead>
 							<tbody>
 								@foreach ($action_logs as $key=>$action_log)
 								<tr>
 									<th scope="row">{{$key+1}}</th>
-									<td width="250">{{ date("m-d-Y", $action_log->time_id) }}</td>
+									<td>{{ date("m-d-Y h:i:s a", $action_log->time_id) }}</td>
 									<td>{{$action_log->order_id}}</td>
 									<td>{{$action_log->assignee_name}}</td>
 									<td>{{$action_log->send_to}}</td>
@@ -50,7 +49,6 @@
 									<td>{{($action_log->is_response == "Y")? "Received":"Sent"}}</td>
 									<td>{{($action_log->is_response == "Y")? ($action_log->is_approved == 1 && $action_log->is_response == "Y")? "Yes":"No":"-"}}</td>
 									<td>{!! $action_log->description !!}</td>
-									<td>{{ date("m-d-Y h:i:s a", $action_log->time_id) }}</td>
 								</tr>
 								@endforeach
 							</tbody>

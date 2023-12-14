@@ -176,7 +176,7 @@ class ProductController extends Controller
     {
         $errors                     = [];
         $pageTitle                  = "Product";
-        $brands                     = Brand::get();
+        $brands                     = Brand::orderBy('name', 'asc')->get();
         $product_size_type          = ProductSizeType::select('type')->groupby('type')->get();
         
         return view('admin.products.create',compact('pageTitle', 'brands','product_size_type'));
@@ -299,7 +299,7 @@ public function save_product_imgs($files_arr=[], $product_id){
      */
     public function edit($id)
     {
-        $brands         = Brand::get();
+        $brands         = Brand::orderBy('name', 'asc')->get();
         $pageTitle      = "Product";
         $product        = Product::with('ProductImg')->find($id);
         $product_size_type          = ProductSizeType::select('type')->groupby('type')->get();

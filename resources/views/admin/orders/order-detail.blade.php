@@ -200,14 +200,54 @@
                         <a href="#!" class="fs-13 font-weight-600">{{ $order->notes ?? "-" }}</a>
                     </div>
                 </div>
+                <hr>
                 <div class="row align-items-center">
                     <div class="col">
-                        <h6 class="mb-0 font-weight-600">Notes</h6>
+                        <h6 class="mb-0 font-weight-600">Internal Notes</h6>
                     </div>
                     <div class="col-auto">
                         <a href="#!" class="fs-13 font-weight-600">{{ $order->internal_notes ?? "-" }}</a>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="fs-17 font-weight-600 mb-0">Profit Calculation</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h6 class="mb-0 font-weight-600">Cost Of Goods</h6>
+                    </div>
+                    <div class="col-auto">
+                        <a href="#!" class="fs-13 font-weight-600">{{ $cost_of_goods ?? 0 }}</a>
+                    </div>
+                </div> 
+                <hr>
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h6 class="mb-0 font-weight-600">Subtotal</h6>
+                    </div>
+                    <div class="col-auto">
+                        <a href="#!" class="fs-13 font-weight-600">{{ $sub_total ?? 0 }}</a>
+                    </div>
+                </div> 
+                <hr>
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h6 class="mb-0 font-weight-600">Profit</h6>
+                    </div>
+                    <div class="col-auto">
+                        <a href="#!" class="fs-13 font-weight-600">{{ ($sub_total-$cost_of_goods) }}</a>
+                    </div>
+                </div> 
+                
             </div>
         </div>
 
@@ -238,30 +278,33 @@
                             <tbody>
                                 @if(count($product->OrderProductVariant) > 0)
                                 @foreach ($product->OrderProductVariant as $order_product_variant)
-                                @php
-                                    if($order_product_variant->variant2_name     == "Adult_sizes Size"){
-                                        $variant2_name    = "Adult Size";
-                                    }
-                                    if($order_product_variant->variant2_name     == "Baby_sizes Size"){
-                                        $variant2_name    = "Baby Size";
-                                    }
-                                @endphp
-                                @if($loop->first)
-                                <tr>
-                                    <th>{{$order_product_variant->variant1_name}}</th>
-                                    <th>{{$variant2_name}}</th>
-                                    <th>Pieces</th>
-                                    <th>Price</th>
-                                    <th>Total</th>
-                                </tr> 
+                                @if ($order_product_variant->pieces > 0)
+                                    
+                                    @php
+                                        if($order_product_variant->variant2_name     == "Adult_sizes Size"){
+                                            $variant2_name    = "Adult Size";
+                                        }
+                                        if($order_product_variant->variant2_name     == "Baby_sizes Size"){
+                                            $variant2_name    = "Baby Size";
+                                        } 
+                                    @endphp
+                                    @if($loop->first)
+                                    <tr>
+                                        <th>{{$order_product_variant->variant1_name}}</th>
+                                        <th>{{$variant2_name}}</th>
+                                        <th>Pieces</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr> 
+                                    @endif
+                                    <tr>
+                                    <td>{{$order_product_variant->attribute1_name}}</td> 
+                                    <td>{{$order_product_variant->attribute2_name}}</td> 
+                                    <td>{{$order_product_variant->pieces}}</td> 
+                                    <td>{{$order_product_variant->price}}</td> 
+                                    <td>{{$order_product_variant->total}}</td> 
+                                    </tr>      
                                 @endif
-                                <tr>
-                                 <td>{{$order_product_variant->attribute1_name}}</td> 
-                                 <td>{{$order_product_variant->attribute2_name}}</td> 
-                                 <td>{{$order_product_variant->pieces}}</td> 
-                                 <td>{{$order_product_variant->price}}</td> 
-                                 <td>{{$order_product_variant->total}}</td> 
-                             </tr>      
 
                              @endforeach
                              @endif
@@ -297,76 +340,172 @@
             <div class="table-responsive">
                 <table class="table">
                     <tr>
-                        <th>Ink Color Change Pieces</th>
-                        <th>Ink Color Change Prices</th>
-                        <th>Shipping Pieces</th>
-                        <th>Shipping Prices</th>
+                        @if (isset($order->OrderTransfer) && $order->OrderTransfer->ink_color_change_pieces != '')
+                            <th>Ink Color Change Pieces</th>
+                        @endif
+                        @if (isset($order->OrderTransfer) && $order->OrderTransfer->ink_color_change_prices != '')
+                            <th>Ink Color Change Prices</th>
+                        @endif
+                        @if (isset($order->OrderTransfer) && $order->OrderTransfer->shipping_pieces != '')
+                            <th>Shipping Pieces</th>
+                        @endif
+                        @if (isset($order->OrderTransfer) && $order->OrderTransfer->shipping_charges != '')
+                            <th>Shipping Prices</th>
+                        @endif
                     </tr>
                     <tr>
+                        @if (isset($order->OrderTransfer) && $order->OrderTransfer->ink_color_change_pieces != '')
                         <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->ink_color_change_pieces : ''}}</td>
+                        @endif
+                        @if (isset($order->OrderTransfer) && $order->OrderTransfer->ink_color_change_prices != '')
                         <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->ink_color_change_prices : ''}}</td>
+                        @endif
+                        @if (isset($order->OrderTransfer) && $order->OrderTransfer->shipping_pieces != '')
                         <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->shipping_pieces : ''}}</td>
+                        @endif
+                        @if (isset($order->OrderTransfer) && $order->OrderTransfer->shipping_charges != '')
                         <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->shipping_charges : ''}}</td>
+                        @endif
                     </tr>
                     <tr>
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->label_pieces != '')
                         <th>Inside Label Pieces </th>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->label_prices != '')
                         <th>Inside Label Prices</th>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_pieces != '')
                         <th>Fold Only Pieces</th>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_prices != '')
                         <th>Fold Only  Prices</th>
+                        @endif
                     </tr>
                     <tr>
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->label_pieces != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->label_pieces : '' }}</td>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->label_prices != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->label_prices : '' }}</td>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_pieces != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->fold_pieces : '' }}</td>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_prices != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->fold_prices : '' }}</td>
+                        @endif
                     </tr>
                     <tr>
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_bag_pieces != '')
                         <th>Fold Bag Pieces </th>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_bag_prices != '')
                         <th>Fold Bag Prices</th>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_bag_tag_pieces != '')
                         <th>FOLD/BAG/TAG Pieces </th>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_bag_tag_prices != '')
                         <th>FOLD/BAG/TAG Prices</th>
+                        @endif
                     </tr>
                     <tr>
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_bag_pieces != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->fold_bag_pieces : '' }}</td>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_bag_prices != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->fold_bag_prices : '' }}</td>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_bag_tag_pieces != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->fold_bag_tag_pieces : '' }}</td>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_bag_tag_prices != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->fold_bag_tag_prices : '' }}</td>
+                        @endif
                     </tr>
                     <tr>
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->foil_pieces != '')
                         <th>Foil Pieces</th>
-                        <th>Foil  Prices</th>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_bag_prices != '')
+                        <th>Foil Prices</th>
+                        @endif
+                        @if (isset($order->OrderTransfer) && $order->OrderTransfer->transfers_pieces != '')
                         <th>Transfers Pieces</th>
+                        @endif
+                        @if (isset($order->OrderTransfer) && $order->OrderTransfer->transfers_prices != '')
                         <th>Transfers Prices</th>
+                        @endif
                     </tr>
                     <tr>
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->foil_pieces != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->foil_pieces : '' }}</td>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->fold_bag_prices != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->foil_prices : '' }}</td>
+                        @endif
+                        @if (isset($order->OrderTransfer) && $order->OrderTransfer->transfers_pieces != '')
                         <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->transfers_pieces : ''}}</td>
+                        @endif
+                        @if (isset($order->OrderTransfer) && $order->OrderTransfer->transfers_prices != '')
                         <td>{{ isset($order->OrderTransfer) ? $order->OrderTransfer->transfers_prices : ''}}</td>
+                        @endif
                     </tr>
                     <tr>
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->palletizing_pieces != '')
                         <th>Palletizing Pieces</th>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->palletizing_prices != '')
                         <th>Palletizing  Prices</th>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->remove_packaging_pieces != '')
                         <th>Remove Packaging Pieces</th>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->remove_packaging_prices != '')
                         <th>Remove Packaging Prices</th>
+                        @endif
                     </tr>
                     <tr>
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->palletizing_pieces != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->palletizing_pieces : '' }}</td>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->palletizing_prices != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->palletizing_prices : '' }}</td>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->remove_packaging_pieces != '')
                         <td>{{ isset($order->OrderOtherCharges) ? $order->OrderOtherCharges->remove_packaging_pieces : ''}}</td>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->remove_packaging_prices != '')
                         <td>{{ isset($order->OrderOtherCharges) ? $order->OrderOtherCharges->remove_packaging_prices : ''}}</td>
+                        @endif
                     </tr>
                     <tr>
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->art_fee != '')
                         <th>Art Fee</th>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->art_discount != '')
                         <th>Art Discount</th>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->art_time != '')
                         <th>Art Time</th>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->tax != '')
                         <th>Tax</th>
+                        @endif    
                     </tr>
                     <tr>
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->art_fee != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->art_fee : '' }}</td>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->art_discount != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->art_discount : '' }}</td>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->art_time != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->art_time : '' }}</td>
+                        @endif
+                        @if (isset($order->OrderOtherCharges) && $order->OrderOtherCharges->tax != '')
                         <td>{{ isset($order->OrderOtherCharges) ?  $order->OrderOtherCharges->tax : '' }}</td>
+                        @endif
                     </tr>
                 </table>
             </div>

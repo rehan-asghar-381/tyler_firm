@@ -558,7 +558,7 @@ hr{
                                             $i = 1;
                                         @endphp
                                             @foreach ($order->OrderArtFiles as $OrderArtFile)
-                                            <a href="{{route('admin.order.downloadArtFiles', $OrderArtFile->id)}}" class="btn btn-purple btn-circle mb-2 mr-1" style="width: 100px !important;"><i class="fas fa-download"></i> File {{$i++}}</a>
+                                            <a href="{{route('admin.order.downloadArtFiles', $OrderArtFile->id)}}" class="btn btn-labeled btn-primary mb-2 mr-1"><span class="btn-label --del-file" data-artfile-id='{{$OrderArtFile->id}}'><i class="fas fa-trash-alt"></i></span> Download File {{$i++}}</a>
                                             @endforeach
                                         @endif
                                     </div>
@@ -942,9 +942,10 @@ hr{
     $(document).on('click', '.remove-p-location', function(e) {
         var parent_id                       = $(this).attr('data-id');
         var parent_selector                 = '.p-print-location-'+parent_id;
-        console.log(parent_id);
         let count                           = $('.product-detail-'+parent_id).find('.location-count').val();
         count                               = parseInt(count)-1;
+        console.log(parent_id);
+        console.log(count);
         e.preventDefault();
         if(count >= 1){
             $(this).closest('.print-location').remove();
@@ -1584,6 +1585,27 @@ hr{
                         window.location.href = url;
                     }
                 });
+            });
+            $(document).on("click", ".--del-file", function(event){
+                event.preventDefault();
+                var art_file_id     = $(this).attr('data-artfile-id');
+                let url 			= "{{ route('admin.order.delete_art_file') }}";
+                if(art_file_id != ""){
+                    if(confirm("Are you sure?")){
+
+                        $.ajax({
+                            url: url, 
+                            type: "GET",
+                            data: {
+                                art_file_id: art_file_id
+                            },
+                            success: function(data) {
+                                let url  = '{{route("admin.order.edit", $order->id).'?art_tab=true'}}';
+                                window.location.href = url;
+                            }
+                        });
+                    }
+                }
             });
         });
 </script>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\User;
@@ -168,7 +169,8 @@ class PublicController extends Controller
         $fixed_adult_sizes                          = $this->fixedAdultSize;
         $fixed_baby_sizes                           = $this->fixedBabySize;
         $history                                    = OrderHistory::where(["is_approved"=>1, "order_id"=>$id])->first();
-        $is_approved                                = (isset($history->id) && $history->id > 0) ? 1: 0;
+        // $is_approved                                = (isset($history->id) && $history->id > 0) ? 1: 0;
+        $is_approved                                = (isset($order->quote_approval) && $order->quote_approval == 1) ? 1: 0;
   
         return view('admin.orders.public-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images', 'is_approved'));
     }
@@ -258,11 +260,14 @@ class PublicController extends Controller
                 $message->to($data["email"])
                 ->subject($data["title"]);         
         });
-        $email->save();
+        
         if(count(\Mail::failures()) > 0){
             // return 'Something went wrong.';
         }else{
-            // return "Mail send successfully !!";
+            $request->merge(["download_invoice"=> true, "save_invoice"=> true]);
+            $file                       = app()->make(OrderController::class)->generateInvoice($request, $order->id);
+            $email->invoice             = $file;
+            $email->save();
         }
         $email      = Crypt::encrypt($order->ClientSaleRep->email);
         $order_number      = Crypt::encrypt($request->order_number);
