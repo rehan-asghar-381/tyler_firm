@@ -16,10 +16,22 @@
 
 
 - Disable save order button once clicked to prevent accidentally duplicating the same order. (Done)
-- When sending a revised quote (after quote was approved), please remove Green box at the top of the quote that says "This Quote Has Been Approved" and add Approve / Not Approve buttons again for customer
-- Make To Do List view the same for all inside sales team. Allow everyone to add, edit, delete the to do's
+- After changing the urgent above, please add "Cancelled" option in Status on order page that will also move the order to the customer profile. So two options will perform this action "Done" and "Cancelled" (Done)
+- When sending a revised quote (after quote was approved), please remove Green box at the top of the quote that says "This Quote Has Been Approved" and add Approve / Not Approve buttons again for customer (Done)
+- Make To Do List view the same for all inside sales team. Allow everyone to add, edit, delete the to do's (Done)
+
+Sorry Rehan, some other changes needed. Here's a priority list of items that need fixed:
+
+- Fix error when duplicating errors first. (Done)
+- Add "Cancelled" to status dropdown in Order page and move the order to customer profile. So two options will perform this action "Done" and "Cancelled" (Done)
+- Disable save order button once clicked to prevent accidentally duplicating the same order (Done)
+- When sending a revised quote (after quote was approved), please remove Green box at the top of the quote that says "This Quote Has Been Approved" and add Approve / Not Approve buttons again for customer (Done)
+- In Action Log, please add Quote Preview to emailed response from customer (similar to comp preview) (Pending)
+This is a question for you. When uploading the comp in the comp page, is there a way to preview the comp on the page and not need to download it?
+Yes we can preview it.
 
 
+- In Action Log, please add Quote Preview to emailed response from customer (similar to comp preview)
 View Details Page Changes:
 
 - Under garments, make only the garments with quantities viewable.
@@ -30,15 +42,25 @@ View Details Page Changes:
 - 2. Subtotal amount from Invoice
 - 3. Difference (Subtotal minus Cost Of Goods)
 
-After changing the urgent above, please add "Cancelled" option in Status on order page that will also move the order to the customer profile. So two options will perform this action "Done" and "Cancelled"
+- When selecting "Done" or "Cancelled" in Status dropdown, can you have a pop up show up confirming that action so we don't do it accidentally? (Similar to deleting order) (Done)
+- In orders page, can you remove the Date From and Date To search options at the top of the page and replace them with Assignee Dropdown box to search (Done)
+- On To Do List on dashboard, when checkbox is checked next to an item indicating it has been done, can it automatically be removed from the to do list? (Done)
+- In "View Details" Under additional services, only show services that are selected while creating the order. (Done)
+- In Action Log, please add Quote Preview to emailed response from customer (similar to comp preview) (Done)
+- Delete Art File Feature (Done)
 
 
-Sorry Rehan, some other changes needed. Here's a priority list of items that need fixed:
+- In orders and dashboard, adjust all drop down boxes to the width of 100px and font size to 11px. (Done)
+- In orders and dashboard, add column to the left of comp status with the header "Comp Due" and a calendar feature to select a date (Done)
+- In comp page, when we click on the comp button, make the comp preview pop up in a separate window with the option to download the comp (Done)
+- When downloading art files and comp files, is there a way to select where the file is being saved on the computer? 
 
-- Fix error when duplicating errors first.
-- Add "Cancelled" to status dropdown in Order page and move the order to customer profile. So two options will perform this action "Done" and "Cancelled"
-- Disable save order button once clicked to prevent accidentally duplicating the same order
-- When sending a revised quote (after quote was approved), please remove Green box at the top of the quote that says "This Quote Has Been Approved" and add Approve / Not Approve buttons again for customer
-- In Action Log, please add Quote Preview to emailed response from customer (similar to comp preview)
-This is a question for you. When uploading the comp in the comp page, is there a way to preview the comp on the page and not need to download it?
-Yes we can preview it but can't 
+    The liberary we using doesn't have direct acces to promp
+    
+- In products and brands, add switch to turn on and off brand and product and have error pop up when adding duplicate brand or prodcut. (Done)
+- In clients, add error pop up when adding duplicate client.
+- In Action Logs, add the following activities to the action log: Order creation, Comp Uploaded, Artwork Uploaded, Blank dropdown change, Comp Status dropdown change. We don't need to have the Action Log button flash for any of these actions, just add the timestamp and action to action log
+
+
+ALTER TABLE `orders` 
+ADD COLUMN `comp_due` varchar(50) NULL AFTER `comp_approval`;

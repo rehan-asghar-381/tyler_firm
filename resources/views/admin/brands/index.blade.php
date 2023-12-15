@@ -37,6 +37,7 @@
                   <th>Name</th>
                   <th>Added By</th>
                   <th>Added At</th>
+                  <th>Is Active</th>
                   <th>Action</th>
 								</tr>
 							</thead>
@@ -135,6 +136,7 @@
       {data: 'name', name: 'name'},
       {data: 'created_by_name', name: 'created_by_name'},
       {data: 'time_id', name: 'time_id'},
+      {data: 'active', name: 'active'},
       {data: 'actions', name: 'actions'}
       ],
       columnDefs: [ {
@@ -191,6 +193,35 @@
   };
 
   table.ajax.reload();
+$(document).on("click", ".active-inactive", function(){
+
+    var id                  = $(this).attr('data-id');
+    var is_checked_attr     = $(this).is(':checked');
+    var is_active           = 'N';
+    console.log(is_checked_attr);
+    if (typeof is_checked_attr !== 'undefined' && is_checked_attr !== false) {
+
+        is_active           = 'Y';
+    }
+    $.ajax({
+      url: "{{ route('admin.brand.activeInactive') }}",
+      type: "GET",
+      data:{
+          id: id,
+          is_active: is_active
+      },
+      success: function(data) {
+        
+      },
+      beforeSend: function() {
+        $('.page-loader-wrapper').show();
+      },
+      complete: function(){
+        $('.page-loader-wrapper').hide();
+      },
+    });
+
+});
 </script>
 @endsection
 

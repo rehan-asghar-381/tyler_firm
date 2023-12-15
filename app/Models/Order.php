@@ -37,6 +37,7 @@ class Order extends Model
         'sales_rep',
         'due_date',
         'ship_date',
+        'comp_due',
         'event',
         'shipping_address',
         'notes',

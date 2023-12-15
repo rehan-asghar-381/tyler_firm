@@ -206,7 +206,7 @@ class DashboardController extends Controller
                     $cls        = 'primary';
                 }
                 $html   = '<div class="btn-group mb-2 mr-1">
-                            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$data->Orderstatus->name.'</button>
+                            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:100px;font-size:11px;">'.$data->Orderstatus->name.'</button>
                             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
                 foreach($statuses as $status){
                     $html   .= '<a class="dropdown-item btn-change-status" href="#" data-status-id="'.$status->id.'" data-order-id="'.$data->id.'">'.$status->name.'</a>';
@@ -242,12 +242,21 @@ class DashboardController extends Controller
             // return $html;
 
             $html   = '<div class="btn-group mb-2 mr-1">
-                        <button type="button" class="btn btn-'.$cls.' " style="white-space: nowrap;width:140px;">'.$name.'</button>';
+                        <button type="button" class="btn btn-'.$cls.' " style="white-space: nowrap;width:100px;font-size:11px;">'.$name.'</button>';
             $html   .=    '</div>';
 
             return $html;
             
            
+        })
+        ->addColumn('comp_due', function($data){
+            $html   = '<div class="form-group">
+             <div class="input-group date">
+              <input type="text" name="date_from" class="form-control bg-light flatpickr --comp-due" value="'.$data->comp_due.'" required="" id="date_from" data-order-id="'.$data->id.'" style="width:100px;">
+            </div>
+          </div>';
+
+        return $html;
         })
         ->editColumn('quote_approval', function ($data) use($quote_approval){
             if(isset($data->QuoteApproval->name)){
@@ -264,7 +273,7 @@ class DashboardController extends Controller
                 $cls        = 'danger';
             }
             $html   = '<div class="btn-group mb-2 mr-1">
-            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$name.'</button>
+            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:100px;font-size:11px;">'.$name.'</button>
             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
             foreach($quote_approval as $quote){
                 $html   .= '<a class="dropdown-item btn-change-quote_approval" href="#" data-status-id="'.$quote->id.'" data-order-id="'.$data->id.'">'.$quote->name.'</a>';
@@ -289,7 +298,7 @@ class DashboardController extends Controller
                 $cls        = 'danger';
             }
             $html   = '<div class="btn-group mb-2 mr-1">
-            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$name.'</button>
+            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:100px;font-size:11px;">'.$name.'</button>
             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
             foreach($blanks as $blank){
                 $html   .= '<a class="dropdown-item btn-change-blank" href="#" data-status-id="'.$blank->id.'" data-order-id="'.$data->id.'">'.$blank->name.'</a>';
@@ -334,7 +343,7 @@ class DashboardController extends Controller
             $action_list        .= '</div></div>';
             return  $action_list;
         })
-        ->rawColumns(['actions', 'status', 'notification', 'blank', 'quote_approval', 'comp_approval'])
+        ->rawColumns(['actions', 'status', 'notification', 'blank', 'quote_approval', 'comp_approval', 'comp_due'])
         ->make(TRUE);
     }
 
@@ -504,7 +513,7 @@ class DashboardController extends Controller
                 $task->save();
             }
             $response["status"]         = "success";
-            $todo_list_data             = Task::where("user_id", $user_id)->get();
+            $todo_list_data             = Task::where('is_checked', '<>', 1)->get();
             $todolist                   = view('admin.dashboard.todolist', compact("todo_list_data"))->render();
             $response["data"]           = $todolist;
 
@@ -516,7 +525,7 @@ class DashboardController extends Controller
 
         $response                   = ["status" => "success", "data"=>""];
         $user_id                    = Auth::user()->id;
-        $todo_list_data             = Task::where("user_id", $user_id)->get();
+        $todo_list_data             = Task::where('is_checked', '<>', 1)->get();
         $todolist                   = view('admin.dashboard.todolist', compact("todo_list_data"))->render();
         $response["data"]           = $todolist;
         return json_encode($response);
@@ -527,7 +536,7 @@ class DashboardController extends Controller
         Task::where("id", $task_id)->delete();
         $response                   = ["status" => "success", "data"=>""];
         $user_id                    = Auth::user()->id;
-        $todo_list_data             = Task::where("user_id", $user_id)->get();
+        $todo_list_data             = Task::where('is_checked', '<>', 1)->get();
         $todolist                   = view('admin.dashboard.todolist', compact("todo_list_data"))->render();
         $response["data"]           = $todolist;
         return json_encode($response);
@@ -538,7 +547,7 @@ class DashboardController extends Controller
         Task::where("id", $task_id)->update(["is_checked"=>$is_checked]);
         $response                   = ["status" => "success", "data"=>""];
         $user_id                    = Auth::user()->id;
-        $todo_list_data             = Task::where("user_id", $user_id)->get();
+        $todo_list_data             = Task::where('is_checked', '<>', 1)->get();
         $todolist                   = view('admin.dashboard.todolist', compact("todo_list_data"))->render();
         $response["data"]           = $todolist;
         return json_encode($response);

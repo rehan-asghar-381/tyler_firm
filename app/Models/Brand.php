@@ -16,6 +16,7 @@ class Brand extends Model
         'time_id',
         'name',
         'description',
+        'is_active',
         'created_by_id',
         'created_by_name',
         'updated_by_id',

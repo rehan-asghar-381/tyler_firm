@@ -133,6 +133,15 @@ class ProductController extends Controller
             else
                 return '-';
         })
+        ->addColumn('active', function ($data){
+
+            $action_list    = "";
+            $is_active      = ($data->is_active == 'Y')? "checked": "";
+            
+            $action_list    .= '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input active-inactive" id="customSwitch'.$data->id.'" data-id="'.$data->id.'" '.$is_active.' ><label class="custom-control-label" for="customSwitch'.$data->id.'"  style="cursor:pointer;"></label></div>';
+
+            return  $action_list;
+        })
         ->addColumn('actions', function ($data) {
 
             $action_list    = '<div class="dropdown">
@@ -162,7 +171,7 @@ class ProductController extends Controller
             </div>';
             return  $action_list;
         })
-        ->rawColumns(['actions'])
+        ->rawColumns(['actions', 'active'])
         ->make(TRUE);
 
     }
@@ -176,7 +185,7 @@ class ProductController extends Controller
     {
         $errors                     = [];
         $pageTitle                  = "Product";
-        $brands                     = Brand::orderBy('name', 'asc')->get();
+        $brands                     = Brand::where('is_active', 'Y')->orderBy('name', 'asc')->get();
         $product_size_type          = ProductSizeType::select('type')->groupby('type')->get();
         
         return view('admin.products.create',compact('pageTitle', 'brands','product_size_type'));
@@ -299,7 +308,7 @@ public function save_product_imgs($files_arr=[], $product_id){
      */
     public function edit($id)
     {
-        $brands         = Brand::orderBy('name', 'asc')->get();
+        $brands         = Brand::where('is_active', 'Y')->orderBy('name', 'asc')->get();
         $pageTitle      = "Product";
         $product        = Product::with('ProductImg')->find($id);
         $product_size_type          = ProductSizeType::select('type')->groupby('type')->get();
@@ -547,6 +556,16 @@ public function get_price(Request $request){
                                     ->first();
     $reponse                = array("price"=>$product->price??0, "name"=>$product->v2AttrName->name);
     return json_encode($reponse);
+}
+
+public function activeInactive(Request $request){
+
+    $id                             = $request->get('id');
+    $is_active                      = $request->get('is_active');
+    $financial_year                 = Product::find($id);
+    $financial_year->is_active      = $is_active;
+    $financial_year->save();
+
 }
 
 }

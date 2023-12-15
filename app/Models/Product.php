@@ -21,6 +21,7 @@ class Product extends Model
         'description',
         'quantity',
         'size_for',
+        'is_active',
         'tax_rate_id',
         'cost',
         'inclusive_price',

@@ -6,12 +6,19 @@
     max-height: 318px;
     overflow-y: auto;
   }
+.td-width{
+	width: 100px !important;
+}
 .text-smaller{
 	font-size: 12px !important;
 }
 .btn-sucess-custom{
 	background-color: #28a745;
 	color: #fff;
+}
+
+.form-control{
+	font-size: 12px !important;
 }
 .dropdown-toggle::after {
 	/* border: none !important; */
@@ -291,6 +298,7 @@
 								<tr>
 									{{-- <th width="250px">Sr.</th> --}}
 									<th width="250px">Action Log</th>
+                  <th>Action</th>
 									<th width="250px">Quote #</th>
 									<th width="250px">Job Name</th>
 									<th width="250px">Company</th>
@@ -303,7 +311,7 @@
 									<th width="250px">Quote Approval</th>
 									<th width="250px">Blank</th>
 									<th width="250px">Comp Status</th>
-									<th>Action</th>
+                  <th width="500px" class="td-width">Comp Due</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -332,7 +340,12 @@
 	<script src="{{asset('b/plugins/fullcalendar/packages/list/main.min.js') }}"></script>
   <script>
     $(document).ready(function(){
-
+      function _loadDatePicker(){
+        $('.flatpickr').flatpickr({
+          enableTime: false,
+          dateFormat: "m-d-Y",
+        });
+      }
       function getDateTime() {
         var now = new Date();
         var year = now.getFullYear();
@@ -411,6 +424,9 @@
         $('.listing-heading').text(heading);
         $("#status").val(status);
         _getData();
+        setTimeout(function(){
+          _loadDatePicker();
+        }, 1000);
       });
 
       function _getData(){
@@ -446,6 +462,7 @@
           },
           columns: [
           {data: 'notification', name: 'notification', width:"250px", className: 'text-smaller'},
+          {data: 'actions', name: 'actions'},
           {data: 'id', name: 'id', width:"250px", className: 'text-smaller'},
           {data: 'job_name', name: 'job_name', width:"250px", className: 'text-smaller'},
           {data: 'company_name', name: 'company_name', width:"250px", className: 'text-smaller', orderable: true},
@@ -458,7 +475,7 @@
           {data: 'quote_approval', name: 'quote_approval', width:"250px", className: 'text-smaller', orderable: true},
           {data: 'blank', name: 'blank', width:"250px", className: 'text-smaller', className: 'text-smaller'},
           {data: 'comp_approval', name: 'comp_approval', width:"250px", className: 'text-smaller', className: 'text-smaller'},
-          {data: 'actions', name: 'actions'}
+		      {data: 'comp_due', name: 'comp_due', width:"500px", className: 'td-width'}
           ]
         });
         
@@ -531,6 +548,9 @@
             },
             success: function(data) {
               _getData();
+              setTimeout(function(){
+                _loadDatePicker();
+              }, 1000);
             },
             beforeSend: function() {
                 $('.page-loader-wrapper').show();
@@ -555,6 +575,9 @@
           },
           success: function(data) {
             _getData();
+            setTimeout(function(){
+              _loadDatePicker();
+            }, 1000);
           },
           beforeSend: function() {
               $('.page-loader-wrapper').show();
@@ -578,6 +601,9 @@
           },
           success: function(data) {
             _getData();
+            setTimeout(function(){
+              _loadDatePicker();
+            }, 1000);
           },
           beforeSend: function() {
               $('.page-loader-wrapper').show();
@@ -789,7 +815,31 @@
         notification.show();
 
       }
-
+      $(document).on('change', '.--comp-due', function(e){
+        e.preventDefault();
+        var comp_due 		  	= $(this).val();
+        var order_id 		  	= $(this).attr('data-order-id');
+        $.ajax({
+          url: '{{ route("admin.order.comp_due") }}',
+          type: "GET",
+          data: {
+            comp_due: comp_due,
+            order_id: order_id
+          },
+          success: function(data) {
+            _getData();
+            setTimeout(function(){
+              _loadDatePicker();
+            }, 2000);
+          },
+          beforeSend: function() {
+            $('.page-loader-wrapper').show();
+          },
+          complete: function(){
+            $('.page-loader-wrapper').hide();
+          },
+        });
+      });
       function getTasks(){
 
         $.ajax({

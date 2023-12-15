@@ -57,6 +57,15 @@ class BrandController extends Controller
                 else
                     return '-';
             })
+            ->addColumn('active', function ($data){
+
+                $action_list    = "";
+                $is_active      = ($data->is_active == 'Y')? "checked": "";
+                
+                $action_list    .= '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input active-inactive" id="customSwitch'.$data->id.'" data-id="'.$data->id.'" '.$is_active.' ><label class="custom-control-label" for="customSwitch'.$data->id.'"  style="cursor:pointer;"></label></div>';
+    
+                return  $action_list;
+            })
             ->addColumn('actions', function ($data) {
 
                 $action_list    = '<div class="dropdown">
@@ -79,7 +88,7 @@ class BrandController extends Controller
                 </div>';
                 return  $action_list;
             })
-            ->rawColumns(['actions'])
+            ->rawColumns(['actions', 'active'])
             ->make(TRUE);
 
     }
@@ -301,4 +310,14 @@ class BrandController extends Controller
         return json_encode(array("status"=>true, "message"=>"Attribute deleted successfully"));
 
     } 
+
+    public function activeInactive(Request $request){
+
+        $id                             = $request->get('id');
+        $is_active                      = $request->get('is_active');
+        $financial_year                 = Brand::find($id);
+        $financial_year->is_active      = $is_active;
+        $financial_year->save();
+    
+    }
 }

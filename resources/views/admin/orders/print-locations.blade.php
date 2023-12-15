@@ -3,7 +3,7 @@
         <div class="col-md-12  product-detail rh-product-detail-{{$product_detail->id}} product-detail-{{$product_detail->id}} slector-number-{{$selector_number}}" id="product-detail-{{$product_detail->id}}">
             <div class="card card_product_order mb-1 mt-1">
                 <input type="hidden" class="product-type" value="{{$type}}">
-                <input type="hidden" class="location-count" value="1">
+                <input type="hidden" class="location-count" value="@if(count($order_color_location)>0){{count($order_color_location)}}@else{{"1"}}@endif">
                 <div class="card-header collapse-href collapsed" data-toggle="collapse" href="#collapse-{{$selector_number}}" style="background-color: #eee;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>

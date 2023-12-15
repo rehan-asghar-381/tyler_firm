@@ -77,6 +77,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::post('/brand/update/{brand_id}', [BrandController::class, 'update'])->name('brand.update');
     Route::get('/brand/show/{brand_id}', [BrandController::class, 'brandDetail'])->name('brand.detail');
     Route::get('/brand/delete-image', [BrandController::class, 'delete_image'])->name('brand.delete-image');
+    Route::get('/brand/activeInactive', [BrandController::class, 'activeInactive'])->name('brand.activeInactive');
     /* Start Products Routes */
     Route::get('/product', [ProductController::class, 'index'])->name('product.index');
     Route::get('/product/ajaxData', [ProductController::class, 'ajaxtData'])->name('product.ajax_data');
@@ -96,6 +97,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/product/add-attribute', [ProductController::class, 'add_attribute'])->name('product.add-attribute');
     Route::get('/product/attributes', [ProductController::class, 'attributes'])->name('product.attributes');
     Route::get('/product/delete-attribute', [ProductController::class, 'delete_attribute'])->name('product.delete-attribute');
+    Route::get('/product/activeInactive', [ProductController::class, 'activeInactive'])->name('product.activeInactive');
     /* Start Clients Routes */
     Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
     Route::get('/clients/ajaxData', [ClientController::class, 'ajaxtData'])->name('clients.ajax_data');
@@ -126,8 +128,10 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/orders/print_nd_loations', [OrderController::class, 'print_nd_loations'])->name('order.print_nd_loations');
     Route::get('/orders/view/{order_id}', [OrderController::class, 'orderView'])->name('order.view');
     Route::get('/orders/status_update', [OrderController::class, 'status_update'])->name('order.status_update');
+    Route::get('/orders/comp_due', [OrderController::class, 'comp_due_update'])->name('order.comp_due');
     Route::get('/orders/quote_update', [OrderController::class, 'quote_update'])->name('order.quote_update');
     Route::get('/orders/comp_status_update', [OrderController::class, 'comp_status_update'])->name('order.comp_status_update');
+    Route::get('/orders/delete_art_file', [OrderController::class, 'delete_art_file'])->name('order.delete_art_file');
     Route::get('/orders/blank_update', [OrderController::class, 'blank_update'])->name('order.blank_update');
     Route::get('/orders/generate_invoice/{order_id}', [OrderController::class, 'generateInvoice'])->name('order.generateInvoice');
     Route::get('/orders/recreate/{order_id}', [OrderController::class, 'recreate'])->name('order.recreate');

@@ -85,6 +85,7 @@
         <th>Code</th>
         <th>Added By</th>
         <th>Added At</th>
+        <th>Is Active</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -187,6 +188,7 @@
       {data: 'code', name: 'code'},
       {data: 'created_by_name', name: 'created_by_name'},
       {data: 'time_id', name: 'time_id'},
+      {data: 'active', name: 'active'},
       {data: 'actions', name: 'actions'}
       ],
       columnDefs: [ {
@@ -422,64 +424,6 @@ $(document).on("change", "._price", function(){
     // }
   });
 });
-
-// $('#add-prices-form').off().submit(function(e) {
-//   e.preventDefault();
-//   var formData = new FormData(this);
-//   console.log(formData );
-//   var CSRF_TOKEN = '{{ csrf_field() }}';
-//   return false;
-// $.ajaxSetup({
-//      // headers: {'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')},
-//     type:'POST',
-//     url: '{{ route("admin.product.save-prices") }}',
-//     // data: formData,
-//     data: {_token: CSRF_TOKEN, formData:formData},
-//     cache:false,
-//     contentType: false,
-//     processData: false,
-//     success: (data) => {
-//       if (true) {
-//         $("#assign-modal").modal('hide');
-//         alert("Application Assigned Successfully.")
-//         $('#datatables').DataTable().ajax.reload();
-//       }
-
-//                     // $("#btn-save").html('Submit');
-//                     // $("#btn-save"). attr("disabled", false);
-//                   },
-//                   error: function(data){
-//                     console.log(data);
-//                   }
-//                 });
-// });
-// $(document).on('click', '#save-prices', function(e){
-//   e.preventDefault();
-//   var formData = $('#add-prices-form').serialize();
-//   console.log(formData );
-//   // return false;a+ "_token": "{{ csrf_token() }}",
-//   var product_id        = $('#product_id').val();
-//   var variant_name      = $('#variant_name').val();
-//   // if(product_id != "" && variant_name != ""){
-//    $.ajax({
-//     type:'POST',
-//     url: '{{ route("admin.product.save-prices") }}',
-//     data: formData,
-//     cache:false,
-//     contentType: false,
-//     processData: false,
-//     success: (data) => {
-
-
-//                     // $("#btn-save").html('Submit');
-//                     // $("#btn-save"). attr("disabled", false);
-//                   },
-//                   error: function(data){
-//                     console.log(data);
-//                   }
-//                 });
-//  // }
-// });
 $("#search-button").click(function (e) {
   e.preventDefault();
   table.ajax.reload();
@@ -493,7 +437,35 @@ $(document).on("click", ".del", function(){
   }
 });
 
+$(document).on("click", ".active-inactive", function(){
 
+  var id                  = $(this).attr('data-id');
+  var is_checked_attr     = $(this).is(':checked');
+  var is_active           = 'N';
+  console.log(is_checked_attr);
+  if (typeof is_checked_attr !== 'undefined' && is_checked_attr !== false) {
+
+      is_active           = 'Y';
+  }
+  $.ajax({
+    url: "{{ route('admin.product.activeInactive') }}",
+    type: "GET",
+    data:{
+        id: id,
+        is_active: is_active
+    },
+    success: function(data) {
+      
+    },
+    beforeSend: function() {
+      $('.page-loader-wrapper').show();
+    },
+    complete: function(){
+      $('.page-loader-wrapper').hide();
+    },
+  });
+
+});
 </script>
 @endsection
 

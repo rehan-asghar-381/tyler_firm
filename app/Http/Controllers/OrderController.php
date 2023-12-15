@@ -111,6 +111,7 @@ class OrderController extends Controller
         }
         $statuses                               = Status::where('is_active', 'Y')->get(['id', 'name']);
         $comp_statuses                          = CompStatus::get();
+        $users                                  = User::where('email', '<>', 'art@nuworldgraphicslv.com')->orderBy('name', 'asc')->get();
         foreach($statuses as $key=>$status){
 
             $statuses_arr['"'.$key.'"']          = $status;
@@ -132,9 +133,9 @@ class OrderController extends Controller
             $quote_approval_arr['"'.$key.'"']          = $status;
         }
         
-        $clients        = Client::get();
+        $clients        = Client::orderBy('company_name', 'asc')->get();
 
-        return view('admin.orders.index', compact('pageTitle', 'statuses_arr', 'blank_arr','quote_approval_arr','clients', 'comp_statuses', 'status_filter', 'comp_filter'));
+        return view('admin.orders.index', compact('pageTitle', 'statuses_arr', 'blank_arr','quote_approval_arr','clients', 'comp_statuses', 'status_filter', 'comp_filter', 'users'));
     } 
 
     public function ajaxtData(Request $request){
@@ -155,15 +156,13 @@ class OrderController extends Controller
         if($request->comp_status != ""){
             $rData              = $rData->where('comp_approval', $request->comp_status);
         }
-        if($request->date_from != ""){
-            $rData              = $rData->where('time_id', '>=', strtotime($request->date_from));
-        }
-        if($request->date_to != ""){
-            $rData              = $rData->where('time_id', '<=', strtotime($request->date_to));
-        }
         if($request->status_id != ""){
             $rData              = $rData->where('status', '=', $request->status_id);
         }
+        if($request->user_id != ""){
+            $rData              = $rData->where('created_by_id', '=', $request->user_id);
+        }
+        
         return DataTables::of($rData->get())
         // ->addIndexColumn()
         ->editColumn('id', function ($data) {
@@ -232,7 +231,7 @@ class OrderController extends Controller
                     $cls        = 'primary';
                 }
                 $html   = '<div class="btn-group mb-2 mr-1">
-                            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$data->Orderstatus->name.'</button>
+                            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:100px;font-size:11px;">'.$data->Orderstatus->name.'</button>
                             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
                 foreach($statuses as $status){
                     $html   .= '<a class="dropdown-item btn-change-status" href="#" data-status-id="'.$status->id.'" data-order-id="'.$data->id.'">'.$status->name.'</a>';
@@ -245,6 +244,15 @@ class OrderController extends Controller
 
                 return '-';
             }
+        })
+        ->addColumn('comp_due', function($data){
+            $html   = '<div class="form-group">
+             <div class="input-group date">
+              <input type="text" name="date_from" class="form-control bg-light flatpickr --comp-due" value="'.$data->comp_due.'" required="" id="date_from" data-order-id="'.$data->id.'">
+            </div>
+          </div>';
+
+        return $html;
         })
         ->editColumn('comp_approval', function ($data) use($comp_statuses){
             $cls            = "";
@@ -259,7 +267,7 @@ class OrderController extends Controller
             }
 
             $html   = '<div class="btn-group mb-2 mr-1">
-                        <button type="button" class="btn btn-'.$cls.'" style="white-space: nowrap;width:140px;">'.$name.'</button>';
+                        <button type="button" class="btn btn-'.$cls.'" style="white-space: nowrap;width:100px;font-size:11px;">'.$name.'</button>';
             
             // $html   .=    $inner_html;
             $html   .=    '</div>';
@@ -283,7 +291,7 @@ class OrderController extends Controller
                 $cls        = 'danger';
             }
             $html   = '<div class="btn-group mb-2 mr-1">
-            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$name.'</button>
+            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:100px;font-size:11px;">'.$name.'</button>
             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
             foreach($quote_approval as $quote){
                 $html   .= '<a class="dropdown-item btn-change-quote_approval" href="#" data-status-id="'.$quote->id.'" data-order-id="'.$data->id.'">'.$quote->name.'</a>';
@@ -308,7 +316,7 @@ class OrderController extends Controller
                 $cls        = 'danger';
             }
             $html   = '<div class="btn-group mb-2 mr-1">
-            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:110px;">'.$name.'</button>
+            <button type="button" class="btn btn-'.$cls.' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="white-space: nowrap;width:100px;font-size:11px;">'.$name.'</button>
             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(0px, -152px, 0px); top: 0px; left: 0px; will-change: transform;">';
             foreach($blanks as $blank){
                 $html   .= '<a class="dropdown-item btn-change-blank" href="#" data-status-id="'.$blank->id.'" data-order-id="'.$data->id.'">'.$blank->name.'</a>';
@@ -362,15 +370,6 @@ class OrderController extends Controller
             if(auth()->user()->can('orders-generate-invoice')){
                 $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice', $data->id) .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
             }
-            // if(auth()->user()->can('orders-change-status')){
-            //     $action_list    .= '<a class="dropdown-item btn-change-status" href="#" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-life-ring"></i> Change Status</a>';
-            // }
-            //  if(auth()->user()->can('orders-approve-quote')){
-            //     $action_list    .= '<a class="dropdown-item btn-change-quote_approval" href="#" data-quote_approval="'.$data->quote_approval.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-galactic-republic"></i> Quote Approval</a>';
-            // }
-            // if(auth()->user()->can('orders-blank')){
-            //     $action_list    .= '<a class="dropdown-item btn-change-blank" href="#" data-blank="'.$data->blank.'" data-id="'.$data->id.'"><i class="hvr-buzz-out fab fa-hornbill"></i> Blanks</a>';
-            // }
             if(auth()->user()->can('orders-action-log')){
                 $action_list    .= '<a class="dropdown-item action-logs" href="#" data-id="'.$data->id.'"><i class="hvr-buzz-out far fa fa-history"></i> Action Log</a>';
             }
@@ -381,7 +380,7 @@ class OrderController extends Controller
             $action_list        .= '</div></div>';
             return  $action_list;
         })
-        ->rawColumns(['actions', 'status', 'notification', 'blank', 'quote_approval', 'comp_approval'])
+        ->rawColumns(['actions', 'status', 'notification', 'blank', 'quote_approval', 'comp_approval', 'comp_due'])
         ->make(TRUE);
     }
   
@@ -394,7 +393,7 @@ class OrderController extends Controller
     {
         $pageTitle          = "Orders";
         $clients            = Client::orderBy("company_name", "asc")->get();
-        $products           = Product::orderBy("name", "asc")->get();
+        $products           = Product::where('is_active', 'Y')->orderBy("name", "asc")->get();
         $brands             = Brand::get();
         $errors             = [];
         $fixed_sizes        = $this->fixedAdultSize;
@@ -571,7 +570,8 @@ class OrderController extends Controller
     }
    public function save_comp_files($file, $order_id){
         $order                  = Order::find($order_id);
-        $art_files              = [];           
+        $art_files              = [];   
+              
         if(is_file($file)){
             $destinationPath        = public_path('/uploads/compfiles-'.$order_id.'/');
             $original_name = $file->getClientOriginalName();
@@ -586,6 +586,7 @@ class OrderController extends Controller
             $art_file->file                 = $file_slug;
             $art_files[]                    = $art_file;
         }
+        
         $order->orderCompFiles()->saveMany($art_files);
         $user_name                      = Auth::user()->name;
         $user_id                        = Auth::user()->id;
@@ -787,7 +788,7 @@ class OrderController extends Controller
        
         $order_product_ids_arr      = [];
         $clients                    = Client::get();
-        $products                   = Product::get();
+        $products                   = Product::where('is_active', 'Y')->get();
         $fixed_sizes                = $this->fixedAdultSize;
         $all_adult_sizes            = $this->allAdultSizes;
         $fixed_baby_sizes           = $this->fixedBabySize;
@@ -800,7 +801,7 @@ class OrderController extends Controller
         }
         $active_art_room            = false;
         $active_comp                = false;
-        if(session('art_room')){
+        if(session('art_room') || ( $request->has('art_tab') && $request->art_tab == true)){
             $active_art_room        = true;
         }elseif(session('comp_tab') || ( $request->has('comp_tab') && $request->comp_tab == true) ){
             $active_comp            = true;
@@ -841,10 +842,12 @@ class OrderController extends Controller
                     $art_details        = $request->art_details;
                     $this->save_art_details($art_details, $id);
                 }
+                DB::commit();
                 return redirect()->route("admin.order.edit", $id)->withSuccess('Art Room Data saved successfully!')->with('art_room', true);
             }
             if($request->has('is_comps_submit') && $request->is_comps_submit == 1){
-
+                
+        
                 if($request->hasFile('compFile')){
                     $this->save_comp_files($request->file('compFile'), $id);
                 }
@@ -852,6 +855,7 @@ class OrderController extends Controller
                     $comp_details           = $request->comp_details;
                     $this->save_comp_details($comp_details, $id);
                 }
+                DB::commit();
                 return redirect()->route("admin.order.edit", $id)->withSuccess('Comp Details saved successfully!')->with('comp_tab', true);
             }
                 
@@ -952,7 +956,75 @@ class OrderController extends Controller
                 $order_product_ids_arr[]    = $orderProduct->product_id;
             }
         }
-        return view('admin.orders.order-detail',compact('pageTitle', 'order', 'sales_rep', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr', 'sales_rep_name'));
+        $request->merge(['get_just_invoice_details' => true]);
+        $invoice_data               = $this->generateInvoice($request, $id);
+        $fixed_adult_sizes          = $invoice_data['fixed_adult_sizes'];
+        $extra_details              = $invoice_data['extra_details'];
+        $invoice_details            = $invoice_data['invoice_details'];
+        $sub_total                  = 0;
+        $grand_total                = 0; 
+        $tax_percent                = 0;
+        $additional_services_flag   = 0;
+        foreach ($invoice_details as $size=>$invoice){
+            foreach ($invoice as $product_name=>$invoice_detail){
+                foreach ($invoice_detail as $selector_ref=>$_detail){
+                    foreach ($_detail as $color=>$detail){
+                        $r_total            = 0;
+                        $total_qty          = 0;
+                        $fixed_sizes_qty    = 0;
+                        $fixed_size_price   = 0;
+                        $fixed_sizes        = "";
+                        
+                        foreach ($detail as $size=>$value){
+                            if(in_array($size, $fixed_adult_sizes) || in_array($size, $fixed_baby_sizes)){
+                                $fixed_sizes_qty    = $fixed_sizes_qty+$value["pieces"];
+                                $fixed_size_price   = $value["price"]??0; 
+                                $fixed_sizes        .= $size."(".$value["pieces"].") ";
+                            }else{
+                                $qty                = $value["pieces"]??0;
+                                $price              = $value["price"]??0;
+                                $r_total            += ($qty*$price);
+                                $total_qty          += $qty;
+                            }
+                        }
+                        $total_qty          += $fixed_sizes_qty;
+                        $r_total            +=($fixed_sizes_qty*$fixed_size_price);
+                        $sub_total          += $r_total;
+                    }
+                }
+            }
+        }
+
+        $cost_of_goods      = 0;
+        $art_fee            = ($extra_details["art_fee"]>0)?$extra_details["art_fee"]:0;
+        $art_discount       = ($extra_details["art_discount"]>0)?(int)$extra_details["art_discount"]:0;
+        $sub_total          += ((int)$extra_details["fold_bag_tag_pieces"] * (float)$extra_details["fold_bag_tag_prices"]);
+        $sub_total          += ((int)$extra_details["hang_tag_pieces"] * (float)$extra_details["hang_tag_prices"]);
+        $sub_total          += ((int)$extra_details["transfers_pieces"] * (float)$extra_details["transfers_prices"]);
+        $sub_total          += ((int)$extra_details["ink_color_change_pieces"] * (float)$extra_details["ink_color_change_prices"]);
+        $sub_total          += ($extra_details["shipping_charges"]>0)?$extra_details["shipping_charges"] * (float)$extra_details["shipping_pieces"]:0;
+        $sub_total          += ((int)$extra_details["label_pieces"] * (float)$extra_details["label_prices"]);
+        $sub_total          += ((int)$extra_details["fold_pieces"] * (float)$extra_details["fold_prices"]);
+        $sub_total          += ((int)$extra_details["foil_pieces"] * (float)$extra_details["foil_prices"]);
+        $sub_total          += ((int)$extra_details["palletizing_pieces"] * (float)$extra_details["palletizing_prices"]);
+        $sub_total          += ((int)$extra_details["remove_packaging_pieces"] * (float)$extra_details["remove_packaging_prices"]);
+        $sub_total          = ($sub_total+$art_fee)-($art_discount);
+        $tax                = (float)$extra_details["tax"];
+        $tax_percent        = ($sub_total/100)*$tax;
+        $grand_total        = $tax_percent+$sub_total;
+        if(!empty($order->OrderProducts )){
+
+            foreach($order->OrderProducts  as $product){
+    
+                foreach ($product->OrderProductVariant as $order_product_variant){
+                    if ($order_product_variant->pieces > 0){
+                        $cost_of_goods  += ($order_product_variant->price*$order_product_variant->pieces);
+                    }
+                }
+            }
+        }
+                        
+        return view('admin.orders.order-detail',compact('pageTitle', 'order', 'sales_rep', 'products', 'fixed_sizes', 'all_adult_sizes', 'fixed_baby_sizes', 'all_baby_sizes', 'order_product_ids_arr', 'sales_rep_name', 'cost_of_goods', 'sub_total'));
     }
 
     public function status_update(Request $request)
@@ -973,6 +1045,16 @@ class OrderController extends Controller
         $data['time_id']                = date('U');
         $this->add_notification($data);
         return json_encode(array("status"=>true, "message"=>"Status has been updated successfully!"));
+    }
+    public function comp_due_update(Request $request)
+    {
+        $order_id               = $request->order_id;
+        $comp_due               = $request->comp_due;
+        $order                  = Order::find($order_id);
+        $order->comp_due        = $comp_due;
+        $order->save();
+
+        return json_encode(array("status"=>true));
     }
     public function quote_update(Request $request)
     {
@@ -1026,6 +1108,13 @@ class OrderController extends Controller
         $order_id               = $request->order_id;
         $img_id                 = $request->img_id;
         OrderImgs::where(['order_id'=> $order_id, 'id'=>$img_id])->delete();
+        return json_encode(array("status"=>true));
+
+    }
+    public function delete_art_file(Request $request)
+    {
+        $art_file_id               = $request->art_file_id;
+        orderArtFile::where(['id'=>$art_file_id])->delete();
         return json_encode(array("status"=>true));
 
     }
@@ -1289,7 +1378,9 @@ class OrderController extends Controller
         $fixed_adult_sizes                          = $this->fixedAdultSize;
         $fixed_baby_sizes                           = $this->fixedBabySize;
         // dd($extra_details);
-      
+        if($request->has('get_just_invoice_details') && $request->get_just_invoice_details){
+            return array("invoice_details"=>$invoice_details, "extra_details"=>$extra_details, "fixed_adult_sizes"=>$fixed_adult_sizes, "fixed_baby_sizes"=>$fixed_baby_sizes);
+        }
         if($request->has('download_invoice') && $request->download_invoice==true){
             // return view('admin.orders.download-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images'));
             
@@ -1307,7 +1398,6 @@ class OrderController extends Controller
             }
             return $pdf->download('Quote.pdf');
         }   
-    
         return view('admin.orders.generate-invoice',compact('pageTitle', 'invoice_details', 'client_details', 'fixed_adult_sizes', 'fixed_baby_sizes', 'extra_details', 'color_per_locations', 'order_images', 'order'));
     }
     public function recreate(Request $request, $id)

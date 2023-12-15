@@ -4,12 +4,19 @@
 .text-smaller{
 	font-size: 12px !important;
 }
+.td-width{
+	width: 100px !important;
+	font-size: 12px !important;
+}
 .btn-sucess-custom{
 	background-color: #28a745;
 	color: #fff;
 }
 .dropdown-toggle::after {
 	/* border: none !important; */
+}
+.form-control{
+	font-size: 12px !important;
 }
 @keyframes blink {
 	0% { opacity: 1; }
@@ -36,32 +43,14 @@
 					</select>
 				</div>
 			</div>
-			<div class="col-md-2 mb-3">
-				<div class="form-group">
-					<label>Date From: </label>&nbsp;&nbsp;&nbsp;
-					<div class="input-group date">
-						<input type="text" name="date_from" class="form-control bg-light flatpickr" value="" required="" id="date_from">
-						<div class="input-group-addon input-group-append">
-							<div class="input-group-text">
-								<i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="col-md-2 mb-3">
-				<div class="form-group">
-					<label>Date To: </label>&nbsp;&nbsp;&nbsp;
-					<div class="input-group date">
-						<input type="text" name="date_to" class="form-control bg-light flatpickr" value="" required="" id="date_to">
-						<div class="input-group-addon input-group-append">
-							<div class="input-group-text">
-								<i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-							</div>
-						</div>
-					</div>
-				</div>
+			<div class="col-md-2">
+				<label>Assignee</label>
+				<select type="text" name="user_id" id="user_id" class="form-control require required-online" value="" >
+					<option value="">--select--</option>
+					@foreach ($users as $id=>$user)
+					<option value="{{ $user->id }}">{{ $user->name }}</option>
+					@endforeach
+				</select>
 			</div>
 			<div class="col-md-2">
 				<label>Status</label>
@@ -84,7 +73,7 @@
 					@endforeach
 				</select>
 			</div>
-			<div class="col-md-1 mb-3" style="margin-left: 25px;">
+			<div class="col-md-1 mb-3" style="margin-left: 44px;">
 				<button class="btn btn-success" style="margin-top: 31px;width:150px;float:right" id="search-button">Search</button>
 			</div>
 		</div>
@@ -124,11 +113,12 @@
 					</div>
 					@endif
 					<div class="table-responsive">
-						<table class="table table-borderless table-striped">
+						<table class="table table-borderless table-striped" style="font-size:11px !important;">
 							<thead style="background-color: #6aa4e6;color: #ffffff;">
 								<tr>
 									{{-- <th width="250px">Sr.</th> --}}
 									<th width="250px">Action Log</th>
+									<th>Action</th>
 									<th width="250px">Quote #</th>
 									<th width="250px">Job Name</th>
 									<th width="250px">Company</th>
@@ -141,7 +131,7 @@
 									<th width="250px">Quote Approval</th>
 									<th width="250px">Blank</th>
 									<th width="250px">Comp Status</th>
-									<th>Action</th>
+									<th width="500px" class="td-width">Comp Due</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -172,7 +162,12 @@
 @endsection
 @section('footer-script')
 <script type="text/javascript">
-	// $('select').select2();
+	function _loadDatePicker(){
+		$('.flatpickr').flatpickr({
+			enableTime: false,
+			dateFormat: "m-d-Y",
+		});
+	}
 	function getDateTime() {
 		var now = new Date();
 		var year = now.getFullYear();
@@ -223,16 +218,16 @@
 			'url': '{!! route('admin.orders.ajaxdata') !!}',
 			'data': function (d) {
 				d.client_id = $("select[name='client_id']").val();
-				d.date_from = $("input[name='date_from']").val();
-				d.date_to = $("input[name='date_to']").val();
 				d.status_id = $("select[name='status_id']").val();
 				d.comp_status = $("select[name='comp_status']").val();
+				d.user_id = $("select[name='user_id']").val();
 				return d;
 			}
 		},
 		columns: [
 		// {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center text-smaller'},
 		{data: 'notification', name: 'notification', width:"250px", className: 'text-smaller'},
+		{data: 'actions', name: 'actions'},
 		{data: 'id', name: 'id', width:"250px", className: 'text-smaller'},
 		{data: 'job_name', name: 'job_name', width:"250px", className: 'text-smaller'},
 		{data: 'company_name', name: 'company_name', width:"250px", className: 'text-smaller', orderable: true},
@@ -245,7 +240,7 @@
 		{data: 'quote_approval', name: 'quote_approval', width:"250px", className: 'text-smaller', orderable: true},
 		{data: 'blank', name: 'blank', width:"250px", className: 'text-smaller', className: 'text-smaller'},
 		{data: 'comp_approval', name: 'comp_approval', width:"250px", className: 'text-smaller', className: 'text-smaller'},
-		{data: 'actions', name: 'actions'}
+		{data: 'comp_due', name: 'comp_due', width:"500px", className: 'td-width'}
 		]
 	});
 	function newexportaction(e, dt, button, config) {
@@ -297,8 +292,9 @@
 	dt.ajax.reload();
 };   
 table.ajax.reload();
-
-
+setTimeout(function(){
+	_loadDatePicker();
+}, 1000);
 	// $("#tarcking_status").select2();
 	$(document).on('click', '._deld', function(){
 		var f = window.confirm("Do you want to delete record?");
@@ -314,7 +310,7 @@ table.ajax.reload();
 		var order_id 		= $(this).attr("data-order-id");
 
 		var _confirm 		= true;
-		if(status_id 	== 5){
+		if(status_id == 5 || status_id == 7){
 			_confirm 		= confirm("Are you sure you want to perform this action?")
 		}
 		if(_confirm){
@@ -327,6 +323,10 @@ table.ajax.reload();
 				},
 				success: function(data) {
 					table.ajax.reload();
+					setTimeout(function(){
+						_loadDatePicker();
+					}, 1000);
+
 				},
 				beforeSend: function() {
 						$('.page-loader-wrapper').show();
@@ -351,6 +351,9 @@ table.ajax.reload();
 			},
 			success: function(data) {
 				table.ajax.reload();
+				setTimeout(function(){
+					_loadDatePicker();
+				}, 1000);
 			},
 			beforeSend: function() {
 					$('.page-loader-wrapper').show();
@@ -375,6 +378,9 @@ table.ajax.reload();
 			},
 			success: function(data) {
 				table.ajax.reload();
+				setTimeout(function(){
+					_loadDatePicker();
+				}, 1000);
 			},
 			beforeSend: function() {
 					$('.page-loader-wrapper').show();
@@ -520,6 +526,9 @@ table.ajax.reload();
 	$("#search-button").click(function (e) {
 		e.preventDefault();
 		table.ajax.reload();
+		setTimeout(function(){
+			_loadDatePicker();
+		}, 2000);
 
 	});	 
 	$(document).ready(function (e) {
@@ -603,6 +612,31 @@ table.ajax.reload();
 					$('.action-log-popup').html(data);
 					$('#action-log-modal').show();
 				}
+			});
+		});
+		$(document).on('change', '.--comp-due', function(e){
+			e.preventDefault();
+			var comp_due 		  	= $(this).val();
+			var order_id 		  	= $(this).attr('data-order-id');
+			$.ajax({
+				url: '{{ route("admin.order.comp_due") }}',
+				type: "GET",
+				data: {
+					comp_due: comp_due,
+					order_id: order_id
+				},
+				success: function(data) {
+					table.ajax.reload();
+					setTimeout(function(){
+						_loadDatePicker();
+					}, 2000);
+				},
+				beforeSend: function() {
+					$('.page-loader-wrapper').show();
+				},
+				complete: function(){
+					$('.page-loader-wrapper').hide();
+				},
 			});
 		});
 

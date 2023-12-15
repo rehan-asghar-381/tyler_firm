@@ -173,8 +173,10 @@ hr{
                         @csrf
                         <div class="row">
                             <div class="col-md-12">
+                                <a href="{{route('admin.order.view', $order->id)}}"  class="btn btn-sucess-custom" style="height: 40px;margin-top: 30px;margin-left: 12px;float:right;">View Detail</a>
                                 <a href="{{url('admin/orders/generate_invoice/'.$order->id)}}"  class="btn btn-primary" style="height: 40px;margin-top: 30px;margin-left: 12px;float:right;">Create Quote</a>
-                                <a href="{{url('admin/orders/d_yellow/'.$order->id)}}"  class="btn btn-danger" style="height: 40px;margin-top: 30px;margin-left: 12px;float:right;">Create Yellow</a>
+                                <a href="{{url('admin/orders/d_yellow/'.$order->id)}}"  class="btn btn-warning" style="height: 40px;margin-top: 30px;margin-left: 12px;float:right;">Create Yellow</a>
+                               
                             </div>
                         </div>
                         <div class="row">
@@ -591,8 +593,9 @@ hr{
                                     @endphp
                                     @foreach ($order->orderCompFiles as $orderCompFile)
                                     <div class="col-md-6">
-                                        <a href="{{route('admin.order.downloadCompFiles', $orderCompFile->id)}}" class="btn btn-purple btn-circle mb-2 mr-1" style="width: 150px !important;"><i class="fas fa-download"></i> Comp {{$i++}}</a>
+                                        <button data-popup-id="comp-preview-modal-{{$orderCompFile->id}}" class="btn btn-purple btn-circle mb-2 mr-1 --comp-preview" style="width: 100px !important;"><i class="fas fa-eye"></i> Comp {{$i++}}</button>
                                     </div>
+                                    @include('admin.orders.popup.comp-preview', ["download_url"=>route('admin.order.downloadCompFiles', $orderCompFile->id), "comp_preview"=>asset($orderCompFile->file), "comp_id"=>$orderCompFile->id])
                                     <div class="col-md-2 --radio-parent">
                                         <div class="custom-control custom-radio custom-control-inline">
                                             <input type="radio" id="customRadioInline{{$orderCompFile->id}}" name="customRadioInline1" class="custom-control-input btn-change-comp-status" data-order-id="{{$order->id}}" data-status-id="{{$orderCompFile->is_approved}}" data-comp-id="{{ $orderCompFile->id }}" @if($orderCompFile->is_reflected == 1) {{"checked"}} @endif>
@@ -1492,7 +1495,7 @@ hr{
             });
         });
         $(document).on('click', '.close-modal', function(e){
-            $(this).closest('.modal').hide();
+            $(this).closest('.modal').modal('hide');
         });
         $(document).ready(function (e) {
             $(document).on('click', '.copy-to-clipboard', function(e){
@@ -1592,7 +1595,7 @@ hr{
                 let url 			= "{{ route('admin.order.delete_art_file') }}";
                 if(art_file_id != ""){
                     if(confirm("Are you sure?")){
-
+                        
                         $.ajax({
                             url: url, 
                             type: "GET",
@@ -1607,6 +1610,12 @@ hr{
                     }
                 }
             });
+            $(document).on("click", ".--comp-preview", function(event){
+                event.preventDefault();
+                let popup_id        = $(this).attr('data-popup-id');
+                $('#'+popup_id).modal('show');
+            });
+
         });
 </script>
 @endsection
