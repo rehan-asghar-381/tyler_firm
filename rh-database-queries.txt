@@ -56,9 +56,11 @@ View Details Page Changes:
 - When downloading art files and comp files, is there a way to select where the file is being saved on the computer? 
 
     The liberary we using doesn't have direct acces to promp
-    
+
 - In products and brands, add switch to turn on and off brand and product and have error pop up when adding duplicate brand or prodcut. (Done)
-- In clients, add error pop up when adding duplicate client.
+
+- Comp preview is fixed 
+- In clients, Brands, add error pop up when adding duplicate client. (Done)
 - In Action Logs, add the following activities to the action log: Order creation, Comp Uploaded, Artwork Uploaded, Blank dropdown change, Comp Status dropdown change. We don't need to have the Action Log button flash for any of these actions, just add the timestamp and action to action log
 
 

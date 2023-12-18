@@ -6,6 +6,7 @@ use App\Models\Notification;
 use App\Models\NotificationSeen;
 use App\Models\NotificationConfig;
 use App\Models\User;
+use App\Models\EmailLog;
 use Illuminate\Support\Facades\Auth;
 /**
  * Trait NotificationTrait
@@ -80,5 +81,14 @@ trait NotificationTrait
 
         NotificationSeen::create(["notification_id"=>$nt_id, "seen_by_id"=>$seen_by_id]);
         return true;
+    }
+
+    function _addLog($data=[]){
+
+        $log            = new EmailLog();
+        foreach($data as $key=>$value){
+            $log->{$key}    = $value;
+        }
+        $log->save();
     }
 }

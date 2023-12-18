@@ -595,7 +595,15 @@ hr{
                                     <div class="col-md-6">
                                         <button data-popup-id="comp-preview-modal-{{$orderCompFile->id}}" class="btn btn-purple btn-circle mb-2 mr-1 --comp-preview" style="width: 100px !important;"><i class="fas fa-eye"></i> Comp {{$i++}}</button>
                                     </div>
-                                    @include('admin.orders.popup.comp-preview', ["download_url"=>route('admin.order.downloadCompFiles', $orderCompFile->id), "comp_preview"=>asset($orderCompFile->file), "comp_id"=>$orderCompFile->id])
+                                    @php
+                                    $path                   = explode("/", $orderCompFile->file);
+                                    $filename               = end($path);
+                                    $encodedFilename        = rawurlencode($filename);
+                                    $path[count($path) - 1] = $encodedFilename;
+                                    $encodedPath            = implode("/", $path);
+                                    // dump(asset($encodedPath));
+                                    @endphp
+                                    @include('admin.orders.popup.comp-preview', ["download_url"=>route('admin.order.downloadCompFiles', $orderCompFile->id), "comp_preview"=>asset($encodedPath), "comp_id"=>$orderCompFile->id])
                                     <div class="col-md-2 --radio-parent">
                                         <div class="custom-control custom-radio custom-control-inline">
                                             <input type="radio" id="customRadioInline{{$orderCompFile->id}}" name="customRadioInline1" class="custom-control-input btn-change-comp-status" data-order-id="{{$order->id}}" data-status-id="{{$orderCompFile->is_approved}}" data-comp-id="{{ $orderCompFile->id }}" @if($orderCompFile->is_reflected == 1) {{"checked"}} @endif>

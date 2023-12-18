@@ -124,7 +124,7 @@ class ClientController extends Controller
     {
         $errors         = [];
         $pageTitle      = "Clients";
-        return view('admin.clients.create',compact('pageTitle', 'errors'));
+        return view('admin.clients.create',compact('pageTitle'));
 
     }
     
@@ -136,9 +136,14 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'company_name' => 'required'
-        ]);
+        $rules = [
+            'company_name' => 'unique:clients,company_name'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails())
+        {
+            return redirect()->back()->withInput($request->input())->withErrors($validator);
+        }
         $client = new Client();
 
 
@@ -245,10 +250,16 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-      $this->validate($request, [
-        'company_name' => 'required'
-    ]);
+        
+        $rules = [
+            'company_name' => 'unique:clients,company_name,'.$id
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails())
+        {
+            return redirect()->back()->withInput($request->input())->withErrors($validator);
 
+        }
 
       $client = Client::find($id);
       $client->company_name = $request->company_name;

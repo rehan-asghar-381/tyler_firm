@@ -333,7 +333,8 @@ class OrderController extends Controller
         ->addColumn('notification', function ($data) use($user_id){
             if($data->email_log_count == 1){
 
-                return '<span class="badge badge-light action-logs" data-id="'.$data->id.'" style="cursor:pointer;">Email Sent</span>';
+                // return '<span class="badge badge-light action-logs" data-id="'.$data->id.'" style="cursor:pointer;">Email Sent</span>';
+                return '<span class="badge badge-primary action-logs" data-id="'.$data->id.'" style="cursor:pointer;">Activity Seen</span>';
             }elseif (count($data->ActionSeen) == $data->email_log_count ){
 
                 return '<span class="badge badge-primary action-logs" data-id="'.$data->id.'" style="cursor:pointer;">Activity Seen</span>';
@@ -489,15 +490,14 @@ class OrderController extends Controller
                 $comp_details           = $request->comp_details;
                 $this->save_comp_details($comp_details, $orderID);
             }
-
-            $body                           = $user_name." created a <strong>New Order</strong> ( <strong>#".$order->id."</strong> )";
-            $data['idFK']                   = $orderID;
-            $data['type']                   = 'orders';
-            $data['added_by_id']            = $user_id;
-            $data['added_by_name']          = $user_name;
-            $data['body']                   = $body;
+            
             $data['time_id']                = date('U');
-            // $this->add_notification($data);
+            $data['assignee_name']          = $user_name;
+            $data['created_by_id']          = $user_id;
+            $data['description']            = "Order created";
+            $data['is_response']            = Null;
+            $data['order_id']               = $orderID;
+            $this->_addLog($data);
             DB::commit();
             return redirect()->route('admin.order.edit', $orderID)->withSuccess('Order data has been saved successfully!');
         } catch (\Exception $e) {
@@ -520,6 +520,7 @@ class OrderController extends Controller
         foreach($files_arr as $file){             
             if(is_file($file)){
                 $original_name = $file->getClientOriginalName();
+                $original_name          = $this->sanitizeFileName($original_name);
                 $file_name = time().rand(100,999).$original_name;
                 $destinationPath = public_path('/uploads/order/');
                 $file->move($destinationPath, $file_name);
@@ -541,7 +542,8 @@ class OrderController extends Controller
         foreach($files_arr as $file){             
             if(is_file($file)){
                 $destinationPath        = public_path('/uploads/artfiles-'.$order_id.'/');
-                $original_name = $file->getClientOriginalName();
+                $original_name          = $file->getClientOriginalName();
+                $original_name          = $this->sanitizeFileName($original_name);
                 $file_name = time().rand(100,999).$original_name;
                 if (!is_dir($destinationPath)) {
                     mkdir($destinationPath, 0777);
@@ -568,13 +570,14 @@ class OrderController extends Controller
         $data['time_id']                = date('U');
         $this->add_notification($data);
     }
-   public function save_comp_files($file, $order_id){
+    public function save_comp_files($file, $order_id){
         $order                  = Order::find($order_id);
         $art_files              = [];   
               
         if(is_file($file)){
             $destinationPath        = public_path('/uploads/compfiles-'.$order_id.'/');
-            $original_name = $file->getClientOriginalName();
+            $original_name          = $file->getClientOriginalName();
+            $original_name          = $this->sanitizeFileName($original_name);
             $file_name = time().rand(100,999).$original_name;
             if (!is_dir($destinationPath)) {
                 mkdir($destinationPath, 0777);
@@ -713,41 +716,44 @@ class OrderController extends Controller
                     $size_attr_arr[$selector_ref]           = $attr_arr;
                 }
             }
+           
             foreach($color_attr_arr as $selector_ref=>$_color_attr_arr){
-                $color_count            = count($_color_attr_arr);
-                $size_count             = count($size_attr_arr[$selector_ref]);
+                if(isset($pieces[$product_id][$selector_ref]) && isset($prices[$product_id][$selector_ref])){
+                    
+                    $color_count            = count($_color_attr_arr);
+                    $size_count             = count($size_attr_arr[$selector_ref]);
+                    $chunk_size             = $size_count/$color_count;
+                    $chunked_size_arr       = array_chunk($size_attr_arr[$selector_ref], $chunk_size );
+                    $chunked_pieces_arr     = array_chunk($pieces[$product_id][$selector_ref], $chunk_size);
+                    $chunked_prices_arr     = array_chunk($prices[$product_id][$selector_ref], $chunk_size);
+                
+                    foreach($_color_attr_arr as $key=>$attr_id){
+                        foreach($chunked_size_arr[$key] as $chunk_arr_key=>$attribute2_id){
+                            $order_product_var                      = new OrderProductVariant();
+                            $order_product_var->order_id            = $order_id;
+                            $order_product_var->product_id          = $product_id;
+                            $order_product_var->selector_ref        = $selector_ref;
+                            $order_product_var->variant1_id         = $variant1_id;
+                            $order_product_var->variant1_name       = $variant1_name ;
+                            $order_product_var->variant2_id         = $variant2_id;
+                            $order_product_var->variant2_name       = $variant2_name;
+                            $order_product_var->attribute1_id       = $attr_id ?? 0;
+                            $product_variant_attribute              = ProductVariantAttribute::find($attr_id);
+                            $order_product_var->attribute1_name     = $product_variant_attribute->name ??"";
+                            $order_product_var->attribute2_id       = $attribute2_id;
+                            $product_variant_attribute              = ProductVariantAttribute::find($attribute2_id);
+                            $order_product_var->attribute2_name     = $product_variant_attribute->name??"";
+                            $order_product_var->pieces              = $chunked_pieces_arr[$key][$chunk_arr_key]??0;
+                            $order_product_var->price               = $chunked_prices_arr[$key][$chunk_arr_key]??0;
+                            // $order_product_var->total               = $total[$product_id][$selector_ref][$key]??0;
+                            $order_product_variant_arr[]            = $order_product_var;
 
-                $chunk_size             = $size_count/$color_count;
-                $chunked_size_arr       = array_chunk($size_attr_arr[$selector_ref], $chunk_size );
-                $chunked_pieces_arr     = array_chunk($pieces[$product_id][$selector_ref], $chunk_size);
-                $chunked_prices_arr     = array_chunk($prices[$product_id][$selector_ref], $chunk_size);
-
-                foreach($_color_attr_arr as $key=>$attr_id){
-                    foreach($chunked_size_arr[$key] as $chunk_arr_key=>$attribute2_id){
-                        $order_product_var                      = new OrderProductVariant();
-                        $order_product_var->order_id            = $order_id;
-                        $order_product_var->product_id          = $product_id;
-                        $order_product_var->selector_ref        = $selector_ref;
-                        $order_product_var->variant1_id         = $variant1_id;
-                        $order_product_var->variant1_name       = $variant1_name ;
-                        $order_product_var->variant2_id         = $variant2_id;
-                        $order_product_var->variant2_name       = $variant2_name;
-                        $order_product_var->attribute1_id       = $attr_id ?? 0;
-                        $product_variant_attribute              = ProductVariantAttribute::find($attr_id);
-                        $order_product_var->attribute1_name     = $product_variant_attribute->name ??"";
-                        $order_product_var->attribute2_id       = $attribute2_id;
-                        $product_variant_attribute              = ProductVariantAttribute::find($attribute2_id);
-                        $order_product_var->attribute2_name     = $product_variant_attribute->name??"";
-                        $order_product_var->pieces              = $chunked_pieces_arr[$key][$chunk_arr_key]??0;
-                        $order_product_var->price               = $chunked_prices_arr[$key][$chunk_arr_key]??0;
-                        // $order_product_var->total               = $total[$product_id][$selector_ref][$key]??0;
-                        $order_product_variant_arr[]            = $order_product_var;
-
-                    }
-                }     
+                        }
+                    }    
+                } 
             }     
         }
-       
+      
         $order->OrderProductVariant()->delete();
         $order->OrderProductVariant()->saveMany($order_product_variant_arr);
     }
@@ -835,6 +841,13 @@ class OrderController extends Controller
                 if($request->hasFile('artFile')){
                     if(count($request->file('artFile')) > 0 ){
                         $this->save_art_files($request->file('artFile'), $id);
+                        $data['time_id']                = date('U');
+                        $data['assignee_name']          = $user_name;
+                        $data['created_by_id']          = $user_id;
+                        $data['description']            = "Art File uploaded";
+                        $data['is_response']            = Null;
+                        $data['order_id']               = $id;
+                        $this->_addLog($data);
                     }
                 }
                 if($request->has('art_details') && $request->art_details != ""){
@@ -850,6 +863,15 @@ class OrderController extends Controller
         
                 if($request->hasFile('compFile')){
                     $this->save_comp_files($request->file('compFile'), $id);
+                    $data['time_id']                = date('U');
+                    $data['assignee_name']          = $user_name;
+                    $data['created_by_id']          = $user_id;
+
+                    $comp_number                    = orderCompFile::where("order_id", $id)->get()->count();
+                    $data['description']            = "Comp ".$comp_number ." is uploaded";
+                    $data['is_response']            = Null;
+                    $data['order_id']               = $id;
+                    $this->_addLog($data);
                 }
                 if($request->has('comp_details') && $request->comp_details != ""){
                     $comp_details           = $request->comp_details;
@@ -923,6 +945,17 @@ class OrderController extends Controller
             return redirect()->route("admin.order.edit", $orderID)->withSuccess('Order data has been updated successfully!');
         } catch (\Exception $e) {
             DB::rollback();
+            $errorMessage = $e->getMessage();
+            $errorDetails = [
+                'message' => $errorMessage,
+                'code' => $e->getCode(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                // 'trace' => $e->getTraceAsString(),
+            ];
+        
+            // Now you can use $errorDetails as needed
+            dd($errorDetails);
         }
     }
 
@@ -1090,6 +1123,17 @@ class OrderController extends Controller
         }
         $upComp->is_approved    = $status;
         $upComp->save();
+
+        if($status != "--select"){
+            $data['time_id']                = date('U');
+            $data['assignee_name']          = Auth::user()->name;
+            $data['created_by_id']          = Auth::user()->id;
+            $data['description']            = "Comp status chnaged to ".$status;
+            $data['is_response']            = Null;
+            $data['order_id']               = $order_id;
+            $this->_addLog($data);
+        }
+        
         return json_encode(array("status"=>true, "message"=>"Comp Status has been updated successfully!"));
     }
     public function blank_update(Request $request)
@@ -1099,8 +1143,17 @@ class OrderController extends Controller
         $order_id               = $request->get('order_id');
         $status                 = $request->get('status_id');
         $order                  = Order::find($order_id);
-        $order->blank          = $status;
+        $order->blank           = $status;
         $order->save();
+
+        $blank                  = Blank::find($status);
+        $data['time_id']                = date('U');
+        $data['assignee_name']          = Auth::user()->name;
+        $data['created_by_id']          = Auth::user()->id;
+        $data['description']            = "Blanks ".$blank->name;
+        $data['is_response']            = Null;
+        $data['order_id']               = $order_id;
+        $this->_addLog($data);
         return json_encode(array("status"=>true, "message"=>"Status has been updated successfully!"));
     }
     public function delete_image(Request $request)
@@ -1908,5 +1961,14 @@ class OrderController extends Controller
         }else{
             abort(404, 'File not found');
         }
+    }
+
+    public function sanitizeFileName($fileName)
+    {
+        $fileName = str_replace(' ', '_', $fileName);
+        $fileName = preg_replace('/[^a-zA-Z0-9_.]/', '', $fileName);
+        $fileName = trim($fileName, '_');
+
+        return $fileName;
     }
 }

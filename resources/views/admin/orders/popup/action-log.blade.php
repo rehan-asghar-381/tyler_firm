@@ -46,7 +46,15 @@
 										{{"-"}}
 										@endif
 									</td>
-									<td>{{($action_log->is_response == "Y")? "Received":"Sent"}}</td>
+									@php
+										$action 	= "-";
+										if($action_log->is_response == "Y"){
+											$action 	= "Received";
+										}elseif($action_log->is_response == "N"){
+											$action 	= "Sent";
+										}
+									@endphp
+									<td>{{$action}}</td>
 									<td>{{($action_log->is_response == "Y")? ($action_log->is_approved == 1 && $action_log->is_response == "Y")? "Yes":"No":"-"}}</td>
 									<td>{!! $action_log->description !!}</td>
 								</tr>

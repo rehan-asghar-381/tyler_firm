@@ -118,12 +118,13 @@ class BrandController extends Controller
         $user_id                    = Auth::user()->id;
         $user_name                  = Auth::user()->name;
         $rules = [
-            'code' => 'unique:brands,name'
+            'name' => 'unique:brands,name'
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails())
         {
             return redirect()->back()->withInput($request->input())->withErrors($validator);
+
         }
         $brand                    = new Brand();
         $brand->time_id           = date('U');
@@ -201,14 +202,13 @@ class BrandController extends Controller
         $user_id                    = Auth::user()->id;
         $user_name                  = Auth::user()->name;
         $rules = [
-            'code' => 'unique:brands,name,'.$id
+            'name' => 'unique:brands,name,'.$id
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails())
         {
-            // dd($validator);
             return redirect()->back()->withInput($request->input())->withErrors($validator);
-      
+
         }
         $brand                    = Brand::find($id);
         $brand->time_id           = date('U');

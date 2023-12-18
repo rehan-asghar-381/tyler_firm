@@ -333,7 +333,6 @@ public function save_product_imgs($files_arr=[], $product_id){
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails())
         {
-            // dd($validator);
             return redirect()->back()->withInput($request->input())->withErrors($validator);
 
         }

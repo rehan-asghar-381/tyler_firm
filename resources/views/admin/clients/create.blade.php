@@ -105,6 +105,7 @@
                     <div class="col-md-3 mb-3">
                         <label class="form-label text-dark-gray" for="">Company Name</label>
                         <input type="text" name="company_name" class="form-control font-12 form-control-lg require" value="{{old('company_name')}}">
+                        {!! $errors->first('company_name', '<p class="text-danger">:message</p>') !!} 
                     </div>
                     <div class="col-md-3 mb-3">
                         <label class="form-label text-dark-gray" for="office_phone_number">Company Office Phone Number</label>
