@@ -267,7 +267,7 @@ class OrderController extends Controller
             }
 
             $html   = '<div class="btn-group mb-2 mr-1">
-                        <button type="button" class="btn btn-'.$cls.'" style="white-space: nowrap;width:100px;font-size:11px;">'.$name.'</button>';
+                        <button type="button" class="btn btn-'.$cls.'" style="white-space: nowrap;width:115px;font-size:11px;">'.$name.'</button>';
             
             // $html   .=    $inner_html;
             $html   .=    '</div>';

@@ -535,7 +535,8 @@
         var order_id 		= $(this).attr("data-order-id");
 
         var _confirm 		= true;
-        if(status_id 	== 5){
+        
+        if(status_id 	== 5 || status_id == 7){
           _confirm 		= confirm("Are you sure you want to perform this action?")
         }
         if(_confirm){

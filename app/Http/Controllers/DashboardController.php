@@ -55,7 +55,7 @@ class DashboardController extends Controller
         if($date_to != ""){
             $orders                 = $orders->where("order_date_timestamp", "<=", strtotime($date_to));
         }
-        $orders                     = $orders->where("status", "!=", 5)->where("created_by_id", "!=", 6)->get();                          
+        $orders                     = $orders->whereNotIn("status",[5, 7])->where("created_by_id", "!=", 6)->get();                          
         $users                   = User::where("id", "!=", 6)->get();
         foreach($orders as $id=>$order){
 
@@ -121,7 +121,7 @@ class DashboardController extends Controller
         $rData              = Order::withCount("EmailLog")->with(["client", "ClientSaleRep","ActionSeen"=>function($q) use($user_id){
             $q->where('seen_by', '=', $user_id);
         
-        }])->where('status','<>',5);
+        }])->whereNotIn('status',[5,7]);
         
         if($request->client_id != ""){
             $rData              = $rData->where('client_id', $request->client_id);
@@ -242,7 +242,7 @@ class DashboardController extends Controller
             // return $html;
 
             $html   = '<div class="btn-group mb-2 mr-1">
-                        <button type="button" class="btn btn-'.$cls.' " style="white-space: nowrap;width:100px;font-size:11px;">'.$name.'</button>';
+                        <button type="button" class="btn btn-'.$cls.' " style="white-space: nowrap;width:115px;font-size:11px;">'.$name.'</button>';
             $html   .=    '</div>';
 
             return $html;
