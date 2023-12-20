@@ -3,6 +3,7 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ActionSeen;
+use App\Models\orderCompFile;
 
 class EmailLog extends Model
 {
@@ -16,5 +17,9 @@ class EmailLog extends Model
      public function ActionSeen(){
         
         return $this->hasMany(ActionSeen::class, "email_log_id", "id");
+    }
+    public function comp()
+    {
+        return $this->belongsTo(orderCompFile::class, 'comp_id', 'id');
     }
 }

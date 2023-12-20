@@ -523,6 +523,9 @@ setTimeout(function(){
 	$(document).on('click', '.close-modal', function(e){
   		$(this).closest('.modal').hide();
 	});
+	$(document).on('click', '.close-modal-comp-preview', function(e){
+            $(this).closest('.modal').modal('hide');
+        });
 	$("#search-button").click(function (e) {
 		e.preventDefault();
 		table.ajax.reload();
@@ -646,6 +649,12 @@ setTimeout(function(){
 			}else{
 				return false;
 			}
+		});
+		
+		$(document).on("click", ".--comp-preview", function(event){
+			event.preventDefault();
+			let popup_id        = $(this).attr('data-popup-id');
+			$('#'+popup_id).modal('show');
 		});
 	});
 </script>

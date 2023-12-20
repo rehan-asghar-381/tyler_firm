@@ -38,8 +38,16 @@
 									<td>{{$action_log->from}}</td>
 									<td>
 										@if($action_log->comp_id > 0)
-											
-											<a class="btn btn-success" href="{{route('admin.order.downloadCompFiles', $action_log->comp_id)}} " target="_blank" style="white-space: nowrap;"><i class="fas fa-download"></i> Comp</a>
+											@php
+											$comp_details 			= $action_log->comp;
+											$path                   = explode("/", $comp_details->file);
+											$filename               = end($path);
+											$encodedFilename        = rawurlencode($filename);
+											$path[count($path) - 1] = $encodedFilename;
+											$encodedPath            = implode("/", $path);
+											@endphp
+											@include('admin.orders.popup.comp-preview', ["download_url"=>route('admin.order.downloadCompFiles', $comp_details->id), "comp_preview"=>asset($encodedPath), "comp_id"=>$comp_details->id])
+											<a class="btn btn-success --comp-preview" href="#" target="_blank" style="white-space: nowrap;" data-popup-id="comp-preview-modal-{{$comp_details->id}}"><i class="fas fa-download"></i> Comp</a>
 										@elseif($action_log->invoice!="")
 											<a class="btn btn-success" href="{{asset($action_log->invoice)}} " target="_blank" style="white-space: nowrap;">Quote Preview</a>
 										@else

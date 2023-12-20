@@ -699,7 +699,8 @@ hr{
         var _order_id       = '{{$order->id}}';
         $('#product_ids').on('select2:unselect', function (e) {
             var p_id        = ".product-detail-"+e.params.data.id;
-            $(p_id).remove();
+            $(p_id).closest(".--product-row").remove();
+            $(p_id).closest(".container-fluid").remove();
         });
         
         let order_product_ids       = JSON.parse($("#order_product_ids").html());
@@ -874,7 +875,8 @@ hr{
             }else{
                 // do nothing
             }
-            append_parent.append(new_product_add);
+            new_product_add.find("input").val('');
+            new_product_add.find("select").val('');
             append_parent.append(new_product_add);
             var product_id              = new_product_add.find('.v2_attr_id').attr('data-product_id');
             var selector_number         = new_product_add.find('.v2_attr_id').attr('data-selector');
@@ -974,31 +976,35 @@ hr{
         var selector                = '.form-row';
         let v1_attr_id              = $(this).closest(selector).find('.v1_attr_id').val();
         let v2_attr_id_arr          = [];
-
+        let v2_attr_quantity_arr    = [];
         $($(this).closest(selector).find('.v2_attr_id')).each(function(i, e){
             if($(this).val() != ""){
 
                 v2_attr_id_arr.push($(this).attr('data-attr-id'));
+                v2_attr_quantity_arr.push($(this).val());
             }
         });
-
+        
         let price_selector          = '';
+        let v2_attr_quantity        = '';
         let v2_attr_id              = 0;
         if($(this).hasClass('v2_attr_id')){
             v2_attr_id              = $(this).attr('data-attr-id');
+            v2_attr_quantity        = $(this).val();
             price_selector          = $(this).closest('.row').find('.price-'+v2_attr_id);
             $(this).prev().val(v2_attr_id);
-            addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector);
+            addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector, v2_attr_quantity);
             
         }else if($(this).hasClass('v1_attr_id')){
+            var row                 = $(this).closest('.row');
             $.each(v2_attr_id_arr, function(index, v2_attr_id){
-
-                price_selector          = $(this).closest('.row').find('.price-'+v2_attr_id);
-                addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector);
+                v2_attr_quantity        = v2_attr_quantity_arr[index];
+                price_selector          = row.find('.price-'+v2_attr_id);
+                addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector, v2_attr_quantity);
             });
         }
     });
-    function addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector){
+    function addProductChildRow(product_id, selector_number, v1_attr_id, v2_attr_id, price_selector, selector, v2_attr_quantity=''){
         let size_selector           = "";
         let size_select             = "";
         let all_adult_sizes         = JSON.parse($("#all_adult_sizes").html());
@@ -1337,6 +1343,8 @@ hr{
             new_product_template.find('.collapse-href').attr('href', collapse_href);
             new_product_template.find('.collapse-id').attr('id', collapse_id);
             new_product_template.find('.attribute').attr('data-selector', selector);
+            new_product_template.find("input").val('');
+            new_product_template.find("select").val('');
 
             // Print Details tab print and locations clonning
             var prev_selector                           = "--print-and-location-row-"+product_id+"-"+terminator;
@@ -1362,6 +1370,7 @@ hr{
                 let updated_name        = _update_field_name(field_name, selector);
                 new_print_and_location_template.find(element).attr("name", updated_name);
             });
+            new_print_and_location_template.find("input").val('');
             projected_units();
         });
         $(document).on('click', '.--remove-product', function(event) {
@@ -1503,6 +1512,9 @@ hr{
             });
         });
         $(document).on('click', '.close-modal', function(e){
+            $(this).closest('.modal').hide();
+        });
+        $(document).on('click', '.close-modal-comp-preview', function(e){
             $(this).closest('.modal').modal('hide');
         });
         $(document).ready(function (e) {

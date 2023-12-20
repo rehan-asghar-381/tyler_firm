@@ -563,43 +563,43 @@ textarea {
                                                             <div> {{$color}}</div>
                                                         </td>
                                                         <td>
-                                                            <div> {{ (isset($detail["XS"]["pieces"]))?$detail["XS"]["pieces"]:""}}</div>
+                                                            <div> {{ (isset($detail["XS"]["pieces"]) && $detail["XS"]["pieces"]>0)?$detail["XS"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
-                                                            <div> {{ (isset($detail["S"]["pieces"]))?$detail["S"]["pieces"]:""}}</div>
+                                                            <div> {{ (isset($detail["S"]["pieces"]) && $detail["S"]["pieces"]>0)?$detail["S"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
-                                                            <div> {{ (isset($detail["M"]["pieces"]))?$detail["M"]["pieces"]:""}}</div>
+                                                            <div> {{ (isset($detail["M"]["pieces"]) && $detail["M"]["pieces"]>0)?$detail["M"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
-                                                            <div> {{ (isset($detail["L"]["pieces"]))?$detail["L"]["pieces"]:""}}</div>
+                                                            <div> {{ (isset($detail["L"]["pieces"]) && $detail["L"]["pieces"]>0)?$detail["L"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
-                                                            <div> {{ (isset($detail["XL"]["pieces"]))?$detail["XL"]["pieces"]:""}}</div>
+                                                            <div> {{ (isset($detail["XL"]["pieces"]) && $detail["XL"]["pieces"]>0)?$detail["XL"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
                                                             <div>
-                                                                {{ (isset($detail["2XL"]["pieces"]))?$detail["2XL"]["pieces"]:""}}
+                                                                {{ (isset($detail["2XL"]["pieces"]) && $detail["2XL"]["pieces"]>0)?$detail["2XL"]["pieces"]:""}}
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div>
-                                                                {{ (isset($detail["3XL"]["pieces"]))?$detail["3XL"]["pieces"]:""}}
+                                                                {{ (isset($detail["3XL"]["pieces"]) && $detail["3XL"]["pieces"]>0)?$detail["3XL"]["pieces"]:""}}
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div>
-                                                                {{ (isset($detail["4XL"]["pieces"]))?$detail["4XL"]["pieces"]:""}}
+                                                                {{ (isset($detail["4XL"]["pieces"]) && $detail["4XL"]["pieces"]>0)?$detail["4XL"]["pieces"]:""}}
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div>
-                                                                {{ (isset($detail["5XL"]["pieces"]))?$detail["5XL"]["pieces"]:""}}
+                                                                {{ (isset($detail["5XL"]["pieces"]) && $detail["5XL"]["pieces"]>0)?$detail["5XL"]["pieces"]:""}}
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div>
-                                                                {{ (isset($detail["6XL"]["pieces"]))?$detail["6XL"]["pieces"]:""}}
+                                                                {{ (isset($detail["6XL"]["pieces"]) && $detail["6XL"]["pieces"]>0)?$detail["6XL"]["pieces"]:""}}
                                                             </div>
                                                         </td>
                                                         
@@ -616,34 +616,34 @@ textarea {
                                                             <div> {{$color}}</div>
                                                         </td>
                                                         <td>
-                                                            <div> {{ (isset($detail["OSFA"]["pieces"]))?$detail["OSFA"]["pieces"]:""}}</div>
+                                                            <div> {{ (isset($detail["OSFA"]["pieces"]) && $detail["OSFA"]["pieces"])?$detail["OSFA"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
-                                                            <div> {{ (isset($detail["New Born"]["pieces"]))?$detail["New Born"]["pieces"]:""}}</div>
+                                                            <div> {{ (isset($detail["New Born"]["pieces"]) && $detail["New Born"]["pieces"])?$detail["New Born"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
-                                                            <div> {{ (isset($detail["6M"]["pieces"]))?$detail["6M"]["pieces"]:""}}</div>
+                                                            <div> {{ (isset($detail["6M"]["pieces"]) && $detail["6M"]["pieces"])?$detail["6M"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
-                                                            <div> {{ (isset($detail["12M"]["pieces"]))?$detail["12M"]["pieces"]:""}}</div>
+                                                            <div> {{ (isset($detail["12M"]["pieces"]) && $detail["12M"]["pieces"])?$detail["12M"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
-                                                            <div> {{ (isset($detail["18M"]["pieces"]))?$detail["18M"]["pieces"]:""}}</div>
+                                                            <div> {{ (isset($detail["18M"]["pieces"]) && $detail["18M"]["pieces"])?$detail["18M"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
-                                                            <div>{{ (isset($detail["2T"]["pieces"]))?$detail["2T"]["pieces"]:""}}</div>
+                                                            <div>{{ (isset($detail["2T"]["pieces"]) && $detail["2T"]["pieces"])?$detail["2T"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
-                                                            <div>{{ (isset($detail["3T"]["pieces"]))?$detail["3T"]["pieces"]:""}}</div>
+                                                            <div>{{ (isset($detail["3T"]["pieces"]) && $detail["3T"]["pieces"])?$detail["3T"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
-                                                            <div>{{ (isset($detail["4T"]["pieces"]))?$detail["4T"]["pieces"]:""}}</div>
+                                                            <div>{{ (isset($detail["4T"]["pieces"]) && $detail["4T"]["pieces"])?$detail["4T"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
-                                                            <div>{{ (isset($detail["5T"]["pieces"]))?$detail["5T"]["pieces"]:""}}</div>
+                                                            <div>{{ (isset($detail["5T"]["pieces"]) && $detail["5T"]["pieces"])?$detail["5T"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
-                                                            <div>{{ (isset($detail["6T"]["pieces"]))?$detail["6T"]["pieces"]:""}}</div>
+                                                            <div>{{ (isset($detail["6T"]["pieces"]) && $detail["6T"]["pieces"])?$detail["6T"]["pieces"]:""}}</div>
                                                         </td>
                                                         <td>
                                                             <div>{{ " " }}</div>

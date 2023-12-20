@@ -6,7 +6,7 @@
 				<!-- Modal Header -->
 				<div class="modal-header" style="background-color:#041e42">
 					<h6 class="modal-title text-white">Comp Action</h6>
-					<button type="button" class="close close-modal" data-dismiss="modal">&times;</button>
+					<button type="button" class="close close-modal-comp-preview" data-dismiss="modal">&times;</button>
 				</div>
 				<!-- Modal body -->
 				<div class="modal-body" style="max-height: calc(100vh - 210px);overflow-y: auto;">
@@ -19,7 +19,7 @@
 				</div>
 				<!-- Modal footer -->
 				<div class="modal-footer">
-					<button class="btn btn-default close-modal" type="button">close</button>
+					<button class="btn btn-default close-modal-comp-preview" type="button">close</button>
 				</div>
 			</div>
 		</div>

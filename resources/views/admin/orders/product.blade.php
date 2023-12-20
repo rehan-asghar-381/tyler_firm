@@ -1,10 +1,10 @@
-<div class="container-fluid mt-3" >
+<div class="container-fluid mt-2" >
     <div class="row --product-row">
         <div class="col-md-11 product-detail product-detail-{{$product_detail->id}} slector-number-{{$selector_number}}" id="product-detail-{{$product_detail->id}}">
-            <div class="card card_product_order mb-1 mt-1">
-                <div class="card-header collapsed collapse-href" data-toggle="collapse" href="#collapse-{{$selector_number}}" style="background-color: #eee;">
+            <div class="card card_product_order">
+                <div class="card-header collapsed collapse-href" data-toggle="collapse" href="#collapse-{{$selector_number}}" style="background-color: #eee;padding:0.5rem 1.5rem; ">
                     <a class="card-title">
-                        {{$product_detail->name}}
+                        {{$product_detail->name." - ".implode(",", $product_colors)}}
                     </a>
                 </div>
                 <div id="collapse-{{$selector_number}}" class="card-body collapse collapse-id" data-parent="#accordion" >

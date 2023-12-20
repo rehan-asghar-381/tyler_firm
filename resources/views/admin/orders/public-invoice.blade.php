@@ -151,7 +151,7 @@
                         @if($__flag == $__start)
                             <tr>
                                 <td>
-                                    <div><strong>Color Per Location</strong></div>
+                                    <div><i>Color Per Location</i></div>
                                     @foreach ($color_per_locations[$product_name][$selector_ref]["location_number"] as $key=>$location)
                                     <div>
                                         <small>{{$location}} {{$color_per_locations[$product_name][$selector_ref]["color_per_location"][$key] . " C. "}}</small>

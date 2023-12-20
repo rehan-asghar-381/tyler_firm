@@ -546,6 +546,7 @@ public function get_price(Request $request){
     $product_id             = $request->product_id;
     $v1_attr_id             = $request->v1_attr_id;
     $v2_attr_id             = $request->v2_attr_id;
+    $v2_attr_quantity       = $request->v2_attr_quantity;
     $product                = ProductPrice::with("v2AttrName")
                                     ->where([
                                         "product_id"=>$product_id, 
@@ -553,7 +554,11 @@ public function get_price(Request $request){
                                         "v2_attr_id"=>$v2_attr_id
                                         ])
                                     ->first();
-    $reponse                = array("price"=>$product->price??0, "name"=>$product->v2AttrName->name);
+    if($v2_attr_quantity  > 0){
+        $reponse                = array("price"=>$product->price??0, "name"=>$product->v2AttrName->name);
+    }else{
+        $reponse                = array("price"=>'', "name"=>$product->v2AttrName->name);
+    }
     return json_encode($reponse);
 }
 

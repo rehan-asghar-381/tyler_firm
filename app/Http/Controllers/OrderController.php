@@ -1208,10 +1208,11 @@ class OrderController extends Controller
         if($order_id  > 0){
             $order_product_variants         = OrderProductVariant::where(['order_id'=> $order_id, 'product_id'=> $product_id, "selector_ref"=>$terminator])->get()->chunk(10);
         }
-        
         $product_detail     = Product::with( 'ProductVariant', 'ProductVariant.Atrributes')->where('id', $product_id)->first();
-   
-        return view('admin.orders.product', compact('product_detail', 'order_product_variants', 'selector_number', 'terminator'));
+
+        
+        $product_colors                   = $this->order_product_colors($order_id, $product_id, $terminator);
+        return view('admin.orders.product', compact('product_detail', 'order_product_variants', 'selector_number', 'terminator', 'product_colors'));
         
     }
     public function print_nd_loations(Request $request)
@@ -1251,7 +1252,23 @@ class OrderController extends Controller
                 break;
             }
         }
-        return view('admin.orders.print-locations', compact('product_detail', 'type', 'order_price', 'order_color_location', 'print_locations', 'order_color_location_number', 'selector_number', 'terminator'));
+        $product_colors                   = $this->order_product_colors($order_id, $product_id, $terminator);
+        return view('admin.orders.print-locations', compact('product_detail', 'type', 'order_price', 'order_color_location', 'print_locations', 'order_color_location_number', 'selector_number', 'terminator', 'product_colors'));
+    }
+    public function order_product_colors($order_id, $product_id, $terminator){
+        $order_product_variants     = [];
+        if($order_id  > 0){
+            $order_product_variants         = OrderProductVariant::where(['order_id'=> $order_id, 'product_id'=> $product_id, "selector_ref"=>$terminator])->get()->chunk(10);
+        }
+        $product_colors     = [];
+        foreach($order_product_variants as $order_product_variant){
+            foreach($order_product_variant as $OV){
+                $product_colors[]         = $OV->attribute1_name;
+            }
+        }
+        $product_colors                   = array_unique($product_colors);
+
+        return $product_colors;
     }
     public function print_nd_loations_view(Request $request)
     {
@@ -1922,7 +1939,7 @@ class OrderController extends Controller
     public function action_log_seen(Request $request){
         $order_id               = $request->order_id;
         $seen_by                = $request->user_id;
-        $action_logs            = EmailLog::where("order_id", $order_id)->orderBy("id", "desc")->get();
+        $action_logs            = EmailLog::with('comp')->where("order_id", $order_id)->orderBy("id", "desc")->get();
         if(count($action_logs)>0){
             foreach($action_logs as $k=>$action_log){
          

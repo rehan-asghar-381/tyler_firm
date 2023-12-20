@@ -1,13 +1,13 @@
-<div class="container-fluid mt-3" >
+<div class="container-fluid mt-2" >
     <div class="row --print-and-location-row-{{$selector_number}}">
         <div class="col-md-12  product-detail rh-product-detail-{{$product_detail->id}} product-detail-{{$product_detail->id}} slector-number-{{$selector_number}}" id="product-detail-{{$product_detail->id}}">
-            <div class="card card_product_order mb-1 mt-1">
+            <div class="card card_product_order">
                 <input type="hidden" class="product-type" value="{{$type}}">
                 <input type="hidden" class="location-count" value="@if(count($order_color_location)>0){{count($order_color_location)}}@else{{"1"}}@endif">
-                <div class="card-header collapse-href collapsed" data-toggle="collapse" href="#collapse-{{$selector_number}}" style="background-color: #eee;">
+                <div class="card-header collapse-href collapsed" data-toggle="collapse" href="#collapse-{{$selector_number}}" style="background-color: #eee; padding:0.5rem 1.5rem;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <p class="mb-0">{{$product_detail->name}}</p>
+                            <p class="mb-0">{{$product_detail->name." - ".implode(",", $product_colors)}}</p>
                         </div>
                         <div class="text-right">
                             <div class="actions">

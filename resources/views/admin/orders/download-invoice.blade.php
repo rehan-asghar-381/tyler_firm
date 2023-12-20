@@ -136,7 +136,7 @@
                             <tr>
                                 <td style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">
                                 @if (count($color_per_locations) > 0)
-                                    <div><strong style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">Color Per Location</strong></div>
+                                    <div><i style="font-size: 14px;line-height:22px;font-weight: 400;font-family: 'Poppins', sans-serif;">Color Per Location</i></div>
                                     @foreach ($color_per_locations[$product_name][$selector_ref]["location_number"] as $key=>$location)
                                             <span style="font-size: 14px;line-height:22px;font-weight: 300;font-family: 'Poppins', sans-serif;">{{$location}} <small>{{$color_per_locations[$product_name][$selector_ref]["color_per_location"][$key] . " C. "}}</small></span><br>
                                     @endforeach
