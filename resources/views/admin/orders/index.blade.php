@@ -31,6 +31,7 @@
 </style>
 <div class="body-content">
 	<form action="" id="reportForm">
+		<input type="hidden" name="order_id" value="{{$order_id}}">
 		<div class="row mb-4">
 			<div class="col-md-2 mb-3" style="margin-right: 10px;">
 				<div class="form-group">
@@ -221,6 +222,7 @@
 				d.status_id = $("select[name='status_id']").val();
 				d.comp_status = $("select[name='comp_status']").val();
 				d.user_id = $("select[name='user_id']").val();
+				d.order_id = $("input[name='order_id']").val();
 				return d;
 			}
 		},

@@ -53,6 +53,8 @@ class OrderController extends Controller
     public $allBabySizes;
     function __construct()
     {
+        ini_set('memory_limit', '256M');
+        ini_set('max_execution_time', 300);
        $this->middleware('permission:orders-list|orders-edit', ['only' => ['index']]);
        $this->middleware('permission:orders-edit', ['only' => ['edit','update']]);
        $this->middleware('permission:orders-view', ['only' => ['show']]);
@@ -97,6 +99,7 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
+        $order_id                               = $request->has('quote_number') ? $request->quote_number : "";
         $pageTitle                              = "Orders";
         $statuses_arr                           = [];
         $status_filter                          = "";
@@ -134,8 +137,7 @@ class OrderController extends Controller
         }
         
         $clients        = Client::orderBy('company_name', 'asc')->get();
-
-        return view('admin.orders.index', compact('pageTitle', 'statuses_arr', 'blank_arr','quote_approval_arr','clients', 'comp_statuses', 'status_filter', 'comp_filter', 'users'));
+        return view('admin.orders.index', compact('pageTitle', 'statuses_arr', 'blank_arr','quote_approval_arr','clients', 'comp_statuses', 'status_filter', 'comp_filter', 'users', 'order_id'));
     } 
 
     public function ajaxtData(Request $request){
@@ -161,6 +163,9 @@ class OrderController extends Controller
         }
         if($request->user_id != ""){
             $rData              = $rData->where('created_by_id', '=', $request->user_id);
+        }
+        if($request->order_id != ""){
+            $rData              = $rData->where('id', '=', $request->order_id);
         }
         
         return DataTables::of($rData->get())

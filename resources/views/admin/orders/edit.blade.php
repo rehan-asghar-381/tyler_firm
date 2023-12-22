@@ -1035,7 +1035,8 @@ hr{
                 data: {
                     product_id: product_id,
                     v1_attr_id: v1_attr_id,
-                    v2_attr_id: v2_attr_id
+                    v2_attr_id: v2_attr_id,
+                    v2_attr_quantity: v2_attr_quantity
                 },
                 success: function(result) {
                     result      = JSON.parse(result);

@@ -1,7 +1,7 @@
 <?php
   
 namespace App\Http\Controllers;
-  
+use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Traits\NotificationTrait;
 use App\Models\QuoteApproval;
 use App\Models\CompStatus;
+use App\Models\CustomerResponse;
 use App\Models\Blank;
 use App\Models\orderCompFile;
 use App\Models\Task;
@@ -369,7 +370,7 @@ class DashboardController extends Controller
             $url                = route("admin.orders.index", ["filter_type"=>$filter_type, "filter_value"=>$filter_value]);
             // dd($url);
 
-          $html         .='<a href="'.$url.'"><div class="row mb-3"><div class="col-9"><div class="progress-wrapper"><span class="progress-label text-muted">'.$status.'</span><div class="progress mt-1 mb-2" style="height: 5px;"><div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'.$order_count["perc"].'" aria-valuemin="0" aria-valuemax="100" style="width: '.$order_count["perc"].'%"></div></div></div></div><div class="col-3 align-self-end text-right"><span class="h6 mb-0">'.$order_count["total"].' <strong>('.$order_count["perc"].'%)</strong></span></div></div></a>';
+          $html         .='<a href="'.$url.'"><div class="row mb-3"><div class="col-9"><div class="progress-wrapper"><span class="progress-label text-muted">'.$status.'</span><div class="progress mt-1 mb-2" style="height: 5px;"><div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'.$order_count["perc"].'" aria-valuemin="0" aria-valuemax="100" style="width: '.$order_count["perc"].'%"></div></div></div></div><div class="col-3 align-self-end text-right"><span class="h6 mb-0">'.$order_count["total"].'</span></div></div></a>';
           
         }
         return  $html;
@@ -551,5 +552,53 @@ class DashboardController extends Controller
         $todolist                   = view('admin.dashboard.todolist', compact("todo_list_data"))->render();
         $response["data"]           = $todolist;
         return json_encode($response);
+    }
+    public function get_company_short_name($inputString){
+            $words = explode(' ', $inputString);
+            $firstLetters = '';
+            for ($i = 0; $i < min(2, count($words)); $i++) {
+                
+                $firstLetters .= substr($words[$i], 0, 1);
+            }
+            return $firstLetters;
+    }
+    public function get_time_in_hours($time){
+        $currentTimestamp = time();
+        $timeDifferenceInSeconds = $currentTimestamp - $time;
+        $timeDifferenceInHours = $timeDifferenceInSeconds / 3600;
+
+        return number_format($timeDifferenceInHours, 1);
+    }
+    public function get_customer_response(){
+        $bg_int         = 0;
+        $html           = '';
+        $user_id        = Auth::user()->id;
+        $result         = CustomerResponse::with("client")->where("assignee_id", $user_id)->orderBy('id', 'desc')->get();
+        if(count($result) > 0){
+            foreach ($result as $key=>$response){
+                if($response->is_approved == "Approved"){
+                    $bg                     = "bg-success";  
+                }elseif($response->is_approved == "Not Approved"){
+                    $bg                     = "bg-danger";  
+                }
+                $url                        = route("admin.orders.index", ["quote_number"=>$response->order_id]);
+                $company_name               = $response->client->company_name;
+                $company_short_name         = $this->get_company_short_name($company_name);
+                $time_in_hours              = $this->get_time_in_hours($response->time_id);
+                $html         .='<a href="'.$url.'" class="list-group-item list-group-item-action">
+                <div class="d-flex align-items-center" data-toggle="tooltip" data-placement="right" data-title="'.$time_in_hours .' hrs ago" data-original-title="" title="" data-popup-id="'.$response->id.'">
+                    <div>
+                        <span class="avatar '.$bg.' text-white rounded-circle">'.$company_short_name.'</span>
+                    </div>
+                    <div class="flex-fill ml-3">
+                        <h6 class="fs-12 font-weight-600 mb-0">'.$company_name.' <small class="float-right text-muted">'.$time_in_hours .' hrs ago</small></h6>
+                        <p class="mb-0 fs-11">'.$response->action.'.</p>
+                    </div>
+                </div>
+            </a>';
+            // $html .= View::make('admin.dashboard.notification-detail-popup')->render();
+            }
+        }
+        return ['customer_response' => $html];
     }
 }

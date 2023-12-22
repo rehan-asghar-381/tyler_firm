@@ -11,6 +11,7 @@ use App\Models\orderCompFile;
 use App\Traits\NotificationTrait;
 use App\Models\OrderHistory;
 use App\Models\EmailLog;
+use App\Models\CustomerResponse;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
 class PublicController extends Controller
@@ -202,6 +203,19 @@ class PublicController extends Controller
         $data["email"]              = $assignee_email ;
         $data["title"]              = "Response for Comp ".$comp->Order->job_name;
         $data["description"]        = $message_body;
+        $customer_response          = array(
+            "time_id"=>date('U'),
+            "order_id"=>$comp->Order->id,
+            "client_id"=>$comp->Order->client_id,
+            "assignee_id"=>$user_id,
+            "assignee_name"=>$assignee_name,
+            "email"=>$request->email,
+            "remarks"=>$message_body,
+            "is_approved"=>$logs_action,
+            "action"=>"<strong>Comp ".$comp_id." is </strong>".$logs_action,
+            "created_at"=>date("d-m-Y h:i:s")
+        );
+        $this->save_customer_response($customer_response);
         \Mail::send('admin.orders.email', $data, function($message)use($data) {
                 $message->to($data["email"])
                 ->subject($data["title"]);         
@@ -253,9 +267,23 @@ class PublicController extends Controller
         $email->is_sent             = "Y";
         $email->created_by_id       = 0;
         $email->is_response         = "Y";
-        $data["email"]              = $assignee_email ;
+        $data["email"]              = $assignee_email;
         $data["title"]              = "Response for ".$order->job_name." Quote";
         $data["description"]        = $message_body;
+
+        $customer_response          = array(
+            "time_id"=>date('U'),
+            "order_id"=>$order->id,
+            "client_id"=>$order->client_id,
+            "assignee_id"=>$user_id,
+            "assignee_name"=>$assignee_name,
+            "email"=>$request->email,
+            "remarks"=>$message_body,
+            "is_approved"=>$logs_action,
+            "action"=>"<strong>Quote#".$order_id." is </strong>".$logs_action,
+            "created_at"=>date("d-m-Y h:i:s")
+        );
+        $this->save_customer_response($customer_response);
         \Mail::send('admin.orders.email', $data, function($message)use($data) {
                 $message->to($data["email"])
                 ->subject($data["title"]);         
@@ -301,5 +329,8 @@ class PublicController extends Controller
 
         
 
+    }
+    public function save_customer_response($data){
+        CustomerResponse::create($data);
     }
 }

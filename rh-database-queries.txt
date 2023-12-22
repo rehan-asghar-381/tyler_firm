@@ -66,3 +66,25 @@ View Details Page Changes:
 
 ALTER TABLE `orders` 
 ADD COLUMN `comp_due` varchar(50) NULL AFTER `comp_approval`;
+
+CREATE TABLE `customer_responses` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `order_id` int DEFAULT NULL,
+  `assignee_id` int DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `remarks` text,
+  `is_approved` varchar(255) DEFAULT NULL,
+  `action` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+ALTER TABLE `customer_responses` 
+ADD COLUMN `assignee_name` varchar(255) NULL AFTER `assignee_id`;
+
+ALTER TABLE `customer_responses` 
+ADD COLUMN `time_id` int NULL AFTER `id`;
+
+ALTER TABLE `customer_responses` 
+ADD COLUMN `client_id` int NULL AFTER `order_id`;

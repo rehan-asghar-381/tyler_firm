@@ -1,6 +1,17 @@
 @extends("admin.template", ["pageTitle"=>$pageTitle])
 @section('content')
 <style>
+.card-header {
+  padding: 0.5rem 1.5rem;
+}
+.list-group-item{
+  padding: 0.5rem 1.5rem;
+}
+.avatar {
+    height: 2rem;
+    width: 2rem;
+    font-size: 0.7rem;
+}
 .--card-right {
     height: 318px;
     max-height: 318px;
@@ -234,7 +245,7 @@
   <!--/.Content Header (Page header)--> 
   <div class="body-content">
       <div class="row">
-          <div class="col-lg-8 col-xl-8">
+          <div class="col-lg-12 col-xl-12">
               <div class="card">
                   <div class="card-body">
                       <!-- calender -->
@@ -242,7 +253,9 @@
                   </div>
               </div>
           </div>
-          <div class="col-md-12 col-lg-4">
+      </div>
+      <div class="row mt-3">
+          <div class="col-md-4 col-lg-4">
             <div class="card mb-4 --card-right">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
@@ -256,22 +269,47 @@
                 </div>
                 <div class="card-body --todolist">
                     
+                  
                 </div>
               </div>
-              <div class="card mb-4 --card-right">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="fs-17 font-weight-600 mb-0">Order Progress</h6>
-                        </div>
-                        <div class="text-right">
-                          
-                        </div>
+        </div>
+        <div class="col-md-4 col-lg-4">
+          
+          <div class="card mb-4 --card-right">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="fs-17 font-weight-600 mb-0">Order Progress</h6>
+                    </div>
+                    <div class="text-right">
+                      
                     </div>
                 </div>
-                <div class="card-body order-counts">
+            </div>
+            <div class="card-body order-counts">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg-4">
+          <div class="card mb-4 --card-right">
+              <div class="card-header">
+                  <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                          <h6 class="fs-17 font-weight-600 mb-0">Customer Response</h6>
+                      </div>
+                      <div class="text-right">
+                      </div>
+                  </div>
+              </div>
+              <div class="list-group list-group-flush --customer-response">
+                
+                <div class="text-center mt-3" id="loader" style="display: block;">
+                  <div class="spinner-border" role="status">
+                      <span class="sr-only">Loading...</span>
+                  </div>
                 </div>
               </div>
+          </div>
         </div>
       </div>
   </div><!--/.body content-->
@@ -862,10 +900,42 @@
             }
           });
       }
+      function getCustomerNotifications(){
+        $form = $("#reportForm").serialize();
+        
+        $.ajax({
+            url: "{{ route('admin.dashboard.get_customer_response') }}",
+            data: $form,
+            dataType: 'json',
+            success: function (result) {
+                $(".--customer-response").html("");
+                $(".--customer-response").append(result.customer_response);
+            },
+            beforeSend: function() {
+              $(".--customer-response").html('<div class="text-center mt-3" id="loader" style="display: block;"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>');
+            },
+            complete: function(){
+              
+            },
+            error: function (e) {
+            }
+        });
+
+        setTimeout(function() {
+					getCustomerNotifications();
+				}, 15000);
+      }
+      getCustomerNotifications();
       calanderEvents();
       loadCounts();
       orderCounts();
       getTasks();
+      $(document).on("click", ".--notification-preview", function(event){
+          event.preventDefault();
+          let popup_id        = $(this).attr('data-popup-id');
+          $('#'+popup_id).modal('show');
+      });
+      
     });
   </script>
 @endsection

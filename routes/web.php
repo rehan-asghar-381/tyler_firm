@@ -46,6 +46,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/dashboard/ajaxData', [DashboardController::class, 'ajaxtData'])->name('dashboard.ajaxtData');
     Route::get('/dashboard/status-counts', [DashboardController::class, 'statusCounts'])->name('dashboard.status_counts');
     Route::get('/dashboard/order-counts', [DashboardController::class, 'orderCounts'])->name('dashboard.order_counts');
+    Route::get('/dashboard/customer-response', [DashboardController::class, 'get_customer_response'])->name('dashboard.get_customer_response');
     Route::get('/dashboard/calander', [DashboardController::class, 'calanderEvents'])->name('dashboard.calanderEvents');
     Route::get('/notfications', [DashboardController::class, 'get_notifications'])->name('dashboard.get_notifications');
     Route::get('/all-notfications', [DashboardController::class, 'all_notifications'])->name('dashboard.get_all_notifications');
