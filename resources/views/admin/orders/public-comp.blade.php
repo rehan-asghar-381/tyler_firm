@@ -92,6 +92,9 @@
 							</div>
 						</div>
 						<button type="submit" class="btn btn-success" id="save-button">Submit</button>
+                        <div class="spinner-border text-dark --spinner" role="status" style="display: none;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
 					</form>
 				</div>
 				<!-- Modal footer -->
@@ -136,13 +139,16 @@
                 return validated;
             }
             $(document).on("click", "#save-button", function(event) {
-
+                $(this).hide();
+                $('.--spinner').show();
                 var validate = required();
 
                 if (validate) {
                     return true;
                 }else{
                     event.preventDefault();
+                    $(this).show();
+                    $('.--spinner').hide();
                 }
 
             });

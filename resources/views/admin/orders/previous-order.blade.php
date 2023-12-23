@@ -93,6 +93,8 @@
 							<thead>
 								<tr>
 									<th width="250px">Sr.</th>
+
+									<th width="250px">Action Log</th>
 									<th width="250px">PO #</th>
 									<th width="250px">Job Name</th>
 									<th width="250px">Company Name</th>
@@ -115,6 +117,9 @@
 			{{ json_encode($statuses_arr) }}
 		</template>
 		<div class="job-template">
+
+		</div>
+		<div class="action-log-popup">
 
 		</div>
 	</div>
@@ -176,6 +181,7 @@
 		},
 		columns: [
 			{data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center'},
+		{data: 'notification', name: 'notification', width:"250px"},
 		{data: 'order_number', name: 'order_number', width:"250px"},
 		{data: 'job_name', name: 'job_name', width:"250px"},
 		{data: 'company_name', name: 'company_name', width:"250px"},
@@ -236,7 +242,9 @@
 };   
 table.ajax.reload();
 
-
+$(document).on('click', '.close-modal', function(e){
+  		$(this).closest('.modal').hide();
+	});
 	// $("#tarcking_status").select2();
 	$(document).on('click', '._deld', function(){
 		var f = window.confirm("Do you want to delete record?");
@@ -354,6 +362,23 @@ table.ajax.reload();
 		}
 		
 		
+	});
+	$(document).on('click', '.action-logs', function(e){
+		e.preventDefault();
+		$('.action-log-popup').empty();
+		var order_id 		  	= $(this).attr('data-id');
+		
+		$.ajax({
+			url: '{{ route("admin.email-template.action_log") }}',
+			type: "GET",
+			data: {
+				order_id: order_id
+			},
+			success: function(data) {
+				$('.action-log-popup').html(data);
+				$('#action-log-modal').show();
+			}
+		});
 	});
 	$(document).on('click', '.get-job-popup', function(e){
 

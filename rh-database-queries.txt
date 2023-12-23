@@ -88,3 +88,6 @@ ADD COLUMN `time_id` int NULL AFTER `id`;
 
 ALTER TABLE `customer_responses` 
 ADD COLUMN `client_id` int NULL AFTER `order_id`;
+
+ALTER TABLE `customer_responses` 
+ADD COLUMN `is_deleted` int NULL DEFAULT 0 AFTER `is_approved`;

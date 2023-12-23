@@ -900,12 +900,14 @@
             }
           });
       }
-      function getCustomerNotifications(){
-        $form = $("#reportForm").serialize();
-        
+      function getCustomerNotifications(resp_id = ""){
+        let data      = {};
+        if(resp_id != ""){
+          data.id     = resp_id;
+        }
         $.ajax({
             url: "{{ route('admin.dashboard.get_customer_response') }}",
-            data: $form,
+            data: data,
             dataType: 'json',
             success: function (result) {
                 $(".--customer-response").html("");
@@ -930,12 +932,13 @@
       loadCounts();
       orderCounts();
       getTasks();
-      $(document).on("click", ".--notification-preview", function(event){
+      $(document).on("click", ".--del-resp", function(event){
           event.preventDefault();
-          let popup_id        = $(this).attr('data-popup-id');
-          $('#'+popup_id).modal('show');
+          let resp_id         = $(this).attr('data-popup-id');
+          if(resp_id > 0){
+            getCustomerNotifications(resp_id);
+          }
       });
-      
     });
   </script>
 @endsection

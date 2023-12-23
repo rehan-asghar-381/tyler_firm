@@ -569,11 +569,16 @@ class DashboardController extends Controller
 
         return number_format($timeDifferenceInHours, 1);
     }
-    public function get_customer_response(){
+    public function get_customer_response(Request $request){
         $bg_int         = 0;
         $html           = '';
         $user_id        = Auth::user()->id;
-        $result         = CustomerResponse::with("client")->where("assignee_id", $user_id)->orderBy('id', 'desc')->get();
+        $id             = $request->has('id') ? $request->id : "";
+        if($id != ""){
+            $data       = array("is_deleted"=>1);
+            CustomerResponse::where('id', $id)->update($data);
+        }
+        $result         = CustomerResponse::with("client")->where(["assignee_id"=> $user_id, "is_deleted"=>0])->orderBy('id', 'desc')->get();
         if(count($result) > 0){
             foreach ($result as $key=>$response){
                 if($response->is_approved == "Approved"){
@@ -587,6 +592,9 @@ class DashboardController extends Controller
                 $time_in_hours              = $this->get_time_in_hours($response->time_id);
                 $html         .='<a href="'.$url.'" class="list-group-item list-group-item-action">
                 <div class="d-flex align-items-center" data-toggle="tooltip" data-placement="right" data-title="'.$time_in_hours .' hrs ago" data-original-title="" title="" data-popup-id="'.$response->id.'">
+                <div class="mr-2 mt-1 --del-resp" data-popup-id="'.$response->id.'">
+                    <i class="far fa fa-trash ml-2" data-task-id="6" style="cursor: pointer;"></i>
+                </div>
                     <div>
                         <span class="avatar '.$bg.' text-white rounded-circle">'.$company_short_name.'</span>
                     </div>

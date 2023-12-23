@@ -445,6 +445,9 @@ class ClientController extends Controller
             else
                 return '-';
         })
+        ->addColumn('notification', function ($data){
+            return '<span class="badge badge-primary action-logs" data-id="'.$data->id.'" style="cursor:pointer;">Activity Seen</span>';
+        })
         ->addColumn('actions', function ($data){
             $action_list    = '<div class="dropdown">
             <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -461,7 +464,7 @@ class ClientController extends Controller
             $action_list        .= '</div></div>';
             return  $action_list;
         })
-        ->rawColumns(['actions'])
+        ->rawColumns(['actions', 'notification'])
         ->make(TRUE);
     }
 }
