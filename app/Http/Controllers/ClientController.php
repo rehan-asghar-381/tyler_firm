@@ -461,6 +461,7 @@ class ClientController extends Controller
             if(auth()->user()->can('orders-generate-invoice')){
                 $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice', $data->id) .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
             }
+            $action_list    .= '<a class="dropdown-item --view-comps" href="#" data-id="'.$data->id.'"><i class="far fa fa-eye"></i> View Comps</a>';
             $action_list        .= '</div></div>';
             return  $action_list;
         })

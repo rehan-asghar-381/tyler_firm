@@ -119,8 +119,10 @@ class DashboardController extends Controller
         $quote_approval     = QuoteApproval::where('is_active', 'Y')->get(['id', 'name']);
         $blanks             = Blank::where('is_active', 'Y')->get(['id', 'name']);
         $comp_statuses      = CompStatus::get();
-        $rData              = Order::withCount("EmailLog")->with(["client", "ClientSaleRep","ActionSeen"=>function($q) use($user_id){
-            $q->where('seen_by', '=', $user_id);
+        $rData              = Order::withCount(['EmailLog' => function ($query) {
+            $query->whereIn('flag', ["email_received", "comp_uploaded"]);
+        }])->with(["client", "ClientSaleRep","ActionSeen"=>function($q) use($user_id){
+            $q->where('seen_by', '=', $user_id)->whereIn("flag", ["email_received", "comp_uploaded"]);
         
         }])->whereNotIn('status',[5,7]);
         
@@ -338,6 +340,12 @@ class DashboardController extends Controller
             if(auth()->user()->can('orders-edit')){
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.edit', $data->id).'"><i class="far fa-edit"></i> Edit</a>';
             }
+            if(auth()->user()->can('orders-generate-invoice')){
+                $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice', $data->id) .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
+            }
+            if(auth()->user()->can('orders-generate-d-yellow')){
+                $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.DYellow', $data->id).'"><i class="far fa fa-file"></i> Create Yellow</a>';
+            }    
             $url  = route('admin.order.edit', $data->id).'?comp_tab=true';
             $action_list    .= '<a class="dropdown-item" href="'.$url.'"><i class="far fa fa-file"></i> Comps View </a>';
 

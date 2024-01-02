@@ -42,6 +42,7 @@ class Order extends Model
         'shipping_address',
         'notes',
         'notes',
+        'quote_notes',
         'created_by_id',
         'created_by_name',
         'updated_by_id',

@@ -258,7 +258,13 @@ hr{
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Notes</label>
+                                    <label>Quote Notes</label>
+                                    <textarea type="text" value="" class="form-control" name="quote_notes" id="quote_notes" placeholder="" rows="2" ></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Yellow Notes</label>
                                     <textarea type="text" value="" class="form-control" name="notes" id="notes" placeholder="" rows="2" ></textarea>
                                 </div>
                             </div>
@@ -268,9 +274,9 @@ hr{
                                     <textarea type="text" value="" class="form-control" name="internal_notes" id="internal_notes" placeholder="" rows="2" ></textarea>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <button type="submit" class="btn btn-primary mt-5" id="submit-form">Save Order</button>
-                                <div id="loading" class="btn btn-primary mt-5" style="display: none;">Order Saving...</div>
+                            <div class="col-md-12 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary" id="submit-form">Save Order</button>
+                                <div id="loading" class="btn btn-primary" style="display: none;">Order Saving...</div>
                             </div>
                         </div>
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">

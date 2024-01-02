@@ -115,7 +115,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/clients/add_client', [ClientController::class, 'add_client'])->name('client.add_client');
     Route::get('/clients/get_sales_rep', [ClientController::class, 'get_sales_rep'])->name('client.get_sales_rep');
     Route::get('/order/get_client_recent_order', [OrderController::class, 'get_client_recent_order'])->name('order.get_client_recent_order');
-
+    Route::get('/order/get_order_comps', [OrderController::class, 'get_order_comps'])->name('order.get_order_comps');
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/ajaxData', [OrderController::class, 'ajaxtData'])->name('orders.ajaxdata');
@@ -138,6 +138,8 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/orders/recreate/{order_id}', [OrderController::class, 'recreate'])->name('order.recreate');
     Route::get('/order/delete-image', [OrderController::class, 'delete_image'])->name('order.delete-image');
     Route::get('/orders/d_yellow/{order_id}', [OrderController::class, 'DYellow'])->name('order.DYellow');
+    Route::get('/orders/purchase-docs', [OrderController::class, 'purchase_doc_popup'])->name('order.doc');
+    Route::post('/orders/upload-doc', [OrderController::class, 'upload_document'])->name('order.upload_doc');
     Route::post('/orders/d_yellow/store_d_yellow', [OrderController::class, 'storeDYellow'])->name('order.storeDYellow');
     Route::get('/email-template/email-popup', [OrderController::class, 'email_popup'])->name('email-template.email_popup');
     Route::get('/email-template/action-log', [OrderController::class, 'action_log_popup'])->name('email-template.action_log');
@@ -145,6 +147,8 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::post('/send-email', [OrderController::class, 'sendEmail'])->name('sendEmail');
     Route::get('/orders/download-art-files/{file_id}', [OrderController::class, 'downloadArtFiles'])->name('order.downloadArtFiles');
     Route::get('/orders/download-comp-files/{file_id}', [OrderController::class, 'downloadCompFiles'])->name('order.downloadCompFiles');
+    Route::get('/orders/download-doc-file/{file_id}', [OrderController::class, 'downloadPurchaseDocFile'])->name('order.downloadPurchaseDocFile');
+    Route::get('/orders/delete-doc-file', [OrderController::class, 'deletePurchaseDocFile'])->name('order.deletePurchaseDocFile');
     Route::get('/order/approveComp', [OrderController::class, 'compApprove'])->name('order.approveComp');
     
     Route::get('/get_decoration_price', [OrderController::class, 'get_decoration_price'])->name('get_decoration_price');

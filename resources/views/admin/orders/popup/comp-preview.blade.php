@@ -1,6 +1,6 @@
 
 	<!-- The Modal -->
-	<div class="modal" id="comp-preview-modal-{{$comp_id}}">
+	<div class="modal --pdiv" id="comp-preview-modal-{{$comp_id}}">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content">
 				<!-- Modal Header -->

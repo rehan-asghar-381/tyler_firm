@@ -44,7 +44,7 @@ trait NotificationTrait
         }
         $notifications_list     = $notifications_list->get();
         $notifications_arr      = $notifications_list->pluck('id');
-        $notification_count     = Notification::doesntHave('NotificationSeen')->whereIn("id", $notifications_arr)->where('time_id', '>', $deleted_time);
+        $notification_count     = Notification::doesntHave('NotificationSeen')->whereIn("id", $notifications_arr)->where('time_id', '>', $deleted_time)->whereIn("flag", ["comp_uploaded", "email_received"]);
         if($user_email == "art@nuworldgraphicslv.com"){
             $notification_count     = $notification_count->whereIn("type", $notifiction_type_arr);
         }

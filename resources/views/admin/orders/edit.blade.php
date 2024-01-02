@@ -281,7 +281,13 @@ hr{
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Notes</label>
+                                    <label>Quote Notes</label>
+                                    <textarea type="text" value="" class="form-control" name="quote_notes" id="quote_notes" placeholder="" rows="2" >{{$order->quote_notes}}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Yellow Notes</label>
                                     <textarea type="text" value="" class="form-control" name="notes" id="notes" placeholder="" rows="2" >{{$order->notes}}</textarea>
                                 </div>
                             </div>

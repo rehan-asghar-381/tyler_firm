@@ -17,6 +17,7 @@ class Notification extends Model
         'type',
         'added_by_id',
         'added_by_name',
+        'flag',
         'body',
         'time_id'
     ];

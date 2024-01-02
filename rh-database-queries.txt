@@ -1,93 +1,15 @@
-- Any time "Delete" is clicked for any order, product, or garment brand, please add pop up saying "Are You Sure You Want To Delete? with a Yes and No button (Done)
-
-    This one is done for orders and we can't delete products and brands from the database because it will have negetive impact in orders, invoice and yellow etc.
-
-- When selecting a garment color while creating a new order, can you please make this list alphabetical (Done)
-
-- Was getting this error after attempting to save an order when I had 3 different items in the quote
-
-    I tried a lot but this error is not being produced on my end. Please do the same with me by sharing your screen.
-
-- I also wasn't able to email the quote, it would act like it's sending and then nothing would happen on screen
-- Comp status issue (Done)
-
-- Need to add profit margin calculation box in view detail page for admin. Nobody else can see it. (Need Discussion on it.)
-
-
-
-- Disable save order button once clicked to prevent accidentally duplicating the same order. (Done)
-- After changing the urgent above, please add "Cancelled" option in Status on order page that will also move the order to the customer profile. So two options will perform this action "Done" and "Cancelled" (Done)
-- When sending a revised quote (after quote was approved), please remove Green box at the top of the quote that says "This Quote Has Been Approved" and add Approve / Not Approve buttons again for customer (Done)
-- Make To Do List view the same for all inside sales team. Allow everyone to add, edit, delete the to do's (Done)
-
-Sorry Rehan, some other changes needed. Here's a priority list of items that need fixed:
-
-- Fix error when duplicating errors first. (Done)
-- Add "Cancelled" to status dropdown in Order page and move the order to customer profile. So two options will perform this action "Done" and "Cancelled" (Done)
-- Disable save order button once clicked to prevent accidentally duplicating the same order (Done)
-- When sending a revised quote (after quote was approved), please remove Green box at the top of the quote that says "This Quote Has Been Approved" and add Approve / Not Approve buttons again for customer (Done)
-- In Action Log, please add Quote Preview to emailed response from customer (similar to comp preview) (Pending)
-This is a question for you. When uploading the comp in the comp page, is there a way to preview the comp on the page and not need to download it?
-Yes we can preview it.
-
-
-- In Action Log, please add Quote Preview to emailed response from customer (similar to comp preview)
-View Details Page Changes:
-
-- Under garments, make only the garments with quantities viewable.
-- Under print price, make only pricing for garments with quantities viewable
-- Under additional services, only show services that are selected while creating the order.
-- Under "Notes" on the left side, add these line items:
-- 1. Cost Of Goods (calculating all of our wholesale costs for the garments)
-- 2. Subtotal amount from Invoice
-- 3. Difference (Subtotal minus Cost Of Goods)
-
-- When selecting "Done" or "Cancelled" in Status dropdown, can you have a pop up show up confirming that action so we don't do it accidentally? (Similar to deleting order) (Done)
-- In orders page, can you remove the Date From and Date To search options at the top of the page and replace them with Assignee Dropdown box to search (Done)
-- On To Do List on dashboard, when checkbox is checked next to an item indicating it has been done, can it automatically be removed from the to do list? (Done)
-- In "View Details" Under additional services, only show services that are selected while creating the order. (Done)
-- In Action Log, please add Quote Preview to emailed response from customer (similar to comp preview) (Done)
-- Delete Art File Feature (Done)
-
-
-- In orders and dashboard, adjust all drop down boxes to the width of 100px and font size to 11px. (Done)
-- In orders and dashboard, add column to the left of comp status with the header "Comp Due" and a calendar feature to select a date (Done)
-- In comp page, when we click on the comp button, make the comp preview pop up in a separate window with the option to download the comp (Done)
-- When downloading art files and comp files, is there a way to select where the file is being saved on the computer? 
-
-    The liberary we using doesn't have direct acces to promp
-
-- In products and brands, add switch to turn on and off brand and product and have error pop up when adding duplicate brand or prodcut. (Done)
-
-- Comp preview is fixed 
-- In clients, Brands, add error pop up when adding duplicate client. (Done)
-- In Action Logs, add the following activities to the action log: Order creation, Comp Uploaded, Artwork Uploaded, Blank dropdown change, Comp Status dropdown change. We don't need to have the Action Log button flash for any of these actions, just add the timestamp and action to action log
-
+- I need a "Hat" option when adding a product. In "Size For" dropdown when adding product, please add Hat as an option with the following sizes "OSFA , S/M , M/L , L/XL , XL/XXL"
+- I need a "Hard Good" option when adding a product. This will be for any item we decorate that's not something you wear (pens, notepads, bags, etc). The only size we need is OSFA
 
 ALTER TABLE `orders` 
-ADD COLUMN `comp_due` varchar(50) NULL AFTER `comp_approval`;
+ADD COLUMN `quote_notes` text NULL AFTER `internal_notes`;
 
-CREATE TABLE `customer_responses` (
+CREATE TABLE `order_purchase_documents` (
   `id` int NOT NULL AUTO_INCREMENT,
   `order_id` int DEFAULT NULL,
-  `assignee_id` int DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `remarks` text,
-  `is_approved` varchar(255) DEFAULT NULL,
-  `action` varchar(255) DEFAULT NULL,
+  `time_id` int DEFAULT NULL,
+  `document` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
-
-ALTER TABLE `customer_responses` 
-ADD COLUMN `assignee_name` varchar(255) NULL AFTER `assignee_id`;
-
-ALTER TABLE `customer_responses` 
-ADD COLUMN `time_id` int NULL AFTER `id`;
-
-ALTER TABLE `customer_responses` 
-ADD COLUMN `client_id` int NULL AFTER `order_id`;
-
-ALTER TABLE `customer_responses` 
-ADD COLUMN `is_deleted` int NULL DEFAULT 0 AFTER `is_approved`;

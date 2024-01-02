@@ -35,7 +35,7 @@ class BrandController extends Controller
     public function ajaxtData(Request $request){
 
         $rData = Brand::select('*');
-        $rData = $rData->orderBy('id', 'DESC');
+        $rData = $rData->orderBy('name', 'ASC');
       
         return DataTables::of($rData->get())
             ->addIndexColumn()

@@ -531,6 +531,9 @@
                         <li><strong>Sales Tax: </strong> {{ $extra_details["tax"]."%" }} </li>
                         <li><strong>Total:&nbsp;</strong>{{ "$".number_format((float)$grand_total, 2, '.', ',') }}</li>
                     </ul>
+                    <div class="border p-3">
+                        {!! $order->quote_notes ?? "Test Notes" !!}
+                    </div>
                 </div>
             </div>
             @if(count($order_images) > 0)

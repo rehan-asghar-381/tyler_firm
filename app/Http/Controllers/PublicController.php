@@ -200,6 +200,7 @@ class PublicController extends Controller
         $email->is_sent             = "Y";
         $email->created_by_id       = 0;
         $email->is_response         = "Y";
+        $email->flag                = "email_received";
         $data["email"]              = $assignee_email ;
         $data["title"]              = "Response for Comp ".$comp->Order->job_name;
         $data["description"]        = $message_body;
@@ -234,6 +235,7 @@ class PublicController extends Controller
         $data['added_by_name']          = Null;
         $data['body']                   = $body;
         $data['time_id']                = date('U');
+        $data['flag']                   = "email_received";
         $this->add_notification($data);
         return redirect()->route('order.comp',  ['comp_id' => Crypt::encrypt($comp_id), 'email' => $url_email])->withSuccess('Thank you! We will process your submission shortly.');
     }
@@ -267,6 +269,7 @@ class PublicController extends Controller
         $email->is_sent             = "Y";
         $email->created_by_id       = 0;
         $email->is_response         = "Y";
+        $email->flag                = "email_received";
         $data["email"]              = $assignee_email;
         $data["title"]              = "Response for ".$order->job_name." Quote";
         $data["description"]        = $message_body;
@@ -306,6 +309,7 @@ class PublicController extends Controller
         $data['added_by_name']          = Null;
         $data['body']                   = $body;
         $data['time_id']                = date('U');
+        $data['flag']                   = "email_received";
         $this->add_notification($data);
         return redirect()->route("order.quote", ['order_id' => $order_number, 'email' =>  $email])->withSuccess('Thank you for your response.');
     }

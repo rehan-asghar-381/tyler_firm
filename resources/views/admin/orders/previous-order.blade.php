@@ -122,6 +122,9 @@
 		<div class="action-log-popup">
 
 		</div>
+		<div class="comps-popup">
+
+		</div>
 	</div>
 </div>
 @endsection
@@ -242,8 +245,11 @@
 };   
 table.ajax.reload();
 
-$(document).on('click', '.close-modal', function(e){
-  		$(this).closest('.modal').hide();
+	$(document).on('click', '.close-modal', function(e){
+		$(this).closest('.modal').hide();
+	});
+	$(document).on('click', '.close-modal-comp-preview', function(e){
+		$(this).closest('.--pdiv').modal('hide');
 	});
 	// $("#tarcking_status").select2();
 	$(document).on('click', '._deld', function(){
@@ -317,10 +323,7 @@ $(document).on('click', '.close-modal', function(e){
 			}
 		});
 	}
-
-	$(document).on('click', '.close-modal', function(e){
-		$('#job-modal').hide();
-	});
+	
 
 	$("form#formElement").submit(function(){
 		var formData = new FormData($(this)[0]);
@@ -380,6 +383,26 @@ $(document).on('click', '.close-modal', function(e){
 			}
 		});
 	});
+	$(document).on('click', '.--view-comps', function(e){
+		e.preventDefault();
+		$('.comps-popup').empty();
+		var order_id 		  	= $(this).attr('data-id');
+		console.log("order_id: ", order_id);
+		if(order_id != ""){
+
+			$.ajax({
+				url: '{{ route("admin.order.get_order_comps") }}',
+				type: "GET",
+				data: {
+					order_id: order_id
+				},
+				success: function(data) {
+					$('.comps-popup').html(data);
+					$('#comp-modal').modal('show');
+				}
+			});
+		}
+	});
 	$(document).on('click', '.get-job-popup', function(e){
 
 		e.preventDefault();
@@ -409,6 +432,11 @@ $(document).on('click', '.close-modal', function(e){
 		e.preventDefault();
 		table.ajax.reload();
 
+	});
+	$(document).on("click", ".--comp-preview", function(event){
+		event.preventDefault();
+		let popup_id        = $(this).attr('data-popup-id');
+		$('#'+popup_id).modal('show');
 	});
 </script>
 @endsection

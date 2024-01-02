@@ -36,6 +36,7 @@ use App\Traits\NotificationTrait;
 use App\Models\EmailLog;
 use App\Models\CompStatus;
 use App\Models\EmailTemplate;
+use App\Models\orderPurchaseDoc;
 use PDF;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
@@ -146,8 +147,10 @@ class OrderController extends Controller
         $comp_statuses      = CompStatus::get();
         $quote_approval     = QuoteApproval::where('is_active', 'Y')->get(['id', 'name']);
         $blanks             = Blank::where('is_active', 'Y')->get(['id', 'name']);
-        $rData              = Order::withCount("EmailLog")->with(["client", "ClientSaleRep","ActionSeen"=>function($q) use($user_id){
-            $q->where('seen_by', '=', $user_id);
+        $rData              = Order::withCount(['EmailLog' => function ($query) {
+            $query->whereIn('flag', ["email_received", "comp_uploaded"]);
+        }])->with(["client", "ClientSaleRep","ActionSeen"=>function($q) use($user_id){
+            $q->where('seen_by', '=', $user_id)->whereIn("flag", ["email_received", "comp_uploaded"]);
         
         }])->whereNotIn('status',[5,7]);
         
@@ -373,6 +376,7 @@ class OrderController extends Controller
         }
             $url  = route('admin.order.edit', $data->id).'?comp_tab=true';
             $action_list    .= '<a class="dropdown-item" href="'.$url.'"><i class="far fa fa-file"></i> Comps View </a>';
+            $action_list    .= '<a class="dropdown-item --open-doc-popup" data-id="'.$data->id.'" href="#"><i class="far fa fa-file"></i> Purchase Doc </a>';
             if(auth()->user()->can('orders-generate-invoice')){
                 $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice', $data->id) .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
             }
@@ -435,6 +439,7 @@ class OrderController extends Controller
             $order->shipping_address    = $rData['shipping_address'];
             $order->notes               = $rData['notes'];
             $order->internal_notes      = $rData['internal_notes'];
+            $order->quote_notes         = $rData['quote_notes'];
             $order->job_name            = $rData['job_name'];
             $order->order_number        = $rData['order_number'];
             $order->projected_units     = $rData['projected_units'];
@@ -605,6 +610,7 @@ class OrderController extends Controller
         $data['added_by_name']          = $user_name;
         $data['body']                   = $body;
         $data['time_id']                = date('U');
+        $data['flag']                   = "comp_uploaded";
         $this->add_notification($data);
     }
     public function save_order_prices($order_id, $rData){
@@ -876,6 +882,7 @@ class OrderController extends Controller
                     $data['description']            = "Comp ".$comp_number ." is uploaded";
                     $data['is_response']            = Null;
                     $data['order_id']               = $id;
+                    $data['flag']                   = "comp_uploaded";
                     $this->_addLog($data);
                 }
                 if($request->has('comp_details') && $request->comp_details != ""){
@@ -1941,6 +1948,34 @@ class OrderController extends Controller
         $action_logs        = EmailLog::where("order_id", $order_id)->orderBy("id", "desc")->get();
         return view('admin.orders.popup.action-log', compact('action_logs'));
     }
+    public function purchase_doc_popup(Request $request){
+ 
+        $order_id               = $request->order_id;
+        $purchase_docs          = orderPurchaseDoc::where("order_id", $order_id)->get();
+        return view('admin.orders.popup.purchase-doc', compact('purchase_docs', 'order_id'));
+    }
+    public function upload_document(Request $request){
+        
+        $order_id               = $request->order_id;
+        $document               = $request->document;
+
+        if(is_file($document)){
+            $original_name = $document->getClientOriginalName();
+            $original_name          = $this->sanitizeFileName($original_name);
+            $file_name = time().rand(100,999).$original_name;
+            $destinationPath = public_path('/uploads/order/');
+            $document->move($destinationPath, $file_name);
+            $file_slug  = "/uploads/order/".$file_name;
+
+            $order_doc                      = new orderPurchaseDoc();
+            $order_doc->order_id            = $order_id;
+            $order_doc->time_id             = date("U");
+            $order_doc->document            = $file_slug;
+            $order_doc->save();
+        }
+
+        return json_encode(array("order_id"=>$order_id));
+    }
     public function action_log_seen(Request $request){
         $order_id               = $request->order_id;
         $seen_by                = $request->user_id;
@@ -1952,6 +1987,7 @@ class OrderController extends Controller
                 $action_seen->email_log_id      = $action_log->id;
                 $action_seen->order_id          = $order_id;
                 $action_seen->seen_by           = $seen_by;
+                $action_seen->flag              = $action_log->flag;
                 $action_seen->save();
             }
         }
@@ -1984,6 +2020,40 @@ class OrderController extends Controller
             abort(404, 'File not found');
         }
     }
+    public function downloadPurchaseDocFile($file_id){
+        
+        $doc_file       = orderPurchaseDoc::find($file_id);
+        
+        if($doc_file){
+            $path       = public_path($doc_file->document);
+
+            if (file_exists($path)) {
+                return response()->download($path);
+            } else {
+                abort(404, 'File not found');
+            }
+        }else{
+            abort(404, 'File not found');
+        }
+    }
+    public function deletePurchaseDocFile(Request $request){
+        $file_id        = $request->file_id;
+        $doc_file       = orderPurchaseDoc::find($file_id);
+        $order_id       = $doc_file->order_id;
+        if($doc_file){
+            $path       = public_path($doc_file->document);
+
+            if (file_exists($path)) {
+                unlink($path);
+            } else {
+                abort(404, 'File not found');
+            }
+        }else{
+            abort(404, 'File not found');
+        }
+        orderPurchaseDoc::where("id", $file_id)->delete();
+        return json_encode(array("order_id"=>$order_id));
+    }
 
     public function sanitizeFileName($fileName)
     {
@@ -1992,5 +2062,12 @@ class OrderController extends Controller
         $fileName = trim($fileName, '_');
 
         return $fileName;
+    }
+    public function get_order_comps(Request $request)
+    {
+        $order_id           = $request->order_id;
+        $comps              = orderCompFile::where("order_id", $order_id)->get();
+        $html               = view('admin.orders.popup.order-comps', compact("comps"));
+        return $html;
     }
 }
