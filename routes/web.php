@@ -129,6 +129,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/orders/print_nd_loations', [OrderController::class, 'print_nd_loations'])->name('order.print_nd_loations');
     Route::get('/orders/view/{order_id}', [OrderController::class, 'orderView'])->name('order.view');
     Route::get('/orders/status_update', [OrderController::class, 'status_update'])->name('order.status_update');
+    Route::get('/orders/is_printed', [OrderController::class, 'is_printed'])->name('order.is_printed');
     Route::get('/orders/comp_due', [OrderController::class, 'comp_due_update'])->name('order.comp_due');
     Route::get('/orders/quote_update', [OrderController::class, 'quote_update'])->name('order.quote_update');
     Route::get('/orders/comp_status_update', [OrderController::class, 'comp_status_update'])->name('order.comp_status_update');

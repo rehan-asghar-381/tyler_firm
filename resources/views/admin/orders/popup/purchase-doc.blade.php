@@ -70,7 +70,7 @@
 								<tr>
 									<th scope="col">#</th>
 									<th scope="col">Quote#</th>
-									<th scope="col">Purchase Doc</th>
+									<th scope="col">Order Docs</th>
 									<th scope="col">Uploaded At</th>
 									<th scope="col">Action</th>
 								</tr>
@@ -80,10 +80,18 @@
 								<tr>
 									<th scope="row">{{$key+1}}</th>
 									<td>{{$purchase_doc->order_id}}</td>
-									<td><a href="{{route("admin.order.downloadPurchaseDocFile", $purchase_doc->id)}}" class="btn btn-purple btn-circle mb-2 mr-1" style="width: 130px !important;"><i class="fas fa-download"></i> Purchase Doc {{$key+1}}</a></td>
+									<td><a href="{{route("admin.order.downloadPurchaseDocFile", $purchase_doc->id)}}" class="btn btn-purple btn-circle mb-2 mr-1 --doc-preview" style="width: 130px !important;" data-popup-id="doc-preview-modal-{{$purchase_doc->id}}"><i class="fas fa-download"></i> Purchase Doc {{$key+1}}</a></td>
 									<td>{{ date('d-m-Y h:i:s', $purchase_doc->time_id) }}</td>
                                     <td><i class="far fa-trash-alt fa-2x --delete-doc-file" style="cursor: pointer;" data-file-id="{{$purchase_doc->id}}"></i></td>
 								</tr>
+                                @php
+									$path                   = explode("/", $purchase_doc->document);
+                                    $filename               = end($path);
+                                    $encodedFilename        = rawurlencode($filename);
+                                    $path[count($path) - 1] = $encodedFilename;
+                                    $encodedPath            = implode("/", $path);
+								@endphp
+								@include('admin.orders.popup.doc-preview', ["download_url"=>route('admin.order.downloadPurchaseDocFile', $purchase_doc->id), "comp_preview"=>asset($encodedPath), "doc_id"=>$purchase_doc->id])
                                 @endforeach
 							</tbody>
 						</table>

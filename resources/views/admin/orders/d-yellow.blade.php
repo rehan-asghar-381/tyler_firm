@@ -739,14 +739,18 @@ textarea {
                         </div>
                     </div>
 
-                    <div class="col-md-12 form-check mt-5">
+                    <div class="col-md-12 form-check mt-5 d-flex">
                         @if(auth()->user()->can('orders-update-d-yellow'))
-                        <button type="submit" class="btn btn-primary mb-3 no-print" id="submit-form">Submit</button>
+                        <button type="submit" class="btn btn-primary mb-3 no-print mr-3" id="submit-form">Submit</button>
                         @endif
-                        <button type="button" class="btn btn-lg btn-success mb-3 no-print" onclick='printDiv();' id="submit-form">
+                        <button type="button" class="btn btn-lg btn-success mb-3 no-print mr-3 --print-page" id="submit-form">
                             <span class="fa fa-print">
                             </span>
                         </button>
+                        <div data-order-id="{{$order->id}}" data-is-printed={{$order->is_printed}} class="form-group form-check mt-2 no-print --printed" @if($order->is_printed == 0) style="display: none;" @endif>
+                            <span class="fa fa-check text-success ml-1"></span> Order Printed
+                        </div>
+                        
                     </div>
                 </form>
             </div>
@@ -757,6 +761,40 @@ textarea {
 @section('footer-script')
 
 <script>
+$(document).on("click", ".--print-page", function() {
+    let printedElement = $(".--printed");
+    
+    if (printedElement.length > 0) {
+        let order_id = printedElement.attr("data-order-id");
+        let is_printed = printedElement.attr("data-is-printed");
+
+        let url = "{{ route('admin.order.is_printed') }}";
+        console.log("order_id", order_id);
+        console.log("is_printed", is_printed);
+        console.log("url", url);
+
+        if (order_id && is_printed != 1) {
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: {
+                    order_id: order_id
+                },
+                dataType: 'json', // Specify the expected data type
+                success: function (data) {
+                    if (data.status) {
+                        printedElement.attr("data-is-printed", 1);
+                        printedElement.show();
+                    }
+                }
+            });
+        }
+    } else {
+        console.log("Printed element not found.");
+    }
+
+    printDiv();
+});
 function printDiv() 
 {
     setTimeout(function(){

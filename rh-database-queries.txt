@@ -2,14 +2,4 @@
 - I need a "Hard Good" option when adding a product. This will be for any item we decorate that's not something you wear (pens, notepads, bags, etc). The only size we need is OSFA
 
 ALTER TABLE `orders` 
-ADD COLUMN `quote_notes` text NULL AFTER `internal_notes`;
-
-CREATE TABLE `order_purchase_documents` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `order_id` int DEFAULT NULL,
-  `time_id` int DEFAULT NULL,
-  `document` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-);
+ADD COLUMN `is_printed` int NULL DEFAULT 0 AFTER `comp_due`;

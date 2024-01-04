@@ -346,6 +346,7 @@ class DashboardController extends Controller
             if(auth()->user()->can('orders-generate-d-yellow')){
                 $action_list    .= '<a class="dropdown-item" href="'.route('admin.order.DYellow', $data->id).'"><i class="far fa fa-file"></i> Create Yellow</a>';
             }    
+            $action_list    .= '<a class="dropdown-item --open-doc-popup" data-id="'.$data->id.'" href="#"><i class="far fa fa-paperclip"></i> Order Docs </a>';
             $url  = route('admin.order.edit', $data->id).'?comp_tab=true';
             $action_list    .= '<a class="dropdown-item" href="'.$url.'"><i class="far fa fa-file"></i> Comps View </a>';
 

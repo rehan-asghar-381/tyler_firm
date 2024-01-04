@@ -376,7 +376,7 @@ class OrderController extends Controller
         }
             $url  = route('admin.order.edit', $data->id).'?comp_tab=true';
             $action_list    .= '<a class="dropdown-item" href="'.$url.'"><i class="far fa fa-file"></i> Comps View </a>';
-            $action_list    .= '<a class="dropdown-item --open-doc-popup" data-id="'.$data->id.'" href="#"><i class="far fa fa-file"></i> Purchase Doc </a>';
+            $action_list    .= '<a class="dropdown-item --open-doc-popup" data-id="'.$data->id.'" href="#"><i class="far fa fa-paperclip"></i> Order Docs </a>';
             if(auth()->user()->can('orders-generate-invoice')){
                 $action_list    .= '<a class="dropdown-item "  href="'.route('admin.order.generateInvoice', $data->id) .'" data-status="'.$data->status.'" data-id="'.$data->id.'"><i class="far fa fa-print"></i> Generate Invoice</a>';
             }
@@ -909,6 +909,7 @@ class OrderController extends Controller
             $order->ship_method         = $rData['ship_method'];
             $order->notes               = $rData['notes'];
             $order->internal_notes      = $rData['internal_notes'];
+            $order->quote_notes         = $rData['quote_notes'];
             $order->job_name            = $rData['job_name'];
             $order->order_number        = $rData['order_number'];
             $order->projected_units     = $rData['projected_units'];
@@ -1090,6 +1091,15 @@ class OrderController extends Controller
         $data['time_id']                = date('U');
         $this->add_notification($data);
         return json_encode(array("status"=>true, "message"=>"Status has been updated successfully!"));
+    }
+    public function is_printed(Request $request)
+    {
+        $order_id               = $request->get('order_id');
+        $order                  = Order::find($order_id);
+        $order->is_printed      = 1;
+        $order->save();
+        
+        return json_encode(array("status"=>true));
     }
     public function comp_due_update(Request $request)
     {

@@ -734,6 +734,12 @@ setTimeout(function(){
 			let popup_id        = $(this).attr('data-popup-id');
 			$('#'+popup_id).modal('show');
 		});
+
+		$(document).on("click", ".--doc-preview", function(event){
+			event.preventDefault();
+			let popup_id        = $(this).attr('data-popup-id');
+			$('#'+popup_id).modal('show');
+		});
 	});
 </script>
 @endsection

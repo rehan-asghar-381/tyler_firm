@@ -367,6 +367,9 @@
   <div class="task-modal">
 
   </div>
+  <div class="doc-popup">
+
+  </div>
 </div><!--/.main content-->
 @endsection
 
@@ -938,6 +941,84 @@
           if(resp_id > 0){
             getCustomerNotifications(resp_id);
           }
+      });
+      function _docPopup(order_id=""){
+        if(order_id != ""){
+
+          $('.doc-popup').empty();
+          $.ajax({
+            url: '{{ route("admin.order.doc") }}',
+            type: "GET",
+            data: {
+              order_id: order_id
+            },
+            success: function(data) {
+              $('.doc-popup').html(data);
+              $('#doc-modal').show();
+            }
+          });
+        }
+      }
+      $(document).on('click', '.--open-doc-popup', function(e){
+        e.preventDefault();
+        var order_id 		  	= $(this).attr('data-id');
+        _docPopup(order_id);
+      });
+      $(document).on('change', '.docFile', function(e){
+        e.preventDefault();
+        var formData = new FormData(document.getElementById('uploadForm'));
+        console.log(formData);
+        $.ajax({
+          url: '{{ route("admin.order.upload_doc") }}',
+          type: "POST",
+          data: formData,
+          processData: false,
+              contentType: false,
+          success: function(data) {
+            data 	= JSON.parse(data);
+            _docPopup(data.order_id);
+          },
+          beforeSend: function() {
+            $('.page-loader-wrapper').show();
+          },
+          complete: function(){
+            $('.page-loader-wrapper').hide();
+          },
+        });
+      });
+
+      $(document).on("click", ".--delete-doc-file", function(){
+        if(window.confirm('Are You Sure You Want To Delete?')){
+          let file_id 		= $(this).attr("data-file-id");
+          console.log("file_id", file_id);
+          if(file_id != ""){
+            $.ajax({
+              url: '{{ route("admin.order.deletePurchaseDocFile") }}',
+              type: "GET",
+              data: {
+                file_id:file_id
+              },
+              success: function(data) {
+                data 	= JSON.parse(data);
+                console.log(data);
+                _docPopup(data.order_id);
+              },
+              beforeSend: function() {
+                $('.page-loader-wrapper').show();
+              },
+              complete: function(){
+                $('.page-loader-wrapper').hide();
+              },
+            });
+          }
+        }else{
+          return false;
+        }
+      });
+      $(document).on("click", ".--doc-preview", function(event){
+        event.preventDefault();
+        let popup_id        = $(this).attr('data-popup-id');
+        $('#'+popup_id).modal('show');
       });
     });
   </script>
